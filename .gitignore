@@ -1,0 +1,9 @@
+# NEVER commit signing secrets — keystore + passwords live here
+signing/
+
+# build outputs & logs
+Builds-release/
+logs/
+*.aab
+*.apk
+.DS_Store
