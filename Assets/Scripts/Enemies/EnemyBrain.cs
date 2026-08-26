@@ -4,7 +4,7 @@ using Emberline.UI;
 
 namespace Emberline.Enemies
 {
-    public enum EnemyKind { Bandit, Ranged, Chief, Shade, Kagachi }
+    public enum EnemyKind { Bandit, Ranged, Chief, Shade, Kagachi, Jin }
 
     /// <summary>
     /// Enemy AI ported from the tuned 2D prototype, now driving a NinjaRig:
@@ -53,11 +53,13 @@ namespace Emberline.Enemies
         private Material _ringMat;
         private float _strafeSide = 1f;
 
-        public bool Enraged => kind == EnemyKind.Chief && !isClone && Hp < maxHp * 0.5f;
+        public bool Enraged => !isClone
+            && (kind == EnemyKind.Chief && Hp < maxHp * 0.5f
+                || kind == EnemyKind.Jin && Hp < maxHp * 0.4f);
         public int Phase => kind != EnemyKind.Kagachi || isClone ? 1
             : Hp > maxHp * 0.6f ? 1 : Hp > maxHp * 0.3f ? 2 : 3;
 
-        private bool IsBoss => kind == EnemyKind.Chief || (kind == EnemyKind.Kagachi && !isClone);
+        private bool IsBoss => kind is EnemyKind.Chief or EnemyKind.Jin || (kind == EnemyKind.Kagachi && !isClone);
         private float Speed => Enraged || Phase == 3 ? speed * 1.4f : speed;
         private float Windup => _dashAttack ? (kind == EnemyKind.Kagachi ? 0.55f : 0.7f)
             : Enraged ? 0.45f : Phase == 3 ? 0.38f : windupTime;
@@ -134,7 +136,8 @@ namespace Emberline.Enemies
                         ? dist < 8f && dist > 4f
                         : dist < attackRange + 0.3f;
                     var wantsDash = IsBoss && dist > 5f && dist < 11f && _attackCd <= 0
-                                    && Random.value < (Phase == 3 ? 0.03f : 0.012f);
+                                    && Random.value < (Phase == 3 ? 0.03f
+                                        : kind == EnemyKind.Jin ? 0.028f : 0.012f);
                     if ((inRange && _attackCd <= 0 || wantsDash)
                         && (IsBoss || _tokens == null || _tokens.TryTake(this)))
                     {
@@ -201,8 +204,16 @@ namespace Emberline.Enemies
             if (Enraged && !_enrageAnnounced)
             {
                 _enrageAnnounced = true;
-                _gm?.Announce("THE CHIEF SEES RED");
-                _rig?.SetBaseColor(new Color(0.55f, 0.16f, 0.12f));
+                if (kind == EnemyKind.Jin)
+                {
+                    _gm?.Announce("JIN DRAWS THE STORM");
+                    _rig?.SetBaseColor(new Color(0.30f, 0.36f, 0.58f));
+                }
+                else
+                {
+                    _gm?.Announce("THE CHIEF SEES RED");
+                    _rig?.SetBaseColor(new Color(0.55f, 0.16f, 0.12f));
+                }
                 FxPools.Embers(transform.position + Vector3.up, 20);
             }
             if (kind == EnemyKind.Kagachi && !isClone && Phase >= 2 && !_clonesSpawned)

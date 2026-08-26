@@ -116,6 +116,7 @@ namespace Emberline.EditorTools
             gm.arenaHalfExtents = new Vector2(13f, 8f);
             gm.otherSceneName = otherScene;
             gm.otherMissionLabel = otherLabel;
+            gm.isMarshScene = theme == Theme.Marsh;
             gmGo.AddComponent<AttackTokenPool>();
             gmGo.AddComponent<UI.TouchHud>();
 
@@ -306,7 +307,7 @@ namespace Emberline.EditorTools
 
         private static GameObject[] BuildEnemyPrefabs()
         {
-            var prefabs = new GameObject[5];
+            var prefabs = new GameObject[6];
             prefabs[(int)EnemyKind.Bandit] = EnemyPrefab(EnemyKind.Bandit, "Bandit",
                 body: new Color(0.32f, 0.27f, 0.22f), accent: new Color(0.6f, 0.63f, 0.66f),
                 scale: 1f, hp: 42, spd: 3.2f, range: 1.8f, dmg: 9, windup: 0.55f,
@@ -326,6 +327,10 @@ namespace Emberline.EditorTools
             prefabs[(int)EnemyKind.Kagachi] = EnemyPrefab(EnemyKind.Kagachi, "Kagachi",
                 body: new Color(0.13f, 0.28f, 0.30f), accent: new Color(0.92f, 0.9f, 0.86f),
                 scale: 1.2f, hp: 300, spd: 3.9f, range: 2f, dmg: 14, windup: 0.5f,
+                sword: true, ghost: false);
+            prefabs[(int)EnemyKind.Jin] = EnemyPrefab(EnemyKind.Jin, "Jin",
+                body: new Color(0.20f, 0.23f, 0.38f), accent: new Color(0.75f, 0.82f, 0.95f),
+                scale: 1.05f, hp: 240, spd: 4.6f, range: 2f, dmg: 12, windup: 0.42f,
                 sword: true, ghost: false);
             return prefabs;
         }
@@ -449,7 +454,7 @@ namespace Emberline.EditorTools
             PlayerSettings.Android.targetArchitectures = AndroidArchitecture.ARM64 | AndroidArchitecture.ARMv7;
             PlayerSettings.Android.minSdkVersion = AndroidSdkVersions.AndroidApiLevel26;
             PlayerSettings.defaultInterfaceOrientation = UIOrientation.LandscapeLeft;
-            PlayerSettings.bundleVersion = System.Environment.GetEnvironmentVariable("EMBERLINE_VERSION_NAME") ?? "1.0.0";
+            PlayerSettings.bundleVersion = System.Environment.GetEnvironmentVariable("EMBERLINE_VERSION_NAME") ?? "1.1.0";
             var codeStr = System.Environment.GetEnvironmentVariable("EMBERLINE_VERSION_CODE");
             PlayerSettings.Android.bundleVersionCode = int.TryParse(codeStr, out var code) ? code : 1;
             EnsureIcon();

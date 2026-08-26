@@ -8,43 +8,68 @@ using Emberline.UI;
 namespace Emberline
 {
     /// <summary>
-    /// Mission flow: intro screen → authored waves → victory (with records) or
-    /// defeat, plus the post-victory Endless Trial. Also owns mobile perf setup.
-    /// Fields are public so the editor bootstrap can wire the scene in batch mode.
+    /// v2 flow: MAIN MENU → Story levels (named, authored, starred, unlocking) /
+    /// Duels (named 1v1 opponents) / Endless Trial. Scenes are theme shells;
+    /// Session decides what spawns. Fields are public for the batch bootstrap.
     /// </summary>
     public class GameManager : MonoBehaviour
     {
-        public MissionDef mission;
-        public GameObject[] enemyPrefabs; // indexed by (int)EnemyKind
+        public MissionDef mission;               // legacy, unused in v2
+        public GameObject[] enemyPrefabs;        // indexed by (int)EnemyKind
         public Vector2 arenaHalfExtents = new(13f, 8f);
-        public string otherSceneName = "";       // the other mission's scene
-        public string otherMissionLabel = "";
+        public string otherSceneName = "";       // legacy
+        public string otherMissionLabel = "";    // legacy
+        public bool isMarshScene;
 
-        public enum Phase { Intro, Playing, Won, Lost }
+        public enum Phase { Menu, Intro, Playing, Won, Lost }
 
-        public Phase State { get; private set; } = Phase.Intro;
-        public bool Endless { get; private set; }
+        public Phase State { get; private set; } = Phase.Menu;
+        public LaunchMode ModeNow => Session.Mode;
+        public LevelDef CurrentLevel { get; private set; }
+        public DuelDef CurrentDuel { get; private set; }
+
         public int WaveIndex { get; private set; } = -1;
         public float MissionTime { get; private set; }
         public float DamageTaken { get; private set; }
         public int GatesCrackedTotal { get; private set; }
         public string Banner { get; private set; } = "";
         public float BannerTimer { get; private set; }
+        public int StarsEarned { get; private set; }
         public bool NewRecord { get; private set; }
-        public int BestScore => PlayerPrefs.GetInt("best_score", 0);
-        public string BestRank => PlayerPrefs.GetString("best_rank", "—");
         public int BestWave => PlayerPrefs.GetInt("best_wave", 0);
-        public int WaveCount => mission != null ? mission.waves.Length : 0;
+        public int WaveCount => _waves?.Length ?? 0;
+
+        private EnemyKind[][] _waves;
+        private float _interWave = 1.2f;
+        private bool _waveActive;
+        private bool _endless;
+        private SenGates _gates;
+        private Health _playerHealth;
+        private Player.CombatController _combat;
+        private CameraRig _rig;
+        private Transform _playerT;
 
         public string Objective
         {
             get
             {
-                if (State == Phase.Intro) return "";
+                if (State != Phase.Playing) return "";
                 var alive = AliveEnemies;
                 if (_waveActive && alive > 0)
-                    return $"DEFEAT ALL ENEMIES — {alive} LEFT";
-                return State == Phase.Playing ? "NEXT WAVE INCOMING…" : "";
+                    return ModeNow == LaunchMode.Duel && CurrentDuel != null
+                        ? $"DEFEAT {CurrentDuel.name}"
+                        : $"DEFEAT ALL ENEMIES — {alive} LEFT";
+                return "NEXT WAVE INCOMING…";
+            }
+        }
+
+        public EnemyBrain DuelOpponent
+        {
+            get
+            {
+                foreach (var e in EnemyBrain.Active)
+                    if (e != null && !e.Dead && !e.isClone) return e;
+                return null;
             }
         }
 
@@ -59,17 +84,8 @@ namespace Emberline
             }
         }
 
-        private float _interWave = 1.2f;
-        private bool _waveActive;
-        private SenGates _gates;
-        private Health _playerHealth;
-        private Player.CombatController _combat;
-        private CameraRig _rig;
-        private Transform _playerT;
-
         private void Awake()
         {
-            // The Android default is 30fps with vsync — the single biggest "lag" fix.
             Application.targetFrameRate = 60;
             QualitySettings.vSyncCount = 0;
             QualitySettings.shadowDistance = 28f;
@@ -85,7 +101,6 @@ namespace Emberline
                 _playerT = _combat.transform;
                 _gates = _combat.GetComponent<SenGates>();
                 _playerHealth = _combat.GetComponent<Health>();
-                _playerHealth.SetMax(140f); // onboarding-friendly pool; heals between waves
 
                 if (_gates != null) _gates.OnGateCracked += _ =>
                 {
@@ -110,17 +125,108 @@ namespace Emberline
                     OnPlayerDeath();
                 };
             }
+
+            ConfigureFromSession();
         }
 
-        public void LoadOtherMission()
+        // ------------------------------------------------------ configuration
+
+        private void ConfigureFromSession()
         {
-            if (string.IsNullOrEmpty(otherSceneName)) return;
+            switch (Session.Mode)
+            {
+                case LaunchMode.Story:
+                {
+                    var level = Session.Story[Mathf.Clamp(Session.LevelIndex, 0, Session.Story.Length - 1)];
+                    if (level.marsh != isMarshScene) { LoadThemeScene(level.marsh); return; }
+                    CurrentLevel = level;
+                    _waves = level.waves;
+                    _playerHealth?.SetMax(140f);
+                    State = Phase.Intro;
+                    break;
+                }
+                case LaunchMode.Duel:
+                {
+                    var duel = Session.Duels[Mathf.Clamp(Session.DuelIndex, 0, Session.Duels.Length - 1)];
+                    if (duel.marsh != isMarshScene) { LoadThemeScene(duel.marsh); return; }
+                    CurrentDuel = duel;
+                    _waves = new[] { new[] { duel.kind } };
+                    _playerHealth?.SetMax(110f);
+                    State = Phase.Intro;
+                    break;
+                }
+                case LaunchMode.Endless:
+                {
+                    if (isMarshScene) { LoadThemeScene(false); return; }
+                    _endless = true;
+                    _waves = new EnemyKind[0][];
+                    _playerHealth?.SetMax(140f);
+                    State = Phase.Intro;
+                    break;
+                }
+                default:
+                    State = Phase.Menu;
+                    break;
+            }
+        }
+
+        private static void LoadThemeScene(bool marsh) =>
+            SceneManager.LoadScene(marsh ? "Marsh" : "Rooftop");
+
+        // -------------------------------------------------------- hud actions
+
+        public void LaunchStory(int index)
+        {
+            Sfx3D.Ui();
+            Session.Mode = LaunchMode.Story;
+            Session.LevelIndex = index;
+            LoadThemeScene(Session.Story[index].marsh);
+        }
+
+        public void LaunchDuel(int index)
+        {
+            Sfx3D.Ui();
+            Session.Mode = LaunchMode.Duel;
+            Session.DuelIndex = index;
+            LoadThemeScene(Session.Duels[index].marsh);
+        }
+
+        public void LaunchEndless()
+        {
+            Sfx3D.Ui();
+            Session.Mode = LaunchMode.Endless;
+            LoadThemeScene(false);
+        }
+
+        public void OpenMenu()
+        {
+            Sfx3D.Ui();
+            Session.Mode = LaunchMode.None;
+            Time.timeScale = 1f;
+            LoadThemeScene(false);
+        }
+
+        public void Retry()
+        {
             Sfx3D.Ui();
             Time.timeScale = 1f;
-            SceneManager.LoadScene(otherSceneName);
+            SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
         }
 
-        /// <summary>Called by the intro overlay.</summary>
+        public void NextStoryLevel()
+        {
+            var next = Session.LevelIndex + 1;
+            if (next < Session.Story.Length) LaunchStory(next);
+            else OpenMenu();
+        }
+
+        public void NextDuel()
+        {
+            var next = Session.DuelIndex + 1;
+            if (next < Session.Duels.Length && next < Session.DuelsUnlocked) LaunchDuel(next);
+            else OpenMenu();
+        }
+
         public void BeginMission()
         {
             if (State != Phase.Intro) return;
@@ -129,23 +235,25 @@ namespace Emberline
             Sfx3D.Ui();
         }
 
+        // -------------------------------------------------------------- flow
+
         private void Update()
         {
-            if (State != Phase.Playing || mission == null) return;
+            if (State != Phase.Playing) return;
             MissionTime += Time.deltaTime;
             if (BannerTimer > 0) BannerTimer -= Time.deltaTime;
 
             if (_waveActive && AliveEnemies == 0)
             {
                 _waveActive = false;
-                if (!Endless && WaveIndex + 1 >= mission.waves.Length)
+                if (!_endless && WaveIndex + 1 >= _waves.Length)
                 {
                     Win();
                     return;
                 }
                 _interWave = 2f;
-                _gates?.MendGate(); // resting between waves mends one Gate
-                if (_playerHealth != null && _playerT != null)
+                _gates?.MendGate();
+                if (_playerHealth != null && _playerT != null && ModeNow != LaunchMode.Duel)
                 {
                     _playerHealth.Heal(35f);
                     FloatingText.Spawn(_playerT.position + Vector3.up * 2.3f, "+35",
@@ -162,35 +270,44 @@ namespace Emberline
         {
             WaveIndex++;
             _waveActive = true;
-            var kinds = WaveIndex < mission.waves.Length
-                ? mission.waves[WaveIndex].enemies
-                : EndlessWave(WaveIndex + 1);
-            var title = WaveIndex < mission.waves.Length
-                ? mission.waves[WaveIndex].title
-                : "THE MIST DEEPENS";
-            Announce($"WAVE {WaveIndex + 1} — {title}");
+            var kinds = _endless ? EndlessWave(WaveIndex + 4)
+                : _waves[Mathf.Min(WaveIndex, _waves.Length - 1)];
+
+            Announce(ModeNow switch
+            {
+                LaunchMode.Duel => CurrentDuel != null ? $"{CurrentDuel.name} — {CurrentDuel.title}" : "DUEL",
+                LaunchMode.Endless => $"WAVE {WaveIndex + 1} — THE MIST DEEPENS",
+                _ => WaveCount > 0 ? $"WAVE {WaveIndex + 1} / {WaveCount}" : $"WAVE {WaveIndex + 1}",
+            });
 
             foreach (var kind in kinds)
             {
                 var prefab = enemyPrefabs[(int)kind];
                 if (prefab == null) continue;
-                var edge = Random.Range(0, 4);
-                var p = edge switch
+                Vector3 p;
+                if (ModeNow == LaunchMode.Duel)
                 {
-                    0 => new Vector3(Random.Range(-arenaHalfExtents.x, arenaHalfExtents.x), 0, arenaHalfExtents.y - 0.5f),
-                    1 => new Vector3(Random.Range(-arenaHalfExtents.x, arenaHalfExtents.x), 0, -arenaHalfExtents.y + 0.5f),
-                    2 => new Vector3(-arenaHalfExtents.x + 0.5f, 0, Random.Range(-arenaHalfExtents.y, arenaHalfExtents.y)),
-                    _ => new Vector3(arenaHalfExtents.x - 0.5f, 0, Random.Range(-arenaHalfExtents.y, arenaHalfExtents.y)),
-                };
+                    p = new Vector3(0, 0, 5f); // duelists enter face to face
+                }
+                else
+                {
+                    var edge = Random.Range(0, 4);
+                    p = edge switch
+                    {
+                        0 => new Vector3(Random.Range(-arenaHalfExtents.x, arenaHalfExtents.x), 0, arenaHalfExtents.y - 0.5f),
+                        1 => new Vector3(Random.Range(-arenaHalfExtents.x, arenaHalfExtents.x), 0, -arenaHalfExtents.y + 0.5f),
+                        2 => new Vector3(-arenaHalfExtents.x + 0.5f, 0, Random.Range(-arenaHalfExtents.y, arenaHalfExtents.y)),
+                        _ => new Vector3(arenaHalfExtents.x - 0.5f, 0, Random.Range(-arenaHalfExtents.y, arenaHalfExtents.y)),
+                    };
+                }
                 Instantiate(prefab, p, Quaternion.identity);
             }
         }
 
-        /// <summary>Scaling composition for the post-victory Endless Trial.</summary>
         private static EnemyKind[] EndlessWave(int n)
         {
             var list = new System.Collections.Generic.List<EnemyKind>();
-            var tier = n - 4; // waves past the authored mission
+            var tier = n - 4;
             for (var i = 0; i < Mathf.Min(7, 3 + tier / 2); i++) list.Add(EnemyKind.Bandit);
             for (var i = 0; i < Mathf.Min(4, 1 + tier / 3); i++) list.Add(EnemyKind.Ranged);
             for (var i = 0; i < Mathf.Min(3, tier / 3); i++) list.Add(EnemyKind.Shade);
@@ -198,28 +315,21 @@ namespace Emberline
             return list.ToArray();
         }
 
-        public void StartEndless()
-        {
-            if (State != Phase.Won) return;
-            Endless = true;
-            State = Phase.Playing;
-            _playerHealth?.ResetFull();
-            _interWave = 1.5f;
-            Sfx3D.Ui();
-            Announce("ENDLESS TRIAL — HOW LONG CAN THE LANTERN BURN?");
-        }
-
         private void Win()
         {
             State = Phase.Won;
             Sfx3D.Win();
             var r = MissionResult();
-            NewRecord = r.score > BestScore;
-            if (NewRecord)
+            if (ModeNow == LaunchMode.Story && CurrentLevel != null)
             {
-                PlayerPrefs.SetInt("best_score", r.score);
-                PlayerPrefs.SetString("best_rank", r.rank);
-                PlayerPrefs.Save();
+                StarsEarned = r.rank is "S" or "A" ? 3 : r.rank == "B" ? 2 : 1;
+                Session.SaveStars(CurrentLevel.id, StarsEarned);
+                Session.StoryUnlocked = CurrentLevel.id + 1;
+            }
+            else if (ModeNow == LaunchMode.Duel && CurrentDuel != null)
+            {
+                Session.SaveDuelWin(CurrentDuel.id);
+                Session.DuelsUnlocked = CurrentDuel.id + 1;
             }
         }
 
@@ -228,7 +338,8 @@ namespace Emberline
             if (State is Phase.Won or Phase.Lost) return;
             State = Phase.Lost;
             Sfx3D.Lose();
-            if (Endless && WaveIndex + 1 > BestWave)
+            NewRecord = false;
+            if (_endless && WaveIndex + 1 > BestWave)
             {
                 PlayerPrefs.SetInt("best_wave", WaveIndex + 1);
                 PlayerPrefs.Save();
@@ -255,13 +366,6 @@ namespace Emberline
                     new Color(0.75f, 0.9f, 1f), 0.9f);
         }
 
-        public void Retry()
-        {
-            Time.timeScale = 1f;
-            SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
-        }
-
-        /// <summary>Same formula as the 2D prototype (tune together).</summary>
         public (string rank, int score) MissionResult()
         {
             var score = 1000f;
