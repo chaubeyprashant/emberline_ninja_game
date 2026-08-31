@@ -1,0 +1,6 @@
+<linker>
+  <!-- CreatePrimitive adds colliders reflectively at runtime; without this the
+       IL2CPP stripper removes them (nothing references collider types statically)
+       and every runtime primitive logs "class 'CapsuleCollider' doesn't exist". -->
+  <assembly fullname="UnityEngine.PhysicsModule" preserve="all" />
+</linker>

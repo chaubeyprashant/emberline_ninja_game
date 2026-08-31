@@ -1,0 +1,27 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7d40a0ecc0bd7474a8d0a6a32d38b9da, type: 3}
+  m_Name: RooftopRats
+  m_EditorClassIdentifier: Assembly-CSharp::Emberline.Missions.MissionDef
+  id: 1
+  missionName: ROOFTOP RATS
+  subtitle: Bandits raid the Yorune terraces at nightfall.
+  arenaSceneName: 
+  waves:
+  - title: ROOFTOP RATS
+    enemies: 00000000000000000000000000000000
+  - title: EYES IN THE MIST
+    enemies: 000000000000000000000000000000000100000001000000
+  - title: CORDS FOR HIRE
+    enemies: 00000000000000000000000000000000010000000100000001000000
+  - title: THE BANDIT CHIEF
+    enemies: 0200000000000000000000000000000001000000
