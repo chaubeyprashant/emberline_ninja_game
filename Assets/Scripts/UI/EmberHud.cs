@@ -346,7 +346,7 @@ namespace Emberline.UI
             UiKit.Label(_screenRoot, "LORE CODEX", 36, UiKit.Pale,
                 new Vector2(0.5f, 1f), new Vector2(0, -56), new Vector2(700, 50), display: true);
             UiKit.Label(_screenRoot, $"{StoryMemory.LoreCount}/6 ENTRIES — defeat a foe to learn its story",
-                18, UiKit.Dim, new Vector2(0.5f, 1f), new Vector2(0, -100), new Vector2(700, 26));
+                18, UiKit.Dim, new Vector2(0.5f, 1f), new Vector2(0, -62), new Vector2(700, 26));
 
             // Feats strip along the bottom.
             for (var f = 0; f < Feats.All.Count; f++)
@@ -1033,13 +1033,13 @@ namespace Emberline.UI
             _settingsRoot = UiKit.Group(_root, "Settings");
             UiKit.Img(_settingsRoot, null, new Color(0, 0, 0, 0.7f)).raycastTarget = true;
             var panel = UiKit.Rect(_settingsRoot, "Panel", new Vector2(0.5f, 0.5f),
-                Vector2.zero, new Vector2(560, 486));
+                Vector2.zero, new Vector2(560, 560));
             UiKit.Img(panel, UiKit.PanelSprite, new Color(0.1f, 0.105f, 0.14f, 0.98f), sliced: true);
             UiKit.Label(panel, "SETTINGS", 30, UiKit.Pale, new Vector2(0.5f, 1f),
                 new Vector2(0, -42), new Vector2(400, 40), display: true);
 
             Text sfxLabel = null, musicLabel = null, gfxLabel = null, diffLabel = null;
-            Text diffBlurb = null;
+            Text diffBlurb = null, fpsLabel = null;
             void Refresh()
             {
                 sfxLabel.text = $"SFX VOLUME   {Mathf.RoundToInt(Sfx3D.SfxVolume * 100)}%";
@@ -1047,6 +1047,9 @@ namespace Emberline.UI
                 gfxLabel.text = "GRAPHICS   " + GraphicsTier switch { 0 => "LOW", 1 => "MEDIUM", _ => "HIGH" };
                 if (diffLabel != null) diffLabel.text = "DIFFICULTY   " + Difficulty.Name;
                 if (diffBlurb != null) diffBlurb.text = Difficulty.Now.Blurb;
+                if (fpsLabel != null)
+                    fpsLabel.text = $"FRAME RATE   {PerfGovernor.GameplayFps} FPS"
+                                    + (PerfGovernor.ThermalStep > 0 ? "   (HOT)" : "");
             }
 
             void Row(float y, System.Func<Text> label, System.Action minus, System.Action plus)
@@ -1058,31 +1061,40 @@ namespace Emberline.UI
             }
 
             sfxLabel = UiKit.Label(panel, "", 20, UiKit.Pale, new Vector2(0.5f, 0.5f),
-                new Vector2(0, 116), new Vector2(280, 30));
-            Row(116, () => sfxLabel, () => Sfx3D.SfxVolume -= 0.1f, () => Sfx3D.SfxVolume += 0.1f);
+                new Vector2(0, 150), new Vector2(280, 30));
+            Row(150, () => sfxLabel, () => Sfx3D.SfxVolume -= 0.1f, () => Sfx3D.SfxVolume += 0.1f);
             musicLabel = UiKit.Label(panel, "", 20, UiKit.Pale, new Vector2(0.5f, 0.5f),
-                new Vector2(0, 52), new Vector2(280, 30));
-            Row(52, () => musicLabel, () => Sfx3D.MusicVolume -= 0.1f, () => Sfx3D.MusicVolume += 0.1f);
+                new Vector2(0, 88), new Vector2(280, 30));
+            Row(88, () => musicLabel, () => Sfx3D.MusicVolume -= 0.1f, () => Sfx3D.MusicVolume += 0.1f);
             gfxLabel = UiKit.Label(panel, "", 20, UiKit.Pale, new Vector2(0.5f, 0.5f),
-                new Vector2(0, -12), new Vector2(280, 30));
-            Row(-12, () => gfxLabel, () => GraphicsTier--, () => GraphicsTier++);
+                new Vector2(0, 26), new Vector2(280, 30));
+            Row(26, () => gfxLabel, () => GraphicsTier--, () => GraphicsTier++);
 
             // Difficulty scales enemies as they spawn, so changing it mid-mission
             // would only affect the next wave — confusing at exactly the moment a
             // player reaches for it. Editable from the menu; read-only in the pause
             // overlay, where LEAVE MISSION is the way to act on it.
+            // Frame rate. The single biggest lever on how warm the phone gets, so
+            // it sits in the same list as the other comfort settings rather than
+            // buried somewhere "advanced".
+            fpsLabel = UiKit.Label(panel, "", 20, UiKit.Pale, new Vector2(0.5f, 0.5f),
+                new Vector2(0, -110), new Vector2(320, 30));
+            Row(-110, () => fpsLabel,
+                () => PerfGovernor.GameplayFps = 30,
+                () => PerfGovernor.GameplayFps = 60);
+
             var inPlay = _gm != null && _gm.State == GameManager.Phase.Playing;
             diffLabel = UiKit.Label(panel, "", 20,
                 inPlay ? UiKit.Dim : UiKit.Pale, new Vector2(0.5f, 0.5f),
-                new Vector2(0, -76), new Vector2(300, 30));
+                new Vector2(0, -38), new Vector2(300, 30));
             if (inPlay)
                 diffBlurb = UiKit.Label(panel, "", 14, new Color(1, 1, 1, 0.35f),
-                    new Vector2(0.5f, 0.5f), new Vector2(0, -100), new Vector2(460, 22));
+                    new Vector2(0.5f, 0.5f), new Vector2(0, -62), new Vector2(460, 22));
             else
             {
-                Row(-76, () => diffLabel, () => Difficulty.Step(-1), () => Difficulty.Step(1));
+                Row(-38, () => diffLabel, () => Difficulty.Step(-1), () => Difficulty.Step(1));
                 diffBlurb = UiKit.Label(panel, "", 14, UiKit.Sen,
-                    new Vector2(0.5f, 0.5f), new Vector2(0, -104), new Vector2(460, 22));
+                    new Vector2(0.5f, 0.5f), new Vector2(0, -66), new Vector2(460, 22));
             }
             Refresh();
 

@@ -173,8 +173,12 @@ namespace Emberline
 
         private void Awake()
         {
-            Application.targetFrameRate = 60;
+            // The frame cap is no longer a constant. PerfGovernor picks it from
+            // context (only live gameplay earns the full rate) and from the
+            // device's own thermal status. Pinning 60 here meant a full 3D arena
+            // was redrawn sixty times a second behind every menu and pause screen.
             QualitySettings.vSyncCount = 0;
+            PerfGovernor.Ensure(gameObject);
             QualitySettings.shadowDistance = 28f;
             // Statics survive scene loads but the objects they point at do not, so
             // every cross-scene cache is reset here, once, before anything spawns.
