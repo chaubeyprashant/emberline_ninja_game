@@ -34,7 +34,7 @@ namespace Emberline.UI
             ft.gameObject.SetActive(true);
             ft.transform.position = pos;
             ft._tm.text = text;
-            ft._tm.characterSize = 0.045f * size;
+            ft._tm.characterSize = 0.03f * size; // a readout, not a headline
             ft._color = color;
             ft._life = 0.7f;
         }

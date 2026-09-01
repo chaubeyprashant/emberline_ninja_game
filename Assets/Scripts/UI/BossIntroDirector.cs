@@ -1,5 +1,6 @@
 using System.Collections;
 using UnityEngine;
+using TMPro;
 using UnityEngine.UI;
 using Emberline.Core;
 using Emberline.Enemies;
@@ -29,7 +30,7 @@ namespace Emberline.UI
         private EnemyWeapon _weapon = EnemyWeapon.None;
 
         private Canvas _canvas;
-        private Text _nameText, _titleText, _tauntText;
+        private TMP_Text _nameText, _titleText, _tauntText;
         private RectTransform _barTop, _barBottom;
         private CanvasGroup _cardGroup;
 
@@ -84,8 +85,8 @@ namespace Emberline.UI
             _canvas.sortingOrder = 500;
             var scaler = gameObject.AddComponent<CanvasScaler>();
             scaler.uiScaleMode = CanvasScaler.ScaleMode.ScaleWithScreenSize;
-            scaler.referenceResolution = new Vector2(1280, 720);
-            scaler.matchWidthOrHeight = 1f;
+            scaler.referenceResolution = new Vector2(1600, 720);
+            scaler.matchWidthOrHeight = 0.5f; // same rule as the HUD canvas
 
             _barTop = Bar(new Vector2(0, 1), new Vector2(1, 1), new Vector2(0.5f, 1f));
             _barBottom = Bar(new Vector2(0, 0), new Vector2(1, 0), new Vector2(0.5f, 0f));
@@ -103,18 +104,13 @@ namespace Emberline.UI
             _cardGroup.alpha = 0f;
 
             var panel = card.AddComponent<Image>();
-            var sprite = Resources.Load<Sprite>("Art/UI/Borders/panel-000");
-            if (sprite != null)
-            {
-                panel.sprite = sprite;
-                panel.type = Image.Type.Sliced;
-                panel.color = new Color(0.14f, 0.10f, 0.10f, 0.88f);
-            }
-            else panel.color = new Color(0.05f, 0.05f, 0.08f, 0.85f);
+            panel.color = new Color(UiKit.Panel.r, UiKit.Panel.g, UiKit.Panel.b, 0.86f);
+            UiKit.Hairline(cardRt, new Vector2(0, 1), 0.18f);
+            UiKit.Hairline(cardRt, new Vector2(0, 0), 0.08f);
 
-            var display = Resources.Load<Font>("Art/Fonts/Shojumaru-Regular");
-            var body = Resources.Load<Font>("Art/Fonts/Rajdhani-Medium");
-            var fallback = Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf");
+            var display = UiKit.DisplayFont;
+            var body = UiKit.BodyFont;
+            var fallback = UiKit.HeadingFont;
 
             // "GORO — GREATAXE": the card says who and what they swing.
             var weaponName = EmberHud.WeaponLabel(_weapon);
@@ -141,7 +137,7 @@ namespace Emberline.UI
                 20, new Color(0.9f, 0.89f, 0.86f), new Vector2(0, 8));
             _tauntText = MakeText(card.transform, "", body != null ? body : fallback,
                 19, new Color(0.78f, 0.8f, 0.84f), new Vector2(0, -30));
-            _tauntText.fontStyle = FontStyle.Italic;
+            _tauntText.fontStyle = FontStyles.Italic;
         }
 
         private RectTransform Bar(Vector2 min, Vector2 max, Vector2 pivot)
@@ -159,7 +155,7 @@ namespace Emberline.UI
             return rt;
         }
 
-        private static Text MakeText(Transform parent, string content, Font font,
+        private static TMP_Text MakeText(Transform parent, string content, TMP_FontAsset font,
             int size, Color color, Vector2 pos)
         {
             var go = new GameObject("Text", typeof(RectTransform));
@@ -169,13 +165,15 @@ namespace Emberline.UI
             rt.anchorMax = new Vector2(1, 0.5f);
             rt.anchoredPosition = pos;
             rt.sizeDelta = new Vector2(-40, 46);
-            var text = go.AddComponent<Text>();
-            text.text = content;
+            var text = go.AddComponent<TextMeshProUGUI>();
+            text.text = UiKit.Clean(content);
             text.font = font;
             text.fontSize = size;
             text.color = color;
-            text.alignment = TextAnchor.MiddleCenter;
-            text.horizontalOverflow = HorizontalWrapMode.Overflow;
+            text.alignment = TextAlignmentOptions.Center;
+            text.enableWordWrapping = false;
+            text.overflowMode = TextOverflowModes.Overflow;
+            text.characterSpacing = font == UiKit.DisplayFont ? 4f : 1.5f;
             text.raycastTarget = false;
             return text;
         }

@@ -36,6 +36,24 @@ namespace Emberline
         public float BannerTimer { get; private set; }
         public int StarsEarned { get; private set; }
         public int ShardsEarned { get; private set; }
+
+        /// <summary>Enemies killed this mission. Reset when a mission configures.</summary>
+        public int Kills { get; private set; }
+
+        /// <summary>Shards banked from optional objectives, for the results screen.</summary>
+        public int BonusShardsEarned => _director?.BonusShards ?? 0;
+
+        /// <summary>Optional stages in the plan and how many were completed.</summary>
+        public (int done, int total) OptionalObjectives
+        {
+            get
+            {
+                if (CurrentPlan == null) return (0, 0);
+                var total = 0;
+                foreach (var st in CurrentPlan.stages) if (st.optional) total++;
+                return (_director?.OptionalDone ?? 0, total);
+            }
+        }
         public int DailyShards { get; private set; }
 
         /// <summary>Shards paid by the weekly challenge on this result, or 0.</summary>
@@ -247,6 +265,7 @@ namespace Emberline
 
         private void ConfigureFromSession()
         {
+            Kills = 0;
             switch (Session.Mode)
             {
                 case LaunchMode.Story:
@@ -788,6 +807,7 @@ namespace Emberline
 
         public void OnEnemyKilled(bool boss)
         {
+            Kills++;
             if (_endless) Endless.RunStats.OnKill();
             if (boss) _rig?.Shake(8f, 0.4f);
             // The kill that empties a wave gets a beat of slow motion. Checked here

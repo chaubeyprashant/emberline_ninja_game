@@ -1,4 +1,5 @@
 using UnityEngine;
+using TMPro;
 using UnityEngine.UI;
 using Emberline.Core;
 
@@ -15,8 +16,8 @@ namespace Emberline.UI
         private string[] _lines;
         private int _index;
         private float _chars;
-        private Text _nameText, _bodyText, _counter;
-        private Text _portraitInitial;
+        private TMP_Text _nameText, _bodyText, _counter;
+        private TMP_Text _portraitInitial;
         private Image _portraitFrame;
         private System.Action _onDone;
         private bool _done;
@@ -46,7 +47,7 @@ namespace Emberline.UI
 
         private void Build(RectTransform rt)
         {
-            var panel = UiKit.Img(rt, UiKit.PanelSprite, new Color(0.08f, 0.085f, 0.12f, 0.96f), sliced: true);
+            var panel = UiKit.Surface(rt, 0.92f);
             panel.raycastTarget = true;
             var btn = rt.gameObject.AddComponent<Button>();
             btn.targetGraphic = panel;
@@ -55,8 +56,8 @@ namespace Emberline.UI
 
             var pFrame = UiKit.Rect(rt, "Portrait", new Vector2(0f, 0.5f), new Vector2(78, 0),
                 new Vector2(96, 96));
-            _portraitFrame = UiKit.Img(pFrame, UiKit.PanelThin ?? UiKit.PanelSprite,
-                UiKit.Panel, sliced: true);
+            _portraitFrame = UiKit.Img(pFrame, null, UiKit.PanelHi);
+            UiKit.Hairline(pFrame, new Vector2(0, 0), 0.35f);
             _portraitInitial = UiKit.Label(pFrame, "?", 44, UiKit.Pale, new Vector2(0.5f, 0.5f),
                 Vector2.zero, new Vector2(90, 90), display: true);
 
@@ -64,7 +65,7 @@ namespace Emberline.UI
                 new Vector2(320, -26), new Vector2(400, 26), align: TextAnchor.MiddleLeft);
             _bodyText = UiKit.Paragraph(rt, "", 19, new Color(0.88f, 0.89f, 0.9f),
                 new Vector2(0.5f, 0.5f), new Vector2(60, -12), new Vector2(660, 90));
-            _bodyText.alignment = TextAnchor.UpperLeft;
+            _bodyText.alignment = TextAlignmentOptions.TopLeft;
             _counter = UiKit.Label(rt, "", 14, UiKit.Dim, new Vector2(1f, 0f),
                 new Vector2(-52, 18), new Vector2(80, 20));
 

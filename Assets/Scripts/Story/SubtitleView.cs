@@ -1,5 +1,6 @@
 using Emberline.UI;
 using UnityEngine;
+using TMPro;
 using UnityEngine.UI;
 
 namespace Emberline.Story
@@ -11,7 +12,7 @@ namespace Emberline.Story
     /// </summary>
     public class SubtitleView : MonoBehaviour
     {
-        private Text _speaker, _line;
+        private TMP_Text _speaker, _line;
         private CanvasGroup _group;
         private float _fade;
 

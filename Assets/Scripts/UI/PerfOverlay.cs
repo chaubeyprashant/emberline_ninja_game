@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using Unity.Profiling;
 using UnityEngine;
+using TMPro;
 using UnityEngine.UI;
 using Emberline.Enemies;
 
@@ -43,7 +44,7 @@ namespace Emberline.UI
         private float _refreshT, _worstMs, _sinceReset;
         private int _hitches;
         private bool _built, _visible;
-        private Text _text;
+        private TMP_Text _text;
         private Canvas _canvas;
         private GameManager _gm;
 

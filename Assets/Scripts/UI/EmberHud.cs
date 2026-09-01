@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
+using TMPro;
 using UnityEngine.UI;
 using Emberline.Core;
 using Emberline.Enemies;
@@ -48,7 +49,7 @@ namespace Emberline.UI
         private Image _vignette;
         private float _vignetteT;
         private int _waveStamp = -1;
-        private Text _hpLabel, _bossLabel, _waveLabel, _comboText, _objectiveText, _bannerText, _hintText;
+        private TMP_Text _hpLabel, _bossLabel, _waveLabel, _comboText, _objectiveText, _bannerText, _hintText;
         private Image _surgeGlow;
         private CanvasGroup _bannerGroup, _comboGroup;
         private readonly List<Image> _gateIcons = new();
@@ -149,8 +150,11 @@ namespace Emberline.UI
             _canvas.sortingOrder = 100;
             var scaler = gameObject.AddComponent<CanvasScaler>();
             scaler.uiScaleMode = CanvasScaler.ScaleMode.ScaleWithScreenSize;
-            scaler.referenceResolution = new Vector2(1280, 720);
-            scaler.matchWidthOrHeight = 1f;
+            // Balanced match, not height-only. Height-only kept a 20:9 phone's
+            // extra width unscaled, so anything placed by pixel offset drifted or
+            // clipped on 4:3. Reference 1600x720 is the 20:9 device at 1.5x.
+            scaler.referenceResolution = new Vector2(1600, 720);
+            scaler.matchWidthOrHeight = 0.5f;
             gameObject.AddComponent<GraphicRaycaster>();
             _root = (RectTransform)transform;
 
@@ -203,6 +207,14 @@ namespace Emberline.UI
             _embers.Clear();
             _gateIcons.Clear();
             _screenRoot = UiKit.Group(_root, "Screen_" + s);
+
+            // Opaque screens sit on a still of the arena and the camera stops.
+            // The HUD is the live game; the briefing and results want the frozen
+            // scene too, just darker.
+            var backdrop = MenuBackdrop.Instance;
+            if (s == Screen.Hud) backdrop?.Hide();
+            else backdrop?.Show(_screenRoot, s is Screen.Briefing or Screen.Result ? 0.62f : 0.72f);
+
             switch (s)
             {
                 case Screen.MenuRoot: BuildMenuRoot(); break;
@@ -219,22 +231,24 @@ namespace Emberline.UI
                 case Screen.Hud: BuildHud(); break;
                 case Screen.Result: BuildResult(); break;
             }
+            if (s != Screen.Hud) UiKit.Enter(_screenRoot);
         }
 
         // ------------------------------------------------------------- helpers
 
-        private void Dim(float a) =>
-            UiKit.Img(UiKit.Group(_screenRoot, "Dim"), null, new Color(UiKit.Ink.r, UiKit.Ink.g, UiKit.Ink.b, a));
+        /// <summary>Kept for call-site compatibility; the backdrop shade now does this.</summary>
+        private void Dim(float a) { }
 
         private void BuildEmberLayer()
         {
             _emberLayer = UiKit.Group(_screenRoot, "Embers");
-            for (var i = 0; i < 14; i++)
+            // Eight, small, faint: an ember drift is atmosphere, not confetti.
+            for (var i = 0; i < 8; i++)
             {
                 var e = UiKit.Rect(_emberLayer, "e", new Vector2(0.5f, 0f),
-                    new Vector2(Random.Range(-620, 620), Random.Range(0, 720)),
-                    Vector2.one * Random.Range(4f, 10f));
-                var img = UiKit.Img(e, UiKit.Circle, new Color(1f, 0.55f, 0.3f, Random.Range(0.2f, 0.6f)));
+                    new Vector2(Random.Range(-760, 760), Random.Range(0, 720)),
+                    Vector2.one * Random.Range(2f, 5f));
+                var img = UiKit.Img(e, UiKit.Circle, new Color(1f, 0.55f, 0.3f, Random.Range(0.12f, 0.3f)));
                 img.raycastTarget = false;
                 _embers.Add(e);
             }
@@ -249,7 +263,7 @@ namespace Emberline.UI
                 var p = e.anchoredPosition;
                 p.y += (12f + i * 3f) * Time.deltaTime;
                 p.x += Mathf.Sin(Time.time * (0.6f + i * 0.13f) + i) * 18f * Time.deltaTime;
-                if (p.y > 740) { p.y = -10; p.x = Random.Range(-620, 620); }
+                if (p.y > 740) { p.y = -10; p.x = Random.Range(-760, 760); }
                 e.anchoredPosition = p;
             }
         }
@@ -258,85 +272,91 @@ namespace Emberline.UI
 
         private void BuildMenuRoot()
         {
-            Dim(0.55f);
             BuildEmberLayer();
-            UiKit.Label(_screenRoot, "AN EMBERLINE STORY", 16, UiKit.Ember,
-                new Vector2(0.5f, 1f), new Vector2(0, -78), new Vector2(600, 30));
-            UiKit.Label(_screenRoot, "THE NIGHT OF YORUNE", 46, UiKit.Pale,
-                new Vector2(0.5f, 1f), new Vector2(0, -136), new Vector2(900, 70), display: true);
 
-            // Three mode cards.
-            var modes = new (string title, string sub, System.Action go)[]
+            // Left column on a cinematic plate. Sparse by design: a title, a
+            // hairline, seven lines. Everything else the old menu shouted —
+            // weapon line, finish line, daily strip, three mode cards — lives one
+            // tap deeper where it is wanted.
+            var col = UiKit.Rect(_screenRoot, "Column", new Vector2(0, 1), new Vector2(104, 0),
+                new Vector2(520, 720), new Vector2(0, 1));
+
+            UiKit.Kicker(col, "AN EMBERLINE STORY", new Vector2(0, 1), new Vector2(0, -78),
+                new Vector2(520, 20), align: TextAnchor.MiddleLeft);
+            UiKit.Label(col, "EMBERLINE", 58, UiKit.Pale, new Vector2(0, 1), new Vector2(-4, -128),
+                new Vector2(520, 72), display: true, align: TextAnchor.MiddleLeft);
+            UiKit.Accent(col, new Vector2(0, 1), new Vector2(18, -172), 36);
+
+            var next = Mathf.Clamp(Session.StoryUnlocked - 1, 0, Session.Story.Length - 1);
+            var cleared = Session.StoryUnlocked - 1;
+            var items = new (string label, string sub, System.Action go)[]
             {
-                ($"STORY", $"{Session.StoryUnlocked - 1}/{Session.Story.Length} CLEARED",
+                ("CONTINUE", cleared >= Session.Story.Length
+                    ? "The night is over — replay any chapter"
+                    : $"{Session.Story[next].name.ToLowerInvariant()} · {Session.ActName(Session.Story[next].id)}",
+                    () => _gm.LaunchStory(next)),
+                ("STORY", $"{Mathf.Clamp(cleared, 0, Session.Story.Length)} of {Session.Story.Length} cleared",
                     () => SetScreen(Screen.Story)),
-                ("FIGHT", "DUELS", () => SetScreen(Screen.Fight)),
-                ("MARCH", Endless.RunStats.BestScore > 0
-                        ? $"BEST {Endless.RunStats.BestScore} PTS"
-                        : "THE ROAD NORTH",
+                ("DUELS", "One life. Full strength.", () => SetScreen(Screen.Fight)),
+                ("THE ROAD NORTH", Endless.RunStats.BestScore > 0
+                    ? $"Best {Endless.RunStats.BestScore:N0} pts" : "Seven countries, no end",
                     () => SetScreen(Screen.March)),
+                ("THE FORGE", $"{Core.Wallet.Ryo:N0} ryo", () => SetScreen(Screen.Forge)),
+                ("SKILLS", $"{SkillTree.Shards} shards · {SkillTree.OwnedCount}/{SkillTree.Nodes.Count} learned",
+                    () => SetScreen(Screen.Skills)),
+                ("SETTINGS", Difficulty.Name.ToLowerInvariant(), ToggleSettings),
             };
-            for (var i = 0; i < 3; i++)
+
+            var y = -212f;
+            for (var i = 0; i < items.Length; i++)
             {
-                var (title, sub, go) = modes[i];
-                var x = (i - 1) * 320f;
-                var card = UiKit.Rect(_screenRoot, "Card", new Vector2(0.5f, 0.5f),
-                    new Vector2(x, -10), new Vector2(280, 220));
-                var img = UiKit.Img(card, UiKit.PanelSprite, UiKit.Panel, sliced: true);
-                img.raycastTarget = true;
-                var btn = card.gameObject.AddComponent<Button>();
-                btn.targetGraphic = img;
-                var action = go;
-                btn.onClick.AddListener(() => { Sfx3D.Confirm(); action(); });
-                UiKit.Label(card, title, 34, UiKit.EmberBright, new Vector2(0.5f, 0.5f),
-                    new Vector2(0, 24), new Vector2(260, 44), display: true);
-                UiKit.Label(card, sub, 18, UiKit.Dim, new Vector2(0.5f, 0.5f),
-                    new Vector2(0, -28), new Vector2(260, 26));
+                var (label, sub, go) = items[i];
+                MenuRow(col, label, sub, y, i == 0, go);
+                y -= 54f;
             }
 
-            UiKit.Label(_screenRoot,
-                $"★ {Session.TotalStars} / {Session.Story.Length * 3}      ◆ {SkillTree.Shards} SHARDS" +
-                $"      SKILLS {SkillTree.OwnedCount}/{SkillTree.Nodes.Count}" +
-                $"      {Difficulty.Name}", 21,
-                UiKit.EmberBright, new Vector2(0.5f, 0f), new Vector2(0, 158), new Vector2(900, 30));
+            // Secondary, small, bottom-left: the reference pages.
+            UiKit.MakeButton(_screenRoot, "RENZO", new Vector2(0, 0), new Vector2(150, 40),
+                new Vector2(96, 44), () => SetScreen(Screen.Bio), 12);
+            UiKit.MakeButton(_screenRoot, "CODEX", new Vector2(0, 0), new Vector2(254, 40),
+                new Vector2(96, 44), () => SetScreen(Screen.Codex), 12);
+            UiKit.MakeButton(_screenRoot, "ARMOURY", new Vector2(0, 0), new Vector2(368, 40),
+                new Vector2(112, 44), () => SetScreen(Screen.Weapons), 12);
 
-            // Weapon selector — opens the full armoury rather than blind-cycling,
-            // now that weapons differ in kind and not just in numbers.
-            UiKit.MakeButton(_screenRoot, WeaponLine(), new Vector2(0.5f, 0f),
-                new Vector2(0, 96), new Vector2(430, 56), () => SetScreen(Screen.Weapons), 18);
+            UiKit.Label(_screenRoot, "v" + Application.version, 11, UiKit.Faint, new Vector2(1, 0),
+                new Vector2(-40, 30), new Vector2(200, 16), align: TextAnchor.MiddleRight);
+        }
 
-            // Blade finish (cosmetic skin) cycler.
-            Text finishLabel = null;
-            var finishBtn = UiKit.MakeButton(_screenRoot, "", new Vector2(0.5f, 0f),
-                new Vector2(0, 40), new Vector2(430, 50), () =>
-                {
-                    BladeFinish.CycleNext();
-                    finishLabel.text = FinishLine();
-                }, 16);
-            finishLabel = finishBtn.GetComponentInChildren<Text>();
-            finishLabel.text = FinishLine();
+        /// <summary>
+        /// One menu line: a label, a one-line hint beneath, a hairline. The row
+        /// is the tap target; there is no box. The primary row carries the accent.
+        /// </summary>
+        private void MenuRow(RectTransform col, string label, string sub, float y, bool primary,
+            System.Action go)
+        {
+            var rt = UiKit.Rect(col, "Row_" + label, new Vector2(0, 1), new Vector2(0, y),
+                new Vector2(440, 52), new Vector2(0, 1));
+            var hit = UiKit.Img(rt, null, new Color(1, 1, 1, 0.001f));
+            hit.raycastTarget = true;
+            var btn = rt.gameObject.AddComponent<Button>();
+            btn.targetGraphic = hit;
+            btn.transition = Selectable.Transition.None;
+            btn.onClick.AddListener(() => { Sfx3D.Confirm(); go?.Invoke(); });
+            var punch = rt.gameObject.AddComponent<UiKit.ButtonPunch>();
+            var trig = rt.gameObject.AddComponent<EventTrigger>();
+            var down = new EventTrigger.Entry { eventID = EventTriggerType.PointerDown };
+            down.callback.AddListener(_ => punch.Punch());
+            trig.triggers.Add(down);
 
-            // Daily challenge strip.
-            var daily = DailyChallenge.Today;
-            UiKit.Label(_screenRoot,
-                DailyChallenge.DoneToday
-                    ? "DAILY — COMPLETE ✓"
-                    : $"DAILY — {daily.desc}  (◆ {daily.reward})",
-                16, DailyChallenge.DoneToday ? new Color(0.5f, 0.85f, 0.55f) : UiKit.Dim,
-                new Vector2(0.5f, 0f), new Vector2(0, 200), new Vector2(900, 24));
-
-            if (Session.NewGamePlus)
-                UiKit.Label(_screenRoot, "NEW GAME+  —  THE MARSH REMEMBERS", 15, UiKit.Ember,
-                    new Vector2(0.5f, 1f), new Vector2(0, -176), new Vector2(700, 22));
-
-            UiKit.MakeButton(_screenRoot, "RENZO", new Vector2(0f, 0f), new Vector2(110, 52),
-                new Vector2(150, 58), () => SetScreen(Screen.Bio), 18, display: true);
-            UiKit.MakeButton(_screenRoot, "SKILLS", new Vector2(0f, 0f), new Vector2(275, 52),
-                new Vector2(150, 58), () => SetScreen(Screen.Skills), 18, display: true);
-            UiKit.MakeButton(_screenRoot, "CODEX", new Vector2(0f, 0f), new Vector2(440, 52),
-                new Vector2(150, 58), () => SetScreen(Screen.Codex), 18, display: true);
-            UiKit.MakeButton(_screenRoot, "SETTINGS", new Vector2(1f, 0f), new Vector2(-130, 52),
-                new Vector2(190, 58), ToggleSettings, 20);
+            var t = UiKit.Label(rt, label, primary ? 22 : 19, primary ? UiKit.EmberBright : UiKit.Pale,
+                new Vector2(0, 1), new Vector2(18, -14), new Vector2(420, 26), align: TextAnchor.MiddleLeft);
+            t.characterSpacing = 5f;
+            if (!string.IsNullOrEmpty(sub))
+                UiKit.Label(rt, UiKit.Clean(sub), 12, UiKit.Dim, new Vector2(0, 1), new Vector2(18, -37),
+                    new Vector2(420, 16), align: TextAnchor.MiddleLeft);
+            UiKit.Hairline(rt, new Vector2(0, 0), 0.08f);
+            if (primary) UiKit.Img(UiKit.Rect(rt, "Mark", new Vector2(0, 0.5f), new Vector2(4, 4),
+                new Vector2(3, 22)), UiKit.White, UiKit.Ember);
         }
 
         private void BuildCodex()
@@ -362,7 +382,7 @@ namespace Emberline.UI
                     new Vector2(0.5f, 0.5f), new Vector2(0, 10), new Vector2(180, 20));
                 UiKit.Paragraph(chip, feat.desc, 10, has ? UiKit.Dim : new Color(1, 1, 1, 0.18f),
                     new Vector2(0.5f, 0.5f), new Vector2(0, -16), new Vector2(178, 30))
-                    .alignment = TextAnchor.MiddleCenter;
+                    .alignment = TextAlignmentOptions.Center;
             }
 
             UiKit.MakeButton(_screenRoot, "ARMS OF THE ROAD", new Vector2(1f, 1f),
@@ -472,10 +492,10 @@ namespace Emberline.UI
         {
             Dim(0.85f);
             BuildEmberLayer();
-            UiKit.Label(_screenRoot, "THE ARMOURY", 36, UiKit.Pale,
-                new Vector2(0.5f, 1f), new Vector2(0, -52), new Vector2(700, 50), display: true);
-            UiKit.Label(_screenRoot, "Weapons unlock as the story opens up", 17, UiKit.Dim,
-                new Vector2(0.5f, 1f), new Vector2(0, -94), new Vector2(700, 24));
+            ScreenHeader("THE ARMOURY", "WEAPONS");
+            UiKit.Label(_screenRoot, "WEAPONS UNLOCK AS THE STORY OPENS UP", 11, UiKit.Dim,
+                new Vector2(1f, 1f), new Vector2(-104, -86), new Vector2(500, 18),
+                align: TextAnchor.MiddleRight).characterSpacing = 3f;
 
             var all = Loadout.All;
             var current = Loadout.Current;
@@ -642,10 +662,10 @@ namespace Emberline.UI
         {
             Dim(0.8f);
             BuildEmberLayer();
-            UiKit.Label(_screenRoot, "EMBER SKILLS", 36, UiKit.Pale,
-                new Vector2(0.5f, 1f), new Vector2(0, -56), new Vector2(700, 50), display: true);
-            var shardLabel = UiKit.Label(_screenRoot, $"◆ {SkillTree.Shards} EMBER SHARDS", 21,
-                UiKit.EmberBright, new Vector2(0.5f, 1f), new Vector2(0, -102), new Vector2(500, 28));
+            ScreenHeader("SKILLS", "EMBER SKILLS");
+            UiKit.Label(_screenRoot, $"{SkillTree.Shards} SHARDS TO SPEND", 12, UiKit.EmberBright,
+                new Vector2(1f, 1f), new Vector2(-104, -86), new Vector2(400, 18),
+                align: TextAnchor.MiddleRight).characterSpacing = 3f;
 
             var byBranch = new Dictionary<string, int>();
             foreach (var node in SkillTree.Nodes)
@@ -672,7 +692,7 @@ namespace Emberline.UI
                     new Vector2(0.5f, 1f), new Vector2(0, -22), new Vector2(330, 26), display: true);
                 var descText = UiKit.Paragraph(card, node.desc, 15, UiKit.Dim,
                     new Vector2(0.5f, 0.5f), new Vector2(0, -6), new Vector2(320, 40));
-                descText.alignment = TextAnchor.MiddleCenter;
+                descText.alignment = TextAlignmentOptions.Center;
                 if (owned)
                 {
                     UiKit.Label(card, "LEARNED", 15, UiKit.EmberBright,
@@ -690,7 +710,7 @@ namespace Emberline.UI
                         if (SkillTree.TryBuy(n)) { Sfx3D.Confirm(); SetScreen(Screen.Skills); }
                         else Sfx3D.Error();
                     });
-                    UiKit.Label(card, $"◆ {node.cost}", 16,
+                    UiKit.Label(card, $"{node.cost} SHARDS", 11,
                         SkillTree.Shards >= node.cost ? UiKit.EmberBright : UiKit.Dim,
                         new Vector2(0.5f, 0f), new Vector2(0, 16), new Vector2(200, 22));
                 }
@@ -700,88 +720,132 @@ namespace Emberline.UI
 
         private void BuildStorySelect()
         {
-            Dim(0.62f);
             BuildEmberLayer();
-            UiKit.Label(_screenRoot, "STORY — THE NIGHT OF YORUNE", 30, UiKit.Pale,
-                new Vector2(0.5f, 1f), new Vector2(0, -60), new Vector2(900, 44), display: true);
-            UiKit.Label(_screenRoot,
-                "ACT I · THE LANTERN FALLS      ACT II · INTO THE MARSH      ACT III · THE SERPENT'S COIL",
-                16, UiKit.Ember, new Vector2(0.5f, 1f), new Vector2(0, -108), new Vector2(1100, 26));
+            ScreenHeader("STORY", "THE NIGHT OF YORUNE");
 
-            const int cols = 5;
-            for (var i = 0; i < Session.Story.Length; i++)
+            // Three act columns. Each mission is a row: number, name, one line of
+            // story, its stars and its state. The plate behind is the arena the
+            // act is fought in — the environment does the work a card border did.
+            var acts = new System.Collections.Generic.List<string>();
+            foreach (var l in Session.Story)
             {
-                var level = Session.Story[i];
-                var col = i % cols;
-                var row = i / cols;
-                var pos = new Vector2((col - 2) * 205f, 60f - row * 165f);
-                var card = UiKit.Rect(_screenRoot, "Level" + level.id, new Vector2(0.5f, 0.5f),
-                    pos, new Vector2(185, 140));
-                var unlocked = level.id <= Session.StoryUnlocked;
-                var img = UiKit.Img(card, UiKit.PanelSprite,
-                    unlocked ? UiKit.Panel : new Color(0.07f, 0.075f, 0.1f), sliced: true);
-                img.raycastTarget = true;
-                if (unlocked)
+                var a = Session.ActName(l.id);
+                if (!acts.Contains(a)) acts.Add(a);
+            }
+            var colW = 440f;
+            var x0 = -(acts.Count - 1) * 0.5f * (colW + 24f);
+            for (var c = 0; c < acts.Count; c++)
+            {
+                var act = acts[c];
+                var col = UiKit.Rect(_screenRoot, "Act" + c, new Vector2(0.5f, 1f),
+                    new Vector2(x0 + c * (colW + 24f), -132), new Vector2(colW, 480), new Vector2(0.5f, 1f));
+                UiKit.Kicker(col, $"ACT {ToRoman(c + 1)}", new Vector2(0, 1), new Vector2(8, -10),
+                    new Vector2(200, 18), align: TextAnchor.MiddleLeft);
+                var actTitle = act.Contains("—") ? act.Substring(act.IndexOf('—') + 1).Trim() : act;
+                UiKit.Label(col, actTitle.ToUpperInvariant(), 16, UiKit.Pale, new Vector2(0, 1),
+                    new Vector2(8, -34), new Vector2(colW - 16, 22), align: TextAnchor.MiddleLeft)
+                    .characterSpacing = 3f;
+                UiKit.Hairline(col, new Vector2(0, 1), 0.12f).rectTransform.anchoredPosition = new Vector2(0, -52);
+
+                var y = -66f;
+                foreach (var level in Session.Story)
                 {
-                    var idx = i;
-                    var btn = card.gameObject.AddComponent<Button>();
-                    btn.targetGraphic = img;
-                    btn.onClick.AddListener(() => { Sfx3D.Confirm(); _gm.LaunchStory(idx); });
-                }
-                UiKit.Label(card, level.id.ToString(), 30, unlocked ? UiKit.EmberBright : UiKit.Dim,
-                    new Vector2(0.5f, 1f), new Vector2(0, -30), new Vector2(80, 40), display: true);
-                UiKit.Label(card, unlocked ? level.name : "LOCKED", 13,
-                    unlocked ? UiKit.Pale : UiKit.Dim,
-                    new Vector2(0.5f, 0.5f), new Vector2(0, -8), new Vector2(175, 22));
-                // Stars.
-                var stars = Session.Stars(level.id);
-                for (var sIdx = 0; sIdx < 3; sIdx++)
-                {
-                    var sRt = UiKit.Rect(card, "star", new Vector2(0.5f, 0f),
-                        new Vector2((sIdx - 1) * 34f, 26f), new Vector2(26, 26));
-                    UiKit.Img(sRt, sIdx < stars ? UiKit.Star : UiKit.StarOutline,
-                        sIdx < stars ? UiKit.EmberBright : new Color(1, 1, 1, unlocked ? 0.35f : 0.12f));
+                    if (Session.ActName(level.id) != act) continue;
+                    MissionRow(col, level, y, colW);
+                    y -= 78f;
                 }
             }
             BackButton();
         }
 
+        private void MissionRow(RectTransform col, LevelDef level, float y, float w)
+        {
+            var unlocked = level.id <= Session.StoryUnlocked;
+            var stars = Session.Stars(level.id);
+            var rt = UiKit.Rect(col, "Level" + level.id, new Vector2(0, 1), new Vector2(0, y),
+                new Vector2(w, 72), new Vector2(0, 1));
+            var img = UiKit.Img(rt, null, new Color(1, 1, 1, unlocked ? 0.025f : 0.0f));
+            img.raycastTarget = unlocked;
+            if (unlocked)
+            {
+                var idx = System.Array.IndexOf(Session.Story, level);
+                var btn = rt.gameObject.AddComponent<Button>();
+                btn.targetGraphic = img;
+                var colors = btn.colors; colors.highlightedColor = new Color(1, 1, 1, 0.08f) * 4f;
+                colors.pressedColor = new Color(1, 1, 1, 0.12f) * 6f; btn.colors = colors;
+                btn.onClick.AddListener(() => { Sfx3D.Confirm(); _gm.LaunchStory(idx); });
+            }
+            UiKit.Label(rt, level.id.ToString("00"), 20, unlocked ? UiKit.Ember : UiKit.Faint,
+                new Vector2(0, 1), new Vector2(8, -14), new Vector2(40, 26), display: true,
+                align: TextAnchor.MiddleLeft);
+            UiKit.Label(rt, unlocked ? level.name : "LOCKED", 15, unlocked ? UiKit.Pale : UiKit.Faint,
+                new Vector2(0, 1), new Vector2(54, -12), new Vector2(w - 170, 20), align: TextAnchor.MiddleLeft)
+                .characterSpacing = 2f;
+            var desc = unlocked ? level.story : "Clear the previous mission.";
+            if (desc.Length > 64) desc = desc.Substring(0, 61).TrimEnd() + "…";
+            UiKit.Paragraph(rt, desc, 12, unlocked ? UiKit.Dim : UiKit.Faint,
+                new Vector2(0, 1), new Vector2(54, -34), new Vector2(w - 170, 30), TextAnchor.UpperLeft);
+            for (var i = 0; i < 3; i++)
+            {
+                var sRt = UiKit.Rect(rt, "star", new Vector2(1, 1), new Vector2(-88 + i * 22f, -18),
+                    new Vector2(15, 15));
+                UiKit.Img(sRt, i < stars ? UiKit.Star : UiKit.StarOutline,
+                    i < stars ? UiKit.EmberBright : new Color(1, 1, 1, unlocked ? 0.18f : 0.05f));
+            }
+            var state = !unlocked ? "" : stars >= 3 ? "MASTERED" : stars > 0 ? "CLEARED" : "NEW";
+            UiKit.Label(rt, state, 10, stars > 0 ? UiKit.Dim : UiKit.Ember, new Vector2(1, 1),
+                new Vector2(-66, -42), new Vector2(90, 14), align: TextAnchor.MiddleRight)
+                .characterSpacing = 3f;
+            UiKit.Hairline(rt, new Vector2(0, 0), 0.06f);
+        }
+
+        private static string ToRoman(int n) => n switch { 1 => "I", 2 => "II", 3 => "III", 4 => "IV", _ => n.ToString() };
+
+        /// <summary>Kicker + title, top-left, on every secondary screen.</summary>
+        private void ScreenHeader(string kicker, string title)
+        {
+            UiKit.Kicker(_screenRoot, kicker, new Vector2(0, 1), new Vector2(104, -52),
+                new Vector2(600, 18), align: TextAnchor.MiddleLeft);
+            UiKit.Label(_screenRoot, title, 34, UiKit.Pale, new Vector2(0, 1), new Vector2(100, -86),
+                new Vector2(900, 44), display: true, align: TextAnchor.MiddleLeft);
+            UiKit.Accent(_screenRoot, new Vector2(0, 1), new Vector2(122, -114), 36);
+        }
+
         private void BuildFightSelect()
         {
-            Dim(0.62f);
             BuildEmberLayer();
-            UiKit.Label(_screenRoot, "FIGHT — CHOOSE YOUR OPPONENT", 30, UiKit.Pale,
-                new Vector2(0.5f, 1f), new Vector2(0, -60), new Vector2(900, 44), display: true);
+            ScreenHeader("DUELS", "CHOOSE YOUR OPPONENT");
+            UiKit.Label(_screenRoot, "One life. Full strength. No mercy.", 14, UiKit.Dim,
+                new Vector2(0, 1), new Vector2(104, -140), new Vector2(700, 20), align: TextAnchor.MiddleLeft);
 
+            var y = -186f;
             for (var i = 0; i < Session.Duels.Length; i++)
             {
                 var duel = Session.Duels[i];
-                var col = i % 2;
-                var row = i / 2;
-                var pos = new Vector2((col - 0.5f) * 400f, 60f - row * 140f);
-                var card = UiKit.Rect(_screenRoot, "Duel" + duel.id, new Vector2(0.5f, 0.5f),
-                    pos, new Vector2(370, 116));
                 var unlocked = duel.id <= Session.DuelsUnlocked;
-                var img = UiKit.Img(card, UiKit.PanelSprite,
-                    unlocked ? UiKit.Panel : new Color(0.07f, 0.075f, 0.1f), sliced: true);
-                img.raycastTarget = true;
+                var won = Session.DuelWon(duel.id);
+                var rt = UiKit.Rect(_screenRoot, "Duel" + duel.id, new Vector2(0, 1), new Vector2(100, y),
+                    new Vector2(720, 66), new Vector2(0, 1));
+                var img = UiKit.Img(rt, null, new Color(1, 1, 1, unlocked ? 0.025f : 0f));
+                img.raycastTarget = unlocked;
                 if (unlocked)
                 {
                     var idx = i;
-                    var btn = card.gameObject.AddComponent<Button>();
+                    var btn = rt.gameObject.AddComponent<Button>();
                     btn.targetGraphic = img;
                     btn.onClick.AddListener(() => { Sfx3D.Confirm(); _gm.LaunchDuel(idx); });
                 }
-                var won = Session.DuelWon(duel.id);
-                UiKit.Label(card, unlocked ? duel.name + (won ? "  ✓" : "") : "LOCKED", 24,
-                    unlocked ? UiKit.EmberBright : UiKit.Dim,
-                    new Vector2(0.5f, 0.5f), new Vector2(0, 18), new Vector2(350, 34), display: true);
-                UiKit.Label(card, unlocked ? duel.title : "Defeat the previous opponent", 15,
-                    UiKit.Dim, new Vector2(0.5f, 0.5f), new Vector2(0, -20), new Vector2(350, 24));
+                UiKit.Label(rt, unlocked ? duel.name : "LOCKED", 20, unlocked ? UiKit.Pale : UiKit.Faint,
+                    new Vector2(0, 1), new Vector2(14, -16), new Vector2(500, 26), display: true,
+                    align: TextAnchor.MiddleLeft);
+                UiKit.Label(rt, unlocked ? duel.title : "Defeat the previous opponent", 12,
+                    unlocked ? UiKit.Dim : UiKit.Faint, new Vector2(0, 1), new Vector2(14, -42),
+                    new Vector2(500, 16), align: TextAnchor.MiddleLeft).characterSpacing = 3f;
+                if (won) UiKit.Label(rt, "WON", 11, UiKit.Ember, new Vector2(1, 0.5f), new Vector2(-24, 0),
+                    new Vector2(80, 16), align: TextAnchor.MiddleRight).characterSpacing = 3f;
+                UiKit.Hairline(rt, new Vector2(0, 0), 0.07f);
+                y -= 72f;
             }
-
-            UiKit.Label(_screenRoot, "One life. Full strength. No mercy.", 17, UiKit.Ember,
-                new Vector2(0.5f, 0f), new Vector2(0, 130), new Vector2(600, 26));
             BackButton();
         }
 
@@ -822,23 +886,24 @@ namespace Emberline.UI
         {
             Dim(0.88f);
             BuildEmberLayer();
-            UiKit.Label(_screenRoot, "THE ROAD NORTH", 36, UiKit.Pale,
-                new Vector2(0.5f, 1f), new Vector2(0, -46), new Vector2(800, 48), display: true);
-            UiKit.Label(_screenRoot,
-                "Seven countries. No two marches the same. The road does not end.",
-                16, UiKit.Dim, new Vector2(0.5f, 1f), new Vector2(0, -84), new Vector2(900, 22));
+            ScreenHeader("THE MARCH", "THE ROAD NORTH");
+            UiKit.Label(_screenRoot, "SEVEN COUNTRIES. NO TWO MARCHES THE SAME.", 11, UiKit.Dim,
+                new Vector2(1f, 1f), new Vector2(-104, -86), new Vector2(600, 18),
+                align: TextAnchor.MiddleRight).characterSpacing = 3f;
 
             // Record book.
             var recs = $"BEST {Endless.RunStats.BestScore} PTS   ·   DEPTH {Endless.RunStats.BestDepth}"
                        + $"   ·   {Endless.RunStats.TimeText(Endless.RunStats.BestTime)}"
                        + $"   ·   {Endless.RunStats.BestKills} KILLS"
                        + $"   ·   ×{Endless.RunStats.BestComboEver} THREAD";
-            UiKit.Label(_screenRoot, recs, 15, UiKit.Ember,
-                new Vector2(0.5f, 1f), new Vector2(0, -112), new Vector2(1000, 22));
+            UiKit.Label(_screenRoot, recs, 12, UiKit.Ember,
+                new Vector2(0, 1f), new Vector2(104, -134), new Vector2(1000, 18),
+                align: TextAnchor.MiddleLeft).characterSpacing = 2f;
             UiKit.Label(_screenRoot,
                 $"{Endless.RunStats.TotalRuns} MARCHES   ·   {Endless.RunStats.TotalKills} DEAD"
                 + $"   ·   ¤ {Core.Wallet.Ryo} RYO",
-                14, UiKit.Sen, new Vector2(0.5f, 1f), new Vector2(0, -134), new Vector2(1000, 20));
+                11, UiKit.Faint, new Vector2(0, 1f), new Vector2(104, -152), new Vector2(1000, 16),
+                align: TextAnchor.MiddleLeft);
 
             // Modifier grid: four columns, two rows.
             var all = Endless.RunModifiers.All;
@@ -847,9 +912,9 @@ namespace Emberline.UI
                 var d = all[i];
                 var col = i % 4;
                 var row = i / 4;
-                var pos = new Vector2((col - 1.5f) * 300f, 44f - row * 150f);
+                var pos = new Vector2((col - 1.5f) * 282f, 30f - row * 148f);
                 var card = UiKit.Rect(_screenRoot, "Mod_" + d.Mod, new Vector2(0.5f, 0.5f),
-                    pos, new Vector2(286, 138));
+                    pos, new Vector2(270, 136));
                 var on = Endless.RunModifiers.IsSelected(d.Mod);
                 var img = UiKit.Img(card, UiKit.PanelSprite,
                     on ? new Color(0.24f, 0.14f, 0.10f) : new Color(0.12f, 0.125f, 0.155f),
@@ -898,15 +963,15 @@ namespace Emberline.UI
         {
             Dim(0.88f);
             BuildEmberLayer();
-            UiKit.Label(_screenRoot, "THE FORGE", 34, UiKit.Pale,
-                new Vector2(0.5f, 1f), new Vector2(0, -44), new Vector2(700, 46), display: true);
-            UiKit.Label(_screenRoot, $"¤ {Core.Wallet.Ryo} RYO", 20, UiKit.EmberBright,
-                new Vector2(0.5f, 1f), new Vector2(0, -82), new Vector2(600, 26));
+            ScreenHeader("THE FORGE", "UPGRADES AND CLOTH");
+            UiKit.Label(_screenRoot, $"{Core.Wallet.Ryo:N0} RYO", 12, UiKit.EmberBright,
+                new Vector2(1f, 1f), new Vector2(-104, -86), new Vector2(400, 18),
+                align: TextAnchor.MiddleRight).characterSpacing = 3f;
 
             var w = Loadout.Current;
             var wid = w != null ? w.id : "katana";
             UiKit.Label(_screenRoot, w != null ? w.displayName : "NO WEAPON", 19, UiKit.Ember,
-                new Vector2(0f, 1f), new Vector2(300, -122), new Vector2(460, 24), display: true);
+                new Vector2(0f, 1f), new Vector2(300, -152), new Vector2(460, 24), display: true);
 
             var tracks = new[]
             {
@@ -923,7 +988,7 @@ namespace Emberline.UI
                 var afford = !maxed && Core.Wallet.CanAfford(cost);
 
                 var card = UiKit.Rect(_screenRoot, "Up_" + name, new Vector2(0f, 1f),
-                    new Vector2(300, -206 - i * 116), new Vector2(460, 100));
+                    new Vector2(300, -236 - i * 116), new Vector2(460, 100));
                 var img = UiKit.Img(card, UiKit.PanelSprite,
                     maxed ? new Color(0.20f, 0.15f, 0.10f)
                     : afford ? new Color(0.135f, 0.14f, 0.175f)
@@ -933,9 +998,11 @@ namespace Emberline.UI
                     new Vector2(0f, 1f), new Vector2(78, -24), new Vector2(160, 24), display: true);
                 UiKit.Label(card, blurb, 13, UiKit.Sen,
                     new Vector2(0f, 1f), new Vector2(120, -48), new Vector2(250, 20));
-                UiKit.Label(card, Pips(lv, Core.WeaponUpgrades.MaxLevel), 18, UiKit.Ember,
-                    new Vector2(1f, 1f), new Vector2(-90, -24), new Vector2(150, 24));
-                UiKit.Label(card, maxed ? "MASTERED" : $"¤ {cost}", 15,
+                for (var pip = 0; pip < Core.WeaponUpgrades.MaxLevel; pip++)
+                    UiKit.Img(UiKit.Rect(card, "pip", new Vector2(1f, 1f),
+                            new Vector2(-150 + pip * 16f, -26), new Vector2(10, 4)),
+                        UiKit.White, pip < lv ? UiKit.Ember : new Color(1, 1, 1, 0.12f));
+                UiKit.Label(card, maxed ? "MASTERED" : $"{cost} RYO", 12,
                     maxed ? UiKit.EmberBright : afford ? UiKit.Pale : new Color(1, 1, 1, 0.32f),
                     new Vector2(1f, 0f), new Vector2(-80, 22), new Vector2(140, 22));
 
@@ -953,7 +1020,7 @@ namespace Emberline.UI
 
             // Dyes.
             UiKit.Label(_screenRoot, "CLOTH", 19, UiKit.Ember,
-                new Vector2(1f, 1f), new Vector2(-300, -122), new Vector2(460, 24), display: true);
+                new Vector2(1f, 1f), new Vector2(-300, -152), new Vector2(460, 24), display: true);
             var sets = Core.Cosmetics.All;
             var cur = Core.Cosmetics.Current;
             for (var i = 0; i < sets.Length; i++)
@@ -964,7 +1031,7 @@ namespace Emberline.UI
                 var col = i % 2;
                 var row = i / 2;
                 var card = UiKit.Rect(_screenRoot, "Cos_" + set.Id, new Vector2(1f, 1f),
-                    new Vector2(-460 + col * 230f, -196 - row * 112f), new Vector2(220, 96));
+                    new Vector2(-460 + col * 230f, -226 - row * 112f), new Vector2(220, 96));
                 var img = UiKit.Img(card, UiKit.PanelSprite,
                     equipped ? new Color(0.22f, 0.13f, 0.10f)
                     : owned ? new Color(0.135f, 0.14f, 0.175f)
@@ -981,7 +1048,7 @@ namespace Emberline.UI
                 UiKit.Label(card, set.Name, 15,
                     owned ? UiKit.Pale : new Color(1, 1, 1, 0.34f),
                     new Vector2(0.5f, 1f), new Vector2(28, -22), new Vector2(150, 22), display: true);
-                UiKit.Label(card, equipped ? "WORN" : owned ? "TAP TO WEAR" : $"¤ {set.Cost}", 13,
+                UiKit.Label(card, equipped ? "WORN" : owned ? "TAP TO WEAR" : $"{set.Cost} RYO", 11,
                     equipped ? UiKit.EmberBright
                     : owned ? UiKit.Dim
                     : Core.Wallet.CanAfford(set.Cost) ? UiKit.Pale : new Color(1, 1, 1, 0.3f),
@@ -1001,8 +1068,8 @@ namespace Emberline.UI
                 });
             }
 
-            UiKit.MakeButton(_screenRoot, "← THE ROAD", new Vector2(0f, 0f), new Vector2(130, 52),
-                new Vector2(200, 58), () => { Sfx3D.Back(); SetScreen(Screen.March); }, 18);
+            UiKit.MakeButton(_screenRoot, "THE ROAD", new Vector2(0f, 0f), new Vector2(150, 48),
+                new Vector2(140, 46), () => { Sfx3D.Back(); SetScreen(Screen.March); }, 18);
         }
 
         /// <summary>Filled/empty pips for an upgrade track.</summary>
@@ -1014,8 +1081,8 @@ namespace Emberline.UI
         }
 
         private void BackButton() =>
-            UiKit.MakeButton(_screenRoot, "← BACK", new Vector2(0f, 0f), new Vector2(110, 52),
-                new Vector2(160, 58), () => { Sfx3D.Back(); SetScreen(Screen.MenuRoot); }, 18);
+            UiKit.MakeButton(_screenRoot, "BACK", new Vector2(0f, 0f), new Vector2(150, 48),
+                new Vector2(140, 46), () => { Sfx3D.Back(); SetScreen(Screen.MenuRoot); }, 13);
 
         // ------------------------------------------------------------ settings
 
@@ -1034,12 +1101,12 @@ namespace Emberline.UI
             UiKit.Img(_settingsRoot, null, new Color(0, 0, 0, 0.7f)).raycastTarget = true;
             var panel = UiKit.Rect(_settingsRoot, "Panel", new Vector2(0.5f, 0.5f),
                 Vector2.zero, new Vector2(560, 560));
-            UiKit.Img(panel, UiKit.PanelSprite, new Color(0.1f, 0.105f, 0.14f, 0.98f), sliced: true);
+            UiKit.Surface(panel, 0.96f);
             UiKit.Label(panel, "SETTINGS", 30, UiKit.Pale, new Vector2(0.5f, 1f),
                 new Vector2(0, -42), new Vector2(400, 40), display: true);
 
-            Text sfxLabel = null, musicLabel = null, gfxLabel = null, diffLabel = null;
-            Text diffBlurb = null, fpsLabel = null;
+            TMP_Text sfxLabel = null, musicLabel = null, gfxLabel = null, diffLabel = null;
+            TMP_Text diffBlurb = null, fpsLabel = null;
             void Refresh()
             {
                 sfxLabel.text = $"SFX VOLUME   {Mathf.RoundToInt(Sfx3D.SfxVolume * 100)}%";
@@ -1052,7 +1119,7 @@ namespace Emberline.UI
                                     + (PerfGovernor.ThermalStep > 0 ? "   (HOT)" : "");
             }
 
-            void Row(float y, System.Func<Text> label, System.Action minus, System.Action plus)
+            void Row(float y, System.Func<TMP_Text> label, System.Action minus, System.Action plus)
             {
                 UiKit.MakeButton(panel, "−", new Vector2(0.5f, 0.5f), new Vector2(-190, y),
                     new Vector2(64, 56), () => { minus(); Refresh(); }, 26);
@@ -1104,7 +1171,7 @@ namespace Emberline.UI
             // throw away a run in progress.
             if (_gm != null && _gm.State == GameManager.Phase.Playing)
             {
-                Text quitLabel = null;
+                TMP_Text quitLabel = null;
                 var armed = false;
                 var quit = UiKit.MakeButton(panel, "LEAVE MISSION", new Vector2(0.5f, 0f),
                     new Vector2(-118, 40), new Vector2(228, 56), () =>
@@ -1122,7 +1189,7 @@ namespace Emberline.UI
                         CloseSettings();
                         _gm.OpenMenu();
                     }, 17);
-                quitLabel = quit.GetComponentInChildren<Text>();
+                quitLabel = quit.GetComponentInChildren<TMP_Text>();
 
                 UiKit.MakeButton(panel, "RESUME", new Vector2(0.5f, 0f), new Vector2(118, 40),
                     new Vector2(200, 56), CloseSettings, 20);
@@ -1149,82 +1216,99 @@ namespace Emberline.UI
 
         private void BuildBriefing()
         {
-            Dim(0.9f);
             BuildEmberLayer();
-            string kicker = "", title = "", story = "", objective = "";
+            string kicker = "", title = "", location = "", objective = "", optional = "";
+            var plan = _gm.CurrentPlan;
             if (_gm.ModeNow == LaunchMode.Duel && _gm.CurrentDuel != null)
             {
                 var d = _gm.CurrentDuel;
-                (kicker, title, story) = ("DUEL", d.name, d.taunt);
-                objective = "OBJECTIVE — Win the duel. One life each.";
+                kicker = "DUEL"; title = d.name;
+                location = d.marsh ? "ASHFEN MARSH" : "YORUNE ROOFTOPS";
+                objective = "Win the duel. One life each.";
+                optional = d.taunt;
             }
             else if (_gm.ModeNow == LaunchMode.Endless)
             {
-                (kicker, title) = ("THE MARCH", "THE ROAD NORTH");
-                story = "The road runs north without end. Soldiers bar the way, the mist walls "
-                    + "you in until they fall — and something heavier waits at every milestone.";
-                objective = _gm.BestNorth > 0 ? $"BEST — {_gm.BestNorth}m NORTH" : "";
+                kicker = "THE MARCH"; title = "THE ROAD NORTH";
+                location = _gm.Run != null ? _gm.Run.RegionName : "THE ROAD NORTH";
+                objective = "March north. Survive what bars the way.";
+                optional = Endless.RunModifiers.Describe(Endless.RunModifiers.Active);
             }
             else if (_gm.CurrentLevel != null)
             {
                 var l = _gm.CurrentLevel;
-                kicker = $"LEVEL {l.id}  ·  {Session.ActName(l.id)}";
+                kicker = $"MISSION {l.id:00}  ·  {Session.ActName(l.id)}";
                 title = l.name;
-                story = l.story;
-                objective = l.objective switch
+                location = (l.marsh ? "ASHFEN MARSH" : "YORUNE ROOFTOPS")
+                           + (plan != null ? "  ·  " + plan.missionType : "");
+                if (plan != null && plan.stages.Length > 0)
                 {
-                    MissionObjective.Escort =>
-                        "OBJECTIVE — Walk Yotsu to the temple. If the flame goes out, the night is lost.",
-                    MissionObjective.Stealth =>
-                        "OBJECTIVE — Cut them down unseen. Strike from behind; an alarm costs you the rank.",
-                    MissionObjective.Chase =>
-                        "OBJECTIVE — Run them down before they scatter.",
-                    _ => l.holdSeconds > 0f
-                        ? $"OBJECTIVE — Hold the road for {Mathf.RoundToInt(l.holdSeconds)} seconds. ★★★ for rank A or higher."
-                        : $"OBJECTIVE — Clear {l.waves.Length} wave{(l.waves.Length > 1 ? "s" : "")}. ★★★ for rank A or higher.",
-                };
+                    foreach (var st in plan.stages)
+                    {
+                        if (!st.optional && objective.Length == 0) objective = st.objective;
+                        if (st.optional && optional.Length == 0) optional = st.objective;
+                    }
+                }
+                if (objective.Length == 0)
+                    objective = l.objective switch
+                    {
+                        MissionObjective.Escort => "Walk Yotsu to the temple. If the flame goes out, the night is lost.",
+                        MissionObjective.Stealth => "Cut them down unseen. An alarm costs the rank.",
+                        MissionObjective.Chase => "Run them down before they scatter.",
+                        _ => l.holdSeconds > 0f
+                            ? $"Hold the road for {Mathf.RoundToInt(l.holdSeconds)} seconds."
+                            : $"Clear {l.waves.Length} wave{(l.waves.Length > 1 ? "s" : "")}.",
+                    };
             }
 
-            UiKit.Label(_screenRoot, kicker, 17, UiKit.Ember, new Vector2(0.5f, 1f),
-                new Vector2(0, -66), new Vector2(900, 26));
-            UiKit.Label(_screenRoot, title, 44, UiKit.Pale, new Vector2(0.5f, 1f),
-                new Vector2(0, -122), new Vector2(1000, 62), display: true);
-            var storyText = UiKit.Paragraph(_screenRoot, story, 20, new Color(0.82f, 0.84f, 0.86f),
-                new Vector2(0.5f, 1f), new Vector2(0, -172), new Vector2(760, 80));
-            storyText.fontStyle = FontStyle.Italic;
-            UiKit.Label(_screenRoot, objective, 17, UiKit.Ember, new Vector2(0.5f, 1f),
-                new Vector2(0, -262), new Vector2(900, 28));
+            // Left: the operation sheet. Right: dialogue, if any. Bottom: the way in.
+            var sheet = UiKit.Rect(_screenRoot, "Sheet", new Vector2(0, 1), new Vector2(100, -52),
+                new Vector2(640, 420), new Vector2(0, 1));
+            UiKit.Kicker(sheet, kicker, new Vector2(0, 1), new Vector2(0, -8), new Vector2(640, 18),
+                align: TextAnchor.MiddleLeft);
+            UiKit.Label(sheet, title, 40, UiKit.Pale, new Vector2(0, 1), new Vector2(-2, -44),
+                new Vector2(640, 52), display: true, align: TextAnchor.MiddleLeft);
+            UiKit.Accent(sheet, new Vector2(0, 1), new Vector2(18, -76), 36);
 
-            // Character dialogue with portraits (story mode).
+            var y = -104f;
+            void Line(string k, string v, Color? colour = null)
+            {
+                if (string.IsNullOrEmpty(v)) return;
+                UiKit.Kicker(sheet, k, new Vector2(0, 1), new Vector2(0, y), new Vector2(200, 16),
+                    color: UiKit.Faint, align: TextAnchor.MiddleLeft);
+                UiKit.Paragraph(sheet, UiKit.Clean(v), 16, colour ?? UiKit.Pale, new Vector2(0, 1),
+                    new Vector2(0, y - 18), new Vector2(620, 40), TextAnchor.UpperLeft);
+                UiKit.Hairline(sheet, new Vector2(0, 1), 0.07f).rectTransform.anchoredPosition = new Vector2(0, y - 60);
+                y -= 72f;
+            }
+            Line("MISSION", _gm.CurrentLevel != null ? _gm.CurrentLevel.story : "");
+            Line("LOCATION", location);
+            Line("OBJECTIVE", objective, UiKit.EmberBright);
+            Line("OPTIONAL OBJECTIVE", string.IsNullOrEmpty(optional) ? "—" : optional, UiKit.Dim);
+
             if (_gm.ModeNow == LaunchMode.Story && _gm.CurrentLevel != null
                 && _gm.CurrentLevel.dialogue.Length > 0)
-            {
                 DialogueBox.Show(_screenRoot, _gm.CurrentLevel.dialogue,
                     () => StoryMemory.MarkDialogueSeen(_gm.CurrentLevel.id));
-            }
 
-            // Duels let you pick your own handicap before committing; harder terms
-            // pay more shards, so a won duel stays worth replaying.
             if (_gm.ModeNow == LaunchMode.Duel)
             {
                 var mod = Session.CurrentDuelModifier;
-                var bonus = mod.bonusShards > 0 ? $"   ◆ +{mod.bonusShards}" : "";
-                UiKit.Label(_screenRoot, mod.desc, 16, UiKit.Dim, new Vector2(0.5f, 0f),
-                    new Vector2(0, 232), new Vector2(700, 24));
-                UiKit.MakeButton(_screenRoot, $"TERMS — {mod.name}{bonus}", new Vector2(0.5f, 0f),
-                    new Vector2(0, 180), new Vector2(420, 56), () =>
+                var bonus = mod.bonusShards > 0 ? $"  +{mod.bonusShards} shards" : "";
+                UiKit.MakeButton(_screenRoot, $"TERMS — {mod.name}{bonus}", new Vector2(1, 0),
+                    new Vector2(-360, 48), new Vector2(360, 48), () =>
                     {
                         Session.DuelModifierIndex =
                             (Session.DuelModifierIndex + 1) % Session.DuelModifiers.Length;
-                        SetScreen(Screen.Briefing); // rebuild to show the new terms
-                    }, 18);
+                        SetScreen(Screen.Briefing);
+                    }, 13);
             }
 
-            UiKit.MakeButton(_screenRoot, "BEGIN", new Vector2(0.5f, 0f), new Vector2(-160, 96),
-                new Vector2(280, 64), () => { Sfx3D.Confirm(); _gm.BeginMission(); }, 24, display: true,
-                tint: new Color(0.5f, 0.24f, 0.16f));
-            UiKit.MakeButton(_screenRoot, "MENU", new Vector2(0.5f, 0f), new Vector2(160, 96),
-                new Vector2(280, 64), () => _gm.OpenMenu(), 22);
+            UiKit.MakeButton(_screenRoot, "MARCH", new Vector2(1, 0), new Vector2(-150, 48),
+                new Vector2(220, 54), () => { Sfx3D.Confirm(); _gm.BeginMission(); }, 20,
+                display: true, primary: true);
+            UiKit.MakeButton(_screenRoot, "MENU", new Vector2(0, 0), new Vector2(150, 48),
+                new Vector2(140, 48), () => _gm.OpenMenu(), 13);
         }
 
         // ---------------------------------------------------------------- hud
@@ -1232,8 +1316,9 @@ namespace Emberline.UI
         private void BuildHud()
         {
             // Health + Sen, top-left.
-            _hpLabel = UiKit.Label(_screenRoot, "LIFE", 15, UiKit.Dim, new Vector2(0, 1),
-                new Vector2(64, -26), new Vector2(100, 22), align: TextAnchor.MiddleLeft);
+            _hpLabel = UiKit.Label(_screenRoot, "LIFE", 10, UiKit.Faint, new Vector2(0, 1),
+                new Vector2(64, -26), new Vector2(100, 16), align: TextAnchor.MiddleLeft);
+            _hpLabel.characterSpacing = 4f;
             _hpFill = UiKit.MakeBar(_screenRoot, new Vector2(0, 1), new Vector2(174, -50),
                 new Vector2(300, 18), UiKit.Blood, new Vector2(0.5f, 0.5f));
             _senFill = UiKit.MakeBar(_screenRoot, new Vector2(0, 1), new Vector2(159, -76),
@@ -1247,8 +1332,9 @@ namespace Emberline.UI
             }
 
             // Wave / time, top-right.
-            _waveLabel = UiKit.Label(_screenRoot, "", 17, UiKit.Dim, new Vector2(1, 1),
-                new Vector2(-160, -28), new Vector2(300, 24), align: TextAnchor.MiddleRight);
+            _waveLabel = UiKit.Label(_screenRoot, "", 12, UiKit.Dim, new Vector2(1, 1),
+                new Vector2(-160, -28), new Vector2(300, 18), align: TextAnchor.MiddleRight);
+            _waveLabel.characterSpacing = 3f;
 
             // Pause. The settings overlay is the pause menu, but it was only
             // reachable from the main menu — so during a mission there was no way
@@ -1260,7 +1346,7 @@ namespace Emberline.UI
             // Gyro camera toggle, under the clock (devices with a gyroscope only).
             if (SystemInfo.supportsGyroscope)
             {
-                Text gyroText = null;
+                TMP_Text gyroText = null;
                 var gyroBtn = UiKit.MakeButton(_screenRoot,
                     EmberInput.GyroOn ? "GYRO ON" : "GYRO OFF", new Vector2(1, 1),
                     new Vector2(-76, -74), new Vector2(118, 56), () =>
@@ -1269,35 +1355,40 @@ namespace Emberline.UI
                         if (gyroText != null)
                             gyroText.text = EmberInput.GyroOn ? "GYRO ON" : "GYRO OFF";
                     }, 14);
-                gyroText = gyroBtn.GetComponentInChildren<Text>();
+                gyroText = gyroBtn.GetComponentInChildren<TMP_Text>();
             }
 
             // Combo, upper-center-right.
             var comboRt = UiKit.Rect(_screenRoot, "Combo", new Vector2(0.5f, 1f),
                 new Vector2(310, -78), new Vector2(300, 60));
             _comboGroup = comboRt.gameObject.AddComponent<CanvasGroup>();
-            _comboText = UiKit.Label(comboRt, "", 34, UiKit.EmberBright, new Vector2(0.5f, 0.5f),
-                Vector2.zero, new Vector2(300, 60), display: true);
+            // Small and quiet: a thread count is a readout, not a headline.
+            _comboText = UiKit.Label(comboRt, "", 15, UiKit.EmberBright, new Vector2(0.5f, 0.5f),
+                Vector2.zero, new Vector2(300, 60));
+            _comboText.characterSpacing = 3f;
 
             // Boss bar, top-center.
             _bossBar = UiKit.Rect(_screenRoot, "BossBar", new Vector2(0.5f, 1f),
                 new Vector2(0, -46), new Vector2(560, 46));
-            _bossLabel = UiKit.Label(_bossBar, "", 18, UiKit.Pale, new Vector2(0.5f, 1f),
-                new Vector2(0, -8), new Vector2(560, 24));
+            _bossLabel = UiKit.Label(_bossBar, "", 12, UiKit.Pale, new Vector2(0.5f, 1f),
+                new Vector2(0, -8), new Vector2(560, 18));
+            _bossLabel.characterSpacing = 4f;
             _bossFill = UiKit.MakeBar(_bossBar, new Vector2(0.5f, 0f), new Vector2(0, 8),
                 new Vector2(520, 14), UiKit.Ember);
             _bossBar.gameObject.SetActive(false);
 
             // Objective + banner.
-            _objectiveText = UiKit.Label(_screenRoot, "", 16, new Color(1f, 0.62f, 0.45f),
-                new Vector2(0, 1), new Vector2(300, -126), new Vector2(560, 24), align: TextAnchor.MiddleLeft);
+            _objectiveText = UiKit.Label(_screenRoot, "", 12, UiKit.EmberBright,
+                new Vector2(0, 1), new Vector2(300, -126), new Vector2(560, 18), align: TextAnchor.MiddleLeft);
+            _objectiveText.characterSpacing = 3f;
             var bannerRt = UiKit.Rect(_screenRoot, "Banner", new Vector2(0.5f, 1f),
                 new Vector2(0, -150), new Vector2(900, 44));
             _bannerGroup = bannerRt.gameObject.AddComponent<CanvasGroup>();
-            _bannerText = UiKit.Label(bannerRt, "", 27, UiKit.Pale, new Vector2(0.5f, 0.5f),
+            _bannerText = UiKit.Label(bannerRt, "", 20, UiKit.Pale, new Vector2(0.5f, 0.5f),
                 Vector2.zero, new Vector2(900, 44), display: true);
-            _hintText = UiKit.Label(_screenRoot, "", 20, UiKit.Pale, new Vector2(0.5f, 0f),
-                new Vector2(0, 230), new Vector2(900, 30));
+            _hintText = UiKit.Label(_screenRoot, "", 13, UiKit.Dim, new Vector2(0.5f, 0f),
+                new Vector2(0, 230), new Vector2(900, 20));
+            _hintText.characterSpacing = 3f;
 
             // Damage vignette — sits above the world, below the controls.
             var vig = UiKit.Group(_screenRoot, "HurtVignette");
@@ -1531,7 +1622,7 @@ namespace Emberline.UI
             {
                 _comboText.text = $"{combo} THREAD";
                 _comboGroup.alpha = Mathf.Min(1f, _comboGroup.alpha + Time.deltaTime * 6f);
-                var scale = 1f + _comboPop * 0.35f + Mathf.Min(combo, 30) * 0.008f;
+                var scale = 1f + _comboPop * 0.12f;
                 _comboText.transform.localScale = Vector3.one * scale;
             }
             else _comboGroup.alpha = Mathf.Max(0f, _comboGroup.alpha - Time.deltaTime * 3f);
@@ -1582,10 +1673,10 @@ namespace Emberline.UI
 
         private void UpdateBannerObjective()
         {
-            _objectiveText.text = _gm.Objective;
+            _objectiveText.text = UiKit.Clean(_gm.Objective);
             if (_gm.BannerTimer > 0)
             {
-                _bannerText.text = _gm.Banner;
+                _bannerText.text = UiKit.Clean(_gm.Banner);
                 _bannerGroup.alpha = Mathf.Min(1f, _gm.BannerTimer / 0.4f);
             }
             else _bannerGroup.alpha = 0f;
@@ -1611,7 +1702,7 @@ namespace Emberline.UI
                 if (used >= MarkerBudget) break;
                 var m = GetMarker(used++);
                 var sp = _cam.WorldToScreenPoint(e.transform.position + Vector3.up * 2.4f);
-                var scale = 720f / UnityEngine.Screen.height;
+                var scale = 1f / _canvas.scaleFactor;
                 var onScreen = sp.z > 0 && sp.x > 0 && sp.x < UnityEngine.Screen.width
                                && sp.y > 0 && sp.y < UnityEngine.Screen.height;
                 var locked = _combat != null && _combat.LockedTarget == e;
@@ -1798,7 +1889,7 @@ namespace Emberline.UI
             _stickBase.gameObject.SetActive(active);
             _stickKnob.gameObject.SetActive(active);
             if (!active) return;
-            var scale = 720f / UnityEngine.Screen.height;
+            var scale = 1f / _canvas.scaleFactor;
             var o = _stickOrigin * scale;
             var p = o + Vector2.ClampMagnitude(_stickPos * scale - o, 62);
             _stickBase.anchoredPosition = o;
@@ -1817,67 +1908,74 @@ namespace Emberline.UI
         private void BuildVictory()
         {
             var r = _gm.MissionResult();
-            if (_gm.ModeNow == LaunchMode.Duel && _gm.CurrentDuel != null)
+            var t = Mathf.RoundToInt(_gm.MissionTime);
+            var duel = _gm.ModeNow == LaunchMode.Duel && _gm.CurrentDuel != null;
+
+            UiKit.Kicker(_screenRoot, duel ? "DUEL" : "MISSION", new Vector2(0.5f, 1), new Vector2(0, -70),
+                new Vector2(600, 18));
+            UiKit.Label(_screenRoot, duel ? "VICTORY" : "MISSION COMPLETE", 40, UiKit.Pale,
+                new Vector2(0.5f, 1), new Vector2(0, -108), new Vector2(900, 52), display: true);
+            UiKit.Accent(_screenRoot, new Vector2(0.5f, 1), new Vector2(0, -140), 36);
+
+            // Stars: quiet reveal, no fireworks.
+            var stars = duel ? 0 : _gm.StarsEarned;
+            if (!duel)
+                for (var i = 0; i < 3; i++)
+                {
+                    var s = UiKit.Rect(_screenRoot, "star", new Vector2(0.5f, 1), new Vector2((i - 1) * 44f, -186),
+                        new Vector2(28, 28));
+                    var img = UiKit.Img(s, i < stars ? UiKit.Star : UiKit.StarOutline,
+                        i < stars ? UiKit.EmberBright : new Color(1, 1, 1, 0.18f));
+                    if (i < stars) StartCoroutine(StarFlyIn(s, img, 0.35f + i * 0.18f));
+                }
+
+            var opt = _gm.OptionalObjectives;
+            var rows = new System.Collections.Generic.List<(string k, string v)>
             {
-                UiKit.Label(_screenRoot, "VICTORY", 54, UiKit.Pale, new Vector2(0.5f, 1f),
-                    new Vector2(0, -140), new Vector2(700, 80), display: true);
-                UiKit.Label(_screenRoot,
-                    $"{_gm.CurrentDuel.name} FALLS   ·   {(int)_gm.MissionTime}s", 24, UiKit.Ember,
-                    new Vector2(0.5f, 0.5f), new Vector2(0, 40), new Vector2(800, 36));
+                ("TIME", $"{t / 60}:{t % 60:00}"),
+                ("RANK", r.rank),
+                ("ENEMIES DEFEATED", _gm.Kills.ToString()),
+                ("OBJECTIVE", duel ? $"{_gm.CurrentDuel.name} falls" : "Complete"),
+            };
+            if (opt.total > 0) rows.Add(("OPTIONAL OBJECTIVES", $"{opt.done} of {opt.total}"));
+            var reward = $"+{_gm.ShardsEarned} shards";
+            if (_gm.BonusShardsEarned > 0) reward += $"  ·  {_gm.BonusShardsEarned} from optional";
+            rows.Add(("REWARD", reward));
+
+            var y = -236f;
+            foreach (var (k, v) in rows)
+            {
+                UiKit.Kicker(_screenRoot, k, new Vector2(0.5f, 1), new Vector2(-150, y), new Vector2(280, 16),
+                    color: UiKit.Faint, align: TextAnchor.MiddleRight);
+                UiKit.Label(_screenRoot, UiKit.Clean(v), 15, k == "RANK" ? UiKit.EmberBright : UiKit.Pale,
+                    new Vector2(0.5f, 1), new Vector2(160, y), new Vector2(300, 18), align: TextAnchor.MiddleLeft)
+                    .characterSpacing = 2f;
+                UiKit.Separator(_screenRoot, new Vector2(0.5f, 1), new Vector2(0, y - 14), 600, 0.06f);
+                y -= 30f;
+            }
+
+            if (!duel && _gm.CurrentLevel != null && !string.IsNullOrEmpty(_gm.CurrentLevel.debrief))
+            {
+                var debrief = UiKit.Paragraph(_screenRoot, _gm.CurrentLevel.debrief, 13, UiKit.Dim,
+                    new Vector2(0.5f, 1), new Vector2(0, y - 6), new Vector2(680, 40));
+                debrief.fontStyle = FontStyles.Italic;
+            }
+
+            if (duel)
                 ResultButtons(("NEXT OPPONENT", () => _gm.NextDuel()), ("REMATCH", () => _gm.Retry()),
                     ("MENU", () => _gm.OpenMenu()));
-                return;
-            }
-
-            UiKit.Label(_screenRoot, "LEVEL CLEAR", 34, UiKit.Pale, new Vector2(0.5f, 1f),
-                new Vector2(0, -84), new Vector2(700, 50), display: true);
-
-            // Animated rank reveal.
-            var rankText = UiKit.Label(_screenRoot, "", 110, UiKit.Ember, new Vector2(0.5f, 1f),
-                new Vector2(0, -210), new Vector2(300, 140), display: true);
-            StartCoroutine(RankReveal(rankText, r.rank));
-
-            // Star fly-in.
-            var stars = _gm.StarsEarned;
-            for (var i = 0; i < 3; i++)
-            {
-                var s = UiKit.Rect(_screenRoot, "star", new Vector2(0.5f, 0.5f),
-                    new Vector2((i - 1) * 90f, 10), new Vector2(64, 64));
-                var img = UiKit.Img(s, i < stars ? UiKit.Star : UiKit.StarOutline,
-                    i < stars ? UiKit.EmberBright : new Color(1, 1, 1, 0.25f));
-                if (i < stars) StartCoroutine(StarFlyIn(s, img, 0.9f + i * 0.28f));
-                else s.localScale = Vector3.one;
-            }
-
-            UiKit.Label(_screenRoot,
-                $"RANK {r.rank}   ·   SCORE {r.score}   ·   DMG {Mathf.RoundToInt(_gm.DamageTaken)}" +
-                $"   ·   MAX THREAD {(_combat != null ? _combat.MaxCombo : 0)}" +
-                (_gm.ShardsEarned > 0 ? $"   ·   ◆ +{_gm.ShardsEarned}" : ""),
-                20, UiKit.Dim, new Vector2(0.5f, 0.5f), new Vector2(0, -70), new Vector2(1000, 30));
-
-            // Debrief cliffhanger.
-            if (_gm.CurrentLevel != null && !string.IsNullOrEmpty(_gm.CurrentLevel.debrief))
-            {
-                var debrief = UiKit.Paragraph(_screenRoot, _gm.CurrentLevel.debrief, 18,
-                    new Color(0.8f, 0.82f, 0.86f), new Vector2(0.5f, 0.5f),
-                    new Vector2(0, -112), new Vector2(820, 54));
-                debrief.fontStyle = FontStyle.Italic;
-            }
-
-            if (_gm.CurrentLevel != null && Session.LevelIndex + 1 < Session.Story.Length)
-                UiKit.Label(_screenRoot, $"NEXT — {Session.Story[Session.LevelIndex + 1].name}",
-                    16, UiKit.Ember, new Vector2(0.5f, 0.5f), new Vector2(0, -162), new Vector2(700, 26));
-
-            ResultButtons(("NEXT LEVEL", () => _gm.NextStoryLevel()), ("REPLAY", () => _gm.Retry()),
-                ("SKILLS", () => SetScreen(Screen.Skills)), ("MENU", () => _gm.OpenMenu()));
+            else
+                ResultButtons(("NEXT MISSION", () => _gm.NextStoryLevel()), ("REPLAY", () => _gm.Retry()),
+                    ("MENU", () => _gm.OpenMenu()));
         }
 
         private void BuildDefeat()
         {
-            UiKit.Label(_screenRoot, "THE LANTERN GUTTERS…", 44, UiKit.Pale,
-                new Vector2(0.5f, 1f), new Vector2(0, -160), new Vector2(900, 64), display: true);
-            UiKit.Label(_screenRoot, "but it does not go out.", 24, UiKit.Dim,
-                new Vector2(0.5f, 1f), new Vector2(0, -220), new Vector2(700, 34));
+            UiKit.Kicker(_screenRoot, "THE LANTERN GUTTERS", new Vector2(0.5f, 1), new Vector2(0, -70),
+                new Vector2(600, 18));
+            UiKit.Label(_screenRoot, "BUT IT DOES NOT GO OUT", 32, UiKit.Pale, new Vector2(0.5f, 1),
+                new Vector2(0, -108), new Vector2(900, 44), display: true);
+            UiKit.Accent(_screenRoot, new Vector2(0.5f, 1), new Vector2(0, -140), 36);
             if (_gm.ModeNow == LaunchMode.Endless)
             {
                 BuildRunReport();
@@ -1886,6 +1984,10 @@ namespace Emberline.UI
                     ("MENU", () => _gm.OpenMenu()));
                 return;
             }
+            var t = Mathf.RoundToInt(_gm.MissionTime);
+            UiKit.Label(_screenRoot,
+                $"{t / 60}:{t % 60:00}   ·   {_gm.Kills} defeated   ·   {Mathf.RoundToInt(_gm.DamageTaken)} damage taken",
+                14, UiKit.Dim, new Vector2(0.5f, 1), new Vector2(0, -190), new Vector2(800, 20));
             ResultButtons(("RISE AGAIN", () => _gm.Retry()), ("MENU", () => _gm.OpenMenu()));
         }
 
@@ -1895,12 +1997,11 @@ namespace Emberline.UI
         /// </summary>
         private void BuildRunReport()
         {
-            UiKit.Label(_screenRoot, $"{Endless.RunStats.Score}", 62, UiKit.EmberBright,
-                new Vector2(0.5f, 0.5f), new Vector2(0, 96), new Vector2(600, 70), display: true);
-            UiKit.Label(_screenRoot,
-                Endless.RunStats.NewScoreRecord ? "★ A NEW BEST ★" : "POINTS",
-                16, Endless.RunStats.NewScoreRecord ? UiKit.Ember : UiKit.Sen,
-                new Vector2(0.5f, 0.5f), new Vector2(0, 56), new Vector2(600, 22));
+            UiKit.Label(_screenRoot, $"{Endless.RunStats.Score:N0}", 48, UiKit.EmberBright,
+                new Vector2(0.5f, 1), new Vector2(0, -196), new Vector2(600, 56), display: true);
+            UiKit.Kicker(_screenRoot, Endless.RunStats.NewScoreRecord ? "A NEW BEST" : "POINTS",
+                new Vector2(0.5f, 1), new Vector2(0, -236), new Vector2(600, 16),
+                color: Endless.RunStats.NewScoreRecord ? UiKit.Ember : UiKit.Faint);
 
             var t = Mathf.RoundToInt(Endless.RunStats.Time);
             var stats = new (string label, string value, bool record)[]
@@ -1914,51 +2015,48 @@ namespace Emberline.UI
             for (var i = 0; i < stats.Length; i++)
             {
                 var (label, value, record) = stats[i];
-                var x = (i - (stats.Length - 1) * 0.5f) * 172f;
-                UiKit.Label(_screenRoot, value, 26,
-                    record ? UiKit.EmberBright : UiKit.Pale,
-                    new Vector2(0.5f, 0.5f), new Vector2(x, 8), new Vector2(160, 30), display: true);
-                UiKit.Label(_screenRoot, label + (record ? " ★" : ""), 13, UiKit.Sen,
-                    new Vector2(0.5f, 0.5f), new Vector2(x, -18), new Vector2(160, 18));
+                var x = (i - (stats.Length - 1) * 0.5f) * 150f;
+                UiKit.Label(_screenRoot, value, 22, record ? UiKit.EmberBright : UiKit.Pale,
+                    new Vector2(0.5f, 1), new Vector2(x, -278), new Vector2(140, 26));
+                UiKit.Kicker(_screenRoot, label, new Vector2(0.5f, 1), new Vector2(x, -300), new Vector2(140, 14),
+                    color: record ? UiKit.Ember : UiKit.Faint);
             }
-
+            UiKit.Separator(_screenRoot, new Vector2(0.5f, 1), new Vector2(0, -318), 760, 0.08f);
             UiKit.Label(_screenRoot,
                 $"WAGER ×{Endless.RunModifiers.ActiveScoreMultiplier:0.00}   ·   "
                 + Endless.RunModifiers.Describe(Endless.RunModifiers.Active),
-                14, UiKit.Dim, new Vector2(0.5f, 0.5f), new Vector2(0, -50), new Vector2(1000, 20));
-
+                12, UiKit.Dim, new Vector2(0.5f, 1), new Vector2(0, -334), new Vector2(1000, 16));
             UiKit.Label(_screenRoot,
-                $"¤ +{Endless.RunStats.RyoEarned} RYO"
-                + (Endless.RunStats.ShardsEarned > 0
-                    ? $"   ·   ◆ +{Endless.RunStats.ShardsEarned} SHARDS" : ""),
-                18, new Color(0.5f, 0.85f, 0.55f),
-                new Vector2(0.5f, 0.5f), new Vector2(0, -82), new Vector2(800, 24));
+                $"+{Endless.RunStats.RyoEarned:N0} ryo"
+                + (Endless.RunStats.ShardsEarned > 0 ? $"   ·   +{Endless.RunStats.ShardsEarned} shards" : ""),
+                15, UiKit.EmberBright, new Vector2(0.5f, 1), new Vector2(0, -358), new Vector2(800, 20));
         }
 
         private void DailyLine()
         {
-            if (_gm.DailyShards > 0)
-                UiKit.Label(_screenRoot, $"DAILY CHALLENGE COMPLETE — ◆ +{_gm.DailyShards}", 19,
-                    new Color(0.5f, 0.85f, 0.55f), new Vector2(0.5f, 0f), new Vector2(0, 170),
-                    new Vector2(700, 26));
-            if (!string.IsNullOrEmpty(_gm.FeatsLine))
-                UiKit.Label(_screenRoot, _gm.FeatsLine + "  ◆ +1", 19, UiKit.EmberBright,
-                    new Vector2(0.5f, 0f), new Vector2(0, 200), new Vector2(900, 26));
+            var lines = new System.Collections.Generic.List<string>();
+            if (_gm.DailyShards > 0) lines.Add($"Daily challenge complete  +{_gm.DailyShards}");
+            if (_gm.WeeklyShards > 0) lines.Add($"Weekly challenge complete  +{_gm.WeeklyShards}");
+            if (!string.IsNullOrEmpty(_gm.FeatsLine)) lines.Add(UiKit.Clean(_gm.FeatsLine));
+            for (var i = 0; i < lines.Count; i++)
+                UiKit.Label(_screenRoot, lines[i], 12, UiKit.Ember, new Vector2(0.5f, 0),
+                    new Vector2(0, 118 + i * 18), new Vector2(900, 16)).characterSpacing = 2f;
         }
 
         private void ResultButtons(params (string label, System.Action action)[] buttons)
         {
             DailyLine();
+            var w = 200f;
             for (var i = 0; i < buttons.Length; i++)
             {
-                var x = (i - (buttons.Length - 1) * 0.5f) * 290f;
+                var x = (i - (buttons.Length - 1) * 0.5f) * (w + 16f);
                 var (label, action) = buttons[i];
-                UiKit.MakeButton(_screenRoot, label, new Vector2(0.5f, 0f), new Vector2(x, 92),
-                    new Vector2(260, 62), () => { Sfx3D.Confirm(); action(); }, 20);
+                UiKit.MakeButton(_screenRoot, label, new Vector2(0.5f, 0), new Vector2(x, 60),
+                    new Vector2(w, 50), () => { Sfx3D.Confirm(); action(); }, 13, primary: i == 0);
             }
         }
 
-        private IEnumerator RankReveal(Text rankText, string finalRank)
+        private IEnumerator RankReveal(TMP_Text rankText, string finalRank)
         {
             string[] ladder = { "D", "C", "B", "A", "S" };
             var target = System.Array.IndexOf(ladder, finalRank);

@@ -40,21 +40,50 @@ namespace Emberline.EditorTools
             var screenEnum = t.GetNestedType("Screen", BindingFlags.NonPublic);
             var setScreen = t.GetMethod("SetScreen", F);
 
-            foreach (var (name, file) in new[]
+            // Screens that read mission state get it through reflection: the
+            // harness has no live game, only a bare GameManager.
+            var gmT = typeof(GameManager);
+            void Set(string prop, object value) =>
+                gmT.GetProperty(prop, F | BindingFlags.Public)?.SetValue(gm, value);
+            Core.Session.Mode = Core.LaunchMode.Story;
+            Core.Session.LevelIndex = 0;
+            Set("CurrentLevel", Core.Session.Story[0]);
+            Set("CurrentPlan", Resources.Load<Missions.MissionPlan>("Missions/" + Core.Session.Story[0].planAsset));
+
+            var toggleSettings = t.GetMethod("ToggleSettings", F);
+
+            foreach (var (name, file, state, pause) in new[]
             {
-                ("MenuRoot", "Logs/ui_menu.png"),
-                ("Story", "Logs/ui_story.png"),
-                ("Skills", "Logs/ui_skills.png"),
-                ("Hud", "Logs/ui_hud.png"),
-                ("Weapons", "Logs/ui_weapons.png"),
-                ("Arms", "Logs/ui_arms.png"),
-                ("March", "Logs/ui_march.png"),
-                ("Forge", "Logs/ui_forge.png"),
+                ("MenuRoot", "Logs/ui_menu.png", GameManager.Phase.Menu, false),
+                ("Story", "Logs/ui_story.png", GameManager.Phase.Menu, false),
+                ("Fight", "Logs/ui_duels.png", GameManager.Phase.Menu, false),
+                ("Briefing", "Logs/ui_briefing.png", GameManager.Phase.Intro, false),
+                ("Hud", "Logs/ui_hud.png", GameManager.Phase.Playing, false),
+                ("Hud", "Logs/ui_pause.png", GameManager.Phase.Playing, true),
+                ("Skills", "Logs/ui_skills.png", GameManager.Phase.Menu, false),
+                ("Forge", "Logs/ui_forge.png", GameManager.Phase.Menu, false),
+                ("Weapons", "Logs/ui_armoury.png", GameManager.Phase.Menu, false),
+                ("Result", "Logs/ui_complete.png", GameManager.Phase.Won, false),
+                ("Result", "Logs/ui_gameover.png", GameManager.Phase.Lost, false),
+                ("MenuRoot", "Logs/ui_settings.png", GameManager.Phase.Menu, true),
+                ("March", "Logs/ui_march.png", GameManager.Phase.Menu, false),
+                ("Arms", "Logs/ui_arms.png", GameManager.Phase.Menu, false),
             })
             {
+                Set("State", state);
                 setScreen.Invoke(hud, new[] { System.Enum.Parse(screenEnum, name) });
+                if (pause) toggleSettings.Invoke(hud, null);
                 Canvas.ForceUpdateCanvases();
                 Shoot(cam, file, 1600, 900);
+                if (pause)
+                {
+                    // CloseSettings destroys its root with a deferred Destroy, which
+                    // never runs in edit mode — the overlay bled into every later
+                    // capture. Tear it down immediately here.
+                    toggleSettings.Invoke(hud, null);
+                    var settingsRoot = t.GetField("_settingsRoot", F)?.GetValue(hud) as RectTransform;
+                    if (settingsRoot != null) Object.DestroyImmediate(settingsRoot.gameObject);
+                }
             }
 
             RenderWeaponGlyphs(cam);

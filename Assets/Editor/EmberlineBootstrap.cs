@@ -172,6 +172,8 @@ namespace Emberline.EditorTools
             gmGo.AddComponent<SquadCoordinator>();
             var hudGo = new GameObject("EmberHud");
             hudGo.AddComponent<UI.EmberHud>();
+            // Still of the arena behind opaque menus; lets the camera switch off.
+            hudGo.AddComponent<UI.MenuBackdrop>();
             // Dev perf readout: own object so its canvas is independent of the
             // HUD's. Hidden unless toggled (F3 / four-finger tap).
             new GameObject("PerfOverlay").AddComponent<UI.PerfOverlay>();

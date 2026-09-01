@@ -27,6 +27,9 @@ namespace Emberline.Missions
         /// <summary>Shards banked from optional objectives this run.</summary>
         public int BonusShards { get; private set; }
 
+        /// <summary>Optional stages completed this run, for the results screen.</summary>
+        public int OptionalDone { get; private set; }
+
         public MissionStage Stage =>
             Plan != null && StageIndex >= 0 && StageIndex < Plan.stages.Length
                 ? Plan.stages[StageIndex] : null;
@@ -184,6 +187,7 @@ namespace Emberline.Missions
             {
                 if (s.optional)
                 {
+                    OptionalDone++;
                     BonusShards += s.bonusShards;
                     _gm?.Announce($"OPTIONAL COMPLETE — ◆ +{s.bonusShards}");
                 }

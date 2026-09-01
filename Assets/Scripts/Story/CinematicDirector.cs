@@ -2,6 +2,7 @@ using System.Collections;
 using Emberline.Core;
 using Emberline.UI;
 using UnityEngine;
+using TMPro;
 using UnityEngine.UI;
 
 namespace Emberline.Story
@@ -32,7 +33,7 @@ namespace Emberline.Story
         private Canvas _canvas;
         private RectTransform _barTop, _barBottom;
         private Image _fadeImg;
-        private Text _cardText;
+        private TMP_Text _cardText;
         private SubtitleView _subs;
         private Button _skipBtn;
         private bool _skipped;
