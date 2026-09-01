@@ -296,7 +296,8 @@ namespace Emberline.UI
 
             UiKit.Label(_screenRoot,
                 $"★ {Session.TotalStars} / {Session.Story.Length * 3}      ◆ {SkillTree.Shards} SHARDS" +
-                $"      SKILLS {SkillTree.OwnedCount}/{SkillTree.Nodes.Count}", 21,
+                $"      SKILLS {SkillTree.OwnedCount}/{SkillTree.Nodes.Count}" +
+                $"      {Difficulty.Name}", 21,
                 UiKit.EmberBright, new Vector2(0.5f, 0f), new Vector2(0, 158), new Vector2(900, 30));
 
             // Weapon selector — opens the full armoury rather than blind-cycling,
@@ -1032,17 +1033,20 @@ namespace Emberline.UI
             _settingsRoot = UiKit.Group(_root, "Settings");
             UiKit.Img(_settingsRoot, null, new Color(0, 0, 0, 0.7f)).raycastTarget = true;
             var panel = UiKit.Rect(_settingsRoot, "Panel", new Vector2(0.5f, 0.5f),
-                Vector2.zero, new Vector2(560, 400));
+                Vector2.zero, new Vector2(560, 486));
             UiKit.Img(panel, UiKit.PanelSprite, new Color(0.1f, 0.105f, 0.14f, 0.98f), sliced: true);
             UiKit.Label(panel, "SETTINGS", 30, UiKit.Pale, new Vector2(0.5f, 1f),
                 new Vector2(0, -42), new Vector2(400, 40), display: true);
 
-            Text sfxLabel = null, musicLabel = null, gfxLabel = null;
+            Text sfxLabel = null, musicLabel = null, gfxLabel = null, diffLabel = null;
+            Text diffBlurb = null;
             void Refresh()
             {
                 sfxLabel.text = $"SFX VOLUME   {Mathf.RoundToInt(Sfx3D.SfxVolume * 100)}%";
                 musicLabel.text = $"MUSIC VOLUME   {Mathf.RoundToInt(Sfx3D.MusicVolume * 100)}%";
                 gfxLabel.text = "GRAPHICS   " + GraphicsTier switch { 0 => "LOW", 1 => "MEDIUM", _ => "HIGH" };
+                if (diffLabel != null) diffLabel.text = "DIFFICULTY   " + Difficulty.Name;
+                if (diffBlurb != null) diffBlurb.text = Difficulty.Now.Blurb;
             }
 
             void Row(float y, System.Func<Text> label, System.Action minus, System.Action plus)
@@ -1054,14 +1058,32 @@ namespace Emberline.UI
             }
 
             sfxLabel = UiKit.Label(panel, "", 20, UiKit.Pale, new Vector2(0.5f, 0.5f),
-                new Vector2(0, 70), new Vector2(280, 30));
-            Row(70, () => sfxLabel, () => Sfx3D.SfxVolume -= 0.1f, () => Sfx3D.SfxVolume += 0.1f);
+                new Vector2(0, 116), new Vector2(280, 30));
+            Row(116, () => sfxLabel, () => Sfx3D.SfxVolume -= 0.1f, () => Sfx3D.SfxVolume += 0.1f);
             musicLabel = UiKit.Label(panel, "", 20, UiKit.Pale, new Vector2(0.5f, 0.5f),
-                new Vector2(0, 0), new Vector2(280, 30));
-            Row(0, () => musicLabel, () => Sfx3D.MusicVolume -= 0.1f, () => Sfx3D.MusicVolume += 0.1f);
+                new Vector2(0, 52), new Vector2(280, 30));
+            Row(52, () => musicLabel, () => Sfx3D.MusicVolume -= 0.1f, () => Sfx3D.MusicVolume += 0.1f);
             gfxLabel = UiKit.Label(panel, "", 20, UiKit.Pale, new Vector2(0.5f, 0.5f),
-                new Vector2(0, -70), new Vector2(280, 30));
-            Row(-70, () => gfxLabel, () => GraphicsTier--, () => GraphicsTier++);
+                new Vector2(0, -12), new Vector2(280, 30));
+            Row(-12, () => gfxLabel, () => GraphicsTier--, () => GraphicsTier++);
+
+            // Difficulty scales enemies as they spawn, so changing it mid-mission
+            // would only affect the next wave — confusing at exactly the moment a
+            // player reaches for it. Editable from the menu; read-only in the pause
+            // overlay, where LEAVE MISSION is the way to act on it.
+            var inPlay = _gm != null && _gm.State == GameManager.Phase.Playing;
+            diffLabel = UiKit.Label(panel, "", 20,
+                inPlay ? UiKit.Dim : UiKit.Pale, new Vector2(0.5f, 0.5f),
+                new Vector2(0, -76), new Vector2(300, 30));
+            if (inPlay)
+                diffBlurb = UiKit.Label(panel, "", 14, new Color(1, 1, 1, 0.35f),
+                    new Vector2(0.5f, 0.5f), new Vector2(0, -100), new Vector2(460, 22));
+            else
+            {
+                Row(-76, () => diffLabel, () => Difficulty.Step(-1), () => Difficulty.Step(1));
+                diffBlurb = UiKit.Label(panel, "", 14, UiKit.Sen,
+                    new Vector2(0.5f, 0.5f), new Vector2(0, -104), new Vector2(460, 22));
+            }
             Refresh();
 
             // Leaving a mission. Without this the only way out of a level was to
@@ -1073,7 +1095,7 @@ namespace Emberline.UI
                 Text quitLabel = null;
                 var armed = false;
                 var quit = UiKit.MakeButton(panel, "LEAVE MISSION", new Vector2(0.5f, 0f),
-                    new Vector2(-118, 46), new Vector2(228, 56), () =>
+                    new Vector2(-118, 40), new Vector2(228, 56), () =>
                     {
                         if (!armed)
                         {
@@ -1090,12 +1112,12 @@ namespace Emberline.UI
                     }, 17);
                 quitLabel = quit.GetComponentInChildren<Text>();
 
-                UiKit.MakeButton(panel, "RESUME", new Vector2(0.5f, 0f), new Vector2(118, 46),
+                UiKit.MakeButton(panel, "RESUME", new Vector2(0.5f, 0f), new Vector2(118, 40),
                     new Vector2(200, 56), CloseSettings, 20);
             }
             else
             {
-                UiKit.MakeButton(panel, "CLOSE", new Vector2(0.5f, 0f), new Vector2(0, 46),
+                UiKit.MakeButton(panel, "CLOSE", new Vector2(0.5f, 0f), new Vector2(0, 40),
                     new Vector2(200, 56), CloseSettings, 20);
             }
         }

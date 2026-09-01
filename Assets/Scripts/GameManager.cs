@@ -251,7 +251,7 @@ namespace Emberline
                     if (level.marsh != isMarshScene) { LoadThemeScene(level.marsh); return; }
                     CurrentLevel = level;
                     _waves = level.waves;
-                    _playerHealth?.SetMax(110f);
+                    _playerHealth?.SetMax(110f * Difficulty.Now.PlayerHp);
                     // Per-level atmosphere.
                     if (level.id == 3) UI.LevelFx.EnableRain();
                     if (level.id == 5) UI.LevelFx.SpawnFootprints();
@@ -270,7 +270,8 @@ namespace Emberline
                     CurrentDuel = duel;
                     _waves = new[] { new[] { duel.kind } };
                     // The chosen handicap only touches the duel's own terms.
-                    _playerHealth?.SetMax(110f * Session.CurrentDuelModifier.playerHpMul);
+                    _playerHealth?.SetMax(110f * Session.CurrentDuelModifier.playerHpMul
+                        * Difficulty.Now.PlayerHp);
                     State = Phase.Intro;
                     break;
                 }
@@ -279,7 +280,7 @@ namespace Emberline
                     if (isMarshScene) { LoadThemeScene(false); return; }
                     _endless = true;
                     _waves = new EnemyKind[0][];
-                    _playerHealth?.SetMax(140f);
+                    _playerHealth?.SetMax(140f * Difficulty.Now.PlayerHp);
                     // The Road North: open the arena and start streaming corridor.
                     if (_playerT != null)
                     {
@@ -485,7 +486,7 @@ namespace Emberline
                 {
                     // Small top-up, not a reset: attrition across a mission should
                     // actually accumulate.
-                    _playerHealth.Heal(15f);
+                    _playerHealth.Heal(Difficulty.ScaleHeal(15f));
                     FloatingText.Spawn(_playerT.position + Vector3.up * 2.3f, "+15",
                         new Color(0.5f, 0.9f, 0.55f), 1.1f);
                 }
@@ -559,6 +560,7 @@ namespace Emberline
                         brain.maxHp *= 1.5f;
                         brain.damage *= 1.35f;
                     }
+                    Difficulty.ApplyTo(brain); // outermost multiplier, after mode scaling
                     brain.SyncHpToMax();
                     // Stealth: they haven't noticed you yet — until the alarm.
                     if (StealthMode && !AlarmRaised) brain.SetUnaware(true);
@@ -738,6 +740,7 @@ namespace Emberline
             var go = EnemyPool.Spawn(prefab, p, Quaternion.Euler(0, 180f, 0));
             var brain = go != null ? go.GetComponent<EnemyBrain>() : null;
             if (brain == null) return;
+            Difficulty.ApplyTo(brain);
             brain.SyncHpToMax();
             if (unaware) brain.SetUnaware(true);
         }
@@ -774,6 +777,7 @@ namespace Emberline
             if (brain == null) return null;
             brain.maxHp *= hpMul;
             brain.damage *= dmgMul;
+            Difficulty.ApplyTo(brain);
             brain.SyncHpToMax();
             return brain;
         }
@@ -795,7 +799,7 @@ namespace Emberline
         {
             Sfx3D.Ui();
             _combat?.OnPerfectDodge();
-            if (SkillTree.Has("dodge_heal")) _playerHealth?.Heal(5f);
+            if (SkillTree.Has("dodge_heal")) _playerHealth?.Heal(Difficulty.ScaleHeal(5f));
             if (_playerT != null)
                 FloatingText.Spawn(_playerT.position + Vector3.up * 2.5f, "PERFECT",
                     new Color(0.75f, 0.9f, 1f), 0.9f);

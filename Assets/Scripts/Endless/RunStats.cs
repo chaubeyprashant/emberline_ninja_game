@@ -67,8 +67,11 @@ namespace Emberline.Endless
             Depth++;
             var depthScale = 1f + Depth * 0.08f;
             var comboBonus = 1f + Mathf.Min(0.5f, BestCombo * 0.02f);
+            // Difficulty scores like a modifier does: a Lethal depth-10 run must
+            // not read the same on the board as an Easy one.
             AddScore(Mathf.RoundToInt(def.ScoreValue * depthScale * comboBonus
-                                      * RunModifiers.ActiveScoreMultiplier));
+                                      * RunModifiers.ActiveScoreMultiplier
+                                      * Core.Difficulty.Now.Score));
         }
 
         public static void EarnRyo(int amount)

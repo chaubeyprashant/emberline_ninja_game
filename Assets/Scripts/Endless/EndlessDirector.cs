@@ -326,7 +326,7 @@ namespace Emberline.Endless
             var hp = _gm.PlayerHealth;
             if (hp != null && !RunModifiers.On(RunMod.NoHealing))
             {
-                var heal = Mathf.Max(8f, 34f - Depth * 1.5f);
+                var heal = Core.Difficulty.ScaleHeal(Mathf.Max(8f, 34f - Depth * 1.5f));
                 hp.Heal(heal);
                 if (_gm.PlayerT != null)
                     FloatingText.Spawn(_gm.PlayerT.position + Vector3.up * 2.3f,

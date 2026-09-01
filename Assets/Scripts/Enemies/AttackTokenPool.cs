@@ -37,8 +37,11 @@ namespace Emberline.Enemies
                     if (b != null && !b.Dead) alive++;
                 }
                 // Four is already a pack: let a third attacker in so waves apply
-                // real pressure instead of politely queueing.
-                return alive >= 4 ? baseSimultaneous + 1 : baseSimultaneous;
+                // real pressure instead of politely queueing. Difficulty shifts the
+                // ceiling either way — this, more than damage, is what makes Lethal
+                // feel lethal and Easy feel survivable.
+                var cap = alive >= 4 ? baseSimultaneous + 1 : baseSimultaneous;
+                return Mathf.Max(1, cap + Core.Difficulty.Now.ExtraAttackers);
             }
         }
 
