@@ -193,7 +193,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 76c424a0a8baf42148faf99ff02e0ea3, type: 3}
       propertyPath: m_Name
-      value: Model
+      value: VisualRoot
       objectReference: {fileID: 0}
     - target: {fileID: 1714662531892281021, guid: 76c424a0a8baf42148faf99ff02e0ea3, type: 3}
       propertyPath: 'm_Materials.Array.data[0]'
@@ -229,8 +229,21 @@ PrefabInstance:
     m_AddedComponents:
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 76c424a0a8baf42148faf99ff02e0ea3, type: 3}
       insertIndex: -1
-      addedObject: {fileID: 9130153378114696072}
+      addedObject: {fileID: 1598266979541643858}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 76c424a0a8baf42148faf99ff02e0ea3, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 5769211951149995898}
   m_SourcePrefab: {fileID: 100100000, guid: 76c424a0a8baf42148faf99ff02e0ea3, type: 3}
+--- !u!4 &2128253019713769494 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 7997947301047521070, guid: 76c424a0a8baf42148faf99ff02e0ea3, type: 3}
+  m_PrefabInstance: {fileID: 8320251235182206776}
+  m_PrefabAsset: {fileID: 0}
+--- !u!4 &7858427430725152076 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 2196004506624635508, guid: 76c424a0a8baf42148faf99ff02e0ea3, type: 3}
+  m_PrefabInstance: {fileID: 8320251235182206776}
+  m_PrefabAsset: {fileID: 0}
 --- !u!4 &8430106382265956563 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 76c424a0a8baf42148faf99ff02e0ea3, type: 3}
@@ -241,7 +254,23 @@ GameObject:
   m_CorrespondingSourceObject: {fileID: 919132149155446097, guid: 76c424a0a8baf42148faf99ff02e0ea3, type: 3}
   m_PrefabInstance: {fileID: 8320251235182206776}
   m_PrefabAsset: {fileID: 0}
---- !u!95 &9130153378114696072
+--- !u!114 &1598266979541643858
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9202562385968587369}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: db8d27ac3014f4b9da2395ca52c9e310, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Emberline.Core.VisualRoot
+  modelId: BanditModel
+  socketRight: {fileID: 2128253019713769494}
+  socketLeft: {fileID: 7858427430725152076}
+  normalisedHeight: 1.72
+--- !u!95 &5769211951149995898
 Animator:
   serializedVersion: 7
   m_ObjectHideFlags: 0

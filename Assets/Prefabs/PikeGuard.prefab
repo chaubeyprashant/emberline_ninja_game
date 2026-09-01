@@ -213,7 +213,7 @@ PrefabInstance:
       objectReference: {fileID: 2100000, guid: c32078990706744c787473f2bfa5a1a9, type: 2}
     - target: {fileID: 919132149155446097, guid: 64bf2b0ad0a524093b393a44f9559b8f, type: 3}
       propertyPath: m_Name
-      value: Model
+      value: VisualRoot
       objectReference: {fileID: 0}
     - target: {fileID: 1075743456831514430, guid: 64bf2b0ad0a524093b393a44f9559b8f, type: 3}
       propertyPath: 'm_Materials.Array.data[0]'
@@ -260,7 +260,10 @@ PrefabInstance:
     m_AddedComponents:
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 64bf2b0ad0a524093b393a44f9559b8f, type: 3}
       insertIndex: -1
-      addedObject: {fileID: 6007049421120540953}
+      addedObject: {fileID: 66607495446433374}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 64bf2b0ad0a524093b393a44f9559b8f, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 3957332140257430543}
   m_SourcePrefab: {fileID: 100100000, guid: 64bf2b0ad0a524093b393a44f9559b8f, type: 3}
 --- !u!4 &2815221183404510732 stripped
 Transform:
@@ -272,7 +275,23 @@ GameObject:
   m_CorrespondingSourceObject: {fileID: 919132149155446097, guid: 64bf2b0ad0a524093b393a44f9559b8f, type: 3}
   m_PrefabInstance: {fileID: 2349495533544303079}
   m_PrefabAsset: {fileID: 0}
---- !u!95 &6007049421120540953
+--- !u!114 &66607495446433374
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3196003691862381750}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: db8d27ac3014f4b9da2395ca52c9e310, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Emberline.Core.VisualRoot
+  modelId: PikeGuardModel
+  socketRight: {fileID: 5649061011441657545}
+  socketLeft: {fileID: 4531417047825046419}
+  normalisedHeight: 1.9
+--- !u!95 &3957332140257430543
 Animator:
   serializedVersion: 7
   m_ObjectHideFlags: 0
@@ -294,6 +313,11 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
+--- !u!4 &4531417047825046419 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 2196004506624635508, guid: 64bf2b0ad0a524093b393a44f9559b8f, type: 3}
+  m_PrefabInstance: {fileID: 2349495533544303079}
+  m_PrefabAsset: {fileID: 0}
 --- !u!4 &5649061011441657545 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 7997947301047521070, guid: 64bf2b0ad0a524093b393a44f9559b8f, type: 3}

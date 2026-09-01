@@ -193,7 +193,7 @@ PrefabInstance:
       objectReference: {fileID: 2100000, guid: 587414637a30d4af5b50d462cb259ccb, type: 2}
     - target: {fileID: 919132149155446097, guid: 726af7fc0e5f3476faf676528b7076eb, type: 3}
       propertyPath: m_Name
-      value: Model
+      value: VisualRoot
       objectReference: {fileID: 0}
     - target: {fileID: 2483392404169570154, guid: 726af7fc0e5f3476faf676528b7076eb, type: 3}
       propertyPath: 'm_Materials.Array.data[0]'
@@ -237,7 +237,10 @@ PrefabInstance:
     m_AddedComponents:
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 726af7fc0e5f3476faf676528b7076eb, type: 3}
       insertIndex: -1
-      addedObject: {fileID: 6207199873740275548}
+      addedObject: {fileID: 158342568814386758}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 726af7fc0e5f3476faf676528b7076eb, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 8770752096688905729}
   m_SourcePrefab: {fileID: 100100000, guid: 726af7fc0e5f3476faf676528b7076eb, type: 3}
 --- !u!4 &2400989396209216012 stripped
 Transform:
@@ -249,7 +252,23 @@ GameObject:
   m_CorrespondingSourceObject: {fileID: 919132149155446097, guid: 726af7fc0e5f3476faf676528b7076eb, type: 3}
   m_PrefabInstance: {fileID: 2799196487806537191}
   m_PrefabAsset: {fileID: 0}
---- !u!95 &6207199873740275548
+--- !u!114 &158342568814386758
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3033692829369495734}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: db8d27ac3014f4b9da2395ca52c9e310, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Emberline.Core.VisualRoot
+  modelId: GoroModel
+  socketRight: {fileID: 5199076938429334217}
+  socketLeft: {fileID: 4080674856050261907}
+  normalisedHeight: 2.45
+--- !u!95 &8770752096688905729
 Animator:
   serializedVersion: 7
   m_ObjectHideFlags: 0
@@ -271,3 +290,13 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
+--- !u!4 &4080674856050261907 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 2196004506624635508, guid: 726af7fc0e5f3476faf676528b7076eb, type: 3}
+  m_PrefabInstance: {fileID: 2799196487806537191}
+  m_PrefabAsset: {fileID: 0}
+--- !u!4 &5199076938429334217 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 7997947301047521070, guid: 726af7fc0e5f3476faf676528b7076eb, type: 3}
+  m_PrefabInstance: {fileID: 2799196487806537191}
+  m_PrefabAsset: {fileID: 0}

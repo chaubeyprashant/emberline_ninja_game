@@ -22,6 +22,16 @@ namespace Emberline.EditorTools
         private const string PropDir = "Assets/Art/Characters/Props";
         private const string OutDir = "Assets/Prefabs/Characters";
 
+        /// <summary>Whether the builder overrides materials or trusts the model.</summary>
+        public enum MaterialMode
+        {
+            /// <summary>One shared palette material on every renderer (placeholders).</summary>
+            PaletteOverride,
+
+            /// <summary>Keep the materials authored on the FBX (realistic PBR).</summary>
+            KeepAuthored,
+        }
+
         public class Spec
         {
             public string name;
@@ -38,6 +48,22 @@ namespace Emberline.EditorTools
             public string[] keepEmbedded;         // embedded hand-slot meshes to keep visible
             public System.Func<Color, Color> recolor; // palette remap for identity
             public Dictionary<RigPose, string> clips;
+
+            /// <summary>
+            /// How the model's surfaces are authored. The KayKit placeholder set
+            /// shares one palette texture, so every renderer is forced onto a
+            /// single material. A realistic PBR character carries its own
+            /// albedo/normal/ORM per slot and must keep them — see
+            /// docs/ASSET_SPECIFICATIONS.md §9 step 2.
+            /// </summary>
+            public MaterialMode materialMode = MaterialMode.PaletteOverride;
+
+            /// <summary>
+            /// Socket bone names, in preference order. Empty falls back to the
+            /// KayKit-era search (handslot.r / handslot_r / hand.r / handr), so
+            /// existing specs keep working and a new rig declares its own.
+            /// </summary>
+            public string[] socketRight, socketLeft;
         }
 
         /// <summary>Is `c` the dominant channel by a clear margin (cloth detection)?</summary>
@@ -468,8 +494,13 @@ namespace Emberline.EditorTools
             }
 
             var instance = (GameObject)PrefabUtility.InstantiatePrefab(model);
-            instance.name = "Model";
+            // The visual swap boundary. Everything the artist owns lives under
+            // here; gameplay components stay on the parent and address this by
+            // component, never by name.
+            instance.name = "VisualRoot";
             instance.transform.SetParent(root.transform, false);
+            var visual = instance.AddComponent<VisualRoot>();
+            visual.modelId = spec.name;
 
             // Normalize height.
             var skinned = instance.GetComponentsInChildren<SkinnedMeshRenderer>(true);
@@ -479,6 +510,9 @@ namespace Emberline.EditorTools
                 foreach (var r in skinned) bounds.Encapsulate(r.bounds);
                 if (bounds.size.y > 0.01f)
                     instance.transform.localScale = Vector3.one * (spec.height / bounds.size.y);
+            }
+            visual.normalisedHeight = spec.height;
+            {
             }
 
             // Embedded hand-slot weapon options: keep only the ones the spec asks for.
@@ -492,14 +526,21 @@ namespace Emberline.EditorTools
                     mr.gameObject.SetActive(false);
             }
 
-            // Toon material with the (optionally recolored) palette texture; capes,
-            // hats and kept weapons share the same palette UVs as the body.
-            var mat = CharacterMaterial(spec);
+            // Placeholder models share one palette texture, so every renderer is
+            // forced onto a single material. A model authored to
+            // docs/ASSET_SPECIFICATIONS.md brings its own PBR set and keeps it —
+            // overriding would throw away the normal and ORM maps that are the
+            // entire point of the replacement.
+            var mat = spec.materialMode == MaterialMode.PaletteOverride
+                ? CharacterMaterial(spec) : null;
             foreach (var r in instance.GetComponentsInChildren<Renderer>(true))
             {
-                var mats = r.sharedMaterials;
-                for (var i = 0; i < mats.Length; i++) mats[i] = mat;
-                r.sharedMaterials = mats;
+                if (mat != null)
+                {
+                    var mats = r.sharedMaterials;
+                    for (var i = 0; i < mats.Length; i++) mats[i] = mat;
+                    r.sharedMaterials = mats;
+                }
                 if (r is SkinnedMeshRenderer smr) smr.updateWhenOffscreen = false;
             }
 
@@ -508,6 +549,9 @@ namespace Emberline.EditorTools
             if (animator == null) animator = instance.AddComponent<Animator>();
             animator.runtimeAnimatorController = BuildController(spec);
             animator.applyRootMotion = false;
+
+            visual.socketRight = FindSocket(instance, "r", spec.socketRight);
+            visual.socketLeft = FindSocket(instance, "l", spec.socketLeft);
 
             AttachProps(instance, spec);
 
@@ -597,8 +641,34 @@ namespace Emberline.EditorTools
 
         private static void AttachProps(GameObject instance, Spec spec)
         {
-            AttachProp(instance, spec.propRight, "r", spec.trail, spec.name, spec.propScale);
-            AttachProp(instance, spec.propLeft, "l", spec.trail, spec.name, spec.propScale);
+            AttachProp(instance, spec.propRight, "r", spec.trail, spec.name, spec.propScale,
+                spec.socketRight);
+            AttachProp(instance, spec.propLeft, "l", spec.trail, spec.name, spec.propScale,
+                spec.socketLeft);
+        }
+
+        /// <summary>
+        /// Resolve a weapon socket. A model declares its own bone names; when it
+        /// declares none we fall back to the KayKit-era search so the existing
+        /// placeholder roster keeps building unchanged.
+        /// </summary>
+        private static Transform FindSocket(GameObject instance, string side, string[] declared)
+        {
+            var all = instance.GetComponentsInChildren<Transform>(true);
+
+            if (declared != null)
+                foreach (var want in declared)
+                {
+                    if (string.IsNullOrEmpty(want)) continue;
+                    var hit = all.FirstOrDefault(t =>
+                        string.Equals(t.name, want, System.StringComparison.OrdinalIgnoreCase));
+                    if (hit != null) return hit;
+                }
+
+            return all.FirstOrDefault(t => t.name.ToLowerInvariant().Contains("handslot." + side))
+                   ?? all.FirstOrDefault(t => t.name.ToLowerInvariant().Contains("handslot" + side))
+                   ?? all.FirstOrDefault(t => t.name.ToLowerInvariant().Contains("hand." + side))
+                   ?? all.FirstOrDefault(t => t.name.ToLowerInvariant() == "hand" + side);
         }
 
         /// <summary>
@@ -608,16 +678,14 @@ namespace Emberline.EditorTools
         /// since a build can't instantiate FBX assets on device.
         /// </summary>
         public static GameObject AttachProp(GameObject instance, string propName, string side,
-            bool trail = false, string ownerName = "", Vector3? scale = null)
+            bool trail = false, string ownerName = "", Vector3? scale = null,
+            string[] declaredSocket = null)
         {
             if (string.IsNullOrEmpty(propName)) return null;
-            var all = instance.GetComponentsInChildren<Transform>(true);
-            var slot = all.FirstOrDefault(t => t.name.ToLowerInvariant().Contains("handslot." + side))
-                       ?? all.FirstOrDefault(t => t.name.ToLowerInvariant().Contains("handslot" + side))
-                       ?? all.FirstOrDefault(t => t.name.ToLowerInvariant().Contains("hand." + side))
-                       ?? all.FirstOrDefault(t => t.name.ToLowerInvariant() == "hand" + side);
+            var slot = FindSocket(instance, side, declaredSocket);
             if (slot == null)
             {
+                var all = instance.GetComponentsInChildren<Transform>(true);
                 Debug.LogWarning($"[EmberFactory] {ownerName}: no hand slot '{side}' — bones: "
                     + string.Join(",", all.Where(t => t.name.ToLowerInvariant().Contains("hand"))
                         .Select(t => t.name)));

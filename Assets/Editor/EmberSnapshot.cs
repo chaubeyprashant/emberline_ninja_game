@@ -61,7 +61,7 @@ namespace Emberline.EditorTools
                 root.transform.rotation = Quaternion.Euler(0, 180f, 0); // face camera
                 if (EmberCharacterFactory.Build(root, spec))
                 {
-                    var model = root.transform.Find("Model")?.gameObject;
+                    var model = Core.VisualRoot.Of(root)?.gameObject;
                     var clip = FindClip(spec.fbx, clipName);
                     if (model != null && clip != null) clip.SampleAnimation(model, clip.length * t);
                 }

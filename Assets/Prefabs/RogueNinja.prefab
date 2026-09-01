@@ -201,7 +201,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 74dc081c1a8474a87a82ef7db8fb8fea, type: 3}
       propertyPath: m_Name
-      value: Model
+      value: VisualRoot
       objectReference: {fileID: 0}
     - target: {fileID: 1168437713928847705, guid: 74dc081c1a8474a87a82ef7db8fb8fea, type: 3}
       propertyPath: m_IsActive
@@ -240,14 +240,38 @@ PrefabInstance:
     m_AddedComponents:
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 74dc081c1a8474a87a82ef7db8fb8fea, type: 3}
       insertIndex: -1
-      addedObject: {fileID: 707190344756607587}
+      addedObject: {fileID: 5090550027235517400}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 74dc081c1a8474a87a82ef7db8fb8fea, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 7507242069949751151}
   m_SourcePrefab: {fileID: 100100000, guid: 74dc081c1a8474a87a82ef7db8fb8fea, type: 3}
+--- !u!4 &2851112666205507318 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 2196004506624635508, guid: 74dc081c1a8474a87a82ef7db8fb8fea, type: 3}
+  m_PrefabInstance: {fileID: 4172841977778240642}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &3830734221295632851 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 919132149155446097, guid: 74dc081c1a8474a87a82ef7db8fb8fea, type: 3}
   m_PrefabInstance: {fileID: 4172841977778240642}
   m_PrefabAsset: {fileID: 0}
---- !u!95 &707190344756607587
+--- !u!114 &5090550027235517400
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3830734221295632851}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: db8d27ac3014f4b9da2395ca52c9e310, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Emberline.Core.VisualRoot
+  modelId: RogueNinjaModel
+  socketRight: {fileID: 6275347276574765996}
+  socketLeft: {fileID: 2851112666205507318}
+  normalisedHeight: 1.78
+--- !u!95 &7507242069949751151
 Animator:
   serializedVersion: 7
   m_ObjectHideFlags: 0

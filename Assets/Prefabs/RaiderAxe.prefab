@@ -213,7 +213,7 @@ PrefabInstance:
       objectReference: {fileID: 2100000, guid: 9901e93d412734f2299038eb13e777cc, type: 2}
     - target: {fileID: 919132149155446097, guid: 64bf2b0ad0a524093b393a44f9559b8f, type: 3}
       propertyPath: m_Name
-      value: Model
+      value: VisualRoot
       objectReference: {fileID: 0}
     - target: {fileID: 1075743456831514430, guid: 64bf2b0ad0a524093b393a44f9559b8f, type: 3}
       propertyPath: 'm_Materials.Array.data[0]'
@@ -260,7 +260,10 @@ PrefabInstance:
     m_AddedComponents:
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 64bf2b0ad0a524093b393a44f9559b8f, type: 3}
       insertIndex: -1
-      addedObject: {fileID: 1987989038277750998}
+      addedObject: {fileID: 8706618265721079061}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 64bf2b0ad0a524093b393a44f9559b8f, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 2563779013489171467}
   m_SourcePrefab: {fileID: 100100000, guid: 64bf2b0ad0a524093b393a44f9559b8f, type: 3}
 --- !u!4 &2566351142038312329 stripped
 Transform:
@@ -272,7 +275,23 @@ GameObject:
   m_CorrespondingSourceObject: {fileID: 919132149155446097, guid: 64bf2b0ad0a524093b393a44f9559b8f, type: 3}
   m_PrefabInstance: {fileID: 2600612976669094498}
   m_PrefabAsset: {fileID: 0}
---- !u!95 &1987989038277750998
+--- !u!114 &8706618265721079061
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2942630015926062899}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: db8d27ac3014f4b9da2395ca52c9e310, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Emberline.Core.VisualRoot
+  modelId: RaiderAxeModel
+  socketRight: {fileID: 5397934737200954700}
+  socketLeft: {fileID: 4210581771401904150}
+  normalisedHeight: 1.95
+--- !u!95 &2563779013489171467
 Animator:
   serializedVersion: 7
   m_ObjectHideFlags: 0
@@ -294,6 +313,11 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
+--- !u!4 &4210581771401904150 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 2196004506624635508, guid: 64bf2b0ad0a524093b393a44f9559b8f, type: 3}
+  m_PrefabInstance: {fileID: 2600612976669094498}
+  m_PrefabAsset: {fileID: 0}
 --- !u!4 &5397934737200954700 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 7997947301047521070, guid: 64bf2b0ad0a524093b393a44f9559b8f, type: 3}

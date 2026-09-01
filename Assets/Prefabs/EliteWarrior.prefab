@@ -336,7 +336,7 @@ PrefabInstance:
       objectReference: {fileID: 2100000, guid: 99a7e84714c834353a15412ef32e6d5d, type: 2}
     - target: {fileID: 919132149155446097, guid: ace56647daa404ad4809b0e5e205394c, type: 3}
       propertyPath: m_Name
-      value: Model
+      value: VisualRoot
       objectReference: {fileID: 0}
     - target: {fileID: 7656125411362483174, guid: ace56647daa404ad4809b0e5e205394c, type: 3}
       propertyPath: 'm_Materials.Array.data[0]'
@@ -363,14 +363,38 @@ PrefabInstance:
     m_AddedComponents:
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: ace56647daa404ad4809b0e5e205394c, type: 3}
       insertIndex: -1
-      addedObject: {fileID: 8781783111536195378}
+      addedObject: {fileID: 1784003141889657811}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: ace56647daa404ad4809b0e5e205394c, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1760681429675277645}
   m_SourcePrefab: {fileID: 100100000, guid: ace56647daa404ad4809b0e5e205394c, type: 3}
+--- !u!4 &328609694275154310 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 2196004506624635508, guid: ace56647daa404ad4809b0e5e205394c, type: 3}
+  m_PrefabInstance: {fileID: 1942936758769517554}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1600989406432116387 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 919132149155446097, guid: ace56647daa404ad4809b0e5e205394c, type: 3}
   m_PrefabInstance: {fileID: 1942936758769517554}
   m_PrefabAsset: {fileID: 0}
---- !u!95 &8781783111536195378
+--- !u!114 &1784003141889657811
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1600989406432116387}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: db8d27ac3014f4b9da2395ca52c9e310, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Emberline.Core.VisualRoot
+  modelId: EliteWarriorModel
+  socketRight: {fileID: 8361170211796864220}
+  socketLeft: {fileID: 328609694275154310}
+  normalisedHeight: 2.2
+--- !u!95 &1760681429675277645
 Animator:
   serializedVersion: 7
   m_ObjectHideFlags: 0

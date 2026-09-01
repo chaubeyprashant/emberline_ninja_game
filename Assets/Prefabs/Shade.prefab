@@ -185,7 +185,7 @@ PrefabInstance:
       objectReference: {fileID: 2100000, guid: 0cf9b909198d846828edb6fe07809fef, type: 2}
     - target: {fileID: 919132149155446097, guid: 0bcc526b1307b454487dbe83bd391ffa, type: 3}
       propertyPath: m_Name
-      value: Model
+      value: VisualRoot
       objectReference: {fileID: 0}
     - target: {fileID: 3000256035407954547, guid: 0bcc526b1307b454487dbe83bd391ffa, type: 3}
       propertyPath: 'm_Materials.Array.data[0]'
@@ -205,8 +205,21 @@ PrefabInstance:
     m_AddedComponents:
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 0bcc526b1307b454487dbe83bd391ffa, type: 3}
       insertIndex: -1
-      addedObject: {fileID: 4891971340343442755}
+      addedObject: {fileID: 5316956639243141528}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 0bcc526b1307b454487dbe83bd391ffa, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 7525960635066232381}
   m_SourcePrefab: {fileID: 100100000, guid: 0bcc526b1307b454487dbe83bd391ffa, type: 3}
+--- !u!4 &2063528878036335441 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 7997947301047521070, guid: 0bcc526b1307b454487dbe83bd391ffa, type: 3}
+  m_PrefabInstance: {fileID: 8240824423920628863}
+  m_PrefabAsset: {fileID: 0}
+--- !u!4 &7792507532137874955 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 2196004506624635508, guid: 0bcc526b1307b454487dbe83bd391ffa, type: 3}
+  m_PrefabInstance: {fileID: 8240824423920628863}
+  m_PrefabAsset: {fileID: 0}
 --- !u!4 &8491523197326037908 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 0bcc526b1307b454487dbe83bd391ffa, type: 3}
@@ -217,7 +230,23 @@ GameObject:
   m_CorrespondingSourceObject: {fileID: 919132149155446097, guid: 0bcc526b1307b454487dbe83bd391ffa, type: 3}
   m_PrefabInstance: {fileID: 8240824423920628863}
   m_PrefabAsset: {fileID: 0}
---- !u!95 &4891971340343442755
+--- !u!114 &5316956639243141528
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9123206489852070190}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: db8d27ac3014f4b9da2395ca52c9e310, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Emberline.Core.VisualRoot
+  modelId: ShadeModel
+  socketRight: {fileID: 2063528878036335441}
+  socketLeft: {fileID: 7792507532137874955}
+  normalisedHeight: 1.62
+--- !u!95 &7525960635066232381
 Animator:
   serializedVersion: 7
   m_ObjectHideFlags: 0

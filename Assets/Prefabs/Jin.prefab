@@ -213,7 +213,7 @@ PrefabInstance:
       objectReference: {fileID: 2100000, guid: f89c78f393f104cd5b3a659ea6924bc5, type: 2}
     - target: {fileID: 919132149155446097, guid: 64bf2b0ad0a524093b393a44f9559b8f, type: 3}
       propertyPath: m_Name
-      value: Model
+      value: VisualRoot
       objectReference: {fileID: 0}
     - target: {fileID: 1075743456831514430, guid: 64bf2b0ad0a524093b393a44f9559b8f, type: 3}
       propertyPath: 'm_Materials.Array.data[0]'
@@ -253,14 +253,38 @@ PrefabInstance:
     m_AddedComponents:
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 64bf2b0ad0a524093b393a44f9559b8f, type: 3}
       insertIndex: -1
-      addedObject: {fileID: 4304537436636017058}
+      addedObject: {fileID: 1963255800741915230}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 64bf2b0ad0a524093b393a44f9559b8f, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 3975305069925344904}
   m_SourcePrefab: {fileID: 100100000, guid: 64bf2b0ad0a524093b393a44f9559b8f, type: 3}
+--- !u!4 &2741152866726368383 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 2196004506624635508, guid: 64bf2b0ad0a524093b393a44f9559b8f, type: 3}
+  m_PrefabInstance: {fileID: 4067681152574449163}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &3797141025631066970 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 919132149155446097, guid: 64bf2b0ad0a524093b393a44f9559b8f, type: 3}
   m_PrefabInstance: {fileID: 4067681152574449163}
   m_PrefabAsset: {fileID: 0}
---- !u!95 &4304537436636017058
+--- !u!114 &1963255800741915230
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3797141025631066970}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: db8d27ac3014f4b9da2395ca52c9e310, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Emberline.Core.VisualRoot
+  modelId: JinModel
+  socketRight: {fileID: 6236681495792789797}
+  socketLeft: {fileID: 2741152866726368383}
+  normalisedHeight: 1.85
+--- !u!95 &3975305069925344904
 Animator:
   serializedVersion: 7
   m_ObjectHideFlags: 0
@@ -285,5 +309,10 @@ Animator:
 --- !u!4 &4609987314041291232 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 64bf2b0ad0a524093b393a44f9559b8f, type: 3}
+  m_PrefabInstance: {fileID: 4067681152574449163}
+  m_PrefabAsset: {fileID: 0}
+--- !u!4 &6236681495792789797 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 7997947301047521070, guid: 64bf2b0ad0a524093b393a44f9559b8f, type: 3}
   m_PrefabInstance: {fileID: 4067681152574449163}
   m_PrefabAsset: {fileID: 0}
