@@ -2,6 +2,7 @@ using System.Collections;
 using UnityEngine;
 using UnityEngine.UI;
 using Emberline.Core;
+using Emberline.Enemies;
 
 namespace Emberline.UI
 {
@@ -16,12 +17,16 @@ namespace Emberline.UI
         private const float Duration = 3.4f;
 
         public static void Play(GameManager gm, CameraRig cam, Transform boss,
-            CharacterRig bossRig, string bossName, string title, string taunt)
+            CharacterRig bossRig, string bossName, string title, string taunt,
+            EnemyWeapon weapon = EnemyWeapon.None)
         {
             var host = new GameObject("BossIntro");
             var d = host.AddComponent<BossIntroDirector>();
+            d._weapon = weapon;
             d.StartCoroutine(d.Run(gm, cam, boss, bossRig, bossName, title, taunt));
         }
+
+        private EnemyWeapon _weapon = EnemyWeapon.None;
 
         private Canvas _canvas;
         private Text _nameText, _titleText, _tauntText;
@@ -111,8 +116,27 @@ namespace Emberline.UI
             var body = Resources.Load<Font>("Art/Fonts/Rajdhani-Medium");
             var fallback = Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf");
 
-            _nameText = MakeText(card.transform, bossName, display != null ? display : fallback,
-                40, new Color(1f, 0.62f, 0.35f), new Vector2(0, 42));
+            // "GORO — GREATAXE": the card says who and what they swing.
+            var weaponName = EmberHud.WeaponLabel(_weapon);
+            var headline = string.IsNullOrEmpty(weaponName) ? bossName : $"{bossName} — {weaponName}";
+            _nameText = MakeText(card.transform, headline, display != null ? display : fallback,
+                36, new Color(1f, 0.62f, 0.35f), new Vector2(0, 42));
+
+            // Weapon glyph on the card's left edge, matching the HUD icon set.
+            if (_weapon != EnemyWeapon.None)
+            {
+                var iconGo = new GameObject("WeaponIcon", typeof(RectTransform));
+                iconGo.transform.SetParent(card.transform, false);
+                var iconRt = (RectTransform)iconGo.transform;
+                iconRt.anchorMin = new Vector2(0f, 0.5f);
+                iconRt.anchorMax = new Vector2(0f, 0.5f);
+                iconRt.anchoredPosition = new Vector2(52f, 4f);
+                iconRt.sizeDelta = new Vector2(62f, 62f);
+                var icon = iconGo.AddComponent<Image>();
+                icon.sprite = UiKit.Icon(EmberHud.WeaponIcon(_weapon));
+                icon.color = new Color(1f, 0.72f, 0.45f, 0.95f);
+                icon.raycastTarget = false;
+            }
             _titleText = MakeText(card.transform, title, body != null ? body : fallback,
                 20, new Color(0.9f, 0.89f, 0.86f), new Vector2(0, 8));
             _tauntText = MakeText(card.transform, "", body != null ? body : fallback,

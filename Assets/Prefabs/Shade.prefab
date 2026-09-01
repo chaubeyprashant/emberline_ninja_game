@@ -88,12 +88,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ad6870349ef304358bf48fece9c4b3a7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Emberline.Enemies.EnemyBrain
+  def: {fileID: 11400000, guid: 5368be91e59214f63acc5e18d4bceaa9, type: 2}
   kind: 3
+  weapon: 5
   isClone: 0
-  maxHp: 26
+  maxHp: 48
   speed: 4.8
   attackRange: 1.7
-  damage: 12
+  damage: 15
   windupTime: 0.35
   spawnTime: 1
   arenaHalfExtents: {x: 13, y: 8}

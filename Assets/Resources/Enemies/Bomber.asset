@@ -1,0 +1,51 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c978fcae96c7b41229485f6e7e15f0b0, type: 3}
+  m_Name: Bomber
+  m_EditorClassIdentifier: Assembly-CSharp::Emberline.Enemies.EnemyDef
+  id: bomber
+  displayName: POWDER CARRIER
+  codexLine: Powder carriers. Kill them first or fight on burning ground.
+  kind: 8
+  weapon: 6
+  rank: 0
+  modelSpec: BomberModel
+  scale: 1
+  maxHp: 52
+  moveSpeed: 2.8
+  attackRange: 9
+  damage: 16
+  windupTime: 0.7
+  spawnTime: 1
+  movement: 3
+  preferredRange: 7.5
+  attacks:
+  - kind: 7
+    minRange: 4
+    maxRange: 10
+    weight: 1
+    damageMultiplier: 1
+    windupOverride: 0.7
+    cooldown: 3.2
+    redTelegraph: 1
+    telegraphScale: 1.4
+  armor: 0
+  poise: 0
+  blockChance: 0
+  maxPosture: 24
+  postureRegen: 9
+  postureRegenDelay: 1.6
+  guardBreakSeconds: 2.2
+  backstabMultiplier: 2
+  crushMultiplier: 1
+  thrownMultiplier: 1
+  elementalMultiplier: 1

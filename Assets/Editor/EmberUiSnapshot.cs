@@ -46,6 +46,10 @@ namespace Emberline.EditorTools
                 ("Story", "Logs/ui_story.png"),
                 ("Skills", "Logs/ui_skills.png"),
                 ("Hud", "Logs/ui_hud.png"),
+                ("Weapons", "Logs/ui_weapons.png"),
+                ("Arms", "Logs/ui_arms.png"),
+                ("March", "Logs/ui_march.png"),
+                ("Forge", "Logs/ui_forge.png"),
             })
             {
                 setScreen.Invoke(hud, new[] { System.Enum.Parse(screenEnum, name) });
@@ -53,8 +57,71 @@ namespace Emberline.EditorTools
                 Shoot(cam, file, 1600, 900);
             }
 
+            RenderWeaponGlyphs(cam);
+            RenderPerfOverlay(cam);
+
             Debug.Log("[Emberline] UI snapshots written to Logs/ui_*.png");
             if (Application.isBatchMode) EditorApplication.Exit(0);
+        }
+
+        /// <summary>
+        /// Dev perf overlay: edit mode never runs Start, so the panel is built
+        /// and fed a synthetic frame window through reflection, the same way the
+        /// menu screens above are driven.
+        /// </summary>
+        private static void RenderPerfOverlay(Camera cam)
+        {
+            var go = new GameObject("PerfOverlay");
+            var overlay = go.AddComponent<UI.PerfOverlay>();
+            var t = typeof(UI.PerfOverlay);
+            const BindingFlags F = BindingFlags.NonPublic | BindingFlags.Instance;
+            t.GetMethod("Build", F).Invoke(overlay, null);
+
+            // A believable 60fps window with one hitch, so every line has data.
+            var frames = (System.Collections.Generic.Queue<float>)
+                t.GetField("_frames", F).GetValue(overlay);
+            for (var i = 0; i < 200; i++) frames.Enqueue(16.1f + (i % 7) * 0.3f);
+            frames.Enqueue(38.4f);
+            t.GetField("_worstMs", F).SetValue(overlay, 38.4f);
+            t.GetField("_hitches", F).SetValue(overlay, 1);
+            t.GetField("_sinceReset", F).SetValue(overlay, 4f);
+            t.GetMethod("Refresh", F).Invoke(overlay, null);
+
+            var canvas = go.GetComponent<Canvas>();
+            canvas.renderMode = RenderMode.ScreenSpaceCamera;
+            canvas.worldCamera = cam;
+            canvas.planeDistance = 1f;
+            Canvas.ForceUpdateCanvases();
+            Shoot(cam, "Logs/ui_perf_overlay.png", 1600, 900);
+        }
+
+        /// <summary>Contact sheet of the generated weapon glyphs (boss-card icons).</summary>
+        private static void RenderWeaponGlyphs(Camera cam)
+        {
+            var go = new GameObject("GlyphSheet");
+            var canvas = go.AddComponent<Canvas>();
+            canvas.renderMode = RenderMode.ScreenSpaceCamera;
+            canvas.worldCamera = cam;
+            canvas.planeDistance = 1f;
+            var scaler = go.AddComponent<UnityEngine.UI.CanvasScaler>();
+            scaler.uiScaleMode = UnityEngine.UI.CanvasScaler.ScaleMode.ScaleWithScreenSize;
+            scaler.referenceResolution = new Vector2(1280, 720);
+
+            string[] names = { "sword", "axe", "spear", "bow", "claws", "bomb", "kunai" };
+            for (var i = 0; i < names.Length; i++)
+            {
+                var rt = UI.UiKit.Rect(go.transform, names[i], new Vector2(0.5f, 0.5f),
+                    new Vector2((i - (names.Length - 1) * 0.5f) * 150f, 20f),
+                    new Vector2(110f, 110f));
+                UI.UiKit.Img(rt, UI.UiKit.Icon(names[i]), UI.UiKit.Pale);
+                UI.UiKit.Label(go.transform, names[i].ToUpperInvariant(), 16, UI.UiKit.Dim,
+                    new Vector2(0.5f, 0.5f),
+                    new Vector2((i - (names.Length - 1) * 0.5f) * 150f, -60f),
+                    new Vector2(140f, 24f));
+            }
+            Canvas.ForceUpdateCanvases();
+            Shoot(cam, "Logs/ui_weapon_glyphs.png", 1300, 420);
+            Object.DestroyImmediate(go);
         }
 
         private static void Shoot(Camera cam, string file, int w, int h)

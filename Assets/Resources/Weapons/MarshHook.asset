@@ -16,6 +16,10 @@ MonoBehaviour:
   displayName: MARSH HOOK
   blurb: Slow and cruel. The third strike drags them in; cleave poisons the ground.
   unlockLevel: 7
+  archetype: 0
+  propRight: axe_2handed
+  propLeft: 
+  strikeChainLength: 3
   strikeDamage:
   - 12
   - 14
@@ -25,6 +29,7 @@ MonoBehaviour:
   chainWindow: 0.62
   strikeAnimTime: 0.36
   lungeSpeed: 4.5
+  cleaveStyle: 0
   cleaveDamage: 30
   cleaveRange: 3.3
   cleaveArcDeg: 170
@@ -33,4 +38,6 @@ MonoBehaviour:
   parryOnPerfectDodge: 0
   pullOnThirdHit: 1
   poisonCleave: 1
+  replacesKunaiWithThrown: 0
+  thrownId: 
   trailColor: {r: 0.5, g: 0.95, b: 0.55, a: 1}

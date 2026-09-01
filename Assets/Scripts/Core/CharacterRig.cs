@@ -36,5 +36,11 @@ namespace Emberline.Core
 
         /// <summary>Emotional state: calm idle → focused combat → enraged at low HP.</summary>
         public virtual void SetMood(RigMood mood) { }
+
+        /// <summary>
+        /// Restore the authored look, undoing runtime recolours (boss enrage) so a
+        /// recycled enemy doesn't spawn wearing the last fight's state.
+        /// </summary>
+        public virtual void ResetVisuals() { }
     }
 }

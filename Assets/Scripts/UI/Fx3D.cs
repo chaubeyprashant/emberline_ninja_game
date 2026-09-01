@@ -49,7 +49,7 @@ namespace Emberline.UI
                 return;
             }
             transform.position += Vector3.up * (1.6f * Time.deltaTime);
-            var cam = Camera.main;
+            var cam = Core.SceneRefs.Cam; // Camera.main is a tagged search, per text, per frame
             if (cam != null)
                 transform.rotation = Quaternion.LookRotation(transform.position - cam.transform.position);
             _tm.color = new Color(_color.r, _color.g, _color.b, Mathf.Clamp01(_life / 0.35f));
@@ -69,6 +69,40 @@ namespace Emberline.UI
         private static Material _novaMat;
         private static float _novaT;
         private static NovaTicker _ticker;
+
+        /// <summary>
+        /// Particle budget multiplier driven by the graphics tier
+        /// (EmberHud.ApplyGraphicsTier). Low-end phones spend their frame on the
+        /// fight, not on embers; the high tier can afford a denser look.
+        /// </summary>
+        public static float Density { get; set; } = 1f;
+
+        private static int Scaled(int count) => Mathf.Max(1, Mathf.RoundToInt(count * Density));
+
+        /// <summary>
+        /// Per-system particle ceiling for the current tier. Applied live so the
+        /// options screen takes effect without a scene reload.
+        /// </summary>
+        public static int MaxParticles
+        {
+            get => _maxParticles;
+            set
+            {
+                _maxParticles = value;
+                Apply(_sparks);
+                Apply(_embers);
+                Apply(_smoke);
+
+                static void Apply(ParticleSystem ps)
+                {
+                    if (ps == null) return;
+                    var main = ps.main;
+                    main.maxParticles = _maxParticles;
+                }
+            }
+        }
+
+        private static int _maxParticles = 256;
 
         // Pooled slash arcs.
         private const int SlashCount = 4;
@@ -134,7 +168,7 @@ namespace Emberline.UI
             main.startSpeed = new ParticleSystem.MinMaxCurve(speed * 0.4f, speed);
             main.gravityModifier = gravity;
             main.simulationSpace = ParticleSystemSimulationSpace.World;
-            main.maxParticles = 256;
+            main.maxParticles = _maxParticles;
             main.playOnAwake = false;
             var emission = ps.emission;
             emission.rateOverTime = 0;
@@ -157,6 +191,25 @@ namespace Emberline.UI
             return ps;
         }
 
+        private static Material _weatherMat, _lifeGlowMat, _lifeSoftMat;
+
+        /// <summary>Shared material for a weather layer — one per game, not per system.</summary>
+        public static Material WeatherMaterial(Core.Weather weather)
+        {
+            if (_weatherMat != null) return _weatherMat;
+            // Rain and snow both read as a soft bright mote; the particle's own
+            // colour and stretch do the rest, so one material serves every kind.
+            _weatherMat = GlowMat("circle_05", Color.white);
+            return _weatherMat;
+        }
+
+        /// <summary>Ambient-life material: glowing (fireflies, embers) or soft (leaves).</summary>
+        public static Material LifeMaterial(bool glowing)
+        {
+            if (glowing) return _lifeGlowMat ??= GlowMat("circle_05", Color.white);
+            return _lifeSoftMat ??= GlowMat("smoke_05", Color.white);
+        }
+
         /// <summary>Build all pooled systems while a load/menu hides the cost.</summary>
         public static void Prewarm() => Ensure();
 
@@ -165,7 +218,7 @@ namespace Emberline.UI
             Ensure();
             var ep = new ParticleSystem.EmitParams { startColor = color };
             _sparks.transform.position = pos;
-            _sparks.Emit(ep, count);
+            _sparks.Emit(ep, Scaled(count));
         }
 
         public static void Embers(Vector3 pos, int count = 14)
@@ -173,7 +226,7 @@ namespace Emberline.UI
             Ensure();
             var ep = new ParticleSystem.EmitParams { startColor = new Color(1f, 0.5f, 0.28f) };
             _embers.transform.position = pos;
-            _embers.Emit(ep, count);
+            _embers.Emit(ep, Scaled(count));
         }
 
         public static void Nova(Vector3 pos)
@@ -194,7 +247,7 @@ namespace Emberline.UI
             _slashNext = (_slashNext + 1) % SlashCount;
             var quad = SlashQuads[i];
             quad.position = pos;
-            var cam = Camera.main;
+            var cam = Core.SceneRefs.Cam;
             if (cam != null)
             {
                 quad.rotation = Quaternion.LookRotation(quad.position - cam.transform.position);
@@ -209,7 +262,49 @@ namespace Emberline.UI
             SlashT[i] = 0.16f;
         }
 
-        /// <summary>Enemy death: smoke puff + rising embers (bigger for bosses).</summary>
+        /// <summary>
+        /// Grey-green smoke puff — the smoke bomb's cloud, and any other soft
+        /// dissipating burst. Reuses the death-smoke system with a tinted colour.
+        /// </summary>
+        public static void Puff(Vector3 pos, Color color, int count = 14)
+        {
+            Ensure();
+            var ep = new ParticleSystem.EmitParams { startColor = color };
+            _smoke.transform.position = pos;
+            _smoke.Emit(ep, Scaled(count));
+        }
+
+        /// <summary>
+        /// Twin-dagger signature: two quick, thin slash lines instead of one heavy
+        /// arc, so the fast chain reads as fast rather than just frequent.
+        /// </summary>
+        public static void QuickSlash(Vector3 pos, Vector3 dir)
+        {
+            Slash(pos, dir, false);
+            Slash(pos + Vector3.up * 0.25f - dir * 0.2f,
+                Quaternion.Euler(0f, 35f, 0f) * dir, false);
+        }
+
+        /// <summary>Crossbow bolt: a tight spark line along the shot, no arc.</summary>
+        public static void BoltTrail(Vector3 pos, Vector3 dir)
+        {
+            Ensure();
+            var ep = new ParticleSystem.EmitParams
+            {
+                startColor = new Color(0.95f, 0.85f, 0.55f, 0.9f),
+            };
+            for (var i = 0; i < 3; i++)
+            {
+                _sparks.transform.position = pos + dir * (i * 0.35f);
+                _sparks.Emit(ep, Scaled(3));
+            }
+        }
+
+        /// <summary>
+        /// Enemy death: smoke puff + rising embers + a spark spray (bigger for
+        /// bosses). Deaths used to under-sell themselves next to an ordinary hit;
+        /// killing something should be the loudest thing on screen.
+        /// </summary>
         public static void DeathBurst(Vector3 pos, bool boss)
         {
             Ensure();
@@ -218,8 +313,10 @@ namespace Emberline.UI
                 startColor = new Color(0.16f, 0.14f, 0.15f, 0.75f),
             };
             _smoke.transform.position = pos + Vector3.up * 0.9f;
-            _smoke.Emit(ep, boss ? 14 : 7);
-            Embers(pos + Vector3.up, boss ? 30 : 14);
+            _smoke.Emit(ep, Scaled(boss ? 30 : 16));
+            Embers(pos + Vector3.up, boss ? 64 : 34);
+            Sparks(pos + Vector3.up * 1.1f, new Color(1f, 0.55f, 0.3f), boss ? 30 : 18);
+            if (boss) Nova(pos);
         }
 
         private class NovaTicker : MonoBehaviour

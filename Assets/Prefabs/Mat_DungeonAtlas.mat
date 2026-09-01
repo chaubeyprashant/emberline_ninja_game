@@ -8,7 +8,7 @@ Material:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: Mat_DungeonAtlas
-  m_Shader: {fileID: 4800000, guid: 400948e45834049669373fa3d5d807ce, type: 3}
+  m_Shader: {fileID: 4800000, guid: fa30ad707434a49d0b1f9be30442332a, type: 3}
   m_Parent: {fileID: 0}
   m_ModifiedSerializedProperties: 0
   m_ValidKeywords: []
@@ -29,11 +29,20 @@ Material:
         m_Offset: {x: 0, y: 0}
     m_Ints: []
     m_Floats:
+    - _AmbientBoost: 1
+    - _Metallic: 0
     - _OutlineWidth: 0.014
+    - _RimPower: 2
+    - _RimStrength: 0.12
+    - _Smoothness: 0.18
+    - _WearScale: 2.6
+    - _WearStrength: 0.4
     m_Colors:
     - _Color: {r: 1, g: 1, b: 1, a: 1}
     - _OutlineColor: {r: 0.04, g: 0.05, b: 0.08, a: 1}
     - _RimColor: {r: 0.3, g: 0.4, b: 0.52, a: 1}
     - _ShadowTint: {r: 0.42, g: 0.47, b: 0.6, a: 1}
+    - _SpecTint: {r: 0.92, g: 0.86, b: 0.75, a: 1}
+    - _WearColor: {r: 0.22, g: 0.2, b: 0.18, a: 1}
   m_BuildTextureStacks: []
   m_AllowLocking: 1

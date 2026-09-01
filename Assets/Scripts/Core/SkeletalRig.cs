@@ -45,9 +45,11 @@ namespace Emberline.Core
         // Pooled Flicker after-images (no Instantiate/Destroy churn).
         private readonly List<AfterImage> _imagePool = new();
         private static Material _imageMat;
+        private Color _authoredTint = Color.white;
 
         private void Awake()
         {
+            _authoredTint = tint; // SetBaseColor overwrites `tint` when a boss enrages
             _anim = GetComponentInChildren<Animator>();
             _mpb = new MaterialPropertyBlock();
             GetComponentsInChildren(true, _renderers);
@@ -105,6 +107,21 @@ namespace Emberline.Core
         }
 
         public override void SetMood(RigMood mood) => _mood = mood;
+
+        public override void ResetVisuals()
+        {
+            // _deadLatched gates every PlayOneShot; a recycled rig that kept it
+            // would spawn animation-frozen in its death pose.
+            _deadLatched = false;
+            _oneActive = false;
+            _forcedThisFrame = false;
+            _forcedActive = false;
+            _flashT = 0f;
+            if (_trail != null) _trail.emitting = false; // died mid-swing
+            tint = _authoredTint;
+            _mood = RigMood.Calm;
+            ApplyTint();
+        }
 
         public override void SpawnAfterImage()
         {

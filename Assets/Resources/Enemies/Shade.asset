@@ -1,0 +1,51 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c978fcae96c7b41229485f6e7e15f0b0, type: 3}
+  m_Name: Shade
+  m_EditorClassIdentifier: Assembly-CSharp::Emberline.Enemies.EnemyDef
+  id: shade
+  displayName: SHADE
+  codexLine: What the marsh breathes out. Smoke takes them apart.
+  kind: 3
+  weapon: 5
+  rank: 0
+  modelSpec: ShadeModel
+  scale: 1
+  maxHp: 48
+  moveSpeed: 4.8
+  attackRange: 1.7
+  damage: 15
+  windupTime: 0.35
+  spawnTime: 1
+  movement: 4
+  preferredRange: 1.9
+  attacks:
+  - kind: 1
+    minRange: 0
+    maxRange: 2.2
+    weight: 1
+    damageMultiplier: 1
+    windupOverride: 0
+    cooldown: 1.25
+    redTelegraph: 0
+    telegraphScale: 1
+  armor: 0
+  poise: 0
+  blockChance: 0
+  maxPosture: 26
+  postureRegen: 9
+  postureRegenDelay: 1.6
+  guardBreakSeconds: 2.2
+  backstabMultiplier: 1.2
+  crushMultiplier: 1
+  thrownMultiplier: 1
+  elementalMultiplier: 2

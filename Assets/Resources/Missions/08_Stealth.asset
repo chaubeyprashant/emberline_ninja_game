@@ -1,0 +1,69 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 814b8fc7fb4eb427480893eff898b203, type: 3}
+  m_Name: 08_Stealth
+  m_EditorClassIdentifier: Assembly-CSharp::Emberline.Missions.MissionPlan
+  id: 8
+  missionName: EYES IN THE DARK
+  missionType: STEALTH
+  briefing: Something moves between the chimneys, and it has not seen you yet. Keep
+    it that way.
+  debrief: They dissolved without a sound, still reaching for the lantern.
+  marsh: 0
+  nightOverride: 1
+  rain: 1
+  stages:
+  - goal: 7
+    objective: CUT THEM DOWN UNSEEN
+    banner: THEY HAVE NOT SEEN YOU
+    count: 1
+    duration: 0
+    point: {x: 0, y: 0, z: 0}
+    spawn: 0300000003000000
+    onComplete: 0
+    optional: 0
+    bonusShards: 1
+    checkpoint: 1
+  - goal: 8
+    objective: WHAT WERE THEY GUARDING?
+    banner: SEARCH
+    count: 3
+    duration: 0
+    point: {x: 0, y: 0, z: 0}
+    spawn: 
+    onComplete: 0
+    optional: 1
+    bonusShards: 2
+    checkpoint: 0
+  - goal: 7
+    objective: AND THE REST
+    banner: MORE IN THE REEDS
+    count: 1
+    duration: 0
+    point: {x: 0, y: 0, z: 0}
+    spawn: 030000000000000001000000
+    onComplete: 0
+    optional: 0
+    bonusShards: 1
+    checkpoint: 0
+  - goal: 3
+    objective: THE ONE GIVING ORDERS
+    banner: THE LAST ONE
+    count: 1
+    duration: 0
+    point: {x: 0, y: 0, z: 0}
+    spawn: 0b000000
+    onComplete: 0
+    optional: 0
+    bonusShards: 1
+    checkpoint: 0
+  baseShards: 4

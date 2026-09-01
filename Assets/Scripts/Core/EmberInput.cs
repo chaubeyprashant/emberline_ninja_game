@@ -12,13 +12,26 @@ namespace Emberline.Core
         public static Vector2 TouchMove;
         public static bool TouchActive;
 
-        private static bool _strike, _cleave, _flicker, _surge, _kunai;
+        private static bool _strike, _cleave, _flicker, _surge, _kunai, _jump, _cycle;
+        private static bool _cleaveHeld, _crouchHeld;
+
+        /// <summary>Crouch is a hold, not a toggle — stealth is a commitment.</summary>
+        public static void SetCrouchHeld(bool held) => _crouchHeld = held;
+
+        public static bool CrouchHeld => _crouchHeld || Input.GetKey(KeyCode.C);
+
+        /// <summary>Cleave held down — opens the deflect stance. HUD sets this on press/release.</summary>
+        public static void SetCleaveHeld(bool held) => _cleaveHeld = held;
+
+        public static bool CleaveHeld => _cleaveHeld || Input.GetMouseButton(1);
 
         public static void PressStrike() => _strike = true;
         public static void PressCleave() => _cleave = true;
         public static void PressFlicker() => _flicker = true;
         public static void PressSurge() => _surge = true;
         public static void PressKunai() => _kunai = true;
+        public static void PressJump() => _jump = true;
+        public static void PressCycleTarget() => _cycle = true;
 
         public static Vector2 Move
         {
@@ -33,12 +46,17 @@ namespace Emberline.Core
             Consume(ref _strike) || Input.GetMouseButtonDown(0);
         public static bool ConsumeCleave() =>
             Consume(ref _cleave) || Input.GetMouseButtonDown(1);
+        // Space moved to Jump (the universal binding); Flicker took Left Shift.
         public static bool ConsumeFlicker() =>
-            Consume(ref _flicker) || Input.GetKeyDown(KeyCode.Space);
+            Consume(ref _flicker) || Input.GetKeyDown(KeyCode.LeftShift);
         public static bool ConsumeSurge() =>
             Consume(ref _surge) || Input.GetKeyDown(KeyCode.Q);
         public static bool ConsumeKunai() =>
             Consume(ref _kunai) || Input.GetKeyDown(KeyCode.E);
+        public static bool ConsumeJump() =>
+            Consume(ref _jump) || Input.GetKeyDown(KeyCode.Space);
+        public static bool ConsumeCycleTarget() =>
+            Consume(ref _cycle) || Input.GetKeyDown(KeyCode.Tab);
 
         private static float _camYaw, _camPitch;
 

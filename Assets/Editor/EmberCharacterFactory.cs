@@ -34,6 +34,7 @@ namespace Emberline.EditorTools
             public bool lantern;
             public bool trail;                    // weapon slash trail
             public string propRight, propLeft;    // external prop FBX names (no extension)
+            public Vector3 propScale = Vector3.one; // reshape a prop (sword → spear shaft)
             public string[] keepEmbedded;         // embedded hand-slot meshes to keep visible
             public System.Func<Color, Color> recolor; // palette remap for identity
             public Dictionary<RigPose, string> clips;
@@ -85,6 +86,87 @@ namespace Emberline.EditorTools
             propRight = "sword_1handed",
             // Dark ninja: the rogue's green hood/tunic becomes ink-blue charcoal.
             recolor = c => Dominant(c.g, c.r, c.b) ? Toward(c, new Color(0.17f, 0.20f, 0.30f)) : c,
+            clips = OneHanded(),
+        };
+
+        // ------------------------------------------------------------- story cast
+        //
+        // PLACEHOLDER CAST. Every spec below is an existing KayKit adventurer
+        // recoloured and rescaled to stand in for a story character. They are
+        // marked as placeholders on purpose (rule 10): the meshes are chibi, have
+        // no face rig, and children are adults scaled down, which reads wrong in
+        // any shot that holds on a face. Replacement specifications are in
+        // docs/ART_DIRECTION.md §5 — until those land, the opening is staged in
+        // silhouette and over-the-shoulder so the stand-ins are never scrutinised.
+
+        /// <summary>Ren at seventeen — unhooded, lighter, no lantern yet.</summary>
+        public static Spec YoungRen() => new()
+        {
+            name = "YoungRenModel",       // PLACEHOLDER: Rogue, scaled and recoloured
+            fbx = $"{AdvDir}/Rogue.fbx",
+            texture = $"{AdvDir}/rogue_texture.png",
+            height = 1.66f,
+            propRight = "sword_1handed",
+            recolor = c => Dominant(c.g, c.r, c.b) ? Toward(c, new Color(0.28f, 0.31f, 0.36f)) : c,
+            clips = OneHanded(),
+        };
+
+        /// <summary>The village swordmaster. Broader, warmer, carries the sword.</summary>
+        public static Spec Father() => new()
+        {
+            name = "FatherModel",         // PLACEHOLDER: Knight
+            fbx = $"{AdvDir}/Knight.fbx",
+            texture = $"{AdvDir}/knight_texture.png",
+            height = 1.86f,
+            propRight = "sword_1handed",
+            trail = true,
+            recolor = c => Toward(c, new Color(0.38f, 0.30f, 0.24f)),
+            clips = OneHanded(),
+        };
+
+        /// <summary>The healer. Robed, pale, unarmed.</summary>
+        public static Spec Mother() => new()
+        {
+            name = "MotherModel",         // PLACEHOLDER: Rogue, pale
+            // Not the Mage mesh: its pointed hat reads as a wizard, which is a
+            // different character from a village healer.
+            fbx = $"{AdvDir}/Rogue.fbx",
+            texture = $"{AdvDir}/rogue_texture.png",
+            height = 1.72f,
+            recolor = c => Toward(c, new Color(0.72f, 0.68f, 0.60f)),
+            clips = OneHanded(),
+        };
+
+        /// <summary>Aiko as a child. Small, bright, unafraid.</summary>
+        public static Spec AikoChild() => new()
+        {
+            name = "AikoChildModel",      // PLACEHOLDER: Rogue at child scale
+            fbx = $"{AdvDir}/Rogue.fbx",
+            texture = $"{AdvDir}/rogue_texture.png",
+            height = 1.24f,
+            recolor = c => Toward(c, new Color(0.78f, 0.42f, 0.38f)),
+            clips = OneHanded(),
+        };
+
+        /// <summary>Aiko years later. The same red, drained out of her.</summary>
+        public static Spec AikoOlder() => new()
+        {
+            name = "AikoOlderModel",      // PLACEHOLDER: Rogue, desaturated
+            fbx = $"{AdvDir}/Rogue.fbx",
+            texture = $"{AdvDir}/rogue_texture.png",
+            height = 1.62f,
+            recolor = c => Toward(c, new Color(0.44f, 0.36f, 0.36f)),
+            clips = OneHanded(),
+        };
+
+        /// <summary>The child under the cart. Smallest silhouette in the game.</summary>
+        public static Spec VillageChild() => new()
+        {
+            name = "VillageChildModel",   // PLACEHOLDER: Rogue at child scale
+            fbx = $"{AdvDir}/Rogue.fbx",
+            texture = $"{AdvDir}/rogue_texture.png",
+            height = 1.12f,
+            recolor = c => Toward(c, new Color(0.62f, 0.58f, 0.50f)),
             clips = OneHanded(),
         };
 
@@ -193,6 +275,166 @@ namespace Emberline.EditorTools
             };
         }
 
+        /// <summary>Axe raider: a heavier bandit built on the Knight frame.</summary>
+        public static Spec RaiderAxe()
+        {
+            var clips = OneHanded();
+            clips[RigPose.Idle] = "2H_Melee_Idle";
+            clips[RigPose.Strike1] = "2H_Melee_Attack_Chop";
+            clips[RigPose.Strike2] = "2H_Melee_Attack_Slice";
+            clips[RigPose.Strike3] = "2H_Melee_Attack_Spin";
+            clips[RigPose.Hurt] = "Hit_B";
+            return new Spec
+            {
+                name = "RaiderAxeModel",
+                fbx = $"{AdvDir}/Knight.fbx",
+                texture = $"{AdvDir}/knight_texture.png",
+                height = 1.95f,
+                propRight = "axe_2handed",
+                // Raider colours: rust and soot. Saturation test, not a channel
+                // test — the knight palette is mostly desaturated steel, so
+                // "blue is dominant" almost never fires on it.
+                recolor = c => Sat(c) > 0.18f
+                    ? Toward(c, new Color(0.46f, 0.24f, 0.15f)) : c,
+                clips = clips,
+            };
+        }
+
+        /// <summary>
+        /// Pike guard: the two-handed sword stretched into a spear shaft, which is
+        /// the closest the KayKit set gets to a polearm without new art.
+        /// </summary>
+        public static Spec PikeGuard()
+        {
+            var clips = OneHanded();
+            clips[RigPose.Idle] = "2H_Melee_Idle";
+            clips[RigPose.Strike1] = "2H_Melee_Attack_Stab";
+            clips[RigPose.Strike2] = "2H_Melee_Attack_Stab";
+            clips[RigPose.Strike3] = "2H_Melee_Attack_Chop";
+            return new Spec
+            {
+                name = "PikeGuardModel",
+                fbx = $"{AdvDir}/Knight.fbx",
+                texture = $"{AdvDir}/knight_texture.png",
+                height = 1.9f,
+                propRight = "sword_2handed",
+                propScale = new Vector3(0.55f, 2.1f, 0.55f), // sword → spear shaft
+                // Toll-guard livery: cold green over the knight's steel.
+                recolor = c => Sat(c) > 0.18f
+                    ? Toward(c, new Color(0.20f, 0.40f, 0.30f)) : c,
+                clips = clips,
+            };
+        }
+
+        /// <summary>Bomber: a mage frame that lobs charges instead of casting.</summary>
+        public static Spec Bomber()
+        {
+            var clips = OneHanded();
+            clips[RigPose.Strike1] = "Spellcast_Shoot";
+            clips[RigPose.Strike2] = "Spellcast_Shoot";
+            clips[RigPose.Windup] = "Spellcast_Raise";
+            return new Spec
+            {
+                name = "BomberModel",
+                fbx = $"{AdvDir}/Mage.fbx",
+                texture = $"{AdvDir}/mage_texture.png",
+                height = 1.7f,
+                propRight = "smokebomb",
+                // Powder-stained: the mage's robe goes dull ochre.
+                recolor = c => Dominant(c.b, c.r, c.g)
+                    ? Toward(c, new Color(0.44f, 0.36f, 0.18f)) : c,
+                clips = clips,
+            };
+        }
+
+        /// <summary>Assassin: light, fast, twin blades. Skeleton rogue frame.</summary>
+        public static Spec Assassin()
+        {
+            var clips = OneHanded();
+            clips[RigPose.Strike1] = "Dualwield_Melee_Attack_Slice";
+            clips[RigPose.Strike2] = "Dualwield_Melee_Attack_Stab";
+            clips[RigPose.Strike3] = "Dualwield_Melee_Attack_Chop";
+            clips[RigPose.Dash] = "Dodge_Left";
+            return new Spec
+            {
+                name = "AssassinModel",
+                fbx = $"{SkelDir}/Skeleton_Rogue.fbx",
+                texture = $"{SkelDir}/skeleton_texture.png",
+                height = 1.74f,
+                propRight = "dagger",
+                propLeft = "dagger",
+                // Ash-grey wraps with a bruised violet edge — reads fast and cold.
+                recolor = c => Sat(c) > 0.2f ? Toward(c, new Color(0.28f, 0.24f, 0.34f)) : c,
+                clips = clips,
+            };
+        }
+
+        /// <summary>Samurai: heavy guard, two-handed blade, deliberate.</summary>
+        public static Spec Samurai()
+        {
+            var clips = OneHanded();
+            clips[RigPose.Idle] = "2H_Melee_Idle";
+            clips[RigPose.Strike1] = "2H_Melee_Attack_Chop";
+            clips[RigPose.Strike2] = "2H_Melee_Attack_Slice";
+            clips[RigPose.Windup] = "2H_Melee_Idle";
+            clips[RigPose.Hurt] = "Hit_B";
+            return new Spec
+            {
+                name = "SamuraiModel",
+                fbx = $"{AdvDir}/Knight.fbx",
+                texture = $"{AdvDir}/knight_texture.png",
+                height = 1.92f,
+                trail = true,
+                propRight = "sword_2handed",
+                // Lacquered oxblood over dark steel.
+                recolor = c => Sat(c) > 0.18f ? Toward(c, new Color(0.38f, 0.12f, 0.13f)) : c,
+                clips = clips,
+            };
+        }
+
+        /// <summary>Rogue Ninja: the mirror of Renzo — hooded, quick, single blade.</summary>
+        public static Spec RogueNinja()
+        {
+            var clips = OneHanded();
+            clips[RigPose.Dash] = "Dodge_Forward";
+            clips[RigPose.Strike2] = "1H_Melee_Attack_Stab";
+            return new Spec
+            {
+                name = "RogueNinjaModel",
+                fbx = $"{AdvDir}/RogueHooded.fbx",
+                texture = $"{AdvDir}/rogue_texture.png",
+                height = 1.78f,
+                propRight = "dagger",
+                // Near-black with a cold cast: Renzo's silhouette, hostile palette.
+                recolor = c => Sat(c) > 0.15f ? Toward(c, new Color(0.13f, 0.15f, 0.19f)) : c,
+                clips = clips,
+            };
+        }
+
+        /// <summary>Elite Warrior: the biggest non-boss silhouette on the field.</summary>
+        public static Spec EliteWarrior()
+        {
+            var clips = OneHanded();
+            clips[RigPose.Idle] = "2H_Melee_Idle";
+            clips[RigPose.Strike1] = "2H_Melee_Attack_Chop";
+            clips[RigPose.Strike2] = "2H_Melee_Attack_Spinning";
+            clips[RigPose.Strike3] = "2H_Melee_Attack_Spin";
+            clips[RigPose.Hurt] = "Hit_B";
+            clips[RigPose.Dead] = "Death_B";
+            return new Spec
+            {
+                name = "EliteWarriorModel",
+                fbx = $"{SkelDir}/Skeleton_Warrior.fbx",
+                texture = $"{SkelDir}/skeleton_texture.png",
+                height = 2.2f,
+                trail = true,
+                propRight = "axe_2handed",
+                // Tarnished brass over bone — a captain's kit, long unpolished.
+                recolor = c => Sat(c) > 0.2f ? Toward(c, new Color(0.42f, 0.33f, 0.14f)) : c,
+                clips = clips,
+            };
+        }
+
         public static Spec Shade()
         {
             var clips = OneHanded();
@@ -294,7 +536,9 @@ namespace Emberline.EditorTools
             System.IO.Directory.CreateDirectory(OutDir);
             var path = $"{OutDir}/Mat_{spec.name}.mat";
             var mat = AssetDatabase.LoadAssetAtPath<Material>(path);
-            var shader = Shader.Find(spec.ghost ? "Emberline/Ghost" : "Emberline/Toon");
+            // Characters render on the PBR surface shader now; ghosts keep the
+            // translucent path since they are not meant to read as solid matter.
+            var shader = spec.ghost ? Shader.Find("Emberline/Ghost") : SurfaceKit.SurfaceShader;
             if (mat == null)
             {
                 mat = new Material(shader);
@@ -305,9 +549,16 @@ namespace Emberline.EditorTools
                 ? RecoloredTexture(spec.texture, spec.name, spec.recolor)
                 : AssetDatabase.LoadAssetAtPath<Texture2D>(spec.texture);
             if (tex != null && mat.HasProperty("_MainTex")) mat.mainTexture = tex;
-            mat.color = spec.ghost
-                ? new Color(spec.tint.r, spec.tint.g, spec.tint.b, spec.ghostAlpha)
-                : Color.white;
+            if (spec.ghost)
+            {
+                mat.color = new Color(spec.tint.r, spec.tint.g, spec.tint.b, spec.ghostAlpha);
+            }
+            else
+            {
+                // Cloth is the dominant surface on every character; skin and metal
+                // ride the same atlas, so one profile has to serve the whole body.
+                SurfaceKit.Apply(mat, Surface.Cloth, Color.white);
+            }
             EditorUtility.SetDirty(mat);
             return mat;
         }
@@ -346,53 +597,56 @@ namespace Emberline.EditorTools
 
         private static void AttachProps(GameObject instance, Spec spec)
         {
+            AttachProp(instance, spec.propRight, "r", spec.trail, spec.name, spec.propScale);
+            AttachProp(instance, spec.propLeft, "l", spec.trail, spec.name, spec.propScale);
+        }
+
+        /// <summary>
+        /// Hangs one KayKit prop off a hand slot as `Prop_{name}_{side}`. Public so
+        /// the bootstrap can pre-attach the whole weapon catalogue on the player —
+        /// runtime weapon swapping just enables one set and disables the rest,
+        /// since a build can't instantiate FBX assets on device.
+        /// </summary>
+        public static GameObject AttachProp(GameObject instance, string propName, string side,
+            bool trail = false, string ownerName = "", Vector3? scale = null)
+        {
+            if (string.IsNullOrEmpty(propName)) return null;
             var all = instance.GetComponentsInChildren<Transform>(true);
-            Transform Slot(string side)
-            {
-                return all.FirstOrDefault(t => t.name.ToLowerInvariant().Contains("handslot." + side))
+            var slot = all.FirstOrDefault(t => t.name.ToLowerInvariant().Contains("handslot." + side))
                        ?? all.FirstOrDefault(t => t.name.ToLowerInvariant().Contains("handslot" + side))
                        ?? all.FirstOrDefault(t => t.name.ToLowerInvariant().Contains("hand." + side))
                        ?? all.FirstOrDefault(t => t.name.ToLowerInvariant() == "hand" + side);
-            }
-
-            void Attach(string propName, string side)
+            if (slot == null)
             {
-                if (string.IsNullOrEmpty(propName)) return;
-                var slot = Slot(side);
-                if (slot == null)
-                {
-                    Debug.LogWarning($"[EmberFactory] {spec.name}: no hand slot '{side}' — bones: "
-                        + string.Join(",", all.Where(t => t.name.ToLowerInvariant().Contains("hand"))
-                            .Select(t => t.name)));
-                    return;
-                }
-                var propAsset = AssetDatabase.LoadAssetAtPath<GameObject>($"{PropDir}/{propName}.fbx");
-                if (propAsset == null) return;
-                var prop = (GameObject)PrefabUtility.InstantiatePrefab(propAsset);
-                prop.name = $"Prop_{propName}_{side}";
-                prop.transform.SetParent(slot, false);
-                var propMat = PropMaterial();
-                foreach (var r in prop.GetComponentsInChildren<Renderer>(true))
-                    r.sharedMaterial = propMat;
-
-                if (spec.trail && side == "r")
-                {
-                    var trailGo = new GameObject("Trail");
-                    trailGo.transform.SetParent(prop.transform, false);
-                    trailGo.transform.localPosition = new Vector3(0, 0.55f, 0);
-                    var trail = trailGo.AddComponent<TrailRenderer>();
-                    trail.time = 0.14f;
-                    trail.startWidth = 0.34f;
-                    trail.endWidth = 0.02f;
-                    trail.material = new Material(Shader.Find("Emberline/Glow"));
-                    trail.startColor = new Color(0.85f, 0.93f, 1f, 0.8f);
-                    trail.endColor = new Color(1f, 0.45f, 0.28f, 0f);
-                    trail.emitting = false;
-                }
+                Debug.LogWarning($"[EmberFactory] {ownerName}: no hand slot '{side}' — bones: "
+                    + string.Join(",", all.Where(t => t.name.ToLowerInvariant().Contains("hand"))
+                        .Select(t => t.name)));
+                return null;
             }
 
-            Attach(spec.propRight, "r");
-            Attach(spec.propLeft, "l");
+            var propAsset = AssetDatabase.LoadAssetAtPath<GameObject>($"{PropDir}/{propName}.fbx");
+            if (propAsset == null) return null;
+            var prop = (GameObject)PrefabUtility.InstantiatePrefab(propAsset);
+            prop.name = $"Prop_{propName}_{side}";
+            prop.transform.SetParent(slot, false);
+            if (scale.HasValue) prop.transform.localScale = scale.Value;
+            var propMat = PropMaterial();
+            foreach (var r in prop.GetComponentsInChildren<Renderer>(true))
+                r.sharedMaterial = propMat;
+
+            if (!trail || side != "r") return prop;
+            var trailGo = new GameObject("Trail");
+            trailGo.transform.SetParent(prop.transform, false);
+            trailGo.transform.localPosition = new Vector3(0, 0.55f, 0);
+            var trailR = trailGo.AddComponent<TrailRenderer>();
+            trailR.time = 0.14f;
+            trailR.startWidth = 0.34f;
+            trailR.endWidth = 0.02f;
+            trailR.material = new Material(Shader.Find("Emberline/Glow"));
+            trailR.startColor = new Color(0.85f, 0.93f, 1f, 0.8f);
+            trailR.endColor = new Color(1f, 0.45f, 0.28f, 0f);
+            trailR.emitting = false;
+            return prop;
         }
 
         private static Material PropMaterial()
@@ -401,10 +655,11 @@ namespace Emberline.EditorTools
             var mat = AssetDatabase.LoadAssetAtPath<Material>(path);
             if (mat == null)
             {
-                mat = new Material(Shader.Find("Emberline/Toon"));
+                mat = new Material(SurfaceKit.SurfaceShader);
                 AssetDatabase.CreateAsset(mat, path);
             }
-            mat.color = new Color(0.55f, 0.58f, 0.64f); // steel
+            mat.shader = SurfaceKit.SurfaceShader;
+            SurfaceKit.Apply(mat, Surface.Steel, new Color(0.55f, 0.58f, 0.64f));
             return mat;
         }
 

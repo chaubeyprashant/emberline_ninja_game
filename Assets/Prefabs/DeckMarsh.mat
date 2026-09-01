@@ -8,7 +8,7 @@ Material:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: DeckMarsh
-  m_Shader: {fileID: 4800000, guid: 400948e45834049669373fa3d5d807ce, type: 3}
+  m_Shader: {fileID: 4800000, guid: fa30ad707434a49d0b1f9be30442332a, type: 3}
   m_Parent: {fileID: 0}
   m_ModifiedSerializedProperties: 0
   m_ValidKeywords: []
@@ -61,6 +61,7 @@ Material:
         m_Offset: {x: 0, y: 0}
     m_Ints: []
     m_Floats:
+    - _AmbientBoost: 1
     - _BumpScale: 1
     - _Cutoff: 0.5
     - _DetailNormalMapScale: 1
@@ -73,16 +74,23 @@ Material:
     - _OcclusionStrength: 1
     - _OutlineWidth: 0.02
     - _Parallax: 0.02
+    - _RimPower: 2
+    - _RimStrength: 0.1
+    - _Smoothness: 0.11
     - _SmoothnessTextureChannel: 0
     - _SpecularHighlights: 1
     - _SrcBlend: 1
     - _UVSec: 0
+    - _WearScale: 2.2
+    - _WearStrength: 0.45
     - _ZWrite: 1
     m_Colors:
-    - _Color: {r: 0.13, g: 0.18, b: 0.15, a: 1}
+    - _Color: {r: 0.13274999, g: 0.162, b: 0.14445, a: 1}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
     - _OutlineColor: {r: 0.04, g: 0.05, b: 0.08, a: 1}
     - _RimColor: {r: 0.3, g: 0.4, b: 0.52, a: 1}
     - _ShadowTint: {r: 0.42, g: 0.47, b: 0.6, a: 1}
+    - _SpecTint: {r: 0.88, g: 0.88, b: 0.9, a: 1}
+    - _WearColor: {r: 0.22, g: 0.2, b: 0.18, a: 1}
   m_BuildTextureStacks: []
   m_AllowLocking: 1

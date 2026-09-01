@@ -25,6 +25,9 @@ namespace Emberline
 
         public float StartZ { get; private set; }
 
+        /// <summary>Live corridor segments — the streamer's load, for the perf overlay.</summary>
+        public int SegmentCount => _segments.Count;
+
         private Transform _player;
         private float _builtToZ = MouthZ;
         private int _segIndex;
@@ -93,12 +96,18 @@ namespace Emberline
         /// </summary>
         public static Vector3 Clamp(Vector3 p, Vector2 arenaHalf)
         {
-            var xLimit = p.z > MouthZ - 0.4f ? HalfWidth - 0.4f : arenaHalf.x;
-            p.x = Mathf.Clamp(p.x, -xLimit, xLimit);
+            p.x = Mathf.Clamp(p.x, -XLimitAt(p.z, arenaHalf.x), XLimitAt(p.z, arenaHalf.x));
             p.z = Mathf.Max(p.z, -arenaHalf.y);
             p.y = 0;
             return p;
         }
+
+        /// <summary>
+        /// Corridor half-width at a given z. Split out so the player can be kept
+        /// in bounds without having its height flattened — jumping needs its y.
+        /// </summary>
+        public static float XLimitAt(float z, float arenaHalfX) =>
+            z > MouthZ - 0.4f ? HalfWidth - 0.4f : arenaHalfX;
 
         // ------------------------------------------------------------ barrier
 
@@ -108,8 +117,10 @@ namespace Emberline
             ClearBarrier(silent: true);
             _barrier = GameObject.CreatePrimitive(PrimitiveType.Cube);
             _barrier.name = "MistBarrier";
-            _barrier.transform.position = new Vector3(0, 1.6f, z);
-            _barrier.transform.localScale = new Vector3(HalfWidth * 2f + 1.4f, 3.2f, 0.35f);
+            // Tall enough that a jump — or a wall-run into a wall-jump — can't
+            // clear it; the barrier has to actually seal the road.
+            _barrier.transform.position = new Vector3(0, 3f, z);
+            _barrier.transform.localScale = new Vector3(HalfWidth * 2f + 1.4f, 6f, 0.35f);
             _barrierMat = new Material(Shader.Find("Emberline/Ghost"));
             _barrierMat.color = new Color(0.6f, 0.78f, 0.95f, 0.32f);
             var r = _barrier.GetComponent<Renderer>();
@@ -242,6 +253,11 @@ namespace Emberline
                     light.color = new Color(1f, 0.55f, 0.3f);
                     light.intensity = 2f;
                     light.range = 8f;
+                    // Vertex-lit: the four arena lanterns own the pixel-light budget.
+                    // With the toon shader's additive pass, every pixel light costs
+                    // an extra draw of every renderer it touches, and the corridor
+                    // would otherwise add two more of them every second segment.
+                    light.renderMode = LightRenderMode.ForceVertex;
                     var postComp = post.AddComponent<LanternPost>();
                     postComp.bulb = bulb;
                     postComp.glow = light;
@@ -262,6 +278,10 @@ namespace Emberline
                     _skylineMat, collider: false, shadows: false);
             }
 
+            // One batched mesh per segment instead of ~15 loose renderers. The
+            // segment never moves after this, which is exactly the case static
+            // batching wants; reclaiming it later destroys the combined mesh too.
+            StaticBatchingUtility.Combine(root);
             _segments.Add(new Segment { root = root, z = z0, obstacle = obstacle });
         }
     }

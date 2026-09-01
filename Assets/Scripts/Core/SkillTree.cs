@@ -37,6 +37,12 @@ namespace Emberline.Core
                 desc = "Sen regenerates 30% faster.", cost = 2 },
             new Node { id = "lantern_burn", branch = "EMBER", title = "LANTERN'S WRATH",
                 desc = "Every 8s the lantern scorches nearby foes.", cost = 3 },
+            new Node { id = "air_flicker", branch = "TRAVERSAL", title = "SKY STEP",
+                desc = "A second Flicker Step before touching down.", cost = 3 },
+            new Node { id = "warp_haste", branch = "TRAVERSAL", title = "BLADE TETHER",
+                desc = "Warping to a kunai costs 45% less cooldown.", cost = 3 },
+            new Node { id = "wall_runner", branch = "TRAVERSAL", title = "ROOFRUNNER",
+                desc = "Wall runs last 70% longer.", cost = 2 },
         };
 
         public static int Shards

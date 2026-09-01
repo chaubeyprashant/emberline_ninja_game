@@ -1,0 +1,241 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9f3b1ee5018f440738f3a40a8004f072, type: 3}
+  m_Name: opening
+  m_EditorClassIdentifier: Assembly-CSharp::Emberline.Story.StoryBeat
+  id: opening
+  title: THE LAST EMBER
+  shots:
+  - subject: 
+    camera: 0
+    duration: 3.5
+    letterbox: 1
+    speaker: 
+    line: 
+    voice: {fileID: 0}
+    applyTheme: 0
+    theme: 0
+    audio: 2
+    setState: 1
+    card: 
+    fadeOutAfter: 0
+    blackAfter: 1.5
+  - subject: FATHER
+    camera: 1
+    duration: 5
+    letterbox: 1
+    speaker: 
+    line: 
+    voice: {fileID: 0}
+    applyTheme: 0
+    theme: 0
+    audio: 3
+    setState: 0
+    card: 
+    fadeOutAfter: 0
+    blackAfter: 0
+  - subject: REN
+    camera: 5
+    duration: 4.5
+    letterbox: 1
+    speaker: FATHER
+    line: Again. Slower. The blade is not in a hurry.
+    voice: {fileID: 0}
+    applyTheme: 0
+    theme: 0
+    audio: 0
+    setState: 0
+    card: 
+    fadeOutAfter: 0
+    blackAfter: 0
+  - subject: AIKO
+    camera: 2
+    duration: 4
+    letterbox: 1
+    speaker: 
+    line: 
+    voice: {fileID: 0}
+    applyTheme: 0
+    theme: 0
+    audio: 4
+    setState: 0
+    card: 
+    fadeOutAfter: 0
+    blackAfter: 0
+  - subject: AIKO
+    camera: 0
+    duration: 5.5
+    letterbox: 1
+    speaker: AIKO
+    line: When you're near, nothing bad can happen.
+    voice: {fileID: 0}
+    applyTheme: 0
+    theme: 0
+    audio: 0
+    setState: 0
+    card: 
+    fadeOutAfter: 0
+    blackAfter: 0
+  - subject: REN
+    camera: 0
+    duration: 3
+    letterbox: 1
+    speaker: 
+    line: 
+    voice: {fileID: 0}
+    applyTheme: 0
+    theme: 0
+    audio: 0
+    setState: 0
+    card: 
+    fadeOutAfter: 1
+    blackAfter: 2
+  - subject: 
+    camera: 6
+    duration: 4.5
+    letterbox: 1
+    speaker: 
+    line: 
+    voice: {fileID: 0}
+    applyTheme: 0
+    theme: 0
+    audio: 5
+    setState: 2
+    card: 
+    fadeOutAfter: 0
+    blackAfter: 0
+  - subject: MOTHER
+    camera: 7
+    duration: 3.5
+    letterbox: 1
+    speaker: 
+    line: 
+    voice: {fileID: 0}
+    applyTheme: 0
+    theme: 0
+    audio: 6
+    setState: 0
+    card: 
+    fadeOutAfter: 0
+    blackAfter: 0
+  - subject: FATHER
+    camera: 0
+    duration: 4
+    letterbox: 1
+    speaker: KAGEHIRA
+    line: The Black Seal. Say where it is, and this stops.
+    voice: {fileID: 0}
+    applyTheme: 0
+    theme: 0
+    audio: 0
+    setState: 0
+    card: 
+    fadeOutAfter: 0
+    blackAfter: 0
+  - subject: FATHER
+    camera: 2
+    duration: 4.5
+    letterbox: 1
+    speaker: FATHER
+    line: You will burn it all either way.
+    voice: {fileID: 0}
+    applyTheme: 0
+    theme: 0
+    audio: 0
+    setState: 0
+    card: 
+    fadeOutAfter: 0
+    blackAfter: 0
+  - subject: 
+    camera: 0
+    duration: 2.5
+    letterbox: 1
+    speaker: 
+    line: 
+    voice: {fileID: 0}
+    applyTheme: 0
+    theme: 0
+    audio: 0
+    setState: 0
+    card: 
+    fadeOutAfter: 1
+    blackAfter: 2.5
+  - subject: 
+    camera: 6
+    duration: 6
+    letterbox: 1
+    speaker: 
+    line: 
+    voice: {fileID: 0}
+    applyTheme: 0
+    theme: 0
+    audio: 12
+    setState: 3
+    card: 
+    fadeOutAfter: 0
+    blackAfter: 0
+  - subject: REN
+    camera: 5
+    duration: 5
+    letterbox: 1
+    speaker: 
+    line: 
+    voice: {fileID: 0}
+    applyTheme: 0
+    theme: 0
+    audio: 6
+    setState: 0
+    card: 
+    fadeOutAfter: 0
+    blackAfter: 0
+  - subject: FATHER
+    camera: 2
+    duration: 5.5
+    letterbox: 1
+    speaker: 
+    line: 
+    voice: {fileID: 0}
+    applyTheme: 0
+    theme: 0
+    audio: 0
+    setState: 0
+    card: 
+    fadeOutAfter: 0
+    blackAfter: 0
+  - subject: REN
+    camera: 0
+    duration: 4.5
+    letterbox: 1
+    speaker: REN
+    line: "\u2026Father."
+    voice: {fileID: 0}
+    applyTheme: 0
+    theme: 0
+    audio: 0
+    setState: 0
+    card: 
+    fadeOutAfter: 0
+    blackAfter: 0
+  - subject: REN
+    camera: 3
+    duration: 5
+    letterbox: 1
+    speaker: 
+    line: 
+    voice: {fileID: 0}
+    applyTheme: 0
+    theme: 0
+    audio: 0
+    setState: 0
+    card: 
+    fadeOutAfter: 1
+    blackAfter: 1.5

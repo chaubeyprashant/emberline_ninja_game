@@ -19,6 +19,11 @@ namespace Emberline.Core
             public int maxCombo;
             public int waveReached;
             public int postsIntact;   // unbroken lantern posts at mission end
+            public float timeSeconds;
+            public bool alarmRaised;  // stealth: were you spotted
+            public float escortHealth01 = 1f; // escort: bearer's remaining health
+            public int deflects;
+            public int wallRuns;
         }
 
         public class Feat
@@ -47,6 +52,19 @@ namespace Emberline.Core
             new Feat { id = "mist_walker", title = "MIST WALKER",
                 desc = "Cut through 15 packs on the Road North.",
                 check = s => s.mode == LaunchMode.Endless && s.waveReached >= 15 },
+            new Feat { id = "ghost_walk", title = "GHOST WALK",
+                desc = "Clear 'Eyes in the Dark' without ever being seen.",
+                check = s => s.mode == LaunchMode.Story && s.won && s.levelId == 3 && !s.alarmRaised },
+            new Feat { id = "lantern_shepherd", title = "LANTERN SHEPHERD",
+                desc = "Walk Yotsu home with the flame above 80%.",
+                check = s => s.mode == LaunchMode.Story && s.won && s.levelId == 2
+                             && s.escortHealth01 >= 0.8f },
+            new Feat { id = "iron_answer", title = "IRON ANSWER",
+                desc = "Deflect 5 attacks in a single mission.",
+                check = s => s.deflects >= 5 },
+            new Feat { id = "roofrunner", title = "ROOFRUNNER",
+                desc = "Run three walls in a single mission.",
+                check = s => s.wallRuns >= 3 },
         };
 
         public static bool Has(string id) => PlayerPrefs.GetInt("feat_" + id, 0) == 1;
@@ -95,6 +113,8 @@ namespace Emberline.Core
                 blade = new Color(0.62f, 0.72f, 0.95f), trail = new Color(0.7f, 0.85f, 1f) },
             new() { name = "SERPENT", starsRequired = 27,
                 blade = new Color(0.30f, 0.75f, 0.55f), trail = new Color(0.45f, 0.95f, 0.6f) },
+            new() { name = "DROWNED GOLD", starsRequired = 36,
+                blade = new Color(0.82f, 0.68f, 0.32f), trail = new Color(1f, 0.86f, 0.45f) },
         };
 
         public static bool IsUnlocked(Finish f) => Session.TotalStars >= f.starsRequired;

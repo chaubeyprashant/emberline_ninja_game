@@ -1,0 +1,103 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 814b8fc7fb4eb427480893eff898b203, type: 3}
+  m_Name: 03_Infiltration
+  m_EditorClassIdentifier: Assembly-CSharp::Emberline.Missions.MissionPlan
+  id: 3
+  missionName: THE QUIET ROAD
+  missionType: INFILTRATION
+  briefing: Their captain keeps a ledger. Walk in, read it, walk out. Nobody needs
+    to wake up.
+  debrief: The ledger named a marsh, a date, and a price. All three were wrong by
+    morning.
+  marsh: 0
+  nightOverride: 1
+  rain: 0
+  stages:
+  - goal: 0
+    objective: GET INSIDE THE CORDON
+    banner: STAY LOW
+    count: 1
+    duration: 0
+    point: {x: -10, y: 0, z: 0}
+    spawn: 
+    onComplete: 0
+    optional: 0
+    bonusShards: 1
+    checkpoint: 1
+  - goal: 7
+    objective: PAST THE GUARDS, UNSEEN
+    banner: DO NOT BE SEEN
+    count: 1
+    duration: 0
+    point: {x: 0, y: 0, z: 0}
+    spawn: 00000000000000000100000007000000
+    onComplete: 0
+    optional: 0
+    bonusShards: 1
+    checkpoint: 0
+  - goal: 8
+    objective: FIND THE LEDGER
+    banner: SEARCH THE CRATES
+    count: 2
+    duration: 0
+    point: {x: 0, y: 0, z: 0}
+    spawn: 
+    onComplete: 0
+    optional: 0
+    bonusShards: 1
+    checkpoint: 0
+  - goal: 3
+    objective: SILENCE THE CAPTAIN
+    banner: HE IS ALONE
+    count: 1
+    duration: 0
+    point: {x: 0, y: 0, z: 0}
+    spawn: 0a000000
+    onComplete: 1
+    optional: 0
+    bonusShards: 1
+    checkpoint: 0
+  - goal: 12
+    objective: OUT BEFORE THEY CLOSE IT
+    banner: ALARM
+    count: 1
+    duration: 50
+    point: {x: 10, y: 0, z: 0}
+    spawn: 
+    onComplete: 0
+    optional: 0
+    bonusShards: 1
+    checkpoint: 1
+  - goal: 11
+    objective: THE GATE IS BARRED
+    banner: SOMETHING HEAVIER
+    count: 1
+    duration: 0
+    point: {x: 0, y: 0, z: 0}
+    spawn: 0c000000
+    onComplete: 0
+    optional: 0
+    bonusShards: 1
+    checkpoint: 0
+  - goal: 0
+    objective: EXTRACTION
+    banner: GO HOME
+    count: 1
+    duration: 0
+    point: {x: 0, y: 0, z: -6.5}
+    spawn: 
+    onComplete: 0
+    optional: 0
+    bonusShards: 1
+    checkpoint: 0
+  baseShards: 4

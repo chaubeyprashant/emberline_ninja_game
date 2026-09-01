@@ -1,0 +1,69 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 814b8fc7fb4eb427480893eff898b203, type: 3}
+  m_Name: 01_Assassination
+  m_EditorClassIdentifier: Assembly-CSharp::Emberline.Missions.MissionPlan
+  id: 1
+  missionName: A NAME ON A LIST
+  missionType: ASSASSINATION
+  briefing: One man on the terraces knows where the lantern-oil goes. He does not
+    need to keep knowing it.
+  debrief: The list is one name shorter. The next is written in the same hand.
+  marsh: 0
+  nightOverride: 0
+  rain: 0
+  stages:
+  - goal: 0
+    objective: FIND HIS POST
+    banner: THE EAST TERRACE
+    count: 1
+    duration: 0
+    point: {x: 10, y: 0, z: 0}
+    spawn: 
+    onComplete: 0
+    optional: 0
+    bonusShards: 1
+    checkpoint: 1
+  - goal: 7
+    objective: TAKE HIM UNSEEN
+    banner: HE HAS NOT SEEN YOU
+    count: 1
+    duration: 0
+    point: {x: 0, y: 0, z: 0}
+    spawn: 000000000000000001000000
+    onComplete: 1
+    optional: 0
+    bonusShards: 1
+    checkpoint: 0
+  - goal: 1
+    objective: CUT YOUR WAY OUT
+    banner: THEY KNOW
+    count: 1
+    duration: 0
+    point: {x: 0, y: 0, z: 0}
+    spawn: 000000000900000001000000
+    onComplete: 0
+    optional: 0
+    bonusShards: 1
+    checkpoint: 0
+  - goal: 12
+    objective: GET OFF THE ROOF
+    banner: GO
+    count: 1
+    duration: 45
+    point: {x: 0, y: 0, z: -6.5}
+    spawn: 
+    onComplete: 0
+    optional: 0
+    bonusShards: 1
+    checkpoint: 1
+  baseShards: 3

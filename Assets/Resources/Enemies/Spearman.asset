@@ -1,0 +1,51 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c978fcae96c7b41229485f6e7e15f0b0, type: 3}
+  m_Name: Spearman
+  m_EditorClassIdentifier: Assembly-CSharp::Emberline.Enemies.EnemyDef
+  id: spearman
+  displayName: PIKE GUARD
+  codexLine: "Toll guards. Their reach is the whole fight \u2014 close it."
+  kind: 7
+  weapon: 3
+  rank: 0
+  modelSpec: PikeGuardModel
+  scale: 1
+  maxHp: 80
+  moveSpeed: 3
+  attackRange: 3.6
+  damage: 14
+  windupTime: 0.55
+  spawnTime: 1.1
+  movement: 5
+  preferredRange: 4
+  attacks:
+  - kind: 2
+    minRange: 1.4
+    maxRange: 4.2
+    weight: 1
+    damageMultiplier: 1
+    windupOverride: 0
+    cooldown: 1.9
+    redTelegraph: 0
+    telegraphScale: 1.5
+  armor: 1
+  poise: 0.2
+  blockChance: 0
+  maxPosture: 40
+  postureRegen: 9
+  postureRegenDelay: 1.6
+  guardBreakSeconds: 2.2
+  backstabMultiplier: 1.5
+  crushMultiplier: 1
+  thrownMultiplier: 1
+  elementalMultiplier: 1

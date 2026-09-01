@@ -16,6 +16,10 @@ MonoBehaviour:
   displayName: EMBER KATANA
   blurb: Balanced. The blade that guards the lantern.
   unlockLevel: 0
+  archetype: 0
+  propRight: sword_1handed
+  propLeft: 
+  strikeChainLength: 3
   strikeDamage:
   - 10
   - 12
@@ -25,6 +29,7 @@ MonoBehaviour:
   chainWindow: 0.75
   strikeAnimTime: 0.28
   lungeSpeed: 5.5
+  cleaveStyle: 0
   cleaveDamage: 26
   cleaveRange: 3.3
   cleaveArcDeg: 170
@@ -33,4 +38,6 @@ MonoBehaviour:
   parryOnPerfectDodge: 0
   pullOnThirdHit: 0
   poisonCleave: 0
+  replacesKunaiWithThrown: 0
+  thrownId: 
   trailColor: {r: 0.85, g: 0.93, b: 1, a: 1}

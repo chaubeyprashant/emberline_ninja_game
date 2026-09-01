@@ -1,0 +1,68 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 814b8fc7fb4eb427480893eff898b203, type: 3}
+  m_Name: 02_Rescue
+  m_EditorClassIdentifier: Assembly-CSharp::Emberline.Missions.MissionPlan
+  id: 2
+  missionName: WHAT THEY TOOK
+  missionType: RESCUE
+  briefing: They took a lantern-keeper alive. That is worse than taking the lantern.
+  debrief: She walked out on her own feet. She would not say what they asked her.
+  marsh: 0
+  nightOverride: 0
+  rain: 0
+  stages:
+  - goal: 8
+    objective: FIND WHERE THEY HELD HER
+    banner: SIGNS OF A STRUGGLE
+    count: 3
+    duration: 0
+    point: {x: 0, y: 0, z: 0}
+    spawn: 
+    onComplete: 0
+    optional: 0
+    bonusShards: 1
+    checkpoint: 1
+  - goal: 1
+    objective: BREAK THE GUARD
+    banner: GUARDS
+    count: 1
+    duration: 0
+    point: {x: 0, y: 0, z: 0}
+    spawn: 000000000700000001000000
+    onComplete: 2
+    optional: 0
+    bonusShards: 1
+    checkpoint: 0
+  - goal: 5
+    objective: KEEP THEM OFF HER
+    banner: HOLD
+    count: 1
+    duration: 35
+    point: {x: 0, y: 0, z: 6.5}
+    spawn: 0000000009000000
+    onComplete: 0
+    optional: 0
+    bonusShards: 1
+    checkpoint: 0
+  - goal: 6
+    objective: WALK HER HOME
+    banner: MOVE
+    count: 1
+    duration: 0
+    point: {x: 0, y: 0, z: 0}
+    spawn: 
+    onComplete: 0
+    optional: 0
+    bonusShards: 1
+    checkpoint: 1
+  baseShards: 3

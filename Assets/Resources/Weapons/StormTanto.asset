@@ -16,6 +16,10 @@ MonoBehaviour:
   displayName: STORM TANTO
   blurb: Fast and close. Perfect dodges become parries.
   unlockLevel: 4
+  archetype: 0
+  propRight: dagger
+  propLeft: 
+  strikeChainLength: 3
   strikeDamage:
   - 7
   - 8
@@ -25,6 +29,7 @@ MonoBehaviour:
   chainWindow: 0.9
   strikeAnimTime: 0.2
   lungeSpeed: 6.5
+  cleaveStyle: 0
   cleaveDamage: 20
   cleaveRange: 3.3
   cleaveArcDeg: 170
@@ -33,4 +38,6 @@ MonoBehaviour:
   parryOnPerfectDodge: 1
   pullOnThirdHit: 0
   poisonCleave: 0
+  replacesKunaiWithThrown: 0
+  thrownId: 
   trailColor: {r: 0.7, g: 0.82, b: 1, a: 1}

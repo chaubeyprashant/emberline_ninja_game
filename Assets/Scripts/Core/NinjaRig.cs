@@ -45,6 +45,8 @@ namespace Emberline.Core
         private float _oneT, _oneDur;
 
         private static Material _afterImageBase;
+        private readonly List<AfterImageFader> _images = new();
+        private Transform[] _sourceBones;
 
         // ------------------------------------------------------------- build
 
@@ -200,24 +202,52 @@ namespace Emberline.Core
             if (_flashT <= 0f) SetMatColor(_mat, c, ghost ? ghostAlpha : 1f);
         }
 
+        /// <summary>
+        /// Pooled ghost trail. A Flicker Step fires one of these every 55ms, so
+        /// the old Instantiate-clone-then-Destroy cost a full primitive hierarchy
+        /// plus a Material per image. Clones are built once and re-posed from the
+        /// live rig on reuse — the same approach SkeletalRig already takes.
+        /// </summary>
         public override void SpawnAfterImage()
         {
             if (_body == null) return;
             if (_afterImageBase == null)
+                _afterImageBase = new Material(Shader.Find("Emberline/Ghost"))
+                    { color = new Color(1f, 0.5f, 0.3f, 0.4f) };
+
+            AfterImageFader img = null;
+            foreach (var candidate in _images)
+                if (candidate != null && !candidate.gameObject.activeSelf) { img = candidate; break; }
+
+            if (img == null)
             {
-                _afterImageBase = new Material(Shader.Find("Emberline/Ghost"));
-                _afterImageBase.color = new Color(1f, 0.5f, 0.3f, 0.4f);
+                if (_images.Count >= 6) return; // cap — beyond this they overlap anyway
+                var clone = Instantiate(_body.gameObject, _body.position, _body.rotation);
+                clone.name = "AfterImage";
+                foreach (var tr in clone.GetComponentsInChildren<TrailRenderer>(true)) Destroy(tr);
+                var mat = new Material(_afterImageBase);
+                foreach (var r in clone.GetComponentsInChildren<Renderer>(true))
+                {
+                    r.sharedMaterial = mat;
+                    r.shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.Off;
+                }
+                img = clone.AddComponent<AfterImageFader>();
+                img.mat = mat;
+                img.bones = clone.GetComponentsInChildren<Transform>(true);
+                _images.Add(img);
             }
-            var clone = Instantiate(_body.gameObject, _body.position, _body.rotation);
-            clone.transform.localScale = _body.lossyScale;
-            foreach (var tr in clone.GetComponentsInChildren<TrailRenderer>()) Destroy(tr);
-            var mat = new Material(_afterImageBase);
-            foreach (var r in clone.GetComponentsInChildren<Renderer>())
-            {
-                r.sharedMaterial = mat;
-                r.shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.Off;
-            }
-            clone.AddComponent<AfterImageFader>().mat = mat;
+
+            img.Capture(_body, _sourceBones ??= _body.GetComponentsInChildren<Transform>(true));
+        }
+
+        public override void ResetVisuals()
+        {
+            _flashT = 0f;
+            _oneActive = false;
+            _forcedThisFrame = false;
+            SetMatColor(_mat, bodyColor, ghost ? ghostAlpha : 1f);
+            foreach (var img in _images)
+                if (img != null) img.gameObject.SetActive(false);
         }
 
         // ------------------------------------------------------------ animate
@@ -388,19 +418,46 @@ namespace Emberline.Core
     }
 
     /// <summary>Fades and destroys a Flicker after-image.</summary>
+    /// <summary>
+    /// One pooled ghost of the primitive rig. Re-posed from the live hierarchy on
+    /// each reuse, then faded out and parked inactive for the next dash.
+    /// </summary>
     public class AfterImageFader : MonoBehaviour
     {
+        private const float Life = 0.28f;
+
         public Material mat;
-        private float _life = 0.28f;
+        public Transform[] bones;
+
+        private float _life;
+
+        /// <summary>Snap this ghost onto the source rig's current pose and show it.</summary>
+        public void Capture(Transform source, Transform[] sourceBones)
+        {
+            transform.SetPositionAndRotation(source.position, source.rotation);
+            transform.localScale = source.lossyScale;
+            // Index 0 is the root on both sides, already placed above.
+            var n = Mathf.Min(bones.Length, sourceBones.Length);
+            for (var i = 1; i < n; i++)
+            {
+                if (bones[i] == null || sourceBones[i] == null) continue;
+                bones[i].localPosition = sourceBones[i].localPosition;
+                bones[i].localRotation = sourceBones[i].localRotation;
+                bones[i].localScale = sourceBones[i].localScale;
+            }
+            _life = Life;
+            if (mat != null) mat.color = new Color(mat.color.r, mat.color.g, mat.color.b, 0.4f);
+            gameObject.SetActive(true);
+        }
 
         private void Update()
         {
             _life -= Time.deltaTime;
-            if (_life <= 0f) { Destroy(gameObject); return; }
+            if (_life <= 0f) { gameObject.SetActive(false); return; }
             if (mat != null)
             {
                 var c = mat.color;
-                mat.color = new Color(c.r, c.g, c.b, 0.4f * (_life / 0.28f));
+                mat.color = new Color(c.r, c.g, c.b, 0.4f * (_life / Life));
             }
         }
     }

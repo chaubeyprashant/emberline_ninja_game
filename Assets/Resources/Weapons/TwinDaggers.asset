@@ -1,0 +1,45 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 783636f97e47f4076a403c6b1165c8c6, type: 3}
+  m_Name: TwinDaggers
+  m_EditorClassIdentifier: Assembly-CSharp::Emberline.Core.WeaponDef
+  id: daggers
+  displayName: TWIN DAGGERS
+  blurb: Five-hit chain, no reach. Spin cleave hits everything around you.
+  unlockLevel: 2
+  archetype: 1
+  propRight: dagger
+  propLeft: dagger
+  strikeChainLength: 5
+  strikeDamage:
+  - 6
+  - 6
+  - 8
+  - 8
+  - 14
+  strikeRange: 2
+  strikeArcDeg: 120
+  chainWindow: 0.95
+  strikeAnimTime: 0.17
+  lungeSpeed: 6.8
+  cleaveStyle: 1
+  cleaveDamage: 18
+  cleaveRange: 2.8
+  cleaveArcDeg: 360
+  cleaveWindup: 0.16
+  cleaveCooldown: 1.2
+  parryOnPerfectDodge: 0
+  pullOnThirdHit: 0
+  poisonCleave: 0
+  replacesKunaiWithThrown: 0
+  thrownId: 
+  trailColor: {r: 0.75, g: 0.85, b: 1, a: 1}

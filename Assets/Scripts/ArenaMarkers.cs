@@ -74,6 +74,54 @@ namespace Emberline
             return false;
         }
 
+        /// <summary>
+        /// Line-of-fire test for melee and area attacks: like <see cref="Blocked"/>,
+        /// but ignores any obstacle that contains either endpoint.
+        ///
+        /// That exception matters both ways. Standing with your back against a
+        /// chimney must not make you unhittable, and an enemy pressed into cover
+        /// must still be able to swing — a plain segment test would do both,
+        /// turning a fairness fix into an invulnerability exploit.
+        /// </summary>
+        public static bool BlockedBetween(Vector3 a, Vector3 b)
+        {
+            if (Instance == null) return false;
+            var a2 = new Vector2(a.x, a.z);
+            var b2 = new Vector2(b.x, b.z);
+            foreach (var o in Instance.obstacles)
+            {
+                var c = new Vector2(o.x, o.z);
+                var r2 = o.w * o.w;
+                if ((a2 - c).sqrMagnitude < r2 || (b2 - c).sqrMagnitude < r2) continue;
+                var ab = b2 - a2;
+                var t = Mathf.Clamp01(Vector2.Dot(c - a2, ab) / Mathf.Max(0.001f, ab.sqrMagnitude));
+                if ((a2 + ab * t - c).sqrMagnitude < r2) return true;
+            }
+            return false;
+        }
+
+        /// <summary>
+        /// True if a cover obstacle sits within `dist` straight ahead — the vault
+        /// trigger. Same circle test as Blocked, but bounded to a short forward
+        /// probe instead of a full segment.
+        /// </summary>
+        public static bool ObstacleAhead(Vector3 pos, Vector3 dir, float dist)
+        {
+            if (Instance == null) return false;
+            var d = new Vector2(dir.x, dir.z);
+            if (d.sqrMagnitude < 0.0001f) return false;
+            d.Normalize();
+            var a = new Vector2(pos.x, pos.z);
+            foreach (var o in Instance.obstacles)
+            {
+                var toC = new Vector2(o.x - a.x, o.z - a.y);
+                var along = Vector2.Dot(toC, d);
+                if (along < 0f || along > dist) continue;
+                if ((toC - d * along).sqrMagnitude < o.w * o.w) return true;
+            }
+            return false;
+        }
+
         /// <summary>Steering: repulsion away from obstacle circles for transform-driven AI.</summary>
         public static Vector3 Avoid(Vector3 pos)
         {
@@ -88,6 +136,31 @@ namespace Emberline
                     push += d / dist * ((margin - dist) / margin) * 2.2f;
             }
             return push;
+        }
+
+        /// <summary>
+        /// Hard constraint: push a point back out of any cover circle it ended up
+        /// inside. Avoid() is only a steering nudge and loses to crowd pressure or
+        /// a knockback, which is how enemies used to end up standing in a chimney.
+        /// Leaves y alone so launched enemies keep their height.
+        /// </summary>
+        public static Vector3 Resolve(Vector3 p, float bodyRadius)
+        {
+            if (Instance == null) return p;
+            foreach (var o in Instance.obstacles)
+            {
+                var dx = p.x - o.x;
+                var dz = p.z - o.z;
+                var minDist = o.w + bodyRadius;
+                var sqr = dx * dx + dz * dz;
+                if (sqr >= minDist * minDist) continue;
+                var dist = Mathf.Sqrt(sqr);
+                // Dead centre: pick an arbitrary but stable direction to escape.
+                if (dist < 0.001f) { dx = 1f; dz = 0f; dist = 1f; }
+                p.x = o.x + dx / dist * minDist;
+                p.z = o.z + dz / dist * minDist;
+            }
+            return p;
         }
 
         public static Vector3 RandomShadeSpawn(Vector3 fallback)
