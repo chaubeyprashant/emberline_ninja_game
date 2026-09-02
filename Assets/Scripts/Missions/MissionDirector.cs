@@ -538,18 +538,17 @@ namespace Emberline.Missions
             if (alive == 0 || alive > 2) { _stragglerT = 0f; _stragglerAlive = alive; return; }
             if (alive != _stragglerAlive) { _stragglerAlive = alive; _stragglerT = 0f; }
 
-            // Is anyone actually closing? A straggler that is walking toward the
-            // player is not stuck, and must not be yanked mid-approach.
+            // Is anyone actually engaging? An enemy inside striking distance is
+            // not a straggler, whatever it is doing. One that hangs at seven
+            // metres for forty seconds — a kiting bomber with no lane, a shade
+            // behind the reeds — is, however close it looks on the map.
             var closing = false;
-            var far = false;
             foreach (var e in EnemyBrain.Active)
             {
                 if (e == null || e.Dead || e == _phaseBoss) continue;
-                var d = Vector3.Distance(e.transform.position, _player.position);
-                if (d < 6f) closing = true;
-                if (d > 9f) far = true;
+                if (Vector3.Distance(e.transform.position, _player.position) < 5f) closing = true;
             }
-            if (closing || !far) { _stragglerT = 0f; return; }
+            if (closing) { _stragglerT = 0f; return; }
 
             _stragglerT += Time.deltaTime;
             if (_stragglerT < 40f) return;
@@ -560,7 +559,7 @@ namespace Emberline.Missions
             foreach (var e in EnemyBrain.Active)
             {
                 if (e == null || e.Dead || e == _phaseBoss) continue;
-                if (Vector3.Distance(e.transform.position, _player.position) <= 9f) continue;
+                if (Vector3.Distance(e.transform.position, _player.position) < 5f) continue;
                 var angle = (n++ * 137f) * Mathf.Deg2Rad;
                 var at = ArenaMarkers.Resolve(flat + new Vector3(Mathf.Cos(angle), 0f, Mathf.Sin(angle)) * 5f, 1.2f);
                 at = Walkable(at);
