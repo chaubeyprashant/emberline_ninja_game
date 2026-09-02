@@ -790,7 +790,8 @@ namespace Emberline.UI
         {
             BuildEmberLayer();
             var ch = Campaign.Campaign.ChapterOf(Mathf.Clamp(_chapter, 1, 10) * 10 - 9);
-            ScreenHeader($"CHAPTER {ch.number} — {ch.name}", $"{Campaign.Campaign.ActNames[ch.act - 1]}  ·  {ch.theme}");
+            // The chapter is the title; the act and its theme are the kicker.
+            ScreenHeader($"{Campaign.Campaign.ActNames[ch.act - 1]}  ·  CHAPTER {ch.number}  ·  {ch.theme.ToUpperInvariant()}", ch.name);
             const float colW = 560f;
             for (var c = 0; c < 2; c++)
             {
