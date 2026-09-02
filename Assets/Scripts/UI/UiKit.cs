@@ -562,7 +562,12 @@ namespace Emberline.UI
         public static void Enter(RectTransform root, float seconds = 0.18f, float rise = 10f)
         {
             if (root == null || !Application.isPlaying) return;
-            var g = root.GetComponent<CanvasGroup>() ?? root.gameObject.AddComponent<CanvasGroup>();
+            // Not `??`: C#'s null-coalescing operator bypasses Unity's overloaded
+            // equality, so a CanvasGroup destroyed by an earlier screen rebuild
+            // comes back as a live-looking wrapper around a dead native object and
+            // every access to it throws. `== null` is the check that sees that.
+            var g = root.GetComponent<CanvasGroup>();
+            if (g == null) g = root.gameObject.AddComponent<CanvasGroup>();
             GetRunner().StartCoroutine(EnterRoutine(root, g, seconds, rise));
         }
 
@@ -571,6 +576,7 @@ namespace Emberline.UI
             var from = root.anchoredPosition - new Vector2(0, rise);
             var to = root.anchoredPosition;
             var t = 0f;
+            if (g == null) yield break;
             g.alpha = 0f;
             // A screen can be rebuilt mid-fade, which destroys the CanvasGroup
             // while the root survives. Touching it then throws and the coroutine

@@ -83,9 +83,12 @@ path, including the new out-of-turn punish and the riposte, goes through it.
    neither a dodge nor a block occurred. It is now set only on an actual reaction.
 4. **Telemetry counted frames, not decisions.** A two-second bodyguard move
    registered as 227 "protect" events. Both latched counters now count once.
-5. **A menu fade could throw.** `UiKit`'s enter animation kept a `CanvasGroup`
-   reference across a screen rebuild and threw `MissingComponentException`,
-   killing the coroutine and stranding the screen mid-fade. Now guarded.
+5. **Every screen transition threw an exception.** `UiKit`'s enter animation
+   fetched the screen's `CanvasGroup` with C#'s `??` operator, which bypasses
+   Unity's overloaded equality: a group destroyed by an earlier screen rebuild
+   came back as a live-looking wrapper around a dead native object, so the fade
+   threw `MissingComponentException` and the screen appeared without animating.
+   Fixed by testing `== null`, plus a guard for a group destroyed mid-fade.
 
 ## Verification
 
@@ -101,4 +104,19 @@ boss + adds. It verifies each opening it tries to create rather than assuming th
 input landed, re-sends a wiped pack so every composition gets a comparable
 sample, and fails a scenario if simultaneous attackers ever exceed the cap.
 
-Latest full run: **10 / 10 passed**, no scenario exceeded its attacker cap.
+`Emberline/Run Mission Smoke Test` (`EmberMissionSmoke`) — plays a real fight
+through the ordinary launch path (Intro, the wave spawner, a boss with poise)
+rather than the harness's direct spawns, and fails on any logged exception.
+Latest run: mission won, no errors.
+
+Latest full encounter run: **10 / 10 passed**, no scenario exceeded its attacker
+cap, and every behaviour appeared at least once across runs: punishes, reactive
+blocks, dodges, ripostes, retreats, guard holds, bodyguard moves and shortened
+staggers.
+
+## Not yet verified
+
+Device testing. No Android device has been attached during this work, so none of
+this has been confirmed on the Galaxy A33. The APK is built and ready to install.
+Run the game with `adb logcat -s Unity | grep '\[AI\]'` to watch the counters
+during a real session.
