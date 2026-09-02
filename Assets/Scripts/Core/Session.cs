@@ -108,7 +108,7 @@ namespace Emberline.Core
                 },
                 debrief = "The raiders carried nothing away. Whatever they came for… they did not find it. Yet.",
                 waves = new[] { W(B, B), W(B, B, B) },
-                planAsset = "01_Assassination" },
+                planAsset = "S01_FirstBlood" },
 
             new() { id = 2, name = "THE LANTERN ROAD", marsh = false,
                 story = "Old Yotsu carries the flame to the temple. The road is yours to keep open.",
@@ -122,7 +122,7 @@ namespace Emberline.Core
                 objective = MissionObjective.Escort,
                 escortSeconds = 62f,
                 waves = new[] { W(B, B), W(B, P), W(B, R, P) },
-                planAsset = "04_Escort" },
+                planAsset = "S02_LanternRoad" },
 
             new() { id = 3, name = "EYES IN THE DARK", marsh = false,
                 story = "Something moves between the chimneys, and it has not seen you yet. Keep it that way.",
@@ -135,7 +135,7 @@ namespace Emberline.Core
                 debrief = "The shades dissolved without a sound — reaching, until the very end, for the lantern.",
                 objective = MissionObjective.Stealth,
                 waves = new[] { W(S, S), W(B, B, S, R) },
-                planAsset = "08_Stealth" },
+                planAsset = "S03_EyesInTheDark" },
 
             new() { id = 4, name = "GORO'S TOLL", marsh = false,
                 story = "The raiders have a captain. Tonight Goro collects from you.",
@@ -147,7 +147,7 @@ namespace Emberline.Core
                 },
                 debrief = "Beaten, Goro laughed through broken teeth: 'It was never me who wanted it. Ashfen calls.'",
                 waves = new[] { W(B, A, R), W(C, A, B) },
-                planAsset = "07_Defense" },
+                planAsset = "S04_GorosToll" },
 
             new() { id = 5, name = "THE SERPENT'S TRAIL", marsh = true,
                 story = "No merchant returns from Ashfen since the drownings. The trail leads in anyway.",
@@ -159,7 +159,7 @@ namespace Emberline.Core
                 },
                 debrief = "Glowing footprints wind through the mud — lantern-bearers, marching somewhere unseen.",
                 waves = new[] { W(B, P, S, R), W(S, O, B, B, R) },
-                planAsset = "12_Investigation" },
+                planAsset = "S05_SerpentsTrail" },
 
             new() { id = 6, name = "INTO THE REEDS", marsh = true,
                 story = "The marsh swallows sound. The reeds are full of shades that were people once.",
@@ -171,7 +171,7 @@ namespace Emberline.Core
                 },
                 debrief = "Each shade fell reaching for the flame — not with hunger. With longing.",
                 waves = new[] { W(S, S, S), W(S, S, O) },
-                planAsset = "06_Survival" },
+                planAsset = "S06_IntoTheReeds" },
 
             new() { id = 7, name = "THE DROWNED ROAD", marsh = true,
                 story = "Merchants' carts sit sunk to the axle. Every lantern is gone — nothing else was touched.",
@@ -183,7 +183,7 @@ namespace Emberline.Core
                 },
                 debrief = "Beneath the black water, a hundred stolen lanterns glow — arranged in a spiral.",
                 waves = new[] { W(B, P, S, S), W(A, S, R, O) },
-                planAsset = "02_Rescue" },
+                planAsset = "S07_DrownedRoad" },
 
             new() { id = 8, name = "TWIN LANTERNS", marsh = true,
                 story = "Two toll-captains guard the crossing. Their lanterns burn a color fire should not be.",
@@ -195,7 +195,7 @@ namespace Emberline.Core
                 },
                 debrief = "The twin flames guttered out — and somewhere deep in the marsh, something vast exhaled.",
                 waves = new[] { W(S, P, O), W(C, C) },
-                planAsset = "09_Duel" },
+                planAsset = "S08_TwinLanterns" },
 
             new() { id = 9, name = "THE SERPENT'S GUARD", marsh = true,
                 story = "The serpent's chosen bar the last bridge. Behind them, the water is perfectly still.",
@@ -207,7 +207,7 @@ namespace Emberline.Core
                 },
                 debrief = "Past the last bridge, the water lies perfectly still — like a held breath.",
                 waves = new[] { W(S, P, S, R, O), W(C, A, S, P, B) },
-                planAsset = "11_Escape" },
+                planAsset = "S09_SerpentsGuard" },
 
             new() { id = 10, name = "KAGACHI", marsh = true,
                 story = "The Marsh Serpent rises. Three lives, they say — the duel, the mirrors, the desperation.",
@@ -219,7 +219,7 @@ namespace Emberline.Core
                 },
                 debrief = "The gate closed. The marsh began, at last, to drain. In Yorune, every lantern burns a little brighter.",
                 waves = new[] { W(K) },
-                planAsset = "10_BossHunt" },
+                planAsset = "S10_Kagachi" },
         };
 
         // ------------------------------------------------------- duel catalog

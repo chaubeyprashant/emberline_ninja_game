@@ -26,6 +26,21 @@ namespace Emberline.Missions
         [Header("Flow")]
         public MissionStage[] stages = System.Array.Empty<MissionStage>();
 
+        [Header("Environmental storytelling")]
+        [Tooltip("Placed around the arena edge when the mission starts. The world " +
+                 "should say what happened here without anyone narrating it.")]
+        public DressingKind[] dressing = System.Array.Empty<DressingKind>();
+
+        [Header("Optional objective")]
+        [Tooltip("A condition on the whole mission, not a stage you can skip.")]
+        public MissionChallenge challenge = MissionChallenge.None;
+
+        [Tooltip("Seconds, for UnderTime.")]
+        public float challengeSeconds = 240f;
+
+        [Tooltip("Shards paid for meeting the condition.")]
+        public int challengeShards = 2;
+
         [Header("Reward")]
         public int baseShards = 2;
 

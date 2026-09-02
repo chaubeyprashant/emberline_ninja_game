@@ -25,6 +25,9 @@ namespace Emberline.Missions
         Duel,        // one named opponent
         BossFight,   // boss encounter
         Escape,      // reach the exit under time pressure
+        ReachAny,    // two ways in: take either, the other is still waiting
+        BossPhase,   // fight a boss down to a health threshold, not to death
+        Listen,      // hold still in the fog and find what is circling you
     }
 
     /// <summary>
@@ -41,6 +44,9 @@ namespace Emberline.Missions
         RainStarts,       // weather shift — noise cover
         WaterRises,       // the marsh floods; movement slows
         TargetFlees,      // the objective turns and runs
+        FogRolls,         // the marsh closes in; sight collapses to a few metres
+        Ambush,           // a pack arrives behind the player, already awake
+        RouteWakes,       // the way you did not take is ready for you now
     }
 
     /// <summary>One beat of a mission. Authored as data, run by the director.</summary>
@@ -66,6 +72,17 @@ namespace Emberline.Missions
 
         [Tooltip("Enemies spawned when this stage starts.")]
         public EnemyKind[] spawn = System.Array.Empty<EnemyKind>();
+
+        [Tooltip("ReachAny: the second way in.")]
+        public Vector3 pointB;
+
+        [Tooltip("ReachAny: what waits on the second route. The route you leave " +
+                 "is remembered, so the mission can send it after you later.")]
+        public EnemyKind[] spawnB = System.Array.Empty<EnemyKind>();
+
+        [Tooltip("BossPhase: end the stage when the boss drops below this " +
+                 "fraction of its health. The boss survives; the mission moves on.")]
+        [Range(0.05f, 0.95f)] public float bossHealthGate = 0.6f;
 
         [Tooltip("Fires when the stage completes — the mission's turn.")]
         public StageEvent onComplete = StageEvent.None;

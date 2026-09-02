@@ -1,0 +1,100 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 814b8fc7fb4eb427480893eff898b203, type: 3}
+  m_Name: S05_SerpentsTrail
+  m_EditorClassIdentifier: Assembly-CSharp::Emberline.Missions.MissionPlan
+  id: 5
+  missionName: THE SERPENT'S TRAIL
+  missionType: INVESTIGATION
+  briefing: The raiders went into the marsh with eleven people and came out without
+    them. Follow what they left.
+  debrief: The orders in his coat are signed with a serpent. The name under it is
+    Kagehira. This is not banditry.
+  marsh: 1
+  nightOverride: 0
+  rain: 0
+  stages:
+  - goal: 8
+    objective: FOLLOW WHAT THEY LEFT
+    banner: DRAG MARKS, GOING EAST
+    count: 3
+    duration: 0
+    point: {x: 0, y: 0, z: 0}
+    spawn: 
+    pointB: {x: 0, y: 0, z: 0}
+    spawnB: 
+    bossHealthGate: 0.6
+    onComplete: 0
+    optional: 0
+    bonusShards: 1
+    checkpoint: 1
+  - goal: 9
+    objective: THE SCOUT
+    banner: HE HAS SEEN YOU
+    count: 1
+    duration: 40
+    point: {x: 0, y: 0, z: 0}
+    spawn: 0b000000
+    pointB: {x: 0, y: 0, z: 0}
+    spawnB: 
+    bossHealthGate: 0.6
+    onComplete: 7
+    optional: 0
+    bonusShards: 1
+    checkpoint: 0
+  - goal: 1
+    objective: HE WAS RUNNING TO THEM
+    banner: AMBUSH
+    count: 1
+    duration: 0
+    point: {x: 0, y: 0, z: 0}
+    spawn: 090000000900000001000000
+    pointB: {x: 0, y: 0, z: 0}
+    spawnB: 
+    bossHealthGate: 0.6
+    onComplete: 0
+    optional: 0
+    bonusShards: 1
+    checkpoint: 0
+  - goal: 8
+    objective: SEARCH HIS COAT
+    banner: HE WAS CARRYING ORDERS
+    count: 2
+    duration: 0
+    point: {x: 0, y: 0, z: 0}
+    spawn: 
+    pointB: {x: 0, y: 0, z: 0}
+    spawnB: 
+    bossHealthGate: 0.6
+    onComplete: 0
+    optional: 0
+    bonusShards: 1
+    checkpoint: 1
+  - goal: 0
+    objective: TAKE IT BACK
+    banner: SOMEONE NEEDS TO SEE THIS
+    count: 1
+    duration: 0
+    point: {x: -10, y: 0, z: 0}
+    spawn: 
+    pointB: {x: 0, y: 0, z: 0}
+    spawnB: 
+    bossHealthGate: 0.6
+    onComplete: 0
+    optional: 0
+    bonusShards: 1
+    checkpoint: 0
+  dressing: 05000000030000000400000006000000
+  challenge: 1
+  challengeSeconds: 240
+  challengeShards: 2
+  baseShards: 3

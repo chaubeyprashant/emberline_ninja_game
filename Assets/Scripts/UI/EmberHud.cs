@@ -1248,6 +1248,25 @@ namespace Emberline.UI
                         if (!st.optional && objective.Length == 0) objective = st.objective;
                         if (st.optional && optional.Length == 0) optional = st.objective;
                     }
+                    // The mission-wide condition is the optional objective for
+                    // almost every mission now, and it changes how the whole
+                    // thing is played — so it belongs on the sheet, before the
+                    // player commits, not on the results screen afterwards.
+                    if (optional.Length == 0 && plan.challenge != Missions.MissionChallenge.None)
+                        optional = plan.challenge switch
+                        {
+                            Missions.MissionChallenge.NoAlarm =>
+                                $"Finish without raising the alarm.  ◆ +{plan.challengeShards}",
+                            Missions.MissionChallenge.SaveAllPrisoners =>
+                                $"Free every prisoner you find.  ◆ +{plan.challengeShards}",
+                            Missions.MissionChallenge.NoCivilianDeaths =>
+                                $"No villager dies.  ◆ +{plan.challengeShards}",
+                            Missions.MissionChallenge.SilentKill =>
+                                $"Kill the target before it ever sees you.  ◆ +{plan.challengeShards}",
+                            Missions.MissionChallenge.UnderTime =>
+                                $"Finish inside {Mathf.RoundToInt(plan.challengeSeconds)} seconds.  ◆ +{plan.challengeShards}",
+                            _ => optional,
+                        };
                 }
                 if (objective.Length == 0)
                     objective = l.objective switch
@@ -1379,8 +1398,9 @@ namespace Emberline.UI
 
             // Objective + banner.
             _objectiveText = UiKit.Label(_screenRoot, "", 12, UiKit.EmberBright,
-                new Vector2(0, 1), new Vector2(300, -126), new Vector2(560, 18), align: TextAnchor.MiddleLeft);
+                new Vector2(0, 1), new Vector2(300, -130), new Vector2(560, 34), align: TextAnchor.UpperLeft);
             _objectiveText.characterSpacing = 3f;
+            _objectiveText.lineSpacing = 12f; // room for the optional condition under it
             var bannerRt = UiKit.Rect(_screenRoot, "Banner", new Vector2(0.5f, 1f),
                 new Vector2(0, -150), new Vector2(900, 44));
             _bannerGroup = bannerRt.gameObject.AddComponent<CanvasGroup>();
@@ -1673,7 +1693,13 @@ namespace Emberline.UI
 
         private void UpdateBannerObjective()
         {
-            _objectiveText.text = UiKit.Clean(_gm.Objective);
+            // The optional condition rides under the objective: it is a promise
+            // the player is keeping, so it has to be visible while it can still
+            // be broken, not revealed on the results screen.
+            var challenge = _gm.ChallengeLine;
+            _objectiveText.text = UiKit.Clean(string.IsNullOrEmpty(challenge)
+                ? _gm.Objective
+                : $"{_gm.Objective}\n<size=70%>{challenge}</size>");
             if (_gm.BannerTimer > 0)
             {
                 _bannerText.text = UiKit.Clean(_gm.Banner);

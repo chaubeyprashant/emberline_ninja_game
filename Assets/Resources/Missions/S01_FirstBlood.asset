@@ -1,0 +1,100 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 814b8fc7fb4eb427480893eff898b203, type: 3}
+  m_Name: S01_FirstBlood
+  m_EditorClassIdentifier: Assembly-CSharp::Emberline.Missions.MissionPlan
+  id: 1
+  missionName: FIRST BLOOD
+  missionType: ASSASSINATION
+  briefing: Raiders on the east terraces. One of them is watching the lantern line
+    and has not looked behind him once.
+  debrief: They carried nothing away. Whatever they came for, they did not find it.
+    The notice on the post is three weeks old.
+  marsh: 0
+  nightOverride: 0
+  rain: 0
+  stages:
+  - goal: 0
+    objective: GET ABOVE HIS POST
+    banner: THE EAST TERRACE
+    count: 1
+    duration: 0
+    point: {x: 10, y: 0, z: 0}
+    spawn: 
+    pointB: {x: 0, y: 0, z: 0}
+    spawnB: 
+    bossHealthGate: 0.6
+    onComplete: 0
+    optional: 0
+    bonusShards: 1
+    checkpoint: 1
+  - goal: 7
+    objective: TAKE HIM UNSEEN
+    banner: HE HAS NOT SEEN YOU
+    count: 1
+    duration: 0
+    point: {x: 0, y: 0, z: 0}
+    spawn: 00000000
+    pointB: {x: 0, y: 0, z: 0}
+    spawnB: 
+    bossHealthGate: 0.6
+    onComplete: 1
+    optional: 0
+    bonusShards: 1
+    checkpoint: 0
+  - goal: 8
+    objective: WHAT WERE THEY SEARCHING FOR?
+    banner: THE HOUSE IS EMPTY
+    count: 2
+    duration: 0
+    point: {x: 0, y: 0, z: 0}
+    spawn: 
+    pointB: {x: 0, y: 0, z: 0}
+    spawnB: 
+    bossHealthGate: 0.6
+    onComplete: 0
+    optional: 0
+    bonusShards: 1
+    checkpoint: 0
+  - goal: 1
+    objective: CUT YOUR WAY OUT
+    banner: THEY KNOW
+    count: 1
+    duration: 0
+    point: {x: 0, y: 0, z: 0}
+    spawn: 000000000000000001000000
+    pointB: {x: 0, y: 0, z: 0}
+    spawnB: 
+    bossHealthGate: 0.6
+    onComplete: 0
+    optional: 0
+    bonusShards: 1
+    checkpoint: 0
+  - goal: 0
+    objective: OFF THE ROOF
+    banner: GO HOME
+    count: 1
+    duration: 0
+    point: {x: 0, y: 0, z: -6.5}
+    spawn: 
+    pointB: {x: 0, y: 0, z: 0}
+    spawnB: 
+    bossHealthGate: 0.6
+    onComplete: 0
+    optional: 0
+    bonusShards: 1
+    checkpoint: 1
+  dressing: 010000000600000008000000
+  challenge: 4
+  challengeSeconds: 240
+  challengeShards: 2
+  baseShards: 3

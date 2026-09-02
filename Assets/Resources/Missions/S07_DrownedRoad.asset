@@ -1,0 +1,114 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 814b8fc7fb4eb427480893eff898b203, type: 3}
+  m_Name: S07_DrownedRoad
+  m_EditorClassIdentifier: Assembly-CSharp::Emberline.Missions.MissionPlan
+  id: 7
+  missionName: THE DROWNED ROAD
+  missionType: CROSSING
+  briefing: The causeway floods twice a night. Between the tides it is the only road
+    east. Cross it.
+  debrief: Every cart on the road is untouched except the lanterns. A hundred of
+    them, gone, and nothing else taken.
+  marsh: 1
+  nightOverride: 0
+  rain: 0
+  stages:
+  - goal: 0
+    objective: GET ON THE CAUSEWAY
+    banner: THE TIDE IS OUT
+    count: 1
+    duration: 0
+    point: {x: 10, y: 0, z: 0}
+    spawn: 
+    pointB: {x: 0, y: 0, z: 0}
+    spawnB: 
+    bossHealthGate: 0.6
+    onComplete: 6
+    optional: 0
+    bonusShards: 1
+    checkpoint: 1
+  - goal: 8
+    objective: SEARCH THE CARTS
+    banner: NOTHING TAKEN BUT LIGHT
+    count: 2
+    duration: 0
+    point: {x: 0, y: 0, z: 0}
+    spawn: 
+    pointB: {x: 0, y: 0, z: 0}
+    spawnB: 
+    bossHealthGate: 0.6
+    onComplete: 0
+    optional: 0
+    bonusShards: 1
+    checkpoint: 0
+  - goal: 1
+    objective: THE ROAD IS HELD
+    banner: PIKES ON THE CROSSING
+    count: 1
+    duration: 0
+    point: {x: 0, y: 0, z: 0}
+    spawn: 070000000700000001000000
+    pointB: {x: 0, y: 0, z: 0}
+    spawnB: 
+    bossHealthGate: 0.6
+    onComplete: 9
+    optional: 0
+    bonusShards: 1
+    checkpoint: 0
+  - goal: 1
+    objective: OUT OF THE WATER
+    banner: THEY WERE UNDER IT
+    count: 1
+    duration: 0
+    point: {x: 0, y: 0, z: 0}
+    spawn: 0900000000000000
+    pointB: {x: 0, y: 0, z: 0}
+    spawnB: 
+    bossHealthGate: 0.6
+    onComplete: 0
+    optional: 0
+    bonusShards: 1
+    checkpoint: 0
+  - goal: 12
+    objective: BEFORE THE SECOND TIDE
+    banner: IT IS COMING BACK
+    count: 1
+    duration: 45
+    point: {x: -10, y: 0, z: 0}
+    spawn: 03000000
+    pointB: {x: 0, y: 0, z: 0}
+    spawnB: 
+    bossHealthGate: 0.6
+    onComplete: 6
+    optional: 0
+    bonusShards: 1
+    checkpoint: 1
+  - goal: 0
+    objective: THE FAR BANK
+    banner: ACROSS
+    count: 1
+    duration: 0
+    point: {x: 0, y: 0, z: -6.5}
+    spawn: 
+    pointB: {x: 0, y: 0, z: 0}
+    spawnB: 
+    bossHealthGate: 0.6
+    onComplete: 0
+    optional: 0
+    bonusShards: 1
+    checkpoint: 0
+  dressing: 030000000200000004000000
+  challenge: 5
+  challengeSeconds: 240
+  challengeShards: 3
+  baseShards: 4

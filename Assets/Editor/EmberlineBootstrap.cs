@@ -51,6 +51,7 @@ namespace Emberline.EditorTools
             EmberArtImport.ConfigureCharacterClips();
             BuildWeaponAssets();
             BuildKunaiPrefab();
+            EmberDressing.Build();   // runtime props for mission set dressing
 
             var prefabs = BuildEnemyPrefabs();
             var rooftop = RooftopMission();
@@ -547,8 +548,16 @@ namespace Emberline.EditorTools
         }
 
         /// <summary>Place a KayKit Dungeon prop with the shared toon atlas material.</summary>
+        /// <summary>
+        /// Place a KayKit prop. A prop given a collider also registers itself as
+        /// an arena obstacle: a solid object that navigation does not know about
+        /// blocks enemies and players against something no code can steer around,
+        /// and every such prop had to remember to add itself by hand. One of them
+        /// did not, and a marsh barrel quietly walled off part of the arena.
+        /// </summary>
         private static GameObject DungeonProp(string fbxName, Vector3 pos, float yaw,
-            float scale = 1f, bool collider = false)
+            float scale = 1f, bool collider = false, ArenaMarkers markers = null,
+            float obstacleRadius = 1f)
         {
             var asset = AssetDatabase.LoadAssetAtPath<GameObject>(
                 $"Assets/Art/Environments/Dungeon/{fbxName}.fbx");
@@ -580,6 +589,13 @@ namespace Emberline.EditorTools
                 var mats = r.sharedMaterials;
                 for (var i = 0; i < mats.Length; i++) mats[i] = mat;
                 r.sharedMaterials = mats;
+            }
+            if (collider && markers != null)
+            {
+                var already = markers.obstacles.Exists(o =>
+                    Mathf.Abs(o.x - pos.x) < 0.4f && Mathf.Abs(o.z - pos.z) < 0.4f);
+                if (!already)
+                    markers.obstacles.Add(new Vector4(pos.x, 0f, pos.z, obstacleRadius));
             }
             if (collider)
             {
@@ -657,10 +673,10 @@ namespace Emberline.EditorTools
                 }
 
                 // KayKit props: crate cover, supply boxes, banners on the parapet.
-                DungeonProp("crates_stacked", new Vector3(-9.5f, 0, -4.5f), 20f, 1.15f, collider: true);
-                markers.obstacles.Add(new Vector4(-9.5f, 0, -4.5f, 1.1f));
-                DungeonProp("box_large", new Vector3(9f, 0, 4.8f), -35f, 1.1f, collider: true);
-                markers.obstacles.Add(new Vector4(9f, 0, 4.8f, 0.9f));
+                DungeonProp("crates_stacked", new Vector3(-9.5f, 0, -4.5f), 20f, 1.15f, collider: true,
+                    markers: markers, obstacleRadius: 1.1f);
+                DungeonProp("box_large", new Vector3(9f, 0, 4.8f), -35f, 1.1f, collider: true,
+                    markers: markers, obstacleRadius: 0.9f);
                 DungeonProp("box_small", new Vector3(-5f, 0, -3.9f), 65f, 1f);
                 DungeonProp("keg", new Vector3(0.6f, 0, 1.9f), 10f, 1f);
                 DungeonProp("banner_red", new Vector3(-6f, 1.55f, 8.45f), 180f, 1.2f);
@@ -674,12 +690,12 @@ namespace Emberline.EditorTools
 
                 // Dressing: the deck read as an empty grey box, so it now carries
                 // the debris of a place people actually use.
-                DungeonProp("barrel_large", new Vector3(-11.2f, 0, 6.2f), 15f, 1.05f, collider: true);
-                markers.obstacles.Add(new Vector4(-11.2f, 0, 6.2f, 0.8f));
+                DungeonProp("barrel_large", new Vector3(-11.2f, 0, 6.2f), 15f, 1.05f, collider: true,
+                    markers: markers, obstacleRadius: 0.8f);
                 DungeonProp("barrel_small", new Vector3(-10.2f, 0, 5.2f), -40f, 1f);
                 DungeonProp("barrel_small", new Vector3(11.4f, 0, -5.6f), 60f, 1f);
-                DungeonProp("crates_stacked", new Vector3(10.6f, 0, 1.4f), -15f, 1f, collider: true);
-                markers.obstacles.Add(new Vector4(10.6f, 0, 1.4f, 1f));
+                DungeonProp("crates_stacked", new Vector3(10.6f, 0, 1.4f), -15f, 1f, collider: true,
+                    markers: markers, obstacleRadius: 1f);
                 DungeonProp("box_small", new Vector3(3.4f, 0, -6.4f), 25f, 1f);
                 DungeonProp("keg", new Vector3(-3.2f, 0, 5.4f), -30f, 1f);
                 DungeonProp("chest", new Vector3(-8.4f, 0, 0.4f), 55f, 1f);
@@ -771,15 +787,16 @@ namespace Emberline.EditorTools
                 }
 
                 // KayKit props: drowned cargo — barrels, a chest, toppled ruins.
-                DungeonProp("barrel_large", new Vector3(-6.2f, -0.18f, 3.1f), 30f, 1.1f, collider: true);
+                DungeonProp("barrel_large", new Vector3(-6.2f, -0.18f, 3.1f), 30f, 1.1f, collider: true,
+                    markers: markers, obstacleRadius: 0.9f);
                 DungeonProp("barrel_small", new Vector3(-5.3f, 0, 2.2f), 70f, 1f);
                 DungeonProp("barrel_small", new Vector3(7.4f, -0.1f, -2.8f), -15f, 1f);
                 DungeonProp("chest", new Vector3(6.0f, 0, -1.6f), -140f, 1.05f);
-                DungeonProp("rubble_large", new Vector3(-10.5f, 0, -5f), 45f, 1.3f, collider: true);
-                markers.obstacles.Add(new Vector4(-10.5f, 0, -5f, 1.3f));
+                DungeonProp("rubble_large", new Vector3(-10.5f, 0, -5f), 45f, 1.3f, collider: true,
+                    markers: markers, obstacleRadius: 1.3f);
                 DungeonProp("rubble_half", new Vector3(10.8f, 0, 5.4f), -70f, 1.2f);
-                DungeonProp("column", new Vector3(11.6f, 0, -6.2f), 15f, 1.1f, collider: true);
-                markers.obstacles.Add(new Vector4(11.6f, 0, -6.2f, 0.8f));
+                DungeonProp("column", new Vector3(11.6f, 0, -6.2f), 15f, 1.1f, collider: true,
+                    markers: markers, obstacleRadius: 0.8f);
 
                 // Ghost lanterns drifting over the reeds (emissive quads, no lights).
                 var ghostGlow = Mat("GhostLantern", new Color(0.5f, 0.95f, 0.75f));

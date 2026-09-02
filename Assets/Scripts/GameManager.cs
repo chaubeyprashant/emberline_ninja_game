@@ -51,9 +51,18 @@ namespace Emberline
                 if (CurrentPlan == null) return (0, 0);
                 var total = 0;
                 foreach (var st in CurrentPlan.stages) if (st.optional) total++;
+                // The mission-wide condition counts as an optional objective too:
+                // it is the only one most missions have now.
+                if (CurrentPlan.challenge != Missions.MissionChallenge.None) total++;
                 return (_director?.OptionalDone ?? 0, total);
             }
         }
+        /// <summary>Live text for the mission's optional condition, or empty.</summary>
+        public string ChallengeLine => _director?.Challenge?.Line ?? "";
+
+        /// <summary>False once the optional condition has been lost for good.</summary>
+        public bool ChallengeIntact => _director?.Challenge?.Intact ?? false;
+
         public int DailyShards { get; private set; }
 
         /// <summary>Shards paid by the weekly challenge on this result, or 0.</summary>
@@ -279,7 +288,12 @@ namespace Emberline
                     // Per-level atmosphere.
                     if (level.id == 3) UI.LevelFx.EnableRain();
                     if (level.id == 5) UI.LevelFx.SpawnFootprints();
-                    if (level.objective == MissionObjective.Escort) SpawnEscort(level);
+                    // A staged plan spawns its own bearer when the escort beat
+                    // starts; spawning here would have him walking through the
+                    // briefing and arriving before he is asked for.
+                    if (level.objective == MissionObjective.Escort
+                        && Resources.Load<Missions.MissionPlan>($"Missions/{level.planAsset}") == null)
+                        SpawnEscort(level);
                     // Staged plan, if this level has one authored. The plan drives
                     // objectives and pacing; waves remain the fallback.
                     CurrentPlan = Resources.Load<Missions.MissionPlan>(

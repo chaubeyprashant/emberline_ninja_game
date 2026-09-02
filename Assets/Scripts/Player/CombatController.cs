@@ -689,6 +689,12 @@ namespace Emberline.Player
                 OnHitLanded();
                 hitAny = true;
             }
+            // Villagers are in the arc too. They are not targets and never draw
+            // the soft-lock, but a careless swing at someone fleeing past you
+            // will kill them — which is the only reason the "no civilian deaths"
+            // objective means anything.
+            Missions.Villager.SweepDamage(transform.position, _motor.Facing, range, arcDeg, damage);
+
             // Strikes also crack arena lantern posts (break → health pickup).
             foreach (var post in LanternPost.Active)
             {

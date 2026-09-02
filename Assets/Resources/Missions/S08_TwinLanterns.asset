@@ -1,0 +1,142 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 814b8fc7fb4eb427480893eff898b203, type: 3}
+  m_Name: S08_TwinLanterns
+  m_EditorClassIdentifier: Assembly-CSharp::Emberline.Missions.MissionPlan
+  id: 8
+  missionName: TWIN LANTERNS
+  missionType: TWIN OBJECTIVE
+  briefing: Two lanterns hold the bridge, east and west. Both must burn before it
+    opens. Pick your side.
+  debrief: The bridge opened. Both lanterns are a signal, and you lit them. Somebody
+    now knows you are coming.
+  marsh: 1
+  nightOverride: 0
+  rain: 0
+  stages:
+  - goal: 0
+    objective: THE BRIDGE HEAD
+    banner: TWO TOWERS, ONE BRIDGE
+    count: 1
+    duration: 0
+    point: {x: 0, y: 0, z: -6.5}
+    spawn: 
+    pointB: {x: 0, y: 0, z: 0}
+    spawnB: 
+    bossHealthGate: 0.6
+    onComplete: 0
+    optional: 0
+    bonusShards: 1
+    checkpoint: 1
+  - goal: 13
+    objective: CHOOSE A LANTERN
+    banner: EAST OR WEST
+    count: 1
+    duration: 0
+    point: {x: 9, y: 0, z: 5.5}
+    spawn: 010000000100000007000000
+    pointB: {x: -9, y: 0, z: 5.5}
+    spawnB: 090000000b000000
+    bossHealthGate: 0.6
+    onComplete: 0
+    optional: 0
+    bonusShards: 1
+    checkpoint: 1
+  - goal: 1
+    objective: TAKE THE TOWER
+    banner: ITS GUARD
+    count: 1
+    duration: 0
+    point: {x: 0, y: 0, z: 0}
+    spawn: 010000000100000007000000
+    pointB: {x: 0, y: 0, z: 0}
+    spawnB: 
+    bossHealthGate: 0.6
+    onComplete: 10
+    optional: 0
+    bonusShards: 1
+    checkpoint: 0
+  - goal: 8
+    objective: LIGHT IT
+    banner: ONE BURNING
+    count: 1
+    duration: 0
+    point: {x: 0, y: 0, z: 0}
+    spawn: 
+    pointB: {x: 0, y: 0, z: 0}
+    spawnB: 
+    bossHealthGate: 0.6
+    onComplete: 0
+    optional: 0
+    bonusShards: 1
+    checkpoint: 1
+  - goal: 1
+    objective: THE OTHER TOWER
+    banner: THEY ARE READY FOR YOU
+    count: 1
+    duration: 0
+    point: {x: 0, y: 0, z: 0}
+    spawn: 090000000b000000
+    pointB: {x: 0, y: 0, z: 0}
+    spawnB: 
+    bossHealthGate: 0.6
+    onComplete: 0
+    optional: 0
+    bonusShards: 1
+    checkpoint: 0
+  - goal: 8
+    objective: LIGHT THE SECOND
+    banner: BOTH BURNING
+    count: 1
+    duration: 0
+    point: {x: 0, y: 0, z: 0}
+    spawn: 
+    pointB: {x: 0, y: 0, z: 0}
+    spawnB: 
+    bossHealthGate: 0.6
+    onComplete: 0
+    optional: 0
+    bonusShards: 1
+    checkpoint: 0
+  - goal: 10
+    objective: THE BRIDGE IS NOT FREE
+    banner: HE WAS WAITING
+    count: 1
+    duration: 0
+    point: {x: 0, y: 0, z: 0}
+    spawn: 0a000000
+    pointB: {x: 0, y: 0, z: 0}
+    spawnB: 
+    bossHealthGate: 0.6
+    onComplete: 0
+    optional: 0
+    bonusShards: 1
+    checkpoint: 0
+  - goal: 0
+    objective: CROSS
+    banner: THE BRIDGE IS OPEN
+    count: 1
+    duration: 0
+    point: {x: 0, y: 0, z: 6.5}
+    spawn: 
+    pointB: {x: 0, y: 0, z: 0}
+    spawnB: 
+    bossHealthGate: 0.6
+    onComplete: 0
+    optional: 0
+    bonusShards: 1
+    checkpoint: 0
+  dressing: 090000000300000005000000
+  challenge: 1
+  challengeSeconds: 240
+  challengeShards: 3
+  baseShards: 4

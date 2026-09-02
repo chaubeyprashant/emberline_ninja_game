@@ -116,9 +116,19 @@ namespace Emberline.Enemies
         public static void RegisterLight(Vector3 pos) => LightSources.Add(pos);
         public static void ClearLights() => LightSources.Clear();
 
+        /// <summary>
+        /// Global sight modifier for conditions that affect everyone: night, and
+        /// fog rolling in off the marsh. A mission sets this once; it must be
+        /// reset when a mission begins, because a static that survives a scene
+        /// load would otherwise leave the next mission permanently dark.
+        /// </summary>
+        public static float AmbientScale = 1f;
+
+        public static void ResetConditions() => AmbientScale = 1f;
+
         public static float Of(Vector3 playerPos, bool crouched)
         {
-            var v = crouched ? 0.45f : 1f;
+            var v = (crouched ? 0.45f : 1f) * AmbientScale;
 
             // Smoke hides you outright — it already blinds attacks, so it should
             // hide you from detection too.
