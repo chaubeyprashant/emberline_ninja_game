@@ -280,13 +280,13 @@ namespace Emberline.UI
             // weapon line, finish line, daily strip, three mode cards — lives one
             // tap deeper where it is wanted.
             var col = UiKit.Rect(_screenRoot, "Column", new Vector2(0, 1), new Vector2(104, 0),
-                new Vector2(520, 720), new Vector2(0, 1));
+                new Vector2(700, 720), new Vector2(0, 1));
 
-            UiKit.Kicker(col, "AN EMBERLINE STORY", new Vector2(0, 1), new Vector2(0, -74),
-                new Vector2(520, 24), align: TextAnchor.MiddleLeft, size: 16);
-            UiKit.Label(col, "EMBERLINE", 62, UiKit.Pale, new Vector2(0, 1), new Vector2(-4, -126),
-                new Vector2(560, 76), display: true, align: TextAnchor.MiddleLeft);
-            UiKit.Accent(col, new Vector2(0, 1), new Vector2(18, -172), 36);
+            UiKit.Kicker(col, "AN EMBERLINE STORY", new Vector2(0, 1), new Vector2(0, -58),
+                new Vector2(700, 26), align: TextAnchor.MiddleLeft, size: 18);
+            UiKit.Label(col, "EMBERLINE", 70, UiKit.Pale, new Vector2(0, 1), new Vector2(-4, -108),
+                new Vector2(700, 84), display: true, align: TextAnchor.MiddleLeft);
+            UiKit.Accent(col, new Vector2(0, 1), new Vector2(18, -158), 44);
 
             var next = Mathf.Clamp(Session.StoryUnlocked - 1, 0, Session.Story.Length - 1);
             var cleared = Session.StoryUnlocked - 1;
@@ -310,7 +310,7 @@ namespace Emberline.UI
                 ("SETTINGS", Difficulty.Name.ToLowerInvariant(), ToggleSettings),
             };
 
-            var y = -200f;
+            var y = -180f;
             for (var i = 0; i < items.Length; i++)
             {
                 var (label, sub, go) = items[i];
@@ -319,12 +319,12 @@ namespace Emberline.UI
             }
 
             // Secondary, small, bottom-left: the reference pages.
-            UiKit.MakeButton(_screenRoot, "RENZO", new Vector2(0, 0), new Vector2(166, 36),
-                new Vector2(124, 50), () => SetScreen(Screen.Bio), 15);
-            UiKit.MakeButton(_screenRoot, "CODEX", new Vector2(0, 0), new Vector2(300, 36),
-                new Vector2(124, 50), () => SetScreen(Screen.Codex), 15);
-            UiKit.MakeButton(_screenRoot, "ARMOURY", new Vector2(0, 0), new Vector2(446, 36),
-                new Vector2(144, 50), () => SetScreen(Screen.Weapons), 15);
+            UiKit.MakeButton(_screenRoot, "RENZO", new Vector2(0, 0), new Vector2(176, 32),
+                new Vector2(144, 52), () => SetScreen(Screen.Bio), 16);
+            UiKit.MakeButton(_screenRoot, "CODEX", new Vector2(0, 0), new Vector2(330, 32),
+                new Vector2(144, 52), () => SetScreen(Screen.Codex), 16);
+            UiKit.MakeButton(_screenRoot, "ARMOURY", new Vector2(0, 0), new Vector2(496, 32),
+                new Vector2(168, 52), () => SetScreen(Screen.Weapons), 16);
 
             UiKit.Label(_screenRoot, "v" + Application.version, 13, UiKit.Faint, new Vector2(1, 0),
                 new Vector2(-40, 30), new Vector2(200, 18), align: TextAnchor.MiddleRight);
@@ -338,7 +338,7 @@ namespace Emberline.UI
             System.Action go)
         {
             var rt = UiKit.Rect(col, "Row_" + label, new Vector2(0, 1), new Vector2(0, y),
-                new Vector2(500, 62), new Vector2(0, 1));
+                new Vector2(660, 62), new Vector2(0, 1));
             var hit = UiKit.Img(rt, null, new Color(1, 1, 1, 0.001f));
             hit.raycastTarget = true;
             var btn = rt.gameObject.AddComponent<Button>();
@@ -351,12 +351,12 @@ namespace Emberline.UI
             down.callback.AddListener(_ => punch.Punch());
             trig.triggers.Add(down);
 
-            var t = UiKit.Label(rt, label, primary ? 28 : 24, primary ? UiKit.EmberBright : UiKit.Pale,
-                new Vector2(0, 1), new Vector2(18, -16), new Vector2(480, 32), align: TextAnchor.MiddleLeft);
+            var t = UiKit.Label(rt, label, primary ? 31 : 27, primary ? UiKit.EmberBright : UiKit.Pale,
+                new Vector2(0, 1), new Vector2(18, -15), new Vector2(640, 34), align: TextAnchor.MiddleLeft);
             t.characterSpacing = 5f;
             if (!string.IsNullOrEmpty(sub))
-                UiKit.Label(rt, UiKit.Clean(sub), 16, UiKit.Dim, new Vector2(0, 1), new Vector2(18, -43),
-                    new Vector2(480, 20), align: TextAnchor.MiddleLeft);
+                UiKit.Label(rt, UiKit.Clean(sub), 18, UiKit.Dim, new Vector2(0, 1), new Vector2(18, -44),
+                    new Vector2(640, 22), align: TextAnchor.MiddleLeft);
             UiKit.Hairline(rt, new Vector2(0, 0), 0.08f);
             if (primary) UiKit.Img(UiKit.Rect(rt, "Mark", new Vector2(0, 0.5f), new Vector2(4, 4),
                 new Vector2(3, 28)), UiKit.White, UiKit.Ember);
