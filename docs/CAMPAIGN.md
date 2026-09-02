@@ -24,7 +24,7 @@ Generated from `Assets/Scripts/Campaign/CampaignTable.cs` by `Emberline/Write Ca
 
 ## Gameplay distribution
 
-Counted over every type a mission carries (the brief allows overlap); the first type on a mission is its primary.
+The first type on a mission is its primary and is what the campaign validator holds against the brief's targets; the overlap column counts every mission that carries the type at all, since the brief allows categories to overlap.
 
 | Type | Brief target | Missions carrying it | As primary |
 |---|---|---|---|
@@ -59,36 +59,67 @@ Two arena geometries exist (rooftop deck, marsh). Every region is carried on the
 
 | Missions | Region | Arena | Theme | Weather |
 |---|---|---|---|---|
-| 1–1 | Ruins | Rooftop | BurningVillage | clear |
+| 1 | Ruins | Rooftop | BurningVillage | clear |
 | 2–3 | Ruins | Rooftop | Village | night/rain |
-| 4–35 | Mountains | Rooftop | Castle | clear |
-| 6–6 | Forest | Rooftop | Village | clear |
-| 7–29 | Forest | Rooftop | Forest | night/fog |
-| 8–27 | Forest | Rooftop | Bamboo | night |
-| 9–47 | Marsh | Marsh | Graveyard | fog |
-| 10–60 | Temples | Marsh | Temple | night |
-| 11–67 | Villages | Rooftop | Village | night |
-| 13–56 | Villages | Rooftop | BurningVillage | clear |
-| 16–16 | Forest | Rooftop | Castle | clear |
-| 19–69 | Villages | Rooftop | Castle | night |
-| 23–93 | Snow | Rooftop | Mountain | snow/night/fog |
-| 30–30 | Forest | Rooftop | Graveyard | night/fog |
-| 33–40 | Mountains | Rooftop | Fortress | night |
-| 36–36 | Mountains | Rooftop | Village | clear |
-| 38–38 | Mountains | Rooftop | Mountain | clear |
-| 46–46 | Marsh | Marsh | Village | clear |
-| 52–52 | Villages | Rooftop | VillageDawn | clear |
-| 61–70 | Villages | Rooftop | RainyBattlefield | night/rain |
+| 4–5 | Mountains | Rooftop | Castle | clear |
+| 6 | Forest | Rooftop | Village | clear |
+| 7 | Forest | Rooftop | Forest | clear |
+| 8 | Forest | Rooftop | Bamboo | clear |
+| 9 | Marsh | Marsh | Graveyard | fog |
+| 10 | Temples | Marsh | Temple | clear |
+| 11–12 | Villages | Rooftop | Village | night |
+| 13 | Villages | Rooftop | BurningVillage | clear |
+| 14 | Villages | Rooftop | Village | clear |
+| 15 | Forest | Rooftop | Forest | clear |
+| 16 | Forest | Rooftop | Castle | clear |
+| 17 | Forest | Rooftop | Forest | clear |
+| 18 | Villages | Rooftop | Village | night |
+| 19–20 | Villages | Rooftop | Castle | night |
+| 21 | Forest | Rooftop | Forest | night/fog |
+| 22 | Forest | Rooftop | Bamboo | clear |
+| 23 | Snow | Rooftop | Mountain | snow |
+| 24 | Forest | Rooftop | Forest | clear |
+| 25 | Forest | Rooftop | Bamboo | night |
+| 26 | Forest | Rooftop | Forest | fog |
+| 27 | Forest | Rooftop | Bamboo | clear |
+| 28–29 | Forest | Rooftop | Forest | clear |
+| 30 | Forest | Rooftop | Graveyard | night/fog |
+| 31–32 | Mountains | Rooftop | Castle | clear |
+| 33–34 | Mountains | Rooftop | Fortress | clear |
+| 35 | Mountains | Rooftop | Castle | clear |
+| 36 | Mountains | Rooftop | Village | clear |
+| 37 | Villages | Rooftop | BurningVillage | clear |
+| 38 | Mountains | Rooftop | Mountain | clear |
+| 39–40 | Mountains | Rooftop | Fortress | night |
+| 41–45 | Marsh | Marsh | Graveyard | fog |
+| 46 | Marsh | Marsh | Village | clear |
+| 47 | Marsh | Marsh | Graveyard | fog |
+| 48–51 | Temples | Marsh | Temple | night |
+| 52 | Villages | Rooftop | VillageDawn | clear |
+| 53–56 | Villages | Rooftop | BurningVillage | clear |
+| 57–60 | Temples | Marsh | Temple | night |
+| 61–62 | Villages | Rooftop | RainyBattlefield | night/rain |
+| 63 | Villages | Rooftop | Castle | night |
+| 64 | Villages | Rooftop | Village | clear |
+| 65 | Villages | Rooftop | Castle | clear |
+| 66–67 | Villages | Rooftop | Village | night |
+| 68 | Villages | Rooftop | RainyBattlefield | rain |
+| 69 | Villages | Rooftop | Castle | night |
+| 70 | Villages | Rooftop | RainyBattlefield | night/rain |
+| 71–73 | Snow | Rooftop | Mountain | snow/night/fog |
 | 74–79 | Fortresses | Rooftop | Fortress | snow/night |
 | 80–82 | Stronghold | Rooftop | Castle | night |
 | 83–84 | Stronghold | Rooftop | Fortress | night |
-| 85–98 | Seal | Rooftop | Temple | night |
+| 85–87 | Seal | Rooftop | Temple | night |
 | 88–89 | Seal | Rooftop | Fortress | night |
-| 91–91 | Seal | Rooftop | BurningVillage | night |
-| 94–94 | Snow | Rooftop | Fortress | snow |
+| 90 | Seal | Rooftop | Temple | night |
+| 91 | Seal | Rooftop | BurningVillage | night |
+| 92–93 | Snow | Rooftop | Mountain | snow/fog |
+| 94 | Snow | Rooftop | Fortress | snow |
 | 95–96 | Seal | Rooftop | Mountain | night/fog |
-| 99–99 | Seal | Marsh | Temple | night |
-| 100–100 | Dawn | Rooftop | VillageDawn | clear |
+| 97–98 | Seal | Rooftop | Temple | night |
+| 99 | Seal | Marsh | Temple | night |
+| 100 | Dawn | Rooftop | VillageDawn | clear |
 
 ## Renzo, and the Seal
 

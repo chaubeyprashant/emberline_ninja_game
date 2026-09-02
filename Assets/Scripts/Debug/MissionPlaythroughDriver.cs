@@ -88,7 +88,9 @@ namespace Emberline.DebugTools
 
             // A checkpoint from an earlier run would skip straight past the stages
             // this test exists to walk through.
-            for (var i = 1; i <= 12; i++) Checkpoints.Clear(i);
+            // Every mission id: a checkpoint left by an earlier run resumes the
+            // mission mid-way and hides exactly the stages this exists to walk.
+            for (var i = 1; i <= Session.Story.Length + 12; i++) Checkpoints.Clear(i);
 
             _stagesSeen.Clear();
             _lastStage = -1;
