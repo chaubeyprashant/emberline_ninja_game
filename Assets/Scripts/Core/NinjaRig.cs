@@ -3,7 +3,27 @@ using UnityEngine;
 
 namespace Emberline.Core
 {
-    public enum RigPose { Idle, Run, Strike1, Strike2, Cleave, Windup, Hurt, Dash, Dead, Strike3, Spawn, Taunt }
+    /// <summary>
+    /// Every pose a rig can be asked for. Append-only: SkeletalRig stores its
+    /// clip table indexed by this value. The Combat 2.0 poses at the tail give
+    /// each attack category a distinct read — a thrust must not look like a
+    /// slash, a guard-break must not look like a jab.
+    /// </summary>
+    public enum RigPose
+    {
+        Idle, Run, Strike1, Strike2, Cleave, Windup, Hurt, Dash, Dead, Strike3, Spawn, Taunt,
+        Stab,        // thrust / long narrow attack
+        Sweep,       // wide horizontal
+        Block,       // guard held
+        BlockHit,    // guard struck / parry recoil
+        SideStep,    // dodge to the side
+        Backstep,    // retreat attack / disengage
+        Kick,        // guard break / shove
+        Throw,       // kunai, powder
+        Jump,        // air attack
+        Charge,      // gap closer run-in
+        Delayed,     // held startup (the delayed attack's raised weapon)
+    }
 
     /// <summary>
     /// Articulated ninja built from primitives at runtime and animated procedurally —
@@ -305,6 +325,17 @@ namespace Emberline.Core
             if (pose == RigPose.Strike3) pose = RigPose.Strike1;
             if (pose == RigPose.Spawn) pose = RigPose.Idle;
             if (pose == RigPose.Taunt) pose = RigPose.Windup;
+            // Combat 2.0 poses on the primitive fallback rig: nearest classic pose.
+            pose = pose switch
+            {
+                RigPose.Stab or RigPose.Charge => RigPose.Strike2,
+                RigPose.Sweep or RigPose.Kick => RigPose.Cleave,
+                RigPose.Block or RigPose.Delayed => RigPose.Windup,
+                RigPose.BlockHit => RigPose.Hurt,
+                RigPose.SideStep or RigPose.Backstep or RigPose.Jump => RigPose.Dash,
+                RigPose.Throw => RigPose.Strike2,
+                _ => pose,
+            };
             // Target angles: X = forward swing (negative lifts limb forward),
             // torsoYaw sweeps sword strikes, pitch leans the torso.
             float armL = 8, armR = 8, foreL = 25, foreR = 25;

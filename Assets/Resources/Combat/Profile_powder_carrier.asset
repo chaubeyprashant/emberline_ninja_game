@@ -1,0 +1,39 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6e86753ae5a51404ab374fcabd983f47, type: 3}
+  m_Name: Profile_powder_carrier
+  m_EditorClassIdentifier: Assembly-CSharp::Emberline.Enemies.EnemyCombatProfile
+  id: powder_carrier
+  aggression: 0.2
+  bravery: 0.1
+  attackFrequency: 0.4
+  defenseFrequency: 0.1
+  dodgeFrequency: 0.2
+  parryAbility: 0
+  retreatTendency: 0.9
+  feintFrequency: 0
+  counterFrequency: 0
+  guardBreakFrequency: 0
+  teamwork: 0.8
+  preferredDistance: 7.5
+  minDistance: 4.5
+  maxDistance: 10
+  retreatDistance: 4.9500003
+  approachDistance: 13
+  comboLength: 1
+  combos: []
+  adaptation: 0
+  reactionToPlayerAggression: 0
+  lowHealth: 0
+  lowHealthThreshold: 0.3
+  allyDeath: 1
+  decisionInterval: 0.25

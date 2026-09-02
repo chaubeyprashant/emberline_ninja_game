@@ -1,0 +1,48 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6e86753ae5a51404ab374fcabd983f47, type: 3}
+  m_Name: Profile_pale_shade
+  m_EditorClassIdentifier: Assembly-CSharp::Emberline.Enemies.EnemyCombatProfile
+  id: pale_shade
+  aggression: 0.7
+  bravery: 0.8
+  attackFrequency: 0.8
+  defenseFrequency: 0.2
+  dodgeFrequency: 0.6
+  parryAbility: 0
+  retreatTendency: 0.6
+  feintFrequency: 0.2
+  counterFrequency: 0.3
+  guardBreakFrequency: 0
+  teamwork: 0.2
+  preferredDistance: 2
+  minDistance: 1.1
+  maxDistance: 3
+  retreatDistance: 1.21
+  approachDistance: 3.8999999
+  comboLength: 3
+  combos:
+  - name: speed
+    steps:
+    - lunge
+    - claws
+    - retreat_swipe
+  - name: bait
+    steps:
+    - feint
+    - delayed_claws
+  adaptation: 0.3
+  reactionToPlayerAggression: 0.3
+  lowHealth: 4
+  lowHealthThreshold: 0.3
+  allyDeath: 0
+  decisionInterval: 0.18

@@ -55,6 +55,23 @@ namespace Emberline.Player
         public int Combo { get; private set; }
         public int MaxCombo { get; private set; }
 
+        /// <summary>What Renzo has been doing lately; adaptive enemies read it.</summary>
+        public PlayerCombatMemory Memory { get; } = new();
+
+        /// <summary>The contextual attack set for the equipped weapon.</summary>
+        private PlayerMoveset _moveset;
+
+        /// <summary>The last attack performed, for the debug overlay and the enemy's read.</summary>
+        public PlayerAttackDefinition LastAttack { get; private set; }
+        public AttackContext LastContext { get; private set; }
+
+        /// <summary>True while Renzo is backing away from his target without attacking.</summary>
+        public bool Retreating { get; private set; }
+
+        private float _afterHeavyT;     // a heavy just resolved: HeavyFollow is open
+        private bool _incomingHeavy;    // set by the enemy right before a hit lands
+        private float _contextCd;       // cooldown on the last contextual attack
+
         /// <summary>Attacks turned aside this mission (feat / daily tracking).</summary>
         public int Deflects { get; private set; }
 
@@ -184,6 +201,7 @@ namespace Emberline.Player
         {
             _weapon = w;
             if (w == null) return;
+            _moveset = PlayerMoveset.ForWeapon(w.id);
 
             // Ryo-bought upgrades are multipliers over the def, never edits to it,
             // so the asset stays the single description of what the weapon is.
@@ -254,12 +272,18 @@ namespace Emberline.Player
             _lockT = Mathf.Max(0, _lockT - Time.deltaTime);
             UpdateState(Time.deltaTime);
             UpdateGuard();
+            Memory.Tick(Time.deltaTime);
+            _afterHeavyT = Mathf.Max(0f, _afterHeavyT - Time.deltaTime);
+            _contextCd = Mathf.Max(0f, _contextCd - Time.deltaTime);
+            UpdateRetreat();
             if (_comboTimer > 0 && (_comboTimer -= Time.deltaTime) <= 0) Combo = 0;
             UpdateLanternPassive();
 
             if (_pendingCleave >= 0 && (_pendingCleave -= Time.deltaTime) < 0)
             {
-                ResolveCleave();
+                if (_pendingDef != null) ResolveHeavy(_pendingDef);
+                else ResolveCleave();
+                _pendingDef = null;
                 _motor.Busy = false;
             }
 
@@ -283,8 +307,18 @@ namespace Emberline.Player
                 _strikeBuffer -= Time.deltaTime;
                 if (Strike()) _strikeBuffer = 0f;
             }
-            // Flicker prefers a live kunai: blink to the blade, else dodge.
-            if (EmberInput.ConsumeFlicker() && !TryKunaiWarp()) _motor.TryFlicker();
+            // Flicker prefers a live kunai: blink to the blade, else dodge. Either
+            // way it is a state: it cancels what Renzo was doing and is visible to
+            // anything reading him.
+            if (EmberInput.ConsumeFlicker())
+            {
+                if (TryKunaiWarp() || _motor.TryFlicker())
+                {
+                    Enter(CombatState.Dodge, 0.28f);
+                    _motor.Busy = false;
+                    Memory.OnDodge();
+                }
+            }
             if (EmberInput.ConsumeSurge()) Surge();
             if (EmberInput.ConsumeKunai()) ThrowKunai();
             if (EmberInput.ConsumeCycleTarget()) CycleTarget();
@@ -317,6 +351,10 @@ namespace Emberline.Player
         public bool Strike()
         {
             if (_pendingCleave >= 0 || _motor.Invulnerable) return false;
+            // Combat 2.0: the button resolves to a contextual attack when the
+            // weapon has a moveset. The legacy chain below stays as the fallback
+            // so a weapon without one still fights exactly as before.
+            if (_moveset != null) return StrikeContextual(false);
             // Light attack: chains out of itself, a guard or neutral — never out
             // of a heavy commitment or a stagger.
             if (!Enter(CombatState.Light, _weapon != null ? _weapon.strikeAnimTime : 0.28f)) return false;
@@ -366,6 +404,8 @@ namespace Emberline.Player
         public void OnPerfectDodge()
         {
             _counterT = 0.5f;
+            _counterFromParry = false;
+            Memory.OnPerfectDodge();
             RunSlowMo(0.28f);
             if (_weapon == null || !_weapon.parryOnPerfectDodge) return;
             CollectTargets(_scan);
@@ -450,6 +490,31 @@ namespace Emberline.Player
                 PoisonPuddle.Spawn(transform.position + _motor.Facing * 1.6f);
         }
 
+        /// <summary>
+        /// A moveset heavy resolves by its own definition: a thrust is a narrow
+        /// line, a crescent a wide launcher, a guard-splitter a posture hit.
+        /// The weapon's cleave style still decides the special cases (spin,
+        /// ground burst, volley) for the plain Heavy context.
+        /// </summary>
+        private void ResolveHeavy(PlayerAttackDefinition def)
+        {
+            var style = _weapon != null ? _weapon.cleaveStyle : CleaveStyle.Slash;
+            if (LastContext == AttackContext.Heavy && style != CleaveStyle.Slash)
+            {
+                ResolveCleave();
+                _afterHeavyT = 0.5f;
+                return;
+            }
+            var dmg = cleaveDamage * def.damageMultiplier / 2.6f; // katana cleave = 2.6× a base cut
+            StrikeArc(cleaveRange * def.rangeMultiplier, def.arcDeg, dmg, crush: def.crush,
+                launch: def.launch, postureMul: def.postureMultiplier);
+            if (def.cameraImpact > 0f) { _rig?.Shake(def.cameraImpact * 7f, 0.25f); _rig?.ImpactZoom(def.cameraImpact); }
+            if (_weapon != null && _weapon.poisonCleave)
+                PoisonPuddle.Spawn(transform.position + _motor.Facing * 1.6f);
+            _afterHeavyT = 0.5f;
+            if (def.recovery > 0f) Enter(CombatState.Recover, def.recovery);
+        }
+
         /// <summary>Which thrown model this weapon uses; plain kunai unless it says otherwise.</summary>
         private string ThrownPrefabName() =>
             _weapon != null && _weapon.replacesKunaiWithThrown
@@ -506,6 +571,8 @@ namespace Emberline.Player
             _deflectCd = deflectCooldown;
             _motor.Busy = false;
             _counterT = perfect ? 0.75f : 0.4f;
+            _counterFromParry = true;
+            if (perfect) Memory.OnPerfectParry(); else Memory.OnBlock();
             _sen.OnPerfectDodge();
             Enter(CombatState.Parry, 0.2f);
 
@@ -569,6 +636,7 @@ namespace Emberline.Player
         public bool Cleave()
         {
             if (_cleaveCd > 0 || _motor.Invulnerable) return false;
+            if (_moveset != null) return StrikeContextual(true);
             // Heavy attack: a real commitment, so it refuses to start from
             // anything but neutral or the tail of a light.
             if (!Enter(CombatState.Heavy, cleaveWindup + 0.35f)) return false;
@@ -590,6 +658,202 @@ namespace Emberline.Player
             _motor.Impulse(_motor.Facing * (lungeSpeed * 0.6f));
             return true;
         }
+
+        // ------------------------------------------------ contextual attacks
+
+        /// <summary>
+        /// Read the field, resolve the context, perform the attack. This is the
+        /// whole of "context-sensitive combat": one button, and the situation
+        /// decides what it does.
+        /// </summary>
+        private bool StrikeContextual(bool heavyPressed)
+        {
+            var target = LockedTarget != null
+                && Vector3.Distance(LockedTarget.transform.position, transform.position) <= softLockRange * 1.4f
+                ? LockedTarget : BestInCone();
+            var sit = new PlayerContextResolver.Situation
+            {
+                target = target,
+                heavyPressed = heavyPressed,
+                parryCounter = CounterActive && _counterFromParry,
+                dodgeCounter = CounterActive && !_counterFromParry,
+                airborne = !_motor.Grounded && !_motor.WallRunning,
+                wallRunning = _motor.WallRunning,
+                sprinting = _motor.Grounded && EmberInput.Move.sqrMagnitude > 0.6f && _chainTimer <= 0f,
+                chainStage = _chainTimer > 0f ? _stage : 0,
+                afterHeavy = _afterHeavyT > 0f,
+                reach = strikeRange,
+            };
+            if (target != null)
+            {
+                var to = target.transform.position - transform.position;
+                to.y = 0f;
+                sit.distance = to.magnitude;
+                // Behind: the target's forward points away from Renzo.
+                sit.behindTarget = to.sqrMagnitude > 0.01f
+                    && Vector3.Angle(target.transform.forward, -to) > 120f;
+                sit.targetUnaware = target.Unaware;
+                sit.targetStaggered = target.Staggered || target.GuardBroken;
+                sit.targetGuarding = target.Guarding;
+                sit.targetRetreating = target.Retreating;
+            }
+
+            var ctx = PlayerContextResolver.Resolve(in sit);
+            var def = _moveset.For(ctx);
+            // Walk the fallback ladder until the weapon has an answer.
+            for (var guard = 0; def == null && guard < 8; guard++)
+            {
+                var next = PlayerContextResolver.Fallback(ctx);
+                if (next == ctx) break;
+                ctx = next;
+                def = _moveset.For(ctx);
+            }
+            if (def == null) return false;
+            return Perform(def, ctx, target, heavyPressed);
+        }
+
+        private bool _counterFromParry;
+
+        /// <summary>Carry out one contextual attack. Returns false if the state machine refused it.</summary>
+        private bool Perform(PlayerAttackDefinition def, AttackContext ctx, EnemyBrain target, bool heavyPressed)
+        {
+            if (def.cooldown > 0f && _contextCd > 0f && LastAttack == def) return false;
+            var heavy = heavyPressed || def.heavyWhoosh;
+            var animTime = def.animTime > 0f ? def.animTime
+                : _weapon != null ? _weapon.strikeAnimTime : 0.28f;
+
+            if (heavy)
+            {
+                // Heavies keep their commitment and the guard window on the wind-up.
+                if (!Enter(CombatState.Heavy, cleaveWindup + 0.35f)) return false;
+                _cleaveCd = cleaveCooldown;
+                _pendingCleave = cleaveWindup;
+                _pendingDef = def;
+                _motor.Busy = true;
+                Sfx3D.Cloth(transform.position, 0.4f);
+                Sfx3D.Whoosh(transform.position + _motor.Facing * 1.4f + Vector3.up, heavy: true);
+                if (_deflectCd <= 0f && Enter(CombatState.Guard, deflectWindow))
+                {
+                    _guardT = deflectWindow;
+                    _guardHeld = 0f;
+                }
+                Sfx3D.Slash();
+                _ninja?.PlayOneShot(def.pose, cleaveWindup + 0.3f);
+                SoftLockFacing();
+                _motor.Impulse(_motor.Facing * (def.lunge * 0.6f));
+                Memory.OnHeavy();
+                LastAttack = def; LastContext = ctx;
+                return true;
+            }
+
+            if (!Enter(CombatState.Light, animTime)) return false;
+            SoftLockFacing();
+            if (def.chainStage > 0)
+            {
+                _stage = def.chainStage;
+                _chainTimer = chainWindow;
+            }
+            else if (ctx is AttackContext.Chain1 or AttackContext.Chain2 or AttackContext.Chain3)
+            {
+                _stage = _chainTimer > 0 ? (_stage % ChainLength) + 1 : 1;
+                _chainTimer = chainWindow;
+            }
+            if (!FiresOnStrike) _motor.Impulse(_motor.Facing * def.lunge);
+            Sfx3D.Slash();
+            Sfx3D.Whoosh(transform.position + _motor.Facing * 1.2f + Vector3.up, def.heavyWhoosh);
+            _ninja?.PlayOneShot(def.pose, animTime);
+            Memory.OnLight();
+            LastAttack = def; LastContext = ctx;
+            if (def.cooldown > 0f) _contextCd = def.cooldown;
+
+            var dmg = StageDamage(Mathf.Clamp(_stage, 1, ChainLength)) * def.damageMultiplier;
+            if (CounterActive && ctx is AttackContext.ParryCounter or AttackContext.DodgeCounter)
+                _counterT = 0f; // the counter attack *is* the payoff; no hidden ×2 on top
+            else if (CounterActive) { dmg *= 1.5f; _counterT = 0f; }
+
+            if (FiresOnStrike && !def.execute)
+            {
+                var origin = transform.position + Vector3.up * 1.25f + _motor.Facing * 0.5f;
+                Kunai.Spawn(origin, _motor.Facing, dmg, this, "Bolt");
+                FxPools.BoltTrail(origin, _motor.Facing);
+                return true;
+            }
+
+            // Executions are their own state: fully locked, framed, decisive.
+            if (def.execute && target != null && target.CanExecute
+                && Vector3.Distance(target.transform.position, transform.position) <= strikeRange * 1.2f)
+            {
+                State = CombatState.Execute;
+                _stateT = 0.5f;
+                _motor.Busy = true;
+                Execute(target);
+                return true;
+            }
+
+            StrikeArc(strikeRange * def.rangeMultiplier, def.arcDeg, dmg, crush: def.crush,
+                launch: def.launch, postureMul: def.postureMultiplier);
+            if (def.cameraImpact > 0f) { _rig?.Shake(def.cameraImpact * 6f, 0.2f); _rig?.ImpactZoom(def.cameraImpact); }
+            if (_weapon != null && _weapon.archetype == WeaponArchetype.Daggers)
+                FxPools.QuickSlash(transform.position + Vector3.up * 1.1f + _motor.Facing * 1.2f, _motor.Facing);
+
+            // Commitment: a finisher, a counter or a whiff costs a recovery the
+            // player cannot cancel out of. This is what makes timing beat mashing.
+            if (def.recovery > 0f) { Enter(CombatState.Recover, def.recovery); }
+            else if (_whiffT > 0f) { Enter(CombatState.Recover, 0.22f); }
+            return true;
+        }
+
+        private PlayerAttackDefinition _pendingDef;
+
+        /// <summary>
+        /// Backing away from the target without swinging reads as retreat. Fed
+        /// to memory so a pike guard can learn to thrust at a player who keeps
+        /// stepping out.
+        /// </summary>
+        private void UpdateRetreat()
+        {
+            var target = LockedTarget;
+            Retreating = false;
+            if (target == null || State != CombatState.Free) return;
+            var move = EmberInput.Move;
+            if (move.sqrMagnitude < 0.2f) return;
+            var to = target.transform.position - transform.position;
+            to.y = 0f;
+            var wish = _motor.Facing; // facing follows the stick when moving
+            if (Vector3.Dot(wish, to.normalized) < -0.5f)
+            {
+                Retreating = true;
+                Memory.OnRetreat(Time.deltaTime);
+            }
+        }
+
+        /// <summary>
+        /// A guard-break landed on a raised guard: the guard collapses, the
+        /// deflect goes on cooldown and Renzo is open for a beat. This is what
+        /// makes blocking a decision instead of a default.
+        /// </summary>
+        public void OnGuardBroken()
+        {
+            _guardT = 0f;
+            _guardHeld = 0f;
+            _deflectCd = deflectCooldown * 1.5f;
+            _pendingCleave = -1f;
+            _pendingDef = null;
+            State = CombatState.Staggered;
+            _stateT = 0.45f;
+            _motor.Busy = true;
+            Combo = 0;
+            _ninja?.PlayOneShot(RigPose.BlockHit, 0.45f);
+            RunHitStop(0.06f);
+            _rig?.Shake(5f, 0.22f);
+            Sfx3D.ImpactAt(transform.position + Vector3.up * 1.2f, Sfx3D.ImpactKind.Heavy, 1.2f);
+            FloatingText.Spawn(transform.position + Vector3.up * 2.5f, "GUARD BROKEN",
+                new Color(1f, 0.6f, 0.4f), 1.2f);
+            Haptics.Buzz();
+        }
+
+        /// <summary>The enemy tells Renzo how hard the incoming hit is, right before it lands.</summary>
+        public void OnIncomingHit(bool heavy) => _incomingHeavy = heavy;
 
         /// <summary>Thrown kunai: soft-locks like a strike, flies flat and fast.</summary>
         public void ThrowKunai()
@@ -650,7 +914,7 @@ namespace Emberline.Player
         }
 
         private void StrikeArc(float range, float arcDeg, float damage, bool crush,
-            bool launch = false)
+            bool launch = false, float postureMul = 1f)
         {
             var hitAny = false;
             CollectWithin(_scan, range, arcDeg);
@@ -663,7 +927,7 @@ namespace Emberline.Player
                     hitAny = true;
                     continue;
                 }
-                var dealt = brain.TakeHit(damage, transform.position, crush);
+                var dealt = brain.TakeHit(damage, transform.position, crush, postureMul);
                 if (launch && !brain.Dead) brain.Launch(launchSpeed);
                 ShowDamage(brain, dealt, ember: crush);
                 // Impact at the contact point, not the body centre: a short spark
@@ -706,7 +970,7 @@ namespace Emberline.Player
                 hitAny = true;
             }
 
-            if (!hitAny) _whiffT = 0.55f;
+            if (!hitAny) { _whiffT = 0.55f; Memory.OnWhiff(); }
             if (hitAny)
             {
                 Sfx3D.ImpactAt(transform.position + _motor.Facing * 1.4f + Vector3.up,
@@ -947,7 +1211,25 @@ namespace Emberline.Player
             _inFinisher = false;
         }
 
-        public void OnPlayerHit() => Combo = 0;
+        /// <summary>
+        /// Being hit costs something now. A light hit interrupts nothing but the
+        /// combo; a heavy one staggers — the attack in progress is lost and Renzo
+        /// cannot act for a beat, which is the enemy's reward for landing it.
+        /// </summary>
+        public void OnPlayerHit()
+        {
+            Combo = 0;
+            if (_incomingHeavy && State is not (CombatState.Execute or CombatState.Staggered))
+            {
+                State = CombatState.Staggered;
+                _stateT = 0.35f;
+                _pendingCleave = -1f;
+                _pendingDef = null;
+                _motor.Busy = true;
+                _ninja?.PlayOneShot(RigPose.Hurt, 0.35f);
+            }
+            _incomingHeavy = false;
+        }
 
         private void RunHitStop(float duration) => RequestDip(0.05f, duration);
 

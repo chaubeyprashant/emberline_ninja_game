@@ -30,42 +30,298 @@ MonoBehaviour:
   movement: 0
   preferredRange: 2.2
   attacks:
-  - kind: 0
+  - id: slash
+    displayName: SLASH
+    category: 0
+    kind: 0
+    windupOverride: 0.45
+    active: 0
+    recovery: 0
+    cooldown: 1.6
     minRange: 0
     maxRange: 2.9
-    weight: 1.2
+    preferredRange: 0
     damageMultiplier: 1
-    windupOverride: 0
-    cooldown: 1.6
+    postureMultiplier: 0
+    knockback: 0
+    staggerPower: 1
+    guardBreakPower: 0
+    tracking: 1
+    movement: 0
+    parryable: 1
+    dodgeable: 1
+    interruptible: 1
+    canFeint: 0
+    canChain: 1
+    followsAfter: []
+    requires: 0
+    weight: 1
+    playerWeight: 0
     redTelegraph: 0
     telegraphScale: 1
-  - kind: 4
+    audioCue: 
+    cameraImpact: 0
+    hitReaction: 0
+  - id: spin
+    displayName: SPIN
+    category: 4
+    kind: 4
+    windupOverride: 0.9
+    active: 0
+    recovery: 0
+    cooldown: 3.2
     minRange: 0
     maxRange: 4.5
-    weight: 0.6
+    preferredRange: 0
     damageMultiplier: 1.2
-    windupOverride: 0.9
-    cooldown: 3.2
+    postureMultiplier: 0
+    knockback: 0
+    staggerPower: 1
+    guardBreakPower: 0
+    tracking: 1
+    movement: 0
+    parryable: 1
+    dodgeable: 1
+    interruptible: 1
+    canFeint: 0
+    canChain: 1
+    followsAfter: []
+    requires: 0
+    weight: 0.5
+    playerWeight: 0
     redTelegraph: 1
     telegraphScale: 2.4
-  - kind: 3
+    audioCue: 
+    cameraImpact: 0
+    hitReaction: 0
+  - id: slam
+    displayName: SLAM
+    category: 1
+    kind: 3
+    windupOverride: 0.8
+    active: 0
+    recovery: 0
+    cooldown: 3
     minRange: 0
     maxRange: 3.8
-    weight: 0.6
+    preferredRange: 0
     damageMultiplier: 1.15
-    windupOverride: 0.8
-    cooldown: 3
+    postureMultiplier: 0
+    knockback: 0
+    staggerPower: 1
+    guardBreakPower: 0
+    tracking: 1
+    movement: 0
+    parryable: 1
+    dodgeable: 1
+    interruptible: 0
+    canFeint: 0
+    canChain: 1
+    followsAfter: []
+    requires: 0
+    weight: 0.6
+    playerWeight: 0
     redTelegraph: 1
     telegraphScale: 2
-  - kind: 9
+    audioCue: 
+    cameraImpact: 0
+    hitReaction: 0
+  - id: dash
+    displayName: DASH
+    category: 7
+    kind: 9
+    windupOverride: 0.45
+    active: 0
+    recovery: 0
+    cooldown: 2.4
     minRange: 4
     maxRange: 10
-    weight: 0.8
+    preferredRange: 0
     damageMultiplier: 1
-    windupOverride: 0.45
-    cooldown: 2.4
+    postureMultiplier: 0
+    knockback: 0
+    staggerPower: 1
+    guardBreakPower: 0
+    tracking: 1
+    movement: 0
+    parryable: 1
+    dodgeable: 1
+    interruptible: 1
+    canFeint: 0
+    canChain: 1
+    followsAfter: []
+    requires: 0
+    weight: 0.7
+    playerWeight: 0
     redTelegraph: 1
     telegraphScale: 1.2
+    audioCue: 
+    cameraImpact: 0
+    hitReaction: 0
+  - id: guard_break
+    displayName: GUARD BREAK
+    category: 2
+    kind: 12
+    windupOverride: 0.6
+    active: 0
+    recovery: 0
+    cooldown: 2.4
+    minRange: 0
+    maxRange: 2.6
+    preferredRange: 0
+    damageMultiplier: 1.3
+    postureMultiplier: 0
+    knockback: 0
+    staggerPower: 1
+    guardBreakPower: 0
+    tracking: 1
+    movement: 0
+    parryable: 0
+    dodgeable: 1
+    interruptible: 1
+    canFeint: 0
+    canChain: 1
+    followsAfter: []
+    requires: 0
+    weight: 0.7
+    playerWeight: 0
+    redTelegraph: 1
+    telegraphScale: 1
+    audioCue: 
+    cameraImpact: 0
+    hitReaction: 0
+  - id: feint
+    displayName: FEINT
+    category: 6
+    kind: 0
+    windupOverride: 0.6
+    active: 0
+    recovery: 0
+    cooldown: 2.6
+    minRange: 0
+    maxRange: 2.9
+    preferredRange: 0
+    damageMultiplier: 1
+    postureMultiplier: 0
+    knockback: 0
+    staggerPower: 1
+    guardBreakPower: 0
+    tracking: 1
+    movement: 0
+    parryable: 1
+    dodgeable: 1
+    interruptible: 1
+    canFeint: 1
+    canChain: 1
+    followsAfter: []
+    requires: 0
+    weight: 0.6
+    playerWeight: 0
+    redTelegraph: 0
+    telegraphScale: 1
+    audioCue: 
+    cameraImpact: 0
+    hitReaction: 0
+  - id: delayed_slash
+    displayName: DELAYED SLASH
+    category: 5
+    kind: 0
+    windupOverride: 0.5
+    active: 0
+    recovery: 0
+    cooldown: 2.2
+    minRange: 0
+    maxRange: 2.9
+    preferredRange: 0
+    damageMultiplier: 1.2
+    postureMultiplier: 0
+    knockback: 0
+    staggerPower: 1
+    guardBreakPower: 0
+    tracking: 1
+    movement: 0
+    parryable: 1
+    dodgeable: 1
+    interruptible: 1
+    canFeint: 0
+    canChain: 1
+    followsAfter: []
+    requires: 0
+    weight: 0.5
+    playerWeight: 0
+    redTelegraph: 0
+    telegraphScale: 1
+    audioCue: 
+    cameraImpact: 0
+    hitReaction: 0
+  - id: retreat_slash
+    displayName: RETREAT SLASH
+    category: 8
+    kind: 13
+    windupOverride: 0.4
+    active: 0
+    recovery: 0
+    cooldown: 1.6
+    minRange: 0
+    maxRange: 2.6
+    preferredRange: 0
+    damageMultiplier: 1
+    postureMultiplier: 0
+    knockback: 0
+    staggerPower: 1
+    guardBreakPower: 0
+    tracking: 1
+    movement: 0
+    parryable: 1
+    dodgeable: 1
+    interruptible: 1
+    canFeint: 0
+    canChain: 1
+    followsAfter: []
+    requires: 0
+    weight: 0.5
+    playerWeight: 0
+    redTelegraph: 0
+    telegraphScale: 1
+    audioCue: 
+    cameraImpact: 0
+    hitReaction: 0
+  - id: thrust
+    displayName: THRUST
+    category: 3
+    kind: 2
+    windupOverride: 0.5
+    active: 0
+    recovery: 0
+    cooldown: 1.8
+    minRange: 1
+    maxRange: 3.2
+    preferredRange: 0
+    damageMultiplier: 1.1
+    postureMultiplier: 0
+    knockback: 0
+    staggerPower: 1
+    guardBreakPower: 0
+    tracking: 1
+    movement: 0
+    parryable: 1
+    dodgeable: 1
+    interruptible: 1
+    canFeint: 0
+    canChain: 1
+    followsAfter: []
+    requires: 0
+    weight: 0.6
+    playerWeight: 0
+    redTelegraph: 0
+    telegraphScale: 1.2
+    audioCue: 
+    cameraImpact: 0
+    hitReaction: 0
+  profile: {fileID: 11400000, guid: c1b505d2d37f845749d8b3b422b2d483, type: 2}
+  phase2Profile: {fileID: 0}
+  phase3Profile: {fileID: 0}
+  phase4Profile: {fileID: 0}
   armor: 5
   poise: 0.75
   blockChance: 0.3

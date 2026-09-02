@@ -99,7 +99,33 @@ namespace Emberline.EditorTools
             [RigPose.Dead] = "Death_A",
             [RigPose.Spawn] = "Spawn_Ground",
             [RigPose.Taunt] = "Cheer",
+            // Combat 2.0: one readable clip per attack category.
+            [RigPose.Stab] = "1H_Melee_Attack_Stab",
+            [RigPose.Sweep] = "1H_Melee_Attack_Slice_Horizontal",
+            [RigPose.Block] = "Blocking",
+            [RigPose.BlockHit] = "Block_Hit",
+            [RigPose.SideStep] = "Dodge_Left",
+            [RigPose.Backstep] = "Dodge_Backward",
+            [RigPose.Kick] = "Unarmed_Melee_Attack_Kick",
+            [RigPose.Throw] = "Throw",
+            [RigPose.Jump] = "Jump_Full_Short",
+            [RigPose.Charge] = "Running_A",
+            [RigPose.Delayed] = "Spellcast_Long",
         };
+
+        /// <summary>Two-handed weapons: the stab and sweep come from the 2H set.</summary>
+        private static void TwoHandedCombatClips(Dictionary<RigPose, string> clips)
+        {
+            clips[RigPose.Stab] = "2H_Melee_Attack_Stab";
+            clips[RigPose.Sweep] = "2H_Melee_Attack_Spin";
+        }
+
+        /// <summary>Dual wield: the stab from the dual set.</summary>
+        private static void DualWieldCombatClips(Dictionary<RigPose, string> clips)
+        {
+            clips[RigPose.Stab] = "Dualwield_Melee_Attack_Stab";
+            clips[RigPose.Sweep] = "Dualwield_Melee_Attack_Slice";
+        }
 
         public static Spec Renzo() => new()
         {
@@ -202,6 +228,7 @@ namespace Emberline.EditorTools
             clips[RigPose.Strike1] = "Dualwield_Melee_Attack_Slice";
             clips[RigPose.Strike2] = "Dualwield_Melee_Attack_Stab";
             clips[RigPose.Strike3] = "Dualwield_Melee_Attack_Chop";
+            DualWieldCombatClips(clips);
             return new Spec
             {
                 name = "BanditModel",
@@ -222,6 +249,7 @@ namespace Emberline.EditorTools
             clips[RigPose.Strike1] = "2H_Melee_Attack_Chop";
             clips[RigPose.Strike2] = "2H_Melee_Attack_Slice";
             clips[RigPose.Strike3] = "2H_Melee_Attack_Spinning";
+            TwoHandedCombatClips(clips);
             clips[RigPose.Cleave] = "2H_Melee_Attack_Spin";
             clips[RigPose.Hurt] = "Hit_B";
             clips[RigPose.Dead] = "Death_B";
@@ -266,6 +294,7 @@ namespace Emberline.EditorTools
             clips[RigPose.Strike1] = "2H_Melee_Attack_Slice";
             clips[RigPose.Strike2] = "2H_Melee_Attack_Chop";
             clips[RigPose.Strike3] = "2H_Melee_Attack_Spinning";
+            TwoHandedCombatClips(clips);
             clips[RigPose.Cleave] = "2H_Melee_Attack_Spin";
             return new Spec
             {
@@ -309,6 +338,7 @@ namespace Emberline.EditorTools
             clips[RigPose.Strike1] = "2H_Melee_Attack_Chop";
             clips[RigPose.Strike2] = "2H_Melee_Attack_Slice";
             clips[RigPose.Strike3] = "2H_Melee_Attack_Spin";
+            TwoHandedCombatClips(clips);
             clips[RigPose.Hurt] = "Hit_B";
             return new Spec
             {
@@ -334,6 +364,7 @@ namespace Emberline.EditorTools
         {
             var clips = OneHanded();
             clips[RigPose.Idle] = "2H_Melee_Idle";
+            TwoHandedCombatClips(clips);
             clips[RigPose.Strike1] = "2H_Melee_Attack_Stab";
             clips[RigPose.Strike2] = "2H_Melee_Attack_Stab";
             clips[RigPose.Strike3] = "2H_Melee_Attack_Chop";
@@ -378,6 +409,7 @@ namespace Emberline.EditorTools
         {
             var clips = OneHanded();
             clips[RigPose.Strike1] = "Dualwield_Melee_Attack_Slice";
+            DualWieldCombatClips(clips);
             clips[RigPose.Strike2] = "Dualwield_Melee_Attack_Stab";
             clips[RigPose.Strike3] = "Dualwield_Melee_Attack_Chop";
             clips[RigPose.Dash] = "Dodge_Left";
@@ -400,6 +432,7 @@ namespace Emberline.EditorTools
         {
             var clips = OneHanded();
             clips[RigPose.Idle] = "2H_Melee_Idle";
+            TwoHandedCombatClips(clips);
             clips[RigPose.Strike1] = "2H_Melee_Attack_Chop";
             clips[RigPose.Strike2] = "2H_Melee_Attack_Slice";
             clips[RigPose.Windup] = "2H_Melee_Idle";
@@ -442,6 +475,7 @@ namespace Emberline.EditorTools
         {
             var clips = OneHanded();
             clips[RigPose.Idle] = "2H_Melee_Idle";
+            TwoHandedCombatClips(clips);
             clips[RigPose.Strike1] = "2H_Melee_Attack_Chop";
             clips[RigPose.Strike2] = "2H_Melee_Attack_Spinning";
             clips[RigPose.Strike3] = "2H_Melee_Attack_Spin";

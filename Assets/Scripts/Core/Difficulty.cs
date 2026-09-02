@@ -25,6 +25,15 @@ namespace Emberline.Core
             public readonly float EnemyDamage, EnemyHp, Heal, PlayerHp, Score;
             public readonly int ExtraAttackers;
 
+            // Combat 2.0: how enemies *decide*, not how hard they hit. Medium is
+            // 1.0 on all of them; Easy thinks slower and never feints, Lethal
+            // thinks faster, adapts harder and coordinates better.
+            public float FeintScale => Level switch { DifficultyLevel.Easy => 0f, DifficultyLevel.Hard => 1.2f, DifficultyLevel.Lethal => 1.5f, _ => 1f };
+            public float AdvancedScale => Level switch { DifficultyLevel.Easy => 0.5f, DifficultyLevel.Hard => 1.2f, DifficultyLevel.Lethal => 1.5f, _ => 1f };
+            public float TeamworkScale => Level switch { DifficultyLevel.Easy => 0.6f, DifficultyLevel.Hard => 1.3f, DifficultyLevel.Lethal => 1.6f, _ => 1f };
+            public float AdaptationScale => Level switch { DifficultyLevel.Easy => 0f, DifficultyLevel.Hard => 1.2f, DifficultyLevel.Lethal => 1.6f, _ => 1f };
+            public float DecisionScale => Level switch { DifficultyLevel.Easy => 1.6f, DifficultyLevel.Hard => 0.9f, DifficultyLevel.Lethal => 0.7f, _ => 1f };
+
             public Def(DifficultyLevel level, string name, string blurb, float enemyDamage,
                 float enemyHp, float heal, float playerHp, int extraAttackers, float score)
             {

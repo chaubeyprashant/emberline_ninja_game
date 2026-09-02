@@ -76,9 +76,15 @@ namespace Emberline.Enemies
         public bool Dead { get; private set; }
         public float Hp { get; private set; }
         public bool InWindupOrDash => _state is State.Windup or State.Dashing;
+        /// <summary>Seconds left on the current wind-up (0 when not winding up). What the ring shows.</summary>
+        public float WindupRemaining => _state == State.Windup ? Mathf.Max(0f, _t) : 0f;
 
         /// <summary>Reeling from a hit — the window the launcher and execution use.</summary>
         public bool Staggered => _state == State.Stagger;
+        /// <summary>Guard up right now — the thing a guard-break answers.</summary>
+        public bool Guarding => _guardT > 0f;
+        /// <summary>Backing off by decision (retreat, panic, kite band).</summary>
+        public bool Retreating => _retreatT > 0f || Ai == AiState.Retreat;
 
         /// <summary>Unscaled time of the last hit taken; drives the floating HP bar.</summary>
         public float LastHitTime { get; private set; } = -99f;
@@ -273,8 +279,26 @@ namespace Emberline.Enemies
                                          or EnemyWeapon.Bomb
                                      || (Phase == 3 && !isClone);
 
-        private void OnEnable() => Active.Add(this);
-        private void OnDisable() => Active.Remove(this);
+        private void OnEnable() { Active.Add(this); AllyDied += OnAllyDied; }
+        private void OnDisable() { Active.Remove(this); AllyDied -= OnAllyDied; }
+
+        /// <summary>
+        /// Morale. A raider who sees a friend fall hesitates; a samurai closes;
+        /// an assassin stops fighting fair and works round behind you. Which one
+        /// is on the profile, not on the kind.
+        /// </summary>
+        private void OnAllyDied(EnemyBrain who)
+        {
+            if (who == this || Dead || Unaware || def == null || ActiveProfile == null) return;
+            if (Vector3.Distance(who.transform.position, transform.position) > 12f) return;
+            AiTelemetry.AllyReactions++;
+            switch (ActiveProfile.allyDeath)
+            {
+                case AllyDeathReaction.Hesitate: _hesitateT = 1.1f; Intent = "hesitates"; break;
+                case AllyDeathReaction.Aggress: _moraleAggroT = 7f; _decisionT = 0f; Intent = "avenges"; break;
+                case AllyDeathReaction.Isolate: _isolateT = 5f; Intent = "isolates"; break;
+            }
+        }
 
         // Awake, not Start: the spawner applies its stat multipliers immediately
         // after Instantiate, so Start would capture already-boosted values.
@@ -369,6 +393,9 @@ namespace Emberline.Enemies
         /// <summary>Restores a pooled enemy to its just-instantiated state.</summary>
         public void ResetForSpawn()
         {
+            _history.Clear();
+            _decisionT = 0f; _feinted = false; _moraleAggroT = 0f; _hesitateT = 0f; _isolateT = 0f;
+            _lowHealthReacted = false; Intent = "";
             CaptureBaseStats();
             maxHp = _baseMaxHp;
             damage = _baseDamage;
@@ -421,6 +448,11 @@ namespace Emberline.Enemies
             _attackCd = Mathf.Max(0, _attackCd - Time.deltaTime);
             _spitCd = Mathf.Max(0, _spitCd - Time.deltaTime);
             _readCd = Mathf.Max(0, _readCd - Time.deltaTime);
+            _moraleAggroT = Mathf.Max(0f, _moraleAggroT - Time.deltaTime);
+            _hesitateT = Mathf.Max(0f, _hesitateT - Time.deltaTime);
+            _isolateT = Mathf.Max(0f, _isolateT - Time.deltaTime);
+            _decisionT = Mathf.Max(0f, _decisionT - Time.deltaTime);
+            CheckLowHealth();
             if (_staggerWindowT > 0f && (_staggerWindowT -= Time.deltaTime) <= 0f) _staggerCount = 0;
             UpdatePosture(Time.deltaTime);
             UpdatePerception(Vector3.Distance(transform.position, _player.position));
@@ -523,6 +555,7 @@ namespace Emberline.Enemies
                     Move(ChaseDir(to, dist));
                     Face(to);
                     if (_rig != null) _rig.move01 = 1f;
+                    if (IsRanged && dist < AiTelemetry.ArcherMinDistance) AiTelemetry.ArcherMinDistance = dist;
 
                     var inRange = weapon == EnemyWeapon.Spear
                         ? dist < SpearReach && dist > 1.6f   // pikes fight at reach
@@ -580,23 +613,27 @@ namespace Emberline.Enemies
                     // Choose the move *before* asking for a token. Taking one and
                     // then finding no usable attack still consumes the pool's grant
                     // window, which silently starves this enemy's ordinary attacks.
+                    // Hesitation after a loss: guard up, no swing, for a beat.
+                    if (_hesitateT > 0f)
+                    {
+                        _guardT = Mathf.Max(_guardT, 0.2f);
+                        Move(-to.normalized * 0.3f);
+                        Face(to);
+                        _rig?.ForcePose(RigPose.Block, 0.5f);
+                        break;
+                    }
+
                     if (def != null && def.punishesExposure && _attackCd <= 0f && _readCd <= 0f
                         && PlayerExposed() && dist < def.MaxAttackRange + 0.4f)
                     {
-                        var pick = def.ChooseAttack(dist);
+                        var pick = Pick(to, dist, role, punish: true);
                         if (pick != null && pick.kind != AttackKind.Parry
                             && (IsBoss || _tokens == null || _tokens.TryTake(this)))
                         {
                             _readCd = 1.2f;
                             AiTelemetry.OutOfTurnPunishes++;
                             AiTelemetry.Attacks++;
-                            _pattern = pick;
-                            _dashAttack = pick.kind == AttackKind.DashStrike;
-                            _state = State.Windup;
-                            // Faster than a cold attack, never below the floor a
-                            // player can react to.
-                            _t = Mathf.Max(0.3f, (pick.windupOverride > 0f ? pick.windupOverride : Windup) * 0.7f);
-                            SetRing(true);
+                            Commit(pick, to, cold: false);
                             break;
                         }
                     }
@@ -667,18 +704,24 @@ namespace Emberline.Enemies
                         break;
                     }
 
-                    // Data-driven enemies pick from their own moveset by range.
-                    if (def != null && _attackCd <= 0f && !wantsDash)
+                    // Isolating: work round to the back before committing.
+                    if (_isolateT > 0f && !PlayerBackTurned(to))
                     {
-                        var pick = def.ChooseAttack(dist);
+                        var rearSpot = _player.position - _player.forward * 2.4f - transform.position;
+                        rearSpot.y = 0f;
+                        if (rearSpot.magnitude > 0.8f) { Move(rearSpot.normalized * 1.1f); Face(to); if (_rig != null) _rig.move01 = 1f; break; }
+                    }
+
+                    // Data-driven enemies pick from their own moveset — on a
+                    // cadence, against the situation, never per frame.
+                    if (def != null && _attackCd <= 0f && !wantsDash && _decisionT <= 0f)
+                    {
+                        _decisionT = DecisionInterval;
+                        var pick = Pick(to, dist, role, punish: false);
                         if (pick != null && (IsBoss || _tokens == null || _tokens.TryTake(this)))
                         {
                             AiTelemetry.Attacks++;
-                            _pattern = pick;
-                            _dashAttack = pick.kind == AttackKind.DashStrike;
-                            _state = State.Windup;
-                            _t = pick.windupOverride > 0f ? pick.windupOverride : Windup;
-                            SetRing(true);
+                            Commit(pick, to, cold: true);
                             break;
                         }
                     }
@@ -696,20 +739,46 @@ namespace Emberline.Enemies
                 }
 
                 case State.Windup:
-                    // Dash aim locks in the last third of the windup.
-                    if (!(_dashAttack && _t < Windup * 0.35f))
+                {
+                    var total = _windupTotal > 0f ? _windupTotal : Windup;
+                    // Tracking: an attack turns toward the player only as much as
+                    // its definition allows; the dash aim locks in the last third.
+                    var track = _pattern != null ? _pattern.tracking : 1f;
+                    if (!(_dashAttack && _t < total * 0.35f) && track > 0f)
                     {
-                        Face(to);
+                        if (track >= 1f) Face(to);
+                        else transform.rotation = Quaternion.Slerp(transform.rotation,
+                            Quaternion.LookRotation(to.normalized), track * 6f * Time.deltaTime);
                         _dashDir = dist > 0.5f ? to.normalized : transform.forward;
                     }
-                    _rig?.ForcePose(RigPose.Windup, 1f - _t / Windup);
-                    if (_ring != null) SetRingRadius(Mathf.Lerp(2.6f, 1.3f, 1f - _t / Windup));
+                    // The feint: at the cancel point, the heavy becomes a step
+                    // back and a quick follow-up. Once per wind-up, readable by
+                    // its own pose and sound, paid for with a cooldown.
+                    if (_pattern != null && _pattern.category == AttackCategory.Feint && !_feinted
+                        && _t <= total * 0.5f)
+                    {
+                        _feinted = true;
+                        Sfx3D.Cloth(transform.position, 0.6f);
+                        _rig?.PlayOneShot(RigPose.Backstep, 0.25f);
+                        Intent = "feint → " + (FollowUpFor(_pattern)?.id ?? "quick");
+                        var follow = FollowUpFor(_pattern);
+                        if (follow != null) { _pattern = follow; _dashAttack = follow.kind == AttackKind.DashStrike; }
+                        _t = Mathf.Max(0.3f, 0.34f);
+                        _windupTotal = _t;
+                        _attackCd += 1.5f; // feints are not free
+                        SetRing(true);
+                        break;
+                    }
+                    _rig?.ForcePose(WindupPose(), 1f - _t / total);
+                    if (_ring != null) SetRingRadius(Mathf.Lerp(2.6f, 1.3f, 1f - _t / total));
                     if ((_t -= Time.deltaTime) <= 0)
                     {
                         SetRing(false);
+                        _windupTotal = 0f;
                         ResolveAttack(dist);
                     }
                     break;
+                }
 
                 case State.Dashing:
                     _rig?.ForcePose(RigPose.Dash, 0.5f);
@@ -725,7 +794,7 @@ namespace Emberline.Enemies
                     if (!_dashHit && Vector3.Distance(transform.position, _player.position) < 1.4f)
                     {
                         _dashHit = true;
-                        DamagePlayer(AttackDamage + 3f);
+                        DamagePlayer(AttackDamage + 3f, heavy: true);
                     }
                     if ((_t -= Time.deltaTime) <= 0)
                     {
@@ -976,7 +1045,7 @@ namespace Emberline.Enemies
             SceneRefs.Rig?.Shake(11f, 0.45f);
             if (_player != null
                 && Vector3.Distance(_player.position, transform.position) <= SpinRadius)
-                DamagePlayer(AttackDamage + 8f);
+                DamagePlayer(AttackDamage + 8f, heavy: true);
             _attackCd = 2.4f;
             _state = State.Recover;
             _t = 1f;
@@ -1057,14 +1126,39 @@ namespace Emberline.Enemies
         }
 
         /// <summary>The pattern chosen when this windup started (def-driven enemies).</summary>
-        private AttackPattern _pattern;
+        private AttackDefinition _pattern;
+
+        // ---- Combat 2.0: how this enemy decides
+        private readonly EnemyAttackSelector _selector = new();
+        private readonly EnemyAttackHistory _history = new();
+        private readonly EnemyCombatMemory _memory = new();
+        private float _decisionT;          // cadence: the selector never runs per frame
+        private bool _feinted;             // this wind-up already cancelled once
+        private float _windupTotal;        // the full wind-up, for the feint point and the pose
+        private float _moraleAggroT;       // ally death / low health: aggressive for a while
+        private float _hesitateT;          // ally death: a beat of doubt
+        private float _isolateT;           // assassins: work round behind after a loss
+        private bool _lowHealthReacted;
+        private bool _lastHitLanded;
+        private Vector3 _lastPlayerPos;
+        private float _playerLateral;      // how much the player moved sideways since the last decision
+
+        /// <summary>Raised when any enemy dies; the survivors decide what it means to them.</summary>
+        public static event System.Action<EnemyBrain> AllyDied;
+
+        /// <summary>For the debug overlay and the tests: the last decision this enemy made.</summary>
+        public EnemyCombatDecision LastDecision => _selector.Last;
+        public ObservedPlayerState LastObserved => _selector.LastState;
+        public string Intent { get; private set; } = "";
+        public EnemyAttackHistory History => _history;
 
         /// <summary>
         /// Executes one entry of the shared attack vocabulary. Every enemy composes
         /// its kit from these, so a new moveset never needs new code here.
         /// </summary>
-        private void ResolvePattern(AttackPattern p, float dist)
+        private void ResolvePattern(AttackDefinition p, float dist)
         {
+            _lastHitLanded = false;
             var dmg = AttackDamage * p.damageMultiplier;
             switch (p.kind)
             {
@@ -1095,7 +1189,7 @@ namespace Emberline.Enemies
                     UI.FxPools.Nova(transform.position);
                     SceneRefs.Rig?.Shake(8f, 0.35f);
                     SlowZone.Spawn(transform.position, 3.4f, 4.5f);
-                    if (dist < 3.4f) DamagePlayer(dmg + 4f);
+                    if (dist < 3.4f) DamagePlayer(dmg + 4f, heavy: true);
                     break;
 
                 case AttackKind.DashStrike:
@@ -1107,9 +1201,56 @@ namespace Emberline.Enemies
 
                 case AttackKind.Parry:
                     // Guard stance: the punish lives in TakeHit via blockChance.
-                    _rig?.ForcePose(RigPose.Windup, 0.5f);
+                    _rig?.ForcePose(RigPose.Block, 0.5f);
                     _guardT = 1.1f;
                     break;
+
+                case AttackKind.Sweep:
+                {
+                    // Wide and shallow: it owns the half-circle in front, so a
+                    // player circling at reach is caught where a slash would miss.
+                    _rig?.PlayOneShot(RigPose.Sweep, 0.5f);
+                    Sfx3D.Whoosh(transform.position + transform.forward + Vector3.up, heavy: true);
+                    var toP = _player.position - transform.position; toP.y = 0f;
+                    if (toP.magnitude < p.maxRange + 0.5f && Vector3.Angle(transform.forward, toP) <= 80f)
+                        DamagePlayer(dmg);
+                    UI.FxPools.Slash(transform.position + Vector3.up * 1.1f + transform.forward * 1.2f, transform.forward, true);
+                    break;
+                }
+
+                case AttackKind.GuardBreak:
+                {
+                    // Goes through a raised guard and opens it; on an open player
+                    // it is a heavy, slower hit. Kick pose: it must not read as a cut.
+                    _rig?.PlayOneShot(RigPose.Kick, 0.5f);
+                    Sfx3D.ImpactAt(transform.position + Vector3.up, Sfx3D.ImpactKind.Heavy, 0.8f);
+                    if (dist < p.maxRange + 0.6f)
+                    {
+                        if (_playerCombat != null && _playerCombat.Deflecting && !(_playerMotor != null && _playerMotor.Invulnerable)
+                            && !ArenaMarkers.BlockedBetween(transform.position + Vector3.up, _player.position + Vector3.up))
+                        {
+                            _playerCombat.OnGuardBroken();
+                            AiTelemetry.GuardBreaksLanded++;
+                            _lastHitLanded = true;
+                        }
+                        else DamagePlayer(dmg * 0.85f, heavy: true);
+                    }
+                    break;
+                }
+
+                case AttackKind.RetreatSlash:
+                {
+                    // Cut and go: the strike lands as the enemy steps out, so the
+                    // player who chases it walks into the next thing.
+                    _rig?.PlayOneShot(RigPose.Strike2, 0.35f);
+                    Sfx3D.Slash();
+                    if (dist < p.maxRange + 0.5f) DamagePlayer(dmg);
+                    var toP = _player.position - transform.position; toP.y = 0f;
+                    _sidestepDir = -toP.normalized;
+                    _sidestepT = 0.45f;
+                    _rig?.PlayOneShot(RigPose.Backstep, 0.4f);
+                    break;
+                }
 
                 default: // Slash
                     _rig?.PlayOneShot(RigPose.Strike1, 0.45f);
@@ -1119,7 +1260,20 @@ namespace Emberline.Enemies
             }
             _attackCd = p.cooldown;
             _state = State.Recover;
-            _t = 0.75f;
+            // Recovery is the attack's own now; a definition that does not say
+            // recovers exactly as its kind always did. A heavy that missed is
+            // the opening the whole system promises: it recovers half again as
+            // long, and the player is told.
+            _t = p.RecoveryFor(p.kind);
+            if (!_lastHitLanded && p.category is AttackCategory.Heavy or AttackCategory.GuardBreak or AttackCategory.Sweep)
+            {
+                _t *= 1.6f;
+                AiTelemetry.MissedHeavies++;
+                Intent = "missed — open";
+                UI.FloatingText.Spawn(transform.position + Vector3.up * 2.3f, "OPEN",
+                    new Color(1f, 0.8f, 0.5f), 0.9f);
+            }
+            _lastHitLanded = false;
         }
 
         private void ResolveAttack(float dist)
@@ -1167,7 +1321,7 @@ namespace Emberline.Enemies
                 // The slam scars the ground: standing in the crater costs you speed,
                 // so it threatens the space and not just the instant.
                 SlowZone.Spawn(transform.position, 3.4f, 4.5f);
-                if (dist < 3.4f) DamagePlayer(AttackDamage + 4f);
+                if (dist < 3.4f) DamagePlayer(AttackDamage + 4f, heavy: true);
                 _attackCd = Enraged ? 1.0f : 1.8f;
             }
             else if (dist < attackRange + 0.6f)
@@ -1199,7 +1353,7 @@ namespace Emberline.Enemies
             return true;
         }
 
-        private void DamagePlayer(float amount)
+        private void DamagePlayer(float amount, bool heavy = false)
         {
             if (BlindedMiss()) return;
             // Nothing lands through cover. Perception and projectiles already
@@ -1221,9 +1375,23 @@ namespace Emberline.Enemies
             }
             if (_playerCombat != null && _playerCombat.Deflecting)
             {
+                var perfect = _playerCombat.PerfectWindow;
                 _playerCombat.OnDeflect(this);
+                if (perfect && _state != State.Dying)
+                {
+                    // Weapon recoil: the perfect parry throws the attacker's
+                    // blade wide and leaves them open for real, not just poorer.
+                    _pattern = null; _flurryLeft = 0; SetRing(false);
+                    _state = State.Stagger;
+                    _t = Mathf.Max(_t, 0.7f);
+                    _rig?.PlayOneShot(RigPose.BlockHit, 0.6f);
+                    AiTelemetry.ParryRecoils++;
+                    Intent = "parried — open";
+                }
                 return;
             }
+            _lastHitLanded = true;
+            _playerCombat?.OnIncomingHit(heavy);
             _playerHealth?.Damage(amount, transform.position);
         }
 
@@ -1362,7 +1530,7 @@ namespace Emberline.Enemies
         }
 
         /// <summary>Applies damage (with weak-point bonuses) and returns what was dealt.</summary>
-        public float TakeHit(float amount, Vector3 from, bool crush = false)
+        public float TakeHit(float amount, Vector3 from, bool crush = false, float postureMul = 1f)
         {
             if (Dead) return 0f;
             // Weak points: archers crumble to backstabs, shades are raw while forming.
@@ -1400,7 +1568,8 @@ namespace Emberline.Enemies
                     if (_state is State.Chase or State.Recover
                         && (_blocksInRow >= 2 || Random.value < def.counterChance))
                     {
-                        var pick = def.ChooseAttack(Vector3.Distance(transform.position, from));
+                        var toP = from - transform.position; toP.y = 0f;
+                        var pick = Pick(toP, toP.magnitude, SquadRole.Engage, punish: true);
                         // Token last, for the same reason as the punish above.
                         if (pick != null && pick.kind != AttackKind.Parry
                             && (IsBoss || _tokens == null || _tokens.TryTake(this)))
@@ -1408,11 +1577,7 @@ namespace Emberline.Enemies
                             AiTelemetry.Ripostes++;
                             AiTelemetry.Attacks++;
                             _blocksInRow = 0;
-                            _pattern = pick;
-                            _dashAttack = pick.kind == AttackKind.DashStrike;
-                            _state = State.Windup;
-                            _t = 0.32f; // fast, but still a visible tell
-                            SetRing(true);
+                            Commit(pick, toP, cold: false, windupOverride: 0.32f); // fast, but a visible tell
                         }
                     }
                     UI.FloatingText.Spawn(transform.position + Vector3.up * 2.2f, "BLOCK",
@@ -1466,6 +1631,7 @@ namespace Emberline.Enemies
                 Ai = AiState.Dead;
                 // Leaving bodies where they can be seen has a cost now.
                 BodyWatch.Report(transform.position);
+                AllyDied?.Invoke(this);
                 FxPools.DeathBurst(transform.position, IsBoss);
                 StoryMemory.UnlockLore(kind);
                 _gm?.OnEnemyKilled(IsBoss);
@@ -1493,7 +1659,7 @@ namespace Emberline.Enemies
             _postureIdleT = def != null ? def.postureRegenDelay : 1.6f;
             if (_guardBreakT <= 0f)
             {
-                Posture -= crush ? amount * 1.9f : amount;
+                Posture -= (crush ? amount * 1.9f : amount) * postureMul;
                 if (Posture <= 0f)
                 {
                     if (_state == State.Windup) SetRing(false);
@@ -1502,17 +1668,251 @@ namespace Emberline.Enemies
                 }
             }
 
-            // Poise: heavy enemies keep their feet through light hits.
-            var poised = def != null && !crush && Random.value < def.poise;
+            // Poise: heavy enemies keep their feet through light hits — but a
+            // hit from behind throws anyone.
+            var struckFromBehind = def != null && (from - transform.position).sqrMagnitude > 0.01f
+                && Vector3.Angle(transform.forward, from - transform.position) > 120f;
+            var poised = def != null && !crush && !struckFromBehind && Random.value < def.poise;
             if (_state != State.Dashing && (crush || !IsBoss) && !poised)
             {
                 if (_state == State.Windup) SetRing(false);
                 // A broken guard, a crush and a jab must not read the same.
                 ApplyReaction(_guardBreakT > 0f ? Player.HitReaction.Knockback
-                    : crush ? Player.HitReaction.Knockback
+                    : crush || struckFromBehind ? Player.HitReaction.Knockback
                     : Player.HitReaction.Flinch, from);
             }
             return amount;
+        }
+
+        // ------------------------------------------------ Combat 2.0 decisions
+
+        /// <summary>
+        /// The personality in force right now. Bosses change theirs by phase:
+        /// Goro measured then enraged, Kagachi swordsman → warlord → the marsh
+        /// itself → the exhausted duel. HP thresholds pick the phase; the
+        /// profile decides what the phase *does*.
+        /// </summary>
+        public EnemyCombatProfile ActiveProfile
+        {
+            get
+            {
+                if (def == null) return null;
+                var hp01 = maxHp > 0f ? Hp / maxHp : 1f;
+                if (def.phase4Profile != null && hp01 <= 0.15f) return def.phase4Profile;
+                if (def.phase3Profile != null && hp01 <= 0.4f) return def.phase3Profile;
+                if (def.phase2Profile != null && (hp01 <= 0.65f || Enraged)) return def.phase2Profile;
+                return def.profile;
+            }
+        }
+
+        private EnemyCombatProfile _lastProfile;
+
+        private float DecisionInterval =>
+            (ActiveProfile != null ? ActiveProfile.decisionInterval : 0.25f)
+            * Difficulty.Now.DecisionScale * (_moraleAggroT > 0f ? 0.7f : 1f);
+
+        /// <summary>
+        /// Choose an attack for the situation. Profiled enemies score their kit
+        /// against what they can see; the rest keep the old weighted draw.
+        /// </summary>
+        private AttackDefinition Pick(Vector3 to, float dist, SquadRole role, bool punish)
+        {
+            if (def == null) return null;
+            var profile = ActiveProfile;
+            if (profile == null) return def.ChooseAttack(dist);
+            if (profile != _lastProfile)
+            {
+                // A phase turned over: the history is a different man's now.
+                if (_lastProfile != null) { _history.Clear(); AiTelemetry.PhaseChanges++; Intent = $"phase: {profile.id}"; }
+                _lastProfile = profile;
+            }
+
+            var ctx = new EnemyAttackSelector.Context
+            {
+                distance = dist,
+                relativeAngle = Vector3.Angle(transform.forward, to),
+                playerBackTurned = PlayerBackTurned(to),
+                state = Observe(),
+                alliesNear = AlliesNear(6f),
+                othersAttacking = OthersAttacking(),
+                playerSurrounded = EnemiesNearPlayer(4f) >= 3,
+                hasToken = true,
+                role = role,
+                hp01 = maxHp > 0f ? Hp / maxHp : 1f,
+                posture01 = Posture01,
+                playerMemory = _playerCombat != null ? _playerCombat.Memory : null,
+                lastAttackId = _history.LastId,
+            };
+            var pick = _selector.Choose(def, profile, _history, _memory, in ctx, punish ? 0f : _attackCd);
+            if (pick != null) Intent = $"{pick.category}: {pick.id} vs {ctx.state}";
+            return pick;
+        }
+
+        /// <summary>Start the chosen attack's wind-up. One place, so every path agrees.</summary>
+        private void Commit(AttackDefinition pick, Vector3 to, bool cold, float windupOverride = 0f)
+        {
+            _pattern = pick;
+            _dashAttack = pick.kind == AttackKind.DashStrike;
+            _feinted = false;
+            _history.Record(pick, Time.time);
+            AiTelemetry.Committed(pick);
+            var windup = windupOverride > 0f ? windupOverride
+                : pick.windupOverride > 0f ? pick.windupOverride : Windup;
+            if (!cold) windup = Mathf.Max(0.3f, windup * 0.7f);          // punishes are faster, never unreadable
+            if (pick.category == AttackCategory.Delayed) windup *= 1.55f; // the held beat is the point
+            if (_moraleAggroT > 0f) windup = Mathf.Max(0.3f, windup * 0.85f);
+            _t = windup;
+            _windupTotal = windup;
+            _state = State.Windup;
+            _lastPlayerPos = _player != null ? _player.position : _lastPlayerPos;
+            SetRing(true);
+            TelegraphCue(pick);
+        }
+
+        /// <summary>
+        /// The sound of the wind-up says what is coming. Heavy: the deep swing.
+        /// Guard-break: a low impact, not a blade. Feint: cloth, nothing more.
+        /// Delayed: breath held. Thrust: the whoosh, thin. Ranged: the draw.
+        /// </summary>
+        private void TelegraphCue(AttackDefinition a)
+        {
+            var at = transform.position + Vector3.up * 1.3f;
+            switch (a.category)
+            {
+                case AttackCategory.Heavy:
+                case AttackCategory.Sweep: Sfx3D.Whoosh(at + transform.forward, heavy: true); break;
+                case AttackCategory.GuardBreak: Sfx3D.ImpactAt(at, Sfx3D.ImpactKind.Heavy, 0.45f); break;
+                case AttackCategory.Feint: Sfx3D.Cloth(transform.position, 0.5f); break;
+                case AttackCategory.Delayed: Sfx3D.Breath(true); break;
+                case AttackCategory.Thrust: Sfx3D.Whoosh(at + transform.forward * 1.5f); break;
+                case AttackCategory.Ranged: Sfx3D.Creak(at, 0.5f); break;
+                case AttackCategory.GapCloser: Sfx3D.Cloth(transform.position, 0.8f); break;
+                default: Sfx3D.EnemyVoice(at, Sfx3D.Voice.Attack); break;
+            }
+        }
+
+        /// <summary>The quick attack a feint cancels into: the kit's first Quick or Thrust.</summary>
+        private AttackDefinition FollowUpFor(AttackDefinition feint)
+        {
+            if (def == null) return null;
+            AttackDefinition best = null;
+            foreach (var a in def.attacks)
+            {
+                if (a == feint || a.kind == AttackKind.Parry) continue;
+                if (a.category is AttackCategory.Quick or AttackCategory.Thrust) return a;
+                if (best == null && a.category != AttackCategory.Feint && a.category != AttackCategory.Ranged) best = a;
+            }
+            return best;
+        }
+
+        private RigPose WindupPose()
+        {
+            if (_pattern == null) return RigPose.Windup;
+            return _pattern.category switch
+            {
+                AttackCategory.Thrust => RigPose.Stab,
+                AttackCategory.Sweep => RigPose.Sweep,
+                AttackCategory.GuardBreak => RigPose.Kick,
+                AttackCategory.Delayed => RigPose.Delayed,
+                AttackCategory.GapCloser => RigPose.Charge,
+                AttackCategory.RetreatAttack => RigPose.Backstep,
+                AttackCategory.Ranged => RigPose.Throw,
+                _ => RigPose.Windup,
+            };
+        }
+
+        /// <summary>What the player is visibly doing. Only what a body on the field can see.</summary>
+        private ObservedPlayerState Observe()
+        {
+            if (_playerCombat == null) return ObservedPlayerState.Neutral;
+            if (_playerMotor != null && _playerMotor.Invulnerable) return ObservedPlayerState.Dodging;
+            switch (_playerCombat.State)
+            {
+                case Player.CombatState.Staggered: return ObservedPlayerState.Staggered;
+                case Player.CombatState.Recover: return ObservedPlayerState.Recovering;
+                case Player.CombatState.Light:
+                case Player.CombatState.Heavy:
+                case Player.CombatState.Execute: return ObservedPlayerState.Attacking;
+                case Player.CombatState.Guard:
+                case Player.CombatState.Parry: return ObservedPlayerState.Guarding;
+            }
+            if (_playerCombat.Deflecting) return ObservedPlayerState.Guarding;
+            if (_playerCombat.Whiffed || _playerCombat.JustDodged) return ObservedPlayerState.Recovering;
+            if (_playerCombat.Retreating) return ObservedPlayerState.Retreating;
+            if (_player != null)
+            {
+                // Circling: sideways motion relative to this enemy since the last decision.
+                var moved = _player.position - _lastPlayerPos; moved.y = 0f;
+                var toP = _player.position - transform.position; toP.y = 0f;
+                if (moved.sqrMagnitude > 0.3f && toP.sqrMagnitude > 0.1f)
+                {
+                    var lateral = Vector3.Cross(toP.normalized, moved).magnitude / moved.magnitude;
+                    if (lateral > 0.7f) return ObservedPlayerState.Circling;
+                }
+                if (PlayerBackTurned(toP)) return ObservedPlayerState.BackTurned;
+            }
+            return ObservedPlayerState.Neutral;
+        }
+
+        private bool PlayerBackTurned(Vector3 to) =>
+            _player != null && to.sqrMagnitude > 0.01f && Vector3.Angle(_player.forward, -to) > 120f;
+
+        private int AlliesNear(float r)
+        {
+            var n = 0;
+            for (var i = 0; i < Active.Count; i++)
+            {
+                var e = Active[i];
+                if (e == null || e == this || e.Dead || e.Unaware) continue;
+                if (Vector3.SqrMagnitude(e.transform.position - transform.position) < r * r) n++;
+            }
+            return n;
+        }
+
+        private static int OthersAttacking()
+        {
+            var n = 0;
+            for (var i = 0; i < Active.Count; i++)
+                if (Active[i] != null && !Active[i].Dead && Active[i].InWindupOrDash) n++;
+            return n;
+        }
+
+        private int EnemiesNearPlayer(float r)
+        {
+            if (_player == null) return 0;
+            var n = 0;
+            for (var i = 0; i < Active.Count; i++)
+            {
+                var e = Active[i];
+                if (e == null || e.Dead) continue;
+                if (Vector3.SqrMagnitude(e.transform.position - _player.position) < r * r) n++;
+            }
+            return n;
+        }
+
+        /// <summary>Low health, once: what this enemy does when it is losing.</summary>
+        private void CheckLowHealth()
+        {
+            if (_lowHealthReacted || def == null || ActiveProfile == null || Dead || maxHp <= 0f) return;
+            if (Hp > maxHp * ActiveProfile.lowHealthThreshold) return;
+            _lowHealthReacted = true;
+            switch (ActiveProfile.lowHealth)
+            {
+                case LowHealthBehaviour.Retreat: _retreatT = 1.8f; Intent = "retreats"; break;
+                case LowHealthBehaviour.Guard: _guardT = Mathf.Max(_guardT, 1.2f); _defendT = 1.2f; Intent = "guards"; break;
+                case LowHealthBehaviour.Berserk: _moraleAggroT = 9f; _decisionT = 0f; Intent = "berserk"; break;
+                case LowHealthBehaviour.CallAllies:
+                    for (var i = 0; i < Active.Count; i++)
+                    {
+                        var e = Active[i];
+                        if (e == null || e == this || e.Dead) continue;
+                        if (Vector3.Distance(e.transform.position, transform.position) < 9f) e.Alert();
+                    }
+                    Sfx3D.EnemyVoice(transform.position + Vector3.up * 1.4f, Sfx3D.Voice.Alert);
+                    Intent = "calls allies";
+                    break;
+                case LowHealthBehaviour.Desperate: _moraleAggroT = 4f; _readCd = 0f; Intent = "desperate"; break;
+            }
         }
 
         /// <summary>

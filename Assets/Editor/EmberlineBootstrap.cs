@@ -52,6 +52,7 @@ namespace Emberline.EditorTools
             BuildWeaponAssets();
             BuildKunaiPrefab();
             EmberDressing.Build();   // runtime props for mission set dressing
+            EmberCombatAssets.BuildPlayerMovesets();
 
             var prefabs = BuildEnemyPrefabs();
             var rooftop = RooftopMission();
@@ -1240,13 +1241,17 @@ namespace Emberline.EditorTools
                 return d;
             }
 
-            static AttackPattern A(AttackKind kind, float min, float max, float weight,
+            static AttackDefinition A(AttackKind kind, float min, float max, float weight,
                 float dmg = 1f, float cd = 1.5f, float windup = 0f,
-                bool red = false, float ring = 1f) => new()
+                bool red = false, float ring = 1f, string id = "",
+                AttackCategory? category = null) => new()
             {
                 kind = kind, minRange = min, maxRange = max, weight = weight,
                 damageMultiplier = dmg, cooldown = cd, windupOverride = windup,
                 redTelegraph = red, telegraphScale = ring,
+                id = string.IsNullOrEmpty(id) ? kind.ToString().ToLowerInvariant() : id,
+                displayName = string.IsNullOrEmpty(id) ? kind.ToString() : id.ToUpperInvariant(),
+                category = category ?? AttackDefinition.CategoryOf(kind, windup),
             };
 
             // 1 — BANDIT: the baseline. One honest swing, no tricks.
@@ -1501,6 +1506,11 @@ namespace Emberline.EditorTools
             jin.codexLine = "The storm blade. He never blocks twice the same way.";
             EditorUtility.SetDirty(jin);
 
+            // Combat 2.0: kits and personalities, after every base def exists
+            // and before the named foes copy their bases.
+            AssetDatabase.SaveAssets();
+            EmberCombatKits.Apply();
+
             // ---- Named foes. Boss-ranked defs on common bodies: the campaign
             // needs a captain, a guardian and a pale thing in the marsh without a
             // model each. A named foe is its base kind's def, heavier, with a card.
@@ -1533,6 +1543,9 @@ namespace Emberline.EditorTools
                 "“He said you would reach this door. He did not say you would open it.”", 1.9f, 1.25f, EnemyRank.MiniBoss);
             Named("threeblades", assassin, "THE THREE BLADES", "SISTERS OF THE SILENT FOREST",
                 "“One for the throat. One for the heart. One to watch.”", 2.2f, 1.2f, EnemyRank.Elite);
+
+            // The named foes exist now: their own kits and personalities.
+            EmberCombatKits.ApplyNamed();
 
             // Bind each def to its prefab so spawned instances carry their data.
             void Bind(EnemyKind k, EnemyDef d)

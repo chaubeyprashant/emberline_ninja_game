@@ -1,0 +1,44 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6e86753ae5a51404ab374fcabd983f47, type: 3}
+  m_Name: Profile_three_blades
+  m_EditorClassIdentifier: Assembly-CSharp::Emberline.Enemies.EnemyCombatProfile
+  id: three_blades
+  aggression: 0.6
+  bravery: 0.5
+  attackFrequency: 0.7
+  defenseFrequency: 0.3
+  dodgeFrequency: 0.6
+  parryAbility: 0.2
+  retreatTendency: 0.5
+  feintFrequency: 0.05
+  counterFrequency: 0.4
+  guardBreakFrequency: 0.1
+  teamwork: 0.9
+  preferredDistance: 2.2
+  minDistance: 1.3
+  maxDistance: 3.2
+  retreatDistance: 1.43
+  approachDistance: 4.16
+  comboLength: 3
+  combos:
+  - name: sisters
+    steps:
+    - dash_strike
+    - quick_cut
+    - backstab
+  adaptation: 0.4
+  reactionToPlayerAggression: 0.4
+  lowHealth: 0
+  lowHealthThreshold: 0.3
+  allyDeath: 2
+  decisionInterval: 0.2

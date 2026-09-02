@@ -29,33 +29,106 @@ MonoBehaviour:
   movement: 3
   preferredRange: 7
   attacks:
-  - kind: 5
+  - id: charged_shot
+    displayName: CHARGED SHOT
+    category: 10
+    kind: 5
+    windupOverride: 1.2
+    active: 0
+    recovery: 0
+    cooldown: 2.6
     minRange: 4
     maxRange: 9
-    weight: 1
+    preferredRange: 0
     damageMultiplier: 2
-    windupOverride: 1.2
-    cooldown: 2.6
+    postureMultiplier: 0
+    knockback: 0
+    staggerPower: 1
+    guardBreakPower: 0
+    tracking: 1
+    movement: 0
+    parryable: 1
+    dodgeable: 1
+    interruptible: 1
+    canFeint: 0
+    canChain: 1
+    followsAfter: []
+    requires: 0
+    weight: 1
+    playerWeight: 0
     redTelegraph: 1
     telegraphScale: 1.25
-  - kind: 6
+    audioCue: 
+    cameraImpact: 0
+    hitReaction: 0
+  - id: quick_shot
+    displayName: QUICK SHOT
+    category: 10
+    kind: 6
+    windupOverride: 0.4
+    active: 0
+    recovery: 0
+    cooldown: 1.4
     minRange: 3
     maxRange: 6
-    weight: 0.6
+    preferredRange: 0
     damageMultiplier: 0.8
-    windupOverride: 0.4
-    cooldown: 1.4
+    postureMultiplier: 0
+    knockback: 0
+    staggerPower: 1
+    guardBreakPower: 0
+    tracking: 1
+    movement: 0
+    parryable: 1
+    dodgeable: 1
+    interruptible: 1
+    canFeint: 0
+    canChain: 1
+    followsAfter: []
+    requires: 0
+    weight: 0.6
+    playerWeight: 0
     redTelegraph: 0
     telegraphScale: 1
-  - kind: 0
+    audioCue: 
+    cameraImpact: 0
+    hitReaction: 0
+  - id: panic_jab
+    displayName: PANIC JAB
+    category: 0
+    kind: 0
+    windupOverride: 0.4
+    active: 0
+    recovery: 0
+    cooldown: 1.6
     minRange: 0
     maxRange: 1.7
-    weight: 0.25
+    preferredRange: 0
     damageMultiplier: 0.6
-    windupOverride: 0.4
-    cooldown: 1.6
+    postureMultiplier: 0
+    knockback: 0
+    staggerPower: 1
+    guardBreakPower: 0
+    tracking: 1
+    movement: 0
+    parryable: 1
+    dodgeable: 1
+    interruptible: 1
+    canFeint: 0
+    canChain: 1
+    followsAfter: []
+    requires: 0
+    weight: 0.25
+    playerWeight: 0
     redTelegraph: 0
     telegraphScale: 1
+    audioCue: 
+    cameraImpact: 0
+    hitReaction: 0
+  profile: {fileID: 11400000, guid: caa637eff082443b3b9d9d373ef8cda4, type: 2}
+  phase2Profile: {fileID: 0}
+  phase3Profile: {fileID: 0}
+  phase4Profile: {fileID: 0}
   armor: 0
   poise: 0
   blockChance: 0

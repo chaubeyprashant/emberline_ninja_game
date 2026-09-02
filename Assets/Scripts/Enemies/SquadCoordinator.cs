@@ -69,6 +69,10 @@ namespace Emberline.Enemies
         }
 
         private int _rotation;
+        private static Vector3 _sortOrigin;
+        private static readonly System.Comparison<EnemyBrain> ByDistance = (a, b) =>
+            Vector3.SqrMagnitude(a.transform.position - _sortOrigin)
+                .CompareTo(Vector3.SqrMagnitude(b.transform.position - _sortOrigin));
 
         private void Update()
         {
@@ -93,9 +97,10 @@ namespace Emberline.Enemies
             if (_scratch.Count == 0) return;
 
             // Nearest first: whoever is already in your face gets to commit.
-            _scratch.Sort((a, b) =>
-                Vector3.SqrMagnitude(a.transform.position - origin)
-                    .CompareTo(Vector3.SqrMagnitude(b.transform.position - origin)));
+            // The comparison reads a field, not a captured local, so the sort
+            // allocates nothing four times a second.
+            _sortOrigin = origin;
+            _scratch.Sort(ByDistance);
 
             // Bodyguards first. A pike guard standing in the attack queue while
             // the player walks up to the archer behind it is the single most
@@ -152,13 +157,24 @@ namespace Emberline.Enemies
                 }
 
                 var job = (ringIndex++ + _rotation / 6) % 4;
-                _roles[e] = job switch
+                var role = job switch
                 {
                     0 => SquadRole.Guard,
                     1 => SquadRole.Circle,
                     2 => SquadRole.Reposition,
                     _ => SquadRole.Wait,
                 };
+                // Personality bends the job: an assassin given "guard" flanks
+                // instead, a coward given "reposition" waits at distance, and a
+                // brave bruiser never waits at all — he presses.
+                var p = e.def != null ? e.def.profile : null;
+                if (p != null)
+                {
+                    if (p.retreatTendency >= 0.5f && role == SquadRole.Guard) role = SquadRole.Reposition;
+                    if (p.bravery <= 0.3f && role == SquadRole.Reposition) role = SquadRole.Wait;
+                    if (p.bravery >= 0.8f && p.aggression >= 0.65f && role == SquadRole.Wait) role = SquadRole.Circle;
+                }
+                _roles[e] = role;
             }
             AiTelemetry.Sample(attacking, _scratch.Count);
         }

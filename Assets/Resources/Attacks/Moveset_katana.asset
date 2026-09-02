@@ -1,0 +1,356 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e430e8521d06d43428f3cce260b16eda, type: 3}
+  m_Name: Moveset_katana
+  m_EditorClassIdentifier: Assembly-CSharp::Emberline.Player.PlayerMoveset
+  weaponId: katana
+  attacks:
+  - id: cut
+    displayName: CUT
+    context: 16
+    startup: 0.05
+    animTime: 0.28
+    recovery: 0
+    cooldown: 0
+    rangeMultiplier: 1
+    arcDeg: 130
+    lunge: 5.5
+    damageMultiplier: 1
+    postureMultiplier: 1
+    crush: 0
+    launch: 0
+    execute: 0
+    pose: 2
+    heavyWhoosh: 0
+    cameraImpact: 0
+    hitStop: 0.04
+    chainStage: 1
+  - id: return_cut
+    displayName: RETURN CUT
+    context: 15
+    startup: 0.05
+    animTime: 0.28
+    recovery: 0
+    cooldown: 0
+    rangeMultiplier: 1
+    arcDeg: 130
+    lunge: 5.5
+    damageMultiplier: 1.2
+    postureMultiplier: 1
+    crush: 0
+    launch: 0
+    execute: 0
+    pose: 3
+    heavyWhoosh: 0
+    cameraImpact: 0
+    hitStop: 0.04
+    chainStage: 2
+  - id: falling_cut
+    displayName: FALLING CUT
+    context: 14
+    startup: 0.05
+    animTime: 0.28
+    recovery: 0.22
+    cooldown: 0
+    rangeMultiplier: 1
+    arcDeg: 130
+    lunge: 5.5
+    damageMultiplier: 1.8
+    postureMultiplier: 1
+    crush: 1
+    launch: 1
+    execute: 0
+    pose: 9
+    heavyWhoosh: 0
+    cameraImpact: 0.4
+    hitStop: 0.06
+    chainStage: 3
+  - id: cleave
+    displayName: CLEAVE
+    context: 13
+    startup: 0.05
+    animTime: 0.28
+    recovery: 0.3
+    cooldown: 0
+    rangeMultiplier: 1.18
+    arcDeg: 170
+    lunge: 3.3
+    damageMultiplier: 2.6
+    postureMultiplier: 1
+    crush: 1
+    launch: 0
+    execute: 0
+    pose: 4
+    heavyWhoosh: 1
+    cameraImpact: 0.6
+    hitStop: 0.06
+    chainStage: 0
+  - id: lunge_thrust
+    displayName: LUNGE THRUST
+    context: 11
+    startup: 0.05
+    animTime: 0.28
+    recovery: 0.32
+    cooldown: 0
+    rangeMultiplier: 1.6
+    arcDeg: 40
+    lunge: 8
+    damageMultiplier: 2.2
+    postureMultiplier: 1.4
+    crush: 1
+    launch: 0
+    execute: 0
+    pose: 12
+    heavyWhoosh: 1
+    cameraImpact: 0.5
+    hitStop: 0.04
+    chainStage: 0
+  - id: crescent
+    displayName: CRESCENT
+    context: 10
+    startup: 0.05
+    animTime: 0.28
+    recovery: 0.4
+    cooldown: 0
+    rangeMultiplier: 1.2
+    arcDeg: 200
+    lunge: 2.5
+    damageMultiplier: 3
+    postureMultiplier: 1
+    crush: 1
+    launch: 1
+    execute: 0
+    pose: 13
+    heavyWhoosh: 1
+    cameraImpact: 0.8
+    hitStop: 0.08
+    chainStage: 0
+  - id: recover_cut
+    displayName: RECOVER CUT
+    context: 12
+    startup: 0.05
+    animTime: 0.24
+    recovery: 0
+    cooldown: 0
+    rangeMultiplier: 1
+    arcDeg: 130
+    lunge: 5.5
+    damageMultiplier: 1.1
+    postureMultiplier: 1
+    crush: 0
+    launch: 0
+    execute: 0
+    pose: 3
+    heavyWhoosh: 0
+    cameraImpact: 0
+    hitStop: 0.04
+    chainStage: 1
+  - id: guard_splitter
+    displayName: GUARD SPLITTER
+    context: 5
+    startup: 0.05
+    animTime: 0.28
+    recovery: 0.25
+    cooldown: 0
+    rangeMultiplier: 1
+    arcDeg: 90
+    lunge: 5.5
+    damageMultiplier: 1.4
+    postureMultiplier: 3
+    crush: 1
+    launch: 0
+    execute: 0
+    pose: 18
+    heavyWhoosh: 1
+    cameraImpact: 0.5
+    hitStop: 0.04
+    chainStage: 0
+  - id: riposte
+    displayName: RIPOSTE
+    context: 2
+    startup: 0.05
+    animTime: 0.28
+    recovery: 0
+    cooldown: 0
+    rangeMultiplier: 1
+    arcDeg: 100
+    lunge: 6.5
+    damageMultiplier: 2.4
+    postureMultiplier: 2
+    crush: 1
+    launch: 0
+    execute: 0
+    pose: 9
+    heavyWhoosh: 0
+    cameraImpact: 0.7
+    hitStop: 0.08
+    chainStage: 0
+  - id: flicker_counter
+    displayName: FLICKER COUNTER
+    context: 3
+    startup: 0.05
+    animTime: 0.28
+    recovery: 0
+    cooldown: 0
+    rangeMultiplier: 1
+    arcDeg: 110
+    lunge: 8.5
+    damageMultiplier: 1.8
+    postureMultiplier: 1.5
+    crush: 0
+    launch: 0
+    execute: 0
+    pose: 3
+    heavyWhoosh: 0
+    cameraImpact: 0.5
+    hitStop: 0.06
+    chainStage: 0
+  - id: back_cut
+    displayName: BACK CUT
+    context: 4
+    startup: 0.05
+    animTime: 0.28
+    recovery: 0
+    cooldown: 0
+    rangeMultiplier: 1
+    arcDeg: 130
+    lunge: 5.5
+    damageMultiplier: 1.6
+    postureMultiplier: 2
+    crush: 1
+    launch: 0
+    execute: 0
+    pose: 9
+    heavyWhoosh: 0
+    cameraImpact: 0.4
+    hitStop: 0.04
+    chainStage: 0
+  - id: posture_punisher
+    displayName: POSTURE PUNISHER
+    context: 1
+    startup: 0.05
+    animTime: 0.28
+    recovery: 0
+    cooldown: 0
+    rangeMultiplier: 1
+    arcDeg: 130
+    lunge: 5.5
+    damageMultiplier: 2
+    postureMultiplier: 1
+    crush: 1
+    launch: 0
+    execute: 1
+    pose: 4
+    heavyWhoosh: 0
+    cameraImpact: 0.7
+    hitStop: 0.08
+    chainStage: 0
+  - id: silent_end
+    displayName: SILENT END
+    context: 0
+    startup: 0.05
+    animTime: 0.28
+    recovery: 0
+    cooldown: 0
+    rangeMultiplier: 1
+    arcDeg: 90
+    lunge: 5.5
+    damageMultiplier: 1
+    postureMultiplier: 1
+    crush: 0
+    launch: 0
+    execute: 1
+    pose: 12
+    heavyWhoosh: 0
+    cameraImpact: 0
+    hitStop: 0.04
+    chainStage: 0
+  - id: closing_strike
+    displayName: CLOSING STRIKE
+    context: 6
+    startup: 0.05
+    animTime: 0.28
+    recovery: 0
+    cooldown: 0
+    rangeMultiplier: 1.15
+    arcDeg: 90
+    lunge: 11
+    damageMultiplier: 1.3
+    postureMultiplier: 1
+    crush: 0
+    launch: 0
+    execute: 0
+    pose: 21
+    heavyWhoosh: 0
+    cameraImpact: 0
+    hitStop: 0.04
+    chainStage: 1
+  - id: running_slash
+    displayName: RUNNING SLASH
+    context: 9
+    startup: 0.05
+    animTime: 0.28
+    recovery: 0
+    cooldown: 0
+    rangeMultiplier: 1
+    arcDeg: 120
+    lunge: 8
+    damageMultiplier: 1.4
+    postureMultiplier: 1
+    crush: 0
+    launch: 0
+    execute: 0
+    pose: 3
+    heavyWhoosh: 0
+    cameraImpact: 0
+    hitStop: 0.04
+    chainStage: 1
+  - id: falling_blade
+    displayName: FALLING BLADE
+    context: 7
+    startup: 0.05
+    animTime: 0.28
+    recovery: 0.3
+    cooldown: 0
+    rangeMultiplier: 0.9
+    arcDeg: 360
+    lunge: 1
+    damageMultiplier: 1.9
+    postureMultiplier: 1
+    crush: 1
+    launch: 0
+    execute: 0
+    pose: 20
+    heavyWhoosh: 0
+    cameraImpact: 0.6
+    hitStop: 0.06
+    chainStage: 0
+  - id: wall_dive
+    displayName: WALL DIVE
+    context: 8
+    startup: 0.05
+    animTime: 0.28
+    recovery: 0.3
+    cooldown: 0
+    rangeMultiplier: 1
+    arcDeg: 360
+    lunge: 6
+    damageMultiplier: 2.2
+    postureMultiplier: 1
+    crush: 1
+    launch: 0
+    execute: 0
+    pose: 20
+    heavyWhoosh: 0
+    cameraImpact: 0.6
+    hitStop: 0.04
+    chainStage: 0

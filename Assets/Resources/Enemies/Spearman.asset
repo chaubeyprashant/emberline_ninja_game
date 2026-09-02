@@ -29,15 +29,170 @@ MonoBehaviour:
   movement: 5
   preferredRange: 4
   attacks:
-  - kind: 2
+  - id: long_thrust
+    displayName: LONG THRUST
+    category: 3
+    kind: 2
+    windupOverride: 0.55
+    active: 0
+    recovery: 0
+    cooldown: 1.9
     minRange: 1.4
     maxRange: 4.2
-    weight: 1
+    preferredRange: 0
     damageMultiplier: 1
-    windupOverride: 0
-    cooldown: 1.9
+    postureMultiplier: 0
+    knockback: 0
+    staggerPower: 1
+    guardBreakPower: 0
+    tracking: 1
+    movement: 0
+    parryable: 1
+    dodgeable: 1
+    interruptible: 1
+    canFeint: 0
+    canChain: 1
+    followsAfter: []
+    requires: 0
+    weight: 1
+    playerWeight: 0
     redTelegraph: 0
     telegraphScale: 1.5
+    audioCue: 
+    cameraImpact: 0
+    hitReaction: 0
+  - id: double_thrust
+    displayName: DOUBLE THRUST
+    category: 1
+    kind: 2
+    windupOverride: 0.72
+    active: 0
+    recovery: 0
+    cooldown: 2.4
+    minRange: 1.4
+    maxRange: 4
+    preferredRange: 0
+    damageMultiplier: 1.35
+    postureMultiplier: 0
+    knockback: 0
+    staggerPower: 1
+    guardBreakPower: 0
+    tracking: 1
+    movement: 0
+    parryable: 1
+    dodgeable: 1
+    interruptible: 0
+    canFeint: 0
+    canChain: 1
+    followsAfter: []
+    requires: 0
+    weight: 0.6
+    playerWeight: 0
+    redTelegraph: 1
+    telegraphScale: 1.5
+    audioCue: 
+    cameraImpact: 0
+    hitReaction: 0
+  - id: sweep
+    displayName: SWEEP
+    category: 4
+    kind: 11
+    windupOverride: 0.55
+    active: 0
+    recovery: 0
+    cooldown: 1.9
+    minRange: 0
+    maxRange: 3.2
+    preferredRange: 0
+    damageMultiplier: 1.1
+    postureMultiplier: 0
+    knockback: 0
+    staggerPower: 1
+    guardBreakPower: 0
+    tracking: 1
+    movement: 0
+    parryable: 1
+    dodgeable: 1
+    interruptible: 1
+    canFeint: 0
+    canChain: 1
+    followsAfter: []
+    requires: 0
+    weight: 0.7
+    playerWeight: 0
+    redTelegraph: 0
+    telegraphScale: 1.5
+    audioCue: 
+    cameraImpact: 0
+    hitReaction: 0
+  - id: guard_break
+    displayName: GUARD BREAK
+    category: 2
+    kind: 12
+    windupOverride: 0.62
+    active: 0
+    recovery: 0
+    cooldown: 2.6
+    minRange: 0
+    maxRange: 2.8
+    preferredRange: 0
+    damageMultiplier: 1.2
+    postureMultiplier: 0
+    knockback: 0
+    staggerPower: 1
+    guardBreakPower: 0
+    tracking: 1
+    movement: 0
+    parryable: 0
+    dodgeable: 1
+    interruptible: 1
+    canFeint: 0
+    canChain: 1
+    followsAfter: []
+    requires: 0
+    weight: 0.5
+    playerWeight: 0
+    redTelegraph: 1
+    telegraphScale: 1
+    audioCue: 
+    cameraImpact: 0
+    hitReaction: 0
+  - id: retreat_thrust
+    displayName: RETREAT THRUST
+    category: 8
+    kind: 13
+    windupOverride: 0.42
+    active: 0
+    recovery: 0
+    cooldown: 1.5
+    minRange: 0
+    maxRange: 3.4
+    preferredRange: 0
+    damageMultiplier: 1
+    postureMultiplier: 0
+    knockback: 0
+    staggerPower: 1
+    guardBreakPower: 0
+    tracking: 1
+    movement: 0
+    parryable: 1
+    dodgeable: 1
+    interruptible: 1
+    canFeint: 0
+    canChain: 1
+    followsAfter: []
+    requires: 0
+    weight: 0.8
+    playerWeight: 0
+    redTelegraph: 0
+    telegraphScale: 1
+    audioCue: 
+    cameraImpact: 0
+    hitReaction: 0
+  profile: {fileID: 11400000, guid: 2a153c5bca3a0448e82f4ebe6ae39afa, type: 2}
+  phase2Profile: {fileID: 0}
+  phase3Profile: {fileID: 0}
+  phase4Profile: {fileID: 0}
   armor: 1
   poise: 0.2
   blockChance: 0.2

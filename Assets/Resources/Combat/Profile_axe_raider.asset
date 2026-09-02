@@ -1,0 +1,44 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6e86753ae5a51404ab374fcabd983f47, type: 3}
+  m_Name: Profile_axe_raider
+  m_EditorClassIdentifier: Assembly-CSharp::Emberline.Enemies.EnemyCombatProfile
+  id: axe_raider
+  aggression: 0.7
+  bravery: 0.8
+  attackFrequency: 0.5
+  defenseFrequency: 0.3
+  dodgeFrequency: 0
+  parryAbility: 0.05
+  retreatTendency: 0.05
+  feintFrequency: 0.05
+  counterFrequency: 0.1
+  guardBreakFrequency: 0.6
+  teamwork: 0.3
+  preferredDistance: 2
+  minDistance: 1.2
+  maxDistance: 3
+  retreatDistance: 1.32
+  approachDistance: 3.8999999
+  comboLength: 3
+  combos:
+  - name: bruise
+    steps:
+    - overhead_smash
+    - horizontal_sweep
+    - ground_shock
+  adaptation: 0
+  reactionToPlayerAggression: 0
+  lowHealth: 2
+  lowHealthThreshold: 0.3
+  allyDeath: 2
+  decisionInterval: 0.25
