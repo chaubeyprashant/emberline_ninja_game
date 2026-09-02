@@ -1242,6 +1242,7 @@ namespace Emberline.EditorTools
             bandit.movement = MovementStyle.Flank; bandit.preferredRange = 2f;
             bandit.attacks = new[] { A(AttackKind.Flurry, 0f, 2.4f, 1f, 1f, 1.5f) };
             bandit.poise = 0f; bandit.backstabMultiplier = 1.2f;
+            bandit.staggerDecay = 0.7f;
             bandit.codexLine = "Road raiders. Quick knives, no discipline.";
             EditorUtility.SetDirty(bandit);
 
@@ -1260,6 +1261,8 @@ namespace Emberline.EditorTools
                 A(AttackKind.DashStrike, 3.5f, 8f, 1f, 1f, 2.2f, 0.4f, true, 1.1f),
             };
             assassin.poise = 0f; assassin.crushMultiplier = 1.35f; assassin.backstabMultiplier = 1.3f;
+            assassin.punishesExposure = true; assassin.dodgeChance = 0.35f;
+            assassin.retreatBelowHp = 0.3f; assassin.staggerDecay = 0.6f;
             assassin.codexLine = "Paid knives. They open with the dash and never trade twice.";
             EditorUtility.SetDirty(assassin);
 
@@ -1275,6 +1278,8 @@ namespace Emberline.EditorTools
             spear.poise = 0.2f; spear.armor = 1f;
             // Long weapon, slow recovery: getting inside the shaft is the answer.
             spear.backstabMultiplier = 1.5f;
+            spear.punishesExposure = true; spear.protectsRanged = true;
+            spear.readsHeavies = true; spear.blockChance = 0.2f;
             spear.codexLine = "Toll guards. Their reach is the whole fight — close it.";
             EditorUtility.SetDirty(spear);
 
@@ -1290,13 +1295,17 @@ namespace Emberline.EditorTools
             {
                 A(AttackKind.ChargedShot, 4f, 9f, 1f, 2f, 2.6f, 1.2f, true, 1.25f),
                 A(AttackKind.QuickShot, 3f, 6f, 0.6f, 0.8f, 1.4f, 0.4f),
+                // Emergency only: a weak jab when the player is already on it.
+                A(AttackKind.Slash, 0f, 1.7f, 0.25f, 0.6f, 1.6f, 0.4f),
             };
             archer.poise = 0f; archer.backstabMultiplier = 2f; // the classic weak point
+            archer.panicRange = 3.2f; archer.retreatBelowHp = 0.5f;
             archer.codexLine = "Bolt-weavers. Break the line of sight or get behind them.";
             EditorUtility.SetDirty(archer);
 
             // 5 — HEAVY WARRIOR: armoured, slow, immune to chip damage.
             var heavy = D("HeavyWarrior");
+
             heavy.id = "heavy"; heavy.displayName = "AXE RAIDER";
             heavy.kind = EnemyKind.RaiderAxe; heavy.weapon = EnemyWeapon.Axe;
             heavy.rank = EnemyRank.Elite; heavy.modelSpec = "RaiderAxeModel"; heavy.scale = 1.05f;
@@ -1311,6 +1320,8 @@ namespace Emberline.EditorTools
             heavy.armor = 4f; heavy.poise = 0.7f;      // shrugs off light hits
             heavy.crushMultiplier = 1.3f;              // but crush gets through
             heavy.backstabMultiplier = 1.25f;
+            heavy.readsHeavies = true; heavy.guardsWhenPostureLow = true;
+            heavy.blockChance = Mathf.Max(heavy.blockChance, 0.3f); heavy.staggerDecay = 0.55f;
             heavy.codexLine = "Armoured raiders. Light hits bounce; commit or go around.";
             EditorUtility.SetDirty(heavy);
 
@@ -1331,6 +1342,9 @@ namespace Emberline.EditorTools
             samurai.blockChance = 0.4f;   // light hits turned aside
             samurai.poise = 0.5f; samurai.armor = 2f;
             samurai.crushMultiplier = 1.5f;  // the guard does not survive a crush
+            samurai.readsHeavies = true; samurai.counterChance = 0.6f;
+            samurai.punishesExposure = true; samurai.guardsWhenPostureLow = true;
+            samurai.dodgeChance = 0.1f;
             samurai.codexLine = "Masterless blades. They will block anything you throw lightly.";
             EditorUtility.SetDirty(samurai);
 
@@ -1349,6 +1363,8 @@ namespace Emberline.EditorTools
                 A(AttackKind.ThrowBomb, 5f, 11f, 0.5f, 0.8f, 4f, 0.6f, true, 1.35f),
             };
             rogue.poise = 0.1f; rogue.crushMultiplier = 1.3f; rogue.thrownMultiplier = 1.2f;
+            rogue.dodgeChance = 0.45f; rogue.punishesExposure = true;
+            rogue.retreatBelowHp = 0.35f; rogue.staggerDecay = 0.6f;
             rogue.codexLine = "Trained where you were. Fights the way you do — from behind.";
             EditorUtility.SetDirty(rogue);
 
@@ -1369,6 +1385,10 @@ namespace Emberline.EditorTools
             };
             elite.armor = 5f; elite.poise = 0.75f; elite.blockChance = 0.15f;
             elite.crushMultiplier = 1.25f; elite.backstabMultiplier = 1.2f;
+            elite.readsHeavies = true; elite.blockChance = Mathf.Max(elite.blockChance, 0.3f);
+            elite.dodgeChance = 0.15f; elite.counterChance = 0.4f;
+            elite.punishesExposure = true; elite.guardsWhenPostureLow = true;
+            elite.protectsRanged = true; elite.staggerDecay = 0.5f;
             elite.codexLine = "Captains of the road. They have an answer for every range.";
             EditorUtility.SetDirty(elite);
 
@@ -1387,6 +1407,7 @@ namespace Emberline.EditorTools
                 A(AttackKind.DashStrike, 5f, 11f, 0.4f, 1f, 2.6f, 0.7f, true),
             };
             mini.armor = 5f; mini.poise = 0.85f; mini.crushMultiplier = 1.2f;
+            mini.staggerDecay = 0.45f; mini.readsHeavies = true; mini.blockChance = 0.2f;
             mini.codexLine = "The toll-captain. Everything he does is telegraphed — and lands anyway.";
             EditorUtility.SetDirty(mini);
 
@@ -1405,6 +1426,7 @@ namespace Emberline.EditorTools
                 A(AttackKind.DashStrike, 5f, 11f, 0.9f, 1f, 1.8f, 0.55f, true),
             };
             boss.armor = 3f; boss.poise = 0.8f; boss.elementalMultiplier = 1f;
+            boss.staggerDecay = 0.45f; boss.punishesExposure = true; boss.dodgeChance = 0.2f;
             boss.codexLine = "The Marsh Serpent. Three lives, and it spends them slowly.";
             EditorUtility.SetDirty(boss);
 
@@ -1437,6 +1459,7 @@ namespace Emberline.EditorTools
             bomber.attacks = new[] { A(AttackKind.ThrowBomb, 4f, 10f, 1f, 1f, 3.2f, 0.7f, true, 1.4f) };
             bomber.poise = 0f; bomber.maxPosture = 24f;
             bomber.backstabMultiplier = 2f; // carrying powder; hit it from behind
+            bomber.panicRange = 3.5f;
             bomber.codexLine = "Powder carriers. Kill them first or fight on burning ground.";
             EditorUtility.SetDirty(bomber);
 
@@ -1456,6 +1479,8 @@ namespace Emberline.EditorTools
             };
             // No armour on purpose: Jin is answered by reading him, not by trading.
             jin.armor = 0f; jin.poise = 0.7f; jin.blockChance = 0.15f;
+            jin.dodgeChance = 0.35f; jin.punishesExposure = true; jin.readsHeavies = true;
+            jin.counterChance = 0.5f; jin.staggerDecay = 0.45f;
             jin.codexLine = "The storm blade. He never blocks twice the same way.";
             EditorUtility.SetDirty(jin);
 

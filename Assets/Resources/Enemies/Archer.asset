@@ -47,6 +47,15 @@ MonoBehaviour:
     cooldown: 1.4
     redTelegraph: 0
     telegraphScale: 1
+  - kind: 0
+    minRange: 0
+    maxRange: 1.7
+    weight: 0.25
+    damageMultiplier: 0.6
+    windupOverride: 0.4
+    cooldown: 1.6
+    redTelegraph: 0
+    telegraphScale: 1
   armor: 0
   poise: 0
   blockChance: 0
@@ -54,6 +63,15 @@ MonoBehaviour:
   postureRegen: 9
   postureRegenDelay: 1.6
   guardBreakSeconds: 2.2
+  dodgeChance: 0
+  counterChance: 0
+  punishesExposure: 0
+  readsHeavies: 0
+  guardsWhenPostureLow: 0
+  protectsRanged: 0
+  retreatBelowHp: 0.5
+  panicRange: 3.2
+  staggerDecay: 0.65
   backstabMultiplier: 2
   crushMultiplier: 1
   thrownMultiplier: 1

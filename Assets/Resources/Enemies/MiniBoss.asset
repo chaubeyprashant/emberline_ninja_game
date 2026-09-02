@@ -59,11 +59,20 @@ MonoBehaviour:
     telegraphScale: 1
   armor: 5
   poise: 0.85
-  blockChance: 0
+  blockChance: 0.2
   maxPosture: 40
   postureRegen: 9
   postureRegenDelay: 1.6
   guardBreakSeconds: 2.2
+  dodgeChance: 0
+  counterChance: 0
+  punishesExposure: 0
+  readsHeavies: 1
+  guardsWhenPostureLow: 0
+  protectsRanged: 0
+  retreatBelowHp: 0
+  panicRange: 0
+  staggerDecay: 0.45
   backstabMultiplier: 1
   crushMultiplier: 1.2
   thrownMultiplier: 1

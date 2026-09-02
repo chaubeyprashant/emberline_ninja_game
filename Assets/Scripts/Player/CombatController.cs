@@ -103,6 +103,40 @@ namespace Emberline.Player
 
         private float _stateT;   // time left in a committed state
 
+        // ---- what the AI may read ---------------------------------------
+        // Enemies do not read inputs or intentions; they read the same thing a
+        // human opponent reads — the body. A heavy wind-up, a whiffed swing and
+        // the tail of a dodge are all visible commitments, and those are the
+        // only signals exposed here.
+
+        /// <summary>Locked into an animation an opponent could exploit.</summary>
+        /// <summary>
+        /// True while the player is locked into something they cannot cancel.
+        /// The pending-cleave check is not redundant: starting a heavy also opens
+        /// the deflect window, which overwrites State with Guard on the very next
+        /// line of Cleave(). Reading State alone would therefore miss the single
+        /// most punishable thing the player ever does.
+        /// </summary>
+        public bool Committed =>
+            State is CombatState.Heavy or CombatState.Recover or CombatState.Execute
+            || _pendingCleave >= 0f;
+
+        /// <summary>Seconds of commitment left. 0 when free.</summary>
+        public float ExposureRemaining => !Committed ? 0f
+            : Mathf.Max(Mathf.Max(0f, _stateT), _pendingCleave >= 0f ? _pendingCleave + 0.35f : 0f);
+
+        /// <summary>The heavy telegraph is up — the moment a good opponent blocks or steps.</summary>
+        public bool HeavyWindingUp => _pendingCleave >= 0f;
+
+        /// <summary>A swing that hit nothing in the last half second. Greed leaves a gap.</summary>
+        public bool Whiffed => _whiffT > 0f;
+
+        /// <summary>A dodge ended in the last third of a second: the classic hesitation window.</summary>
+        public bool JustDodged => _postDodgeT > 0f;
+
+        private float _whiffT, _postDodgeT;
+        private bool _wasInvulnerable;
+
         /// <summary>Request a state change; returns false if the rules forbid it.</summary>
         private bool Enter(CombatState next, float duration = 0f)
         {
@@ -115,6 +149,13 @@ namespace Emberline.Player
 
         private void UpdateState(float dt)
         {
+            _whiffT = Mathf.Max(0f, _whiffT - dt);
+            _postDodgeT = Mathf.Max(0f, _postDodgeT - dt);
+            // The dodge's tail: i-frames just ended and the feet have not settled.
+            var inv = _motor != null && _motor.Invulnerable;
+            if (_wasInvulnerable && !inv) _postDodgeT = 0.32f;
+            _wasInvulnerable = inv;
+
             if (_stateT <= 0f) return;
             if ((_stateT -= dt) > 0f) return;
             // Committed states fall back to neutral on their own.
@@ -659,6 +700,7 @@ namespace Emberline.Player
                 hitAny = true;
             }
 
+            if (!hitAny) _whiffT = 0.55f;
             if (hitAny)
             {
                 Sfx3D.ImpactAt(transform.position + _motor.Facing * 1.4f + Vector3.up,

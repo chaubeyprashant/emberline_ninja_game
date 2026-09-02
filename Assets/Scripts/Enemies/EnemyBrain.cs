@@ -181,6 +181,19 @@ namespace Emberline.Enemies
         private bool _spinCleave;   // Goro's enraged 360
         private float _spitCd;      // Kagachi's venom
 
+        // ---- behaviour ----------------------------------------------------
+        private int _staggerCount;      // staggers inside the decay window
+        private float _staggerWindowT;  // resets the count when it runs out
+        private bool _wasGuarding, _wasProtecting; // rising-edge latches for telemetry
+        private float _sidestepT;       // dodging a read heavy
+        private Vector3 _sidestepDir;
+        private float _retreatT;        // backing off to recover
+        private float _readCd;          // one reaction per player commitment
+        private int _blocksInRow;       // samurai: two blocks earn a riposte
+        private float _defendT;         // guarding on low posture
+
+        public static void ResetAiTelemetry() => AiTelemetry.Reset();
+
         /// <summary>Spear reach — the whole reason a pike guard is worth fielding.</summary>
         private const float SpearReach = 4f;
         private float _baseMaxHp, _baseDamage;
@@ -209,6 +222,25 @@ namespace Emberline.Enemies
 
         /// <summary>Public read for framing: bosses get a wider, lower camera.</summary>
         public bool IsBossTarget => IsBoss;
+
+        /// <summary>
+        /// One-line snapshot of what this enemy thinks it is doing. Used by the
+        /// encounter harness to explain a fight that went quiet; cheap enough to
+        /// leave in, and never called during normal play.
+        /// </summary>
+        public string DebugLine
+        {
+            get
+            {
+                var d = _player != null
+                    ? Vector3.Distance(transform.position, _player.position) : -1f;
+                var role = SquadCoordinator.Instance != null
+                    ? SquadCoordinator.Instance.RoleOf(this).ToString() : "-";
+                return $"{kind} ai={Ai} state={_state} role={role} d={d:0.0} " +
+                       $"cd={_attackCd:0.00} unaware={Unaware} hp={Hp:0}/{maxHp:0} " +
+                       $"posture={Posture:0}/{MaxPosture:0} range={(def != null ? def.MaxAttackRange : attackRange):0.0}";
+            }
+        }
         private float Speed => (Enraged || Phase == 3 ? speed * 1.4f : speed) * GameManager.EnemySpeedMul;
         private float Windup => _spinCleave ? SpinWindup
             : _dashAttack ? (kind == EnemyKind.Kagachi ? 0.55f : 0.7f)
@@ -350,6 +382,8 @@ namespace Emberline.Enemies
             _erraticT = 0f;
             _spinCleave = false;
             _spitCd = 0f;
+            _staggerCount = 0; _staggerWindowT = 0f; _sidestepT = 0f; _retreatT = 0f;
+            _readCd = 0f; _blocksInRow = 0; _defendT = 0f;
             Unaware = false;
             Detection = 0f;
             SetRing(false);
@@ -372,6 +406,8 @@ namespace Emberline.Enemies
 
             _attackCd = Mathf.Max(0, _attackCd - Time.deltaTime);
             _spitCd = Mathf.Max(0, _spitCd - Time.deltaTime);
+            _readCd = Mathf.Max(0, _readCd - Time.deltaTime);
+            if (_staggerWindowT > 0f && (_staggerWindowT -= Time.deltaTime) <= 0f) _staggerCount = 0;
             UpdatePosture(Time.deltaTime);
             UpdatePerception(Vector3.Distance(transform.position, _player.position));
             CheckPhaseTransitions();
@@ -401,6 +437,13 @@ namespace Emberline.Enemies
                     break;
 
                 case State.Recover:
+                    if (_sidestepT > 0f)
+                    {
+                        _sidestepT -= Time.deltaTime;
+                        Move(_sidestepDir * 1.6f);
+                        Face(to);
+                        if (_rig != null) _rig.move01 = 1f;
+                    }
                     // Dagger flurry: the second and third jabs land here, spaced out
                     // so the burst reads as three hits rather than one lump.
                     if (_flurryLeft > 0 && (_flurryT -= Time.deltaTime) <= 0f)
@@ -423,6 +466,46 @@ namespace Emberline.Enemies
 
                 case State.Chase:
                 {
+                    // Reading the player comes before moving: a heavy telegraph
+                    // is answered with a block or a sidestep, not by walking into it.
+                    if (ReadPlayer(to, dist)) break;
+
+                    // Hurt and out of guard: back off, let posture come back, then
+                    // return. Retreat is a decision, not a panic.
+                    if (_retreatT > 0f)
+                    {
+                        _retreatT -= Time.deltaTime;
+                        Move(-to.normalized * 0.9f + Strafe(to) * 0.5f);
+                        Face(to);
+                        if (_rig != null) _rig.move01 = 0.8f;
+                        break;
+                    }
+                    if (def != null && def.retreatBelowHp > 0f && Hp < maxHp * def.retreatBelowHp
+                        && Posture < MaxPosture * 0.5f && _attackCd > 0.2f)
+                    {
+                        _retreatT = 1.6f;
+                        AiTelemetry.Retreats++;
+                        Ai = AiState.Retreat;
+                        break;
+                    }
+
+                    // Low posture: guard up, give ground. React to what has been
+                    // done to you instead of trading until the guard breaks.
+                    if (def != null && def.guardsWhenPostureLow && Posture < MaxPosture * 0.34f
+                        && _guardBreakT <= 0f && dist < attackRange + 1.5f)
+                    {
+                        _guardT = Mathf.Max(_guardT, 0.45f);
+                        _defendT = 0.45f;
+                        Ai = AiState.Defend;
+                        if (!_wasGuarding) { AiTelemetry.GuardHolds++; _wasGuarding = true; }
+                        Move(-to.normalized * 0.5f);
+                        Face(to);
+                        _rig?.ForcePose(RigPose.Windup, 0.5f);
+                        break;
+                    }
+
+                    _wasGuarding = false;
+
                     Move(ChaseDir(to, dist));
                     Face(to);
                     if (_rig != null) _rig.move01 = 1f;
@@ -475,12 +558,79 @@ namespace Emberline.Enemies
                     var role = SquadCoordinator.Instance != null
                         ? SquadCoordinator.Instance.RoleOf(this) : SquadRole.Engage;
                     Ai = AiState.Combat;
+
+                    // A committed, whiffed or just-dodged player is an opening, and
+                    // an enemy built to punish takes it regardless of its squad
+                    // job — but still through the token pool, so the cap on how
+                    // many may swing at once holds even when everyone sees a gap.
+                    // Choose the move *before* asking for a token. Taking one and
+                    // then finding no usable attack still consumes the pool's grant
+                    // window, which silently starves this enemy's ordinary attacks.
+                    if (def != null && def.punishesExposure && _attackCd <= 0f && _readCd <= 0f
+                        && PlayerExposed() && dist < def.MaxAttackRange + 0.4f)
+                    {
+                        var pick = def.ChooseAttack(dist);
+                        if (pick != null && pick.kind != AttackKind.Parry
+                            && (IsBoss || _tokens == null || _tokens.TryTake(this)))
+                        {
+                            _readCd = 1.2f;
+                            AiTelemetry.OutOfTurnPunishes++;
+                            AiTelemetry.Attacks++;
+                            _pattern = pick;
+                            _dashAttack = pick.kind == AttackKind.DashStrike;
+                            _state = State.Windup;
+                            // Faster than a cold attack, never below the floor a
+                            // player can react to.
+                            _t = Mathf.Max(0.3f, (pick.windupOverride > 0f ? pick.windupOverride : Windup) * 0.7f);
+                            SetRing(true);
+                            break;
+                        }
+                    }
+
+                    // Protectors put themselves between the player and the archer.
+                    // Assigned by the coordinator, so a bodyguard actually leaves
+                    // the attack line to do it instead of only guarding when it
+                    // happens to have nothing better on.
+                    if (def != null && def.protectsRanged && role == SquadRole.Protect
+                        && SquadCoordinator.Instance != null)
+                    {
+                        var ally = SquadCoordinator.Instance.NearestRangedAlly(this, 12f);
+                        if (ally != null && Vector3.Distance(ally.transform.position, _player.position) < 6.5f)
+                        {
+                            var post = Vector3.Lerp(_player.position, ally.transform.position, 0.45f);
+                            var toPost = post - transform.position;
+                            toPost.y = 0f;
+                            if (toPost.magnitude > 0.6f)
+                            {
+                                if (!_wasProtecting) { AiTelemetry.ProtectMoves++; _wasProtecting = true; }
+                                Move(toPost.normalized);
+                                Face(to);
+                                if (_rig != null) _rig.move01 = 0.9f;
+                                break;
+                            }
+                        }
+                    }
+
+                    _wasProtecting = false;
+
                     if (role == SquadRole.Wait && dist < 4.5f)
                     {
-                        // Hold a readable distance, weapon up, doing nothing.
-                        Move(-to.normalized * 0.35f);
+                        // Hold a readable distance, weapon up, doing nothing — and
+                        // if there is cover within reach, hold it from behind that.
+                        var toCover = CoverStep(to);
+                        Move(toCover.sqrMagnitude > 0.01f ? toCover : -to.normalized * 0.35f);
                         Face(to);
                         if (_rig != null) _rig.move01 = 0.35f;
+                        break;
+                    }
+                    if (role == SquadRole.Guard && dist < 3.6f)
+                    {
+                        // The wall: close, guard raised, absorbing attention so
+                        // the flankers can work. Holds its ground, never swings.
+                        _guardT = Mathf.Max(_guardT, 0.3f);
+                        Move(dist > 2.4f ? to.normalized * 0.5f : Vector3.zero);
+                        Face(to);
+                        _rig?.ForcePose(RigPose.Windup, 0.4f);
                         break;
                     }
                     if (role == SquadRole.Circle)
@@ -490,6 +640,18 @@ namespace Emberline.Enemies
                         if (_rig != null) _rig.move01 = 0.8f;
                         break;
                     }
+                    if (role == SquadRole.Reposition)
+                    {
+                        // Work round to the back hemisphere. This is what makes a
+                        // circling pack feel like it is hunting a position rather
+                        // than orbiting.
+                        var rear = _player.position - _player.forward * 2.6f - transform.position;
+                        rear.y = 0f;
+                        if (rear.magnitude > 0.8f) { Move(rear.normalized); Face(to); }
+                        else { Move(Strafe(to)); Face(to); }
+                        if (_rig != null) _rig.move01 = 0.85f;
+                        break;
+                    }
 
                     // Data-driven enemies pick from their own moveset by range.
                     if (def != null && _attackCd <= 0f && !wantsDash)
@@ -497,6 +659,7 @@ namespace Emberline.Enemies
                         var pick = def.ChooseAttack(dist);
                         if (pick != null && (IsBoss || _tokens == null || _tokens.TryTake(this)))
                         {
+                            AiTelemetry.Attacks++;
                             _pattern = pick;
                             _dashAttack = pick.kind == AttackKind.DashStrike;
                             _state = State.Windup;
@@ -509,6 +672,7 @@ namespace Emberline.Enemies
                     if ((inRange && _attackCd <= 0 || wantsDash)
                         && (IsBoss || _tokens == null || _tokens.TryTake(this)))
                     {
+                        AiTelemetry.Attacks++;
                         _dashAttack = wantsDash;
                         _state = State.Windup;
                         _t = Windup;
@@ -1143,7 +1307,7 @@ namespace Emberline.Enemies
 
                 case Player.HitReaction.Knockback:
                     _state = State.Stagger;
-                    _t = 0.55f;
+                    _t = StaggerLength(0.55f);
                     // Directional: shoved along the blow, not away from a point.
                     transform.position = ArenaMarkers.Resolve(
                         transform.position + away * 0.95f, BodyRadius);
@@ -1159,11 +1323,28 @@ namespace Emberline.Enemies
 
                 default: // Flinch — keeps its feet, loses a beat
                     _state = State.Stagger;
-                    _t = 0.38f;
+                    _t = StaggerLength(0.38f);
                     transform.position = ArenaMarkers.Resolve(
                         transform.position + away * 0.3f, BodyRadius);
                     break;
             }
+        }
+
+        /// <summary>
+        /// Diminishing stagger: each stagger inside a four-second window shortens
+        /// the next, down to a floor. The first hit still buys the full opening;
+        /// the fourth buys a flinch. This is what stops a mook being juggled to
+        /// death without ever getting to act, while keeping the launcher and
+        /// guard-break windows intact — those set their own durations.
+        /// </summary>
+        private float StaggerLength(float baseSeconds)
+        {
+            var decay = def != null ? def.staggerDecay : 0.65f;
+            var n = _staggerCount++;
+            _staggerWindowT = 4f;
+            var len = baseSeconds * Mathf.Pow(decay, n);
+            if (n > 0) AiTelemetry.StaggersShortened++;
+            return Mathf.Max(0.12f, len);
         }
 
         /// <summary>Applies damage (with weak-point bonuses) and returns what was dealt.</summary>
@@ -1192,10 +1373,34 @@ namespace Emberline.Enemies
             if (def != null)
             {
                 // Guard: a samurai in stance turns a light hit aside entirely.
+                // A raised guard always blocks a light hit; a cold block is a roll.
+                // Reading enemies raise it against the wind-up (ReadPlayer), so for
+                // them the roll mostly never happens — the block was earned.
                 if (!crush && (_guardT > 0f || Random.value < def.blockChance))
                 {
                     _guardT = 0f;
                     _attackCd = Mathf.Min(_attackCd, 0.35f); // riposte window
+                    _blocksInRow++;
+                    // Riposte: the counter-attack a blocked swing invites. Two
+                    // blocks in a row make it certain — repetition is punished.
+                    if (_state is State.Chase or State.Recover
+                        && (_blocksInRow >= 2 || Random.value < def.counterChance))
+                    {
+                        var pick = def.ChooseAttack(Vector3.Distance(transform.position, from));
+                        // Token last, for the same reason as the punish above.
+                        if (pick != null && pick.kind != AttackKind.Parry
+                            && (IsBoss || _tokens == null || _tokens.TryTake(this)))
+                        {
+                            AiTelemetry.Ripostes++;
+                            AiTelemetry.Attacks++;
+                            _blocksInRow = 0;
+                            _pattern = pick;
+                            _dashAttack = pick.kind == AttackKind.DashStrike;
+                            _state = State.Windup;
+                            _t = 0.32f; // fast, but still a visible tell
+                            SetRing(true);
+                        }
+                    }
                     UI.FloatingText.Spawn(transform.position + Vector3.up * 2.2f, "BLOCK",
                         new Color(0.72f, 0.8f, 0.95f), 0.95f);
                     UI.FxPools.Sparks(transform.position + Vector3.up * 1.2f,
@@ -1224,6 +1429,7 @@ namespace Emberline.Enemies
                 Sfx3D.EnemyVoice(transform.position + Vector3.up * 1.4f, Sfx3D.Voice.Hurt);
             }
 
+            _blocksInRow = 0;
             // Being hit is the loudest tell there is.
             if (Unaware) { Unaware = false; Detection = 0f; }
             LastHitTime = Time.unscaledTime; // unscaled: hit-stop must not stall the bar
@@ -1293,6 +1499,78 @@ namespace Emberline.Enemies
                     : Player.HitReaction.Flinch, from);
             }
             return amount;
+        }
+
+        /// <summary>
+        /// The player is doing something an opponent can exploit: mid-heavy,
+        /// recovering, swung at air, or stepping out of a dodge.
+        /// </summary>
+        private bool PlayerExposed() =>
+            _playerCombat != null
+            && (_playerCombat.Committed && _playerCombat.ExposureRemaining > 0.2f
+                || _playerCombat.Whiffed || _playerCombat.JustDodged);
+
+        /// <summary>
+        /// One reaction per player commitment. A visible heavy wind-up within
+        /// reach is answered by a block (if this enemy reads heavies) or a
+        /// sidestep (if it dodges) — rolled once, then locked out until the
+        /// next commitment so the enemy cannot chain-react into invulnerability.
+        /// Returns true when it took the frame.
+        /// </summary>
+        private bool ReadPlayer(Vector3 to, float dist)
+        {
+            if (def == null || _playerCombat == null || _readCd > 0f) return false;
+            if (!_playerCombat.HeavyWindingUp || dist > 3.4f) return false;
+            var facing = Vector3.Angle(_player.forward, -to) < 70f; // the swing is aimed here
+            if (!facing) return false;
+
+            if (def.dodgeChance > 0f && Random.value < def.dodgeChance)
+            {
+                _readCd = 1.1f;
+                AiTelemetry.Dodges++;
+                _sidestepDir = Strafe(to).normalized;
+                _sidestepT = 0.28f;
+                _state = State.Recover;
+                _t = 0.45f;
+                _rig?.PlayOneShot(RigPose.Dash, 0.3f);
+                return true;
+            }
+            if (def.readsHeavies && def.blockChance > 0f)
+            {
+                // Reactive, not random: the block goes up because the swing was seen.
+                _readCd = 1.1f;
+                AiTelemetry.ReactiveBlocks++;
+                _guardT = Mathf.Max(_guardT, 0.7f);
+                _rig?.ForcePose(RigPose.Windup, 0.6f);
+                Face(to);
+                return true;
+            }
+            return false;
+        }
+
+        /// <summary>
+        /// A step that puts nearby cover between this enemy and the player, or
+        /// zero when there is none close. Used by the ring while it waits: they
+        /// hold the fight from behind the crates, not in the open.
+        /// </summary>
+        private Vector3 CoverStep(Vector3 to)
+        {
+            var m = ArenaMarkers.Instance;
+            if (m == null) return Vector3.zero;
+            var here = transform.position;
+            for (var i = 0; i < m.obstacles.Count; i++)
+            {
+                var o = m.obstacles[i];
+                var c = new Vector3(o.x, 0f, o.z);
+                var d = Vector3.Distance(here, c);
+                if (d > 4.5f) continue;
+                // The far side: from the obstacle, step away from the player.
+                var away = c - _player.position; away.y = 0f;
+                var goal = c + away.normalized * (o.w + BodyRadius + 0.3f);
+                var step = goal - here; step.y = 0f;
+                return step.magnitude > 0.4f ? step.normalized * 0.6f : Vector3.zero;
+            }
+            return Vector3.zero;
         }
 
         private Vector3 RandomSpot()
@@ -1402,7 +1680,13 @@ namespace Emberline.Enemies
                     return dist > band * 1.5f ? n : Strafe(to) * 1.2f;
 
                 case MovementStyle.Kite:
+                {
+                    // Closed on: abandon the shot and run, hard, before turning to
+                    // fight. Melee is the archer's emergency, not its plan.
+                    var panic = def != null && def.panicRange > 0f ? def.panicRange : 0f;
+                    if (panic > 0f && dist < panic) return -n * 1.4f + Strafe(to) * 0.6f;
                     return dist < band * 0.7f ? -n : dist > band * 1.4f ? n : Strafe(to);
+                }
 
                 case MovementStyle.Reach:
                     // Fights at the end of the shaft: closes to reach, then holds.

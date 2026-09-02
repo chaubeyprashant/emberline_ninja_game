@@ -266,6 +266,7 @@ namespace Emberline
         private void ConfigureFromSession()
         {
             Kills = 0;
+            EnemyBrain.ResetAiTelemetry();
             switch (Session.Mode)
             {
                 case LaunchMode.Story:

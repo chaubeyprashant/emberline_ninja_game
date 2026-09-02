@@ -572,7 +572,10 @@ namespace Emberline.UI
             var to = root.anchoredPosition;
             var t = 0f;
             g.alpha = 0f;
-            while (t < seconds && root != null)
+            // A screen can be rebuilt mid-fade, which destroys the CanvasGroup
+            // while the root survives. Touching it then throws and the coroutine
+            // dies, leaving the screen stranded at whatever alpha it reached.
+            while (t < seconds && root != null && g != null)
             {
                 t += Time.unscaledDeltaTime;
                 var k = Mathf.SmoothStep(0f, 1f, Mathf.Clamp01(t / seconds));
@@ -580,7 +583,9 @@ namespace Emberline.UI
                 root.anchoredPosition = Vector2.Lerp(from, to, k);
                 yield return null;
             }
-            if (root != null) { g.alpha = 1f; root.anchoredPosition = to; }
+            if (root == null) yield break;
+            if (g != null) g.alpha = 1f;
+            root.anchoredPosition = to;
         }
 
         /// <summary>Full-screen black plate that fades out — for scene and screen cuts.</summary>

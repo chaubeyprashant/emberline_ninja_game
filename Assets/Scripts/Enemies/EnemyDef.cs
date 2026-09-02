@@ -133,6 +133,28 @@ namespace Emberline.Enemies
         [Tooltip("How long the guard-break window lasts.")]
         public float guardBreakSeconds = 2.2f;
 
+        [Header("Behaviour")]
+        [Tooltip("Chance to sidestep when the player's heavy telegraph is up.")]
+        [Range(0f, 1f)] public float dodgeChance;
+        [Tooltip("Chance to riposte immediately after a successful block.")]
+        [Range(0f, 1f)] public float counterChance;
+        [Tooltip("May attack out of turn when the player is committed, whiffed, or "
+                 + "just dodged — still needs an attack token.")]
+        public bool punishesExposure;
+        [Tooltip("Blocks become reactive: raised against a visible heavy wind-up "
+                 + "rather than rolled at random on the hit.")]
+        public bool readsHeavies;
+        [Tooltip("Holds guard and backs off when posture drops below a third.")]
+        public bool guardsWhenPostureLow;
+        [Tooltip("Keeps itself between the player and the nearest ranged ally.")]
+        public bool protectsRanged;
+        [Tooltip("Backs away to recover when HP falls below this fraction. 0 never.")]
+        [Range(0f, 1f)] public float retreatBelowHp;
+        [Tooltip("Ranged only: distance at which it abandons the shot and runs.")]
+        public float panicRange;
+        [Tooltip("Each stagger inside the window shortens the next by this factor.")]
+        [Range(0.3f, 1f)] public float staggerDecay = 0.65f;
+
         [Header("Weaknesses (damage multipliers)")]
         [Tooltip("Hit from behind — archers and unaware enemies fold to this.")]
         public float backstabMultiplier = 1f;
