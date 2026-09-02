@@ -75,6 +75,7 @@ namespace Emberline.DebugTools
                     ? "[PLAY] ALL PASSED" : $"[PLAY] {_failures} missions failed, {_errors} errors");
                 Application.logMessageReceived -= OnLog;
                 Time.timeScale = 1f;
+                EmberInput.Scripted = null;
                 onFinished?.Invoke(_failures == 0 && _errors == 0 ? 0 : 1);
                 enabled = false;
                 return;
@@ -212,7 +213,7 @@ namespace Emberline.DebugTools
                       $"markers={markers} clues={clues} alive={alive} " +
                       $"phase={_gm.State} escort={(EscortNpc.Active != null)} " +
                       $"cine={GameManager.CinematicActive} frozen={Player.CombatController.TimeFrozen} " +
-                      $"ts={Time.timeScale:0.00} move={EmberInput.TouchMove} " +
+                      $"ts={Time.timeScale:0.00} move={EmberInput.Scripted} " +
                       $"busy={_loco.Busy} cam={(SceneRefs.Cam != null ? SceneRefs.Cam.name : "null")} " +
                       $"left={_budget:0}s");
         }
@@ -222,8 +223,7 @@ namespace Emberline.DebugTools
         private void DriveBot(MissionDirector dir)
         {
             if (_loco == null) return;
-            EmberInput.TouchActive = true;
-            EmberInput.TouchMove = Vector2.zero;
+            EmberInput.Scripted = Vector2.zero;
             if (GameManager.CinematicActive) return;
 
             var stage = dir.Stage;
@@ -305,17 +305,25 @@ namespace Emberline.DebugTools
             // to sliding sideways for a moment to break the deadlock.
             if (Vector3.Distance(from, _stallPos) < 0.25f)
             {
-                if ((_stallT += Time.deltaTime) > 1f)
+                _stallT += Time.deltaTime;
+                if (_stallT > 4f)
                 {
-                    _stallSide = _stallT > 2.6f ? -_stallSide : _stallSide;
-                    if (_stallT > 4f) { _stallT = 0f; _stallPos = from; }
-                    dir = Quaternion.Euler(0f, 90f * _stallSide, 0f) * dir;
+                    // That side did not work either; try the other one next.
+                    _stallT = 0f;
+                    _stallSide = -_stallSide;
+                    _stallPos = from;
+                }
+                else if (_stallT > 1f)
+                {
+                    // Commit to one side for the whole window. Re-deciding every
+                    // frame just vibrates on the spot and never gets anywhere.
+                    dir = Quaternion.Euler(0f, 75f * _stallSide, 0f) * dir;
                 }
             }
             else { _stallT = 0f; _stallPos = from; }
 
             _loco.SetFacing(dir);
-            EmberInput.TouchMove = Cam(dir);
+            EmberInput.Scripted = Cam(dir);
             return true;
         }
 

@@ -97,6 +97,7 @@ namespace Emberline.DebugTools
             {
                 Debug.Log("[ENC] TABLE\n" + _report);
                 Debug.Log(_failures == 0 ? "[ENC] ALL PASSED" : $"[ENC] {_failures} FAILED");
+                EmberInput.Scripted = null;
                 onFinished?.Invoke(_failures == 0 ? 0 : 1);
                 enabled = false;
                 return;
@@ -189,8 +190,7 @@ namespace Emberline.DebugTools
             var dist = to.magnitude;
             var dir = dist > 0.01f ? to / dist : Vector3.forward;
 
-            EmberInput.TouchActive = true;
-            EmberInput.TouchMove = Vector2.zero;
+            EmberInput.Scripted = Vector2.zero;
             _cycleT += Time.deltaTime;
 
             // The scripted player is a slightly greedy human: close, two lights,
@@ -202,7 +202,7 @@ namespace Emberline.DebugTools
             switch (_step)
             {
                 case 0: // close in
-                    if (dist > 2.1f) EmberInput.TouchMove = CamRelative(dir);
+                    if (dist > 2.1f) EmberInput.Scripted = CamRelative(dir);
                     else Advance();
                     if (_cycleT > 4f) Advance();
                     break;
@@ -236,7 +236,7 @@ namespace Emberline.DebugTools
                     break;
 
                 case 4: // dodge away, leaving the landing exposed
-                    if (_cycleT < 0.02f) { EmberInput.TouchMove = CamRelative(-dir); EmberInput.PressFlicker(); }
+                    if (_cycleT < 0.02f) { EmberInput.Scripted = CamRelative(-dir); EmberInput.PressFlicker(); }
                     if (_cycleT > 0.6f) Advance();
                     break;
 

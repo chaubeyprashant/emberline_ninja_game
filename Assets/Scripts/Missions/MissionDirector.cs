@@ -502,18 +502,25 @@ namespace Emberline.Missions
         private Vector3 Walkable(Vector3 p)
         {
             var half = _gm != null ? _gm.arenaHalfExtents : new Vector2(13f, 8f);
-            p.x = Mathf.Clamp(p.x, -half.x + 1.5f, half.x - 1.5f);
-            p.z = Mathf.Clamp(p.z, -half.y + 1.5f, half.y - 1.5f);
+            p.x = Mathf.Clamp(p.x, -half.x + 3f, half.x - 3f);
+            p.z = Mathf.Clamp(p.z, -half.y + 2f, half.y - 2f);
             return ArenaMarkers.Resolve(new Vector3(p.x, 0f, p.z), 1.3f);
         }
 
         private void SpawnClues(int count)
         {
+            var half = _gm != null ? _gm.arenaHalfExtents : new Vector2(13f, 8f);
             for (var i = 0; i < count; i++)
             {
-                var angle = i / (float)Mathf.Max(1, count) * Mathf.PI * 2f;
-                var pos = new Vector3(Mathf.Cos(angle) * Random.Range(5f, 11f), 0.4f,
-                    Mathf.Sin(angle) * Random.Range(3f, 6.5f));
+                // Well inside the arena. The old ring reached almost to the edge,
+                // where the scenery that fences the marsh in is not registered as
+                // an obstacle: a clue out there is behind something no navigation
+                // can see and the stage simply cannot be completed. It also reads
+                // better — searching the ground you fight on, not the map border.
+                var angle = (i + 0.35f) / Mathf.Max(1, count) * Mathf.PI * 2f;
+                var pos = new Vector3(
+                    Mathf.Cos(angle) * Random.Range(3.5f, Mathf.Min(7.5f, half.x - 5f)), 0.4f,
+                    Mathf.Sin(angle) * Random.Range(2f, Mathf.Min(4.5f, half.y - 3f)));
                 var flat = Walkable(pos);
                 pos = new Vector3(flat.x, 0.4f, flat.z);
                 var go = GameObject.CreatePrimitive(PrimitiveType.Cube);

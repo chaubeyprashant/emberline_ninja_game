@@ -33,10 +33,25 @@ namespace Emberline.Core
         public static void PressJump() => _jump = true;
         public static void PressCycleTarget() => _cycle = true;
 
+#if UNITY_EDITOR
+        /// <summary>
+        /// Editor-only override for the automated play harnesses. The on-screen
+        /// stick rewrites TouchMove/TouchActive every frame it runs, so whether a
+        /// scripted bot's input survives to the player comes down to script
+        /// execution order — which differs per scene and made the same mission
+        /// pass in one arena and freeze in another. A separate channel that wins
+        /// outright removes the race. Compiled out of player builds.
+        /// </summary>
+        public static Vector2? Scripted;
+#endif
+
         public static Vector2 Move
         {
             get
             {
+#if UNITY_EDITOR
+                if (Scripted.HasValue) return Scripted.Value;
+#endif
                 if (TouchActive) return TouchMove;
                 return new Vector2(Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical"));
             }
