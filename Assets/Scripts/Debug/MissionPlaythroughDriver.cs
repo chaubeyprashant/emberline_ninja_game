@@ -25,7 +25,10 @@ namespace Emberline.DebugTools
         /// <summary>Run only this level index, or -1 for all ten.</summary>
         public static int OnlyLevel = -1;
 
-        private const float BudgetSeconds = 220f;  // in-game, per mission
+        /// <summary>Inclusive level-index range, for running the campaign in chunks.</summary>
+        public static int FromLevel = 0, ToLevel = 9999;
+
+        private const float BudgetSeconds = 300f;  // in-game, per mission
         private const float EnemyHpCap = 14f;
 
         private int _level = -1;
@@ -61,13 +64,15 @@ namespace Emberline.DebugTools
 
         private void NextMission()
         {
-            if (_level >= 0 && (OnlyLevel < 0 || _level == OnlyLevel)) Finish();
+            if (_level >= 0 && (OnlyLevel < 0 || _level == OnlyLevel) && _level >= FromLevel && _level <= ToLevel) Finish();
             _level++;
             if (OnlyLevel >= 0 && _level != OnlyLevel && _level < Session.Story.Length)
             {
                 // Skip without reporting: a filtered run is for one mission.
                 _level = _level <= OnlyLevel ? OnlyLevel : Session.Story.Length;
             }
+            if (OnlyLevel < 0 && _level < FromLevel) _level = FromLevel;
+            if (OnlyLevel < 0 && _level > ToLevel) _level = Session.Story.Length;
             if (_level >= Session.Story.Length)
             {
                 Debug.Log("[PLAY] TABLE\n" + _report);
@@ -242,6 +247,23 @@ namespace Emberline.DebugTools
                     if (!WalkTo(NearestClue())) Fight();
                     return;
 
+                case StageGoal.Cinematic:
+                    return; // the beat plays itself; input would only fight the camera
+
+                case StageGoal.Endure:
+                    // Stay alive against the named foe: keep moving away from it.
+                    if (NearestEnemy(out var de2) is { } foe2 && de2 < 4f)
+                    {
+                        var away = (_loco.transform.position - foe2.transform.position).normalized;
+                        WalkTo(_loco.transform.position + away * 6f, 0.5f);
+                    }
+                    else Fight();
+                    return;
+
+                case StageGoal.FreePrisoners:
+                    if (!WalkTo(NearestPrisoner())) Fight();
+                    return;
+
                 case StageGoal.Listen:
                     // Standing still is the mechanic, but it is how you *find*
                     // them, not how you finish them. Hold, then hunt.
@@ -308,10 +330,13 @@ namespace Emberline.DebugTools
                 _stallT += Time.deltaTime;
                 if (_stallT > 4f)
                 {
-                    // That side did not work either; try the other one next.
+                    // That side did not work either; try the other one next, and
+                    // after both have failed, back straight out of the corner
+                    // for a moment before trying again.
                     _stallT = 0f;
                     _stallSide = -_stallSide;
                     _stallPos = from;
+                    if (++_stallRounds >= 2) { _backOutT = 2f; _stallRounds = 0; }
                 }
                 else if (_stallT > 1f)
                 {
@@ -320,7 +345,8 @@ namespace Emberline.DebugTools
                     dir = Quaternion.Euler(0f, 75f * _stallSide, 0f) * dir;
                 }
             }
-            else { _stallT = 0f; _stallPos = from; }
+            else { _stallT = 0f; _stallPos = from; _stallRounds = 0; }
+            if (_backOutT > 0f) { _backOutT -= Time.deltaTime; dir = -dir; }
 
             _loco.SetFacing(dir);
             EmberInput.Scripted = Cam(dir);
@@ -331,6 +357,8 @@ namespace Emberline.DebugTools
         private Vector3 _stallPos;
         private float _stallT;
         private float _stallSide = 1f;
+        private int _stallRounds;
+        private float _backOutT;
 
         private EnemyBrain NearestEnemy(out float dist)
         {
@@ -356,6 +384,19 @@ namespace Emberline.DebugTools
                 if (t == null || !t.name.StartsWith(name)) continue;
                 var d = (t.transform.position - _loco.transform.position).sqrMagnitude;
                 if (d < bd) { bd = d; best = t.transform.position; }
+            }
+            return best;
+        }
+
+        private Vector3? NearestPrisoner()
+        {
+            Vector3? best = null;
+            var bd = float.MaxValue;
+            foreach (var p in Prisoner.Active)
+            {
+                if (p == null) continue;
+                var d = (p.transform.position - _loco.transform.position).sqrMagnitude;
+                if (d < bd) { bd = d; best = p.transform.position; }
             }
             return best;
         }

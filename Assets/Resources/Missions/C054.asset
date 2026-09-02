@@ -1,0 +1,130 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 814b8fc7fb4eb427480893eff898b203, type: 3}
+  m_Name: C054
+  m_EditorClassIdentifier: Assembly-CSharp::Emberline.Missions.MissionPlan
+  id: 54
+  missionName: THE SWORDMASTER
+  missionType: BOSS
+  briefing: Learn how Renzo's father fell.
+  debrief: The door holds. The man behind it does not.
+  marsh: 0
+  nightOverride: 0
+  rain: 0
+  snow: 0
+  fog: 0
+  applyTheme: 1
+  theme: 8
+  nextReason: The Seal was carried out by someone. The journal says who.
+  region: VILLAGES
+  stages:
+  - goal: 0
+    objective: WALK OUT TO MEET THEM
+    banner: THE SWORDMASTER
+    count: 1
+    duration: 0
+    point: {x: 0, y: 0, z: 6.5}
+    spawn: 
+    pointB: {x: 0, y: 0, z: 0}
+    spawnB: 
+    foeDef: 
+    beatId: 
+    bossHealthGate: 0.6
+    onComplete: 0
+    optional: 0
+    bonusShards: 1
+    checkpoint: 1
+  - goal: 8
+    objective: READ THE GROUND
+    banner: THE PLAYER FIGHTS AS THE MEMORY OF
+    count: 1
+    duration: 0
+    point: {x: 0, y: 0, z: 0}
+    spawn: 
+    pointB: {x: 0, y: 0, z: 0}
+    spawnB: 
+    foeDef: 
+    beatId: 
+    bossHealthGate: 0.6
+    onComplete: 0
+    optional: 0
+    bonusShards: 1
+    checkpoint: 0
+  - goal: 1
+    objective: THEIR CHOSEN
+    banner: THEY DO NOT STEP ASIDE
+    count: 1
+    duration: 0
+    point: {x: 0, y: 0, z: 0}
+    spawn: 0000000007000000
+    pointB: {x: 0, y: 0, z: 0}
+    spawnB: 
+    foeDef: 
+    beatId: 
+    bossHealthGate: 0.6
+    onComplete: 2
+    optional: 0
+    bonusShards: 1
+    checkpoint: 0
+  - goal: 0
+    objective: THE HELD BREATH
+    banner: HIS FATHER HELD THE DOOR LONG ENOUGH FOR
+    count: 1
+    duration: 0
+    point: {x: 0, y: 0, z: 0}
+    spawn: 
+    pointB: {x: 0, y: 0, z: 0}
+    spawnB: 
+    foeDef: 
+    beatId: 
+    bossHealthGate: 0.6
+    onComplete: 0
+    optional: 0
+    bonusShards: 1
+    checkpoint: 1
+  - goal: 11
+    objective: LEARN HOW RENZO'S FATHER FELL
+    banner: "THE RAIDER CAPTAIN \u2014 A YOUNG GORO"
+    count: 1
+    duration: 0
+    point: {x: 0, y: 0, z: 0}
+    spawn: 
+    pointB: {x: 0, y: 0, z: 0}
+    spawnB: 
+    foeDef: goro
+    beatId: 
+    bossHealthGate: 0.6
+    onComplete: 2
+    optional: 0
+    bonusShards: 1
+    checkpoint: 1
+  - goal: 0
+    objective: WALK AWAY
+    banner: IT IS OVER
+    count: 1
+    duration: 0
+    point: {x: 0, y: 0, z: -6.5}
+    spawn: 
+    pointB: {x: 0, y: 0, z: 0}
+    spawnB: 
+    foeDef: 
+    beatId: 
+    bossHealthGate: 0.6
+    onComplete: 0
+    optional: 0
+    bonusShards: 1
+    checkpoint: 0
+  dressing: 080000000200000003000000
+  challenge: 5
+  challengeSeconds: 300
+  challengeShards: 2
+  baseShards: 3

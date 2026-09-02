@@ -19,7 +19,7 @@ namespace Emberline.UI
     /// </summary>
     public class EmberHud : MonoBehaviour
     {
-        private enum Screen { None, MenuRoot, Story, Fight, Bio, Skills, Codex, Briefing, Hud, Result, Weapons, Arms, March, Forge }
+        private enum Screen { None, MenuRoot, Story, Fight, Bio, Skills, Codex, Briefing, Hud, Result, Weapons, Arms, March, Forge, Chapter }
 
         private GameManager _gm;
         private Health _health;
@@ -172,7 +172,7 @@ namespace Emberline.UI
             ReadStick();
             UpdateScreenRouting();
             if (_screen == Screen.Hud) UpdateHud();
-            if (_screen is Screen.MenuRoot or Screen.Story or Screen.Fight or Screen.Bio)
+            if (_screen is Screen.MenuRoot or Screen.Story or Screen.Fight or Screen.Bio or Screen.Chapter)
                 UpdateEmbers();
         }
 
@@ -219,6 +219,7 @@ namespace Emberline.UI
             {
                 case Screen.MenuRoot: BuildMenuRoot(); break;
                 case Screen.Story: BuildStorySelect(); break;
+                case Screen.Chapter: BuildChapterSelect(); break;
                 case Screen.Fight: BuildFightSelect(); break;
                 case Screen.Bio: BuildBio(); break;
                 case Screen.Skills: BuildSkills(); break;
@@ -292,10 +293,12 @@ namespace Emberline.UI
             var items = new (string label, string sub, System.Action go)[]
             {
                 ("CONTINUE", cleared >= Session.Story.Length
-                    ? "The night is over — replay any chapter"
-                    : $"{Session.Story[next].name.ToLowerInvariant()} · {Session.ActName(Session.Story[next].id)}",
+                    ? "The road is walked — replay any chapter"
+                    : $"{Session.Story[next].id:00} {Session.Story[next].name.ToLowerInvariant()} · "
+                      + Campaign.Campaign.ChapterOf(Session.Story[next].id).name.ToLowerInvariant(),
                     () => _gm.LaunchStory(next)),
-                ("STORY", $"{Mathf.Clamp(cleared, 0, Session.Story.Length)} of {Session.Story.Length} cleared",
+                ("STORY", $"{Mathf.Clamp(cleared, 0, Session.Story.Length)} of {Session.Story.Length} missions · "
+                    + $"chapter {Campaign.Campaign.ChapterOf(Mathf.Min(Session.StoryUnlocked, Session.Story.Length)).number} of {Campaign.Campaign.Chapters.Length}",
                     () => SetScreen(Screen.Story)),
                 ("DUELS", "One life. Full strength.", () => SetScreen(Screen.Fight)),
                 ("THE ROAD NORTH", Endless.RunStats.BestScore > 0
@@ -718,44 +721,92 @@ namespace Emberline.UI
             BackButton();
         }
 
+        private int _chapter = 1;
+
+        /// <summary>
+        /// Ten chapters in three acts, as a grid. A hundred missions do not fit
+        /// on a screen and should not: the chapter is the unit the player
+        /// thinks in, and the journey reads left to right across the acts.
+        /// </summary>
         private void BuildStorySelect()
         {
             BuildEmberLayer();
-            ScreenHeader("STORY", "THE NIGHT OF YORUNE");
+            ScreenHeader("STORY", "THE ROAD FROM YORUNE");
 
-            // Three act columns. Each mission is a row: number, name, one line of
-            // story, its stars and its state. The plate behind is the arena the
-            // act is fought in — the environment does the work a card border did.
-            var acts = new System.Collections.Generic.List<string>();
-            foreach (var l in Session.Story)
+            var chapters = Campaign.Campaign.Chapters;
+            var unlockedId = Session.StoryUnlocked;
+            const float cardW = 250f, cardH = 176f, gapX = 16f, gapY = 16f;
+            const int perRow = 5;
+            var x0 = -(perRow - 1) * 0.5f * (cardW + gapX);
+            for (var i = 0; i < chapters.Length; i++)
             {
-                var a = Session.ActName(l.id);
-                if (!acts.Contains(a)) acts.Add(a);
-            }
-            var colW = 440f;
-            var x0 = -(acts.Count - 1) * 0.5f * (colW + 24f);
-            for (var c = 0; c < acts.Count; c++)
-            {
-                var act = acts[c];
-                var col = UiKit.Rect(_screenRoot, "Act" + c, new Vector2(0.5f, 1f),
-                    new Vector2(x0 + c * (colW + 24f), -132), new Vector2(colW, 480), new Vector2(0.5f, 1f));
-                UiKit.Kicker(col, $"ACT {ToRoman(c + 1)}", new Vector2(0, 1), new Vector2(8, -10),
-                    new Vector2(200, 18), align: TextAnchor.MiddleLeft);
-                var actTitle = act.Contains("—") ? act.Substring(act.IndexOf('—') + 1).Trim() : act;
-                UiKit.Label(col, actTitle.ToUpperInvariant(), 16, UiKit.Pale, new Vector2(0, 1),
-                    new Vector2(8, -34), new Vector2(colW - 16, 22), align: TextAnchor.MiddleLeft)
-                    .characterSpacing = 3f;
-                UiKit.Hairline(col, new Vector2(0, 1), 0.12f).rectTransform.anchoredPosition = new Vector2(0, -52);
-
-                var y = -66f;
-                foreach (var level in Session.Story)
+                var ch = chapters[i];
+                var row = i / perRow;
+                var col = i % perRow;
+                var rt = UiKit.Rect(_screenRoot, "Chapter" + ch.number, new Vector2(0.5f, 1f),
+                    new Vector2(x0 + col * (cardW + gapX), -140 - row * (cardH + gapY)),
+                    new Vector2(cardW, cardH), new Vector2(0.5f, 1f));
+                var open = ch.firstMission <= unlockedId;
+                var cleared = 0;
+                var stars = 0;
+                for (var id = ch.firstMission; id <= ch.lastMission; id++)
                 {
-                    if (Session.ActName(level.id) != act) continue;
+                    if (Session.Stars(id) > 0) cleared++;
+                    stars += Session.Stars(id);
+                }
+                var img = UiKit.Img(rt, null, new Color(1, 1, 1, open ? 0.035f : 0.012f));
+                img.raycastTarget = open;
+                if (open)
+                {
+                    var n = ch.number;
+                    var btn = rt.gameObject.AddComponent<Button>();
+                    btn.targetGraphic = img;
+                    var colors = btn.colors; colors.highlightedColor = new Color(1, 1, 1, 0.08f) * 4f;
+                    colors.pressedColor = new Color(1, 1, 1, 0.12f) * 6f; btn.colors = colors;
+                    btn.onClick.AddListener(() => { Sfx3D.Confirm(); _chapter = n; SetScreen(Screen.Chapter); });
+                }
+                UiKit.Kicker(rt, $"ACT {ToRoman(ch.act)}  ·  CHAPTER {ch.number}", new Vector2(0, 1),
+                    new Vector2(12, -10), new Vector2(cardW - 24, 16), color: open ? UiKit.Ember : UiKit.Faint,
+                    align: TextAnchor.MiddleLeft);
+                UiKit.Label(rt, open ? ch.name : "LOCKED", 17, open ? UiKit.Pale : UiKit.Faint, new Vector2(0, 1),
+                    new Vector2(12, -30), new Vector2(cardW - 24, 44), display: true, align: TextAnchor.UpperLeft)
+                    .characterSpacing = 2f;
+                UiKit.Paragraph(rt, open ? ch.theme : "Finish the chapter before it.", 12,
+                    open ? UiKit.Dim : UiKit.Faint, new Vector2(0, 1), new Vector2(12, -84),
+                    new Vector2(cardW - 24, 34), TextAnchor.UpperLeft);
+                UiKit.Kicker(rt, ch.region.ToString().ToUpperInvariant(), new Vector2(0, 1),
+                    new Vector2(12, -124), new Vector2(cardW - 24, 14), color: UiKit.Faint,
+                    align: TextAnchor.MiddleLeft);
+                UiKit.Label(rt, open ? $"{cleared}/10  ·  {stars} STARS" : "", 11, UiKit.Dim, new Vector2(0, 1),
+                    new Vector2(12, -146), new Vector2(cardW - 24, 16), align: TextAnchor.MiddleLeft)
+                    .characterSpacing = 2f;
+                UiKit.Hairline(rt, new Vector2(0, 0), 0.06f);
+            }
+            BackButton();
+        }
+
+        /// <summary>One chapter's ten missions, in two columns of five.</summary>
+        private void BuildChapterSelect()
+        {
+            BuildEmberLayer();
+            var ch = Campaign.Campaign.ChapterOf(Mathf.Clamp(_chapter, 1, 10) * 10 - 9);
+            ScreenHeader($"CHAPTER {ch.number} — {ch.name}", $"{Campaign.Campaign.ActNames[ch.act - 1]}  ·  {ch.theme}");
+            const float colW = 560f;
+            for (var c = 0; c < 2; c++)
+            {
+                var col = UiKit.Rect(_screenRoot, "Col" + c, new Vector2(0.5f, 1f),
+                    new Vector2((c - 0.5f) * (colW + 24f), -132), new Vector2(colW, 480), new Vector2(0.5f, 1f));
+                var y = -6f;
+                for (var i = 0; i < 5; i++)
+                {
+                    var id = ch.firstMission + c * 5 + i;
+                    var level = System.Array.Find(Session.Story, l => l.id == id);
+                    if (level == null) continue;
                     MissionRow(col, level, y, colW);
                     y -= 78f;
                 }
             }
-            BackButton();
+            BackButton(() => SetScreen(Screen.Story));
         }
 
         private void MissionRow(RectTransform col, LevelDef level, float y, float w)
@@ -1080,9 +1131,11 @@ namespace Emberline.UI
             return s;
         }
 
-        private void BackButton() =>
+        private void BackButton() => BackButton(() => SetScreen(Screen.MenuRoot));
+
+        private void BackButton(System.Action go) =>
             UiKit.MakeButton(_screenRoot, "BACK", new Vector2(0f, 0f), new Vector2(150, 48),
-                new Vector2(140, 46), () => { Sfx3D.Back(); SetScreen(Screen.MenuRoot); }, 13);
+                new Vector2(140, 46), () => { Sfx3D.Back(); go(); }, 13);
 
         // ------------------------------------------------------------ settings
 
@@ -1237,7 +1290,8 @@ namespace Emberline.UI
             else if (_gm.CurrentLevel != null)
             {
                 var l = _gm.CurrentLevel;
-                kicker = $"MISSION {l.id:00}  ·  {Session.ActName(l.id)}";
+                var chapter = Campaign.Campaign.ChapterOf(l.id);
+                kicker = $"MISSION {l.id:00}  ·  CHAPTER {chapter.number} — {chapter.name}";
                 title = l.name;
                 location = (l.marsh ? "ASHFEN MARSH" : "YORUNE ROOFTOPS")
                            + (plan != null ? "  ·  " + plan.missionType : "");
@@ -1980,18 +2034,35 @@ namespace Emberline.UI
                 y -= 30f;
             }
 
+            var nextLabel = "NEXT MISSION";
             if (!duel && _gm.CurrentLevel != null && !string.IsNullOrEmpty(_gm.CurrentLevel.debrief))
             {
                 var debrief = UiKit.Paragraph(_screenRoot, _gm.CurrentLevel.debrief, 13, UiKit.Dim,
                     new Vector2(0.5f, 1), new Vector2(0, y - 6), new Vector2(680, 40));
                 debrief.fontStyle = FontStyles.Italic;
+
+                // Never "mission complete" and then some other level. The ending
+                // is the reason the next mission exists, so it is said here, and
+                // the button names where that reason leads.
+                var mission = Campaign.Campaign.Get(_gm.CurrentLevel.id);
+                var following = Campaign.Campaign.Get(_gm.CurrentLevel.id + 1);
+                if (mission != null && !string.IsNullOrEmpty(mission.nextReason))
+                {
+                    UiKit.Kicker(_screenRoot, following != null ? $"NEXT — {following.name}" : "THE END",
+                        new Vector2(0.5f, 1), new Vector2(0, y - 46), new Vector2(680, 14),
+                        color: UiKit.Ember, align: TextAnchor.MiddleCenter);
+                    UiKit.Paragraph(_screenRoot, UiKit.Clean(mission.nextReason), 12, UiKit.Pale,
+                        new Vector2(0.5f, 1), new Vector2(0, y - 62), new Vector2(680, 34), TextAnchor.UpperCenter);
+                }
+                if (following != null) nextLabel = $"{following.id:00} {following.name}";
+                else nextLabel = "RETURN TO YORUNE";
             }
 
             if (duel)
                 ResultButtons(("NEXT OPPONENT", () => _gm.NextDuel()), ("REMATCH", () => _gm.Retry()),
                     ("MENU", () => _gm.OpenMenu()));
             else
-                ResultButtons(("NEXT MISSION", () => _gm.NextStoryLevel()), ("REPLAY", () => _gm.Retry()),
+                ResultButtons((nextLabel, () => _gm.NextStoryLevel()), ("REPLAY", () => _gm.Retry()),
                     ("MENU", () => _gm.OpenMenu()));
         }
 

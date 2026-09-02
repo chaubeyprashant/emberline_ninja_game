@@ -1,0 +1,82 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c978fcae96c7b41229485f6e7e15f0b0, type: 3}
+  m_Name: Samurai
+  m_EditorClassIdentifier: Assembly-CSharp::Emberline.Enemies.EnemyDef
+  id: finalcommander
+  displayName: COMMANDER HOSHU
+  codexLine: COMMANDER HOSHU. Masterless blades. They will block anything you throw
+    lightly.
+  kind: 10
+  weapon: 1
+  rank: 2
+  modelSpec: SamuraiModel
+  scale: 1.03
+  maxHp: 247
+  moveSpeed: 2.9
+  attackRange: 2.4
+  damage: 22.5
+  windupTime: 0.62
+  spawnTime: 1.2
+  movement: 2
+  preferredRange: 2.6
+  attacks:
+  - kind: 10
+    minRange: 0
+    maxRange: 3.2
+    weight: 1.1
+    damageMultiplier: 0
+    windupOverride: 0.35
+    cooldown: 2.2
+    redTelegraph: 0
+    telegraphScale: 1
+  - kind: 0
+    minRange: 0
+    maxRange: 2.8
+    weight: 1.3
+    damageMultiplier: 1.1
+    windupOverride: 0
+    cooldown: 1.7
+    redTelegraph: 0
+    telegraphScale: 1.2
+  - kind: 9
+    minRange: 3.5
+    maxRange: 7
+    weight: 0.5
+    damageMultiplier: 1
+    windupOverride: 0.5
+    cooldown: 2.6
+    redTelegraph: 1
+    telegraphScale: 1
+  armor: 2
+  poise: 0.5
+  blockChance: 0.4
+  maxPosture: 60
+  postureRegen: 9
+  postureRegenDelay: 1.6
+  guardBreakSeconds: 2.2
+  bossTitle: THE INNER GATE
+  bossTaunt: "\u201CHe said you would reach this door. He did not say you would open
+    it.\u201D"
+  dodgeChance: 0.1
+  counterChance: 0.6
+  punishesExposure: 1
+  readsHeavies: 1
+  guardsWhenPostureLow: 1
+  protectsRanged: 0
+  retreatBelowHp: 0
+  panicRange: 0
+  staggerDecay: 0.5
+  backstabMultiplier: 1
+  crushMultiplier: 1.5
+  thrownMultiplier: 1
+  elementalMultiplier: 1

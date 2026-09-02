@@ -1,0 +1,130 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 814b8fc7fb4eb427480893eff898b203, type: 3}
+  m_Name: C037
+  m_EditorClassIdentifier: Assembly-CSharp::Emberline.Missions.MissionPlan
+  id: 37
+  missionName: THE SIEGE
+  missionType: DEFENSE
+  briefing: Defend the village from Goro's forces until they break.
+  debrief: The village stands. Goro's banner does not advance. It waits.
+  marsh: 0
+  nightOverride: 0
+  rain: 0
+  snow: 0
+  fog: 0
+  applyTheme: 1
+  theme: 8
+  nextReason: Goro has stopped sending men. He is coming himself.
+  region: VILLAGES
+  stages:
+  - goal: 0
+    objective: DEFEND THE VILLAGE FROM GORO'S
+    banner: THE SIEGE
+    count: 1
+    duration: 0
+    point: {x: 0, y: 0, z: 6.5}
+    spawn: 
+    pointB: {x: 0, y: 0, z: 0}
+    spawnB: 
+    foeDef: 
+    beatId: 
+    bossHealthGate: 0.6
+    onComplete: 0
+    optional: 0
+    bonusShards: 1
+    checkpoint: 1
+  - goal: 5
+    objective: HOLD
+    banner: THEY ARE COMING
+    count: 1
+    duration: 40
+    point: {x: 0, y: 0, z: 6.5}
+    spawn: 0000000007000000
+    pointB: {x: 0, y: 0, z: 0}
+    spawnB: 
+    foeDef: 
+    beatId: 
+    bossHealthGate: 0.6
+    onComplete: 0
+    optional: 0
+    bonusShards: 1
+    checkpoint: 0
+  - goal: 8
+    objective: SEE TO THE WALLS
+    banner: GORO'S FORCES ARE UNDER ORDERS TO BURN
+    count: 1
+    duration: 0
+    point: {x: 0, y: 0, z: 0}
+    spawn: 
+    pointB: {x: 0, y: 0, z: 0}
+    spawnB: 
+    foeDef: 
+    beatId: 
+    bossHealthGate: 0.6
+    onComplete: 0
+    optional: 0
+    bonusShards: 1
+    checkpoint: 1
+  - goal: 5
+    objective: HOLD THEM AGAIN
+    banner: MULTIPLE GATES
+    count: 1
+    duration: 45
+    point: {x: 0, y: 0, z: 6.5}
+    spawn: 070000000100000006000000
+    pointB: {x: 0, y: 0, z: 0}
+    spawnB: 
+    foeDef: 
+    beatId: 
+    bossHealthGate: 0.6
+    onComplete: 2
+    optional: 0
+    bonusShards: 1
+    checkpoint: 0
+  - goal: 1
+    objective: THE LAST OF THEM
+    banner: THE LAST GATE, THE LAST WAVE, AND
+    count: 1
+    duration: 0
+    point: {x: 0, y: 0, z: 0}
+    spawn: 070000000100000006000000090000000c000000
+    pointB: {x: 0, y: 0, z: 0}
+    spawnB: 
+    foeDef: 
+    beatId: 
+    bossHealthGate: 0.6
+    onComplete: 0
+    optional: 0
+    bonusShards: 1
+    checkpoint: 0
+  - goal: 0
+    objective: IT HELD
+    banner: STILL STANDING
+    count: 1
+    duration: 0
+    point: {x: 0, y: 0, z: -6.5}
+    spawn: 
+    pointB: {x: 0, y: 0, z: 0}
+    spawnB: 
+    foeDef: 
+    beatId: 
+    bossHealthGate: 0.6
+    onComplete: 0
+    optional: 0
+    bonusShards: 1
+    checkpoint: 0
+  dressing: 080000000200000003000000
+  challenge: 3
+  challengeSeconds: 300
+  challengeShards: 2
+  baseShards: 3

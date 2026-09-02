@@ -1,0 +1,130 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 814b8fc7fb4eb427480893eff898b203, type: 3}
+  m_Name: C061
+  m_EditorClassIdentifier: Assembly-CSharp::Emberline.Missions.MissionPlan
+  id: 61
+  missionName: THE BLACK BLADE
+  missionType: ENDURE
+  briefing: Survive the first encounter with Jin Kurogane.
+  debrief: Jin steps back into the rain. 'Not yet,' he says.
+  marsh: 0
+  nightOverride: 1
+  rain: 1
+  snow: 0
+  fog: 0
+  applyTheme: 1
+  theme: 9
+  nextReason: Jin walked away over the rooftops. Renzo does not let him.
+  region: VILLAGES
+  stages:
+  - goal: 0
+    objective: SURVIVE THE FIRST ENCOUNTER
+    banner: THE BLACK BLADE
+    count: 1
+    duration: 0
+    point: {x: 0, y: 0, z: 6.5}
+    spawn: 
+    pointB: {x: 0, y: 0, z: 0}
+    spawnB: 
+    foeDef: 
+    beatId: 
+    bossHealthGate: 0.6
+    onComplete: 0
+    optional: 0
+    bonusShards: 1
+    checkpoint: 1
+  - goal: 8
+    objective: SOMETHING IS HERE
+    banner: JIN CANNOT BE BEATEN HERE
+    count: 1
+    duration: 0
+    point: {x: 0, y: 0, z: 0}
+    spawn: 
+    pointB: {x: 0, y: 0, z: 0}
+    spawnB: 
+    foeDef: 
+    beatId: 
+    bossHealthGate: 0.6
+    onComplete: 0
+    optional: 0
+    bonusShards: 1
+    checkpoint: 0
+  - goal: 16
+    objective: SURVIVE
+    banner: JIN KNOWS RENZO'S NAME, HIS FATHER'S,
+    count: 1
+    duration: 45
+    point: {x: 0, y: 0, z: 0}
+    spawn: 0900000001000000
+    pointB: {x: 0, y: 0, z: 0}
+    spawnB: 
+    foeDef: jin
+    beatId: 
+    bossHealthGate: 0.6
+    onComplete: 13
+    optional: 0
+    bonusShards: 1
+    checkpoint: 0
+  - goal: 0
+    objective: GET OFF ITS GROUND
+    banner: MOVE
+    count: 1
+    duration: 0
+    point: {x: 0, y: 0, z: -6.5}
+    spawn: 
+    pointB: {x: 0, y: 0, z: 0}
+    spawnB: 
+    foeDef: 
+    beatId: 
+    bossHealthGate: 0.6
+    onComplete: 0
+    optional: 0
+    bonusShards: 1
+    checkpoint: 1
+  - goal: 7
+    objective: LEAVE NO TRAIL
+    banner: JIN, UNHURRIED, TAKING THE FIGHT
+    count: 1
+    duration: 0
+    point: {x: 0, y: 0, z: 0}
+    spawn: 0900000001000000
+    pointB: {x: 0, y: 0, z: 0}
+    spawnB: 
+    foeDef: 
+    beatId: 
+    bossHealthGate: 0.6
+    onComplete: 0
+    optional: 0
+    bonusShards: 1
+    checkpoint: 0
+  - goal: 0
+    objective: GONE
+    banner: IT LET YOU GO
+    count: 1
+    duration: 0
+    point: {x: -10, y: 0, z: 0}
+    spawn: 
+    pointB: {x: 0, y: 0, z: 0}
+    spawnB: 
+    foeDef: 
+    beatId: 
+    bossHealthGate: 0.6
+    onComplete: 0
+    optional: 0
+    bonusShards: 1
+    checkpoint: 0
+  dressing: 080000000200000003000000
+  challenge: 5
+  challengeSeconds: 300
+  challengeShards: 2
+  baseShards: 4

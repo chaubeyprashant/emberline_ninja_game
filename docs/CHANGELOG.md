@@ -8,6 +8,52 @@ code, never hand-edited in the editor.
 
 ---
 
+## 1.3.0 — unreleased
+
+### The hundred-mission campaign
+
+The story catalogue is now a campaign: 100 missions in 10 chapters and 3
+acts, authored as one table (`Assets/Scripts/Campaign/CampaignTable.cs`)
+that carries the ten fields the design rule requires on every mission —
+purpose, objective, gameplay type, unique event, discovery, climax, ending
+and the next-mission reason — plus the staging each needs. The level select,
+briefing, results, unlocks and stars all read it; nothing else changed
+its contract.
+
+- **Chapter select.** Ten chapter cards in three acts, each opening its ten
+  missions. The main menu's CONTINUE names the next mission and chapter.
+- **No more "mission complete, next level".** The results screen states the
+  reason the next mission follows and names it on the button.
+- **Plans.** The ten hand-built plans survive as the missions they became
+  (1, 3, 5, 6, 9, 20, 41, 47, 75, 99). The other ninety are generated from a
+  template per gameplay type fed by the mission's own fields, so the shape
+  is shared and the face is not. `Emberline/Build Missions` regenerates all
+  hundred.
+- **Mechanics the plan needed.** `Endure` (a foe you cannot beat yet —
+  the Pale Shade at 21, Goro at 38, Jin at 61/63/69, Kagehira at 88/95),
+  `Cinematic` stages that play a story beat in place, `FreePrisoners`,
+  the `Collapse`, `Mutiny` and `FoeWithdraws` events, per-mission lighting
+  themes with snow and fog, and named foes on common bodies with intro
+  cards (Convoy Captain, Scavenger King, Three Blades, Pale Shade, Drowned
+  Guardian, Iron Guard, Commander Hoshu).
+- **Fourteen in-mission beats** in the story framework: the memories under
+  the temple, Jin's mercy, confession and warning, the reunion, the father's
+  last message, Kagehira's truth, the refusal, the dawn.
+- **Post-campaign.** Finishing 100 unlocks New Game+, the nine-opponent duel
+  roster (campaign foes on the bodies they used) and the Infinite March.
+- **Verification.** `Emberline/Check Campaign` (457 assertions: fields,
+  structure, distribution by primary type against the brief's targets,
+  boss cadence, arc bands, regions, every plan and beat and foe resolving)
+  and the mission design validator now over all hundred plans (1398
+  assertions). The play bot runs the campaign in four chunks.
+- **Honestly not built:** forest, mountain, snow, temple and fortress
+  geometry (carried by theme, weather and dressing on the two arenas);
+  gameplay models for adult Aiko and Jin (marked stand-ins); a physically
+  collapsing arena for Kagehira's last phase. Specified in
+  `docs/ASSET_SPECIFICATIONS.md` §10.
+
+---
+
 ## 1.2.0 (version code 8) — unreleased
 
 **Not yet playtested on hardware.**

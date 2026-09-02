@@ -1,0 +1,130 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 814b8fc7fb4eb427480893eff898b203, type: 3}
+  m_Name: C073
+  m_EditorClassIdentifier: Assembly-CSharp::Emberline.Missions.MissionPlan
+  id: 73
+  missionName: THE AVALANCHE
+  missionType: SURVIVAL
+  briefing: Escape the collapsing route.
+  debrief: The outer wall, out of the white.
+  marsh: 0
+  nightOverride: 0
+  rain: 0
+  snow: 1
+  fog: 1
+  applyTheme: 1
+  theme: 3
+  nextReason: The wall is the fortress. There is no more road.
+  region: SNOW
+  stages:
+  - goal: 0
+    objective: ESCAPE THE COLLAPSING ROUTE
+    banner: THE AVALANCHE
+    count: 1
+    duration: 0
+    point: {x: 0, y: 0, z: 6.5}
+    spawn: 
+    pointB: {x: 0, y: 0, z: 0}
+    spawnB: 
+    foeDef: 
+    beatId: 
+    bossHealthGate: 0.6
+    onComplete: 8
+    optional: 0
+    bonusShards: 1
+    checkpoint: 1
+  - goal: 4
+    objective: STAY ALIVE
+    banner: THEY COME
+    count: 1
+    duration: 40
+    point: {x: 0, y: 0, z: 0}
+    spawn: 0900000001000000
+    pointB: {x: 0, y: 0, z: 0}
+    spawnB: 
+    foeDef: 
+    beatId: 
+    bossHealthGate: 0.6
+    onComplete: 0
+    optional: 0
+    bonusShards: 1
+    checkpoint: 0
+  - goal: 8
+    objective: A BREATH
+    banner: KAGEHIRA'S MEN ARE CAUGHT IN IT TOO
+    count: 1
+    duration: 0
+    point: {x: 0, y: 0, z: 0}
+    spawn: 
+    pointB: {x: 0, y: 0, z: 0}
+    spawnB: 
+    foeDef: 
+    beatId: 
+    bossHealthGate: 0.6
+    onComplete: 0
+    optional: 0
+    bonusShards: 1
+    checkpoint: 1
+  - goal: 4
+    objective: STILL STANDING
+    banner: THE ARENA COLLAPSES BEHIND THE
+    count: 1
+    duration: 45
+    point: {x: 0, y: 0, z: 0}
+    spawn: 010000000300000009000000
+    pointB: {x: 0, y: 0, z: 0}
+    spawnB: 
+    foeDef: 
+    beatId: 
+    bossHealthGate: 0.6
+    onComplete: 11
+    optional: 0
+    bonusShards: 1
+    checkpoint: 0
+  - goal: 12
+    objective: GET OUT
+    banner: THE LAST STRETCH, WITH THE SNOW AT
+    count: 1
+    duration: 45
+    point: {x: 0, y: 0, z: -6.5}
+    spawn: 0900000001000000
+    pointB: {x: 0, y: 0, z: 0}
+    spawnB: 
+    foeDef: 
+    beatId: 
+    bossHealthGate: 0.6
+    onComplete: 0
+    optional: 0
+    bonusShards: 1
+    checkpoint: 0
+  - goal: 0
+    objective: OUT
+    banner: THE FAR SIDE
+    count: 1
+    duration: 0
+    point: {x: 0, y: 0, z: -6.5}
+    spawn: 
+    pointB: {x: 0, y: 0, z: 0}
+    spawnB: 
+    foeDef: 
+    beatId: 
+    bossHealthGate: 0.6
+    onComplete: 0
+    optional: 0
+    bonusShards: 1
+    checkpoint: 0
+  dressing: 040000000300000002000000
+  challenge: 5
+  challengeSeconds: 240
+  challengeShards: 2
+  baseShards: 4

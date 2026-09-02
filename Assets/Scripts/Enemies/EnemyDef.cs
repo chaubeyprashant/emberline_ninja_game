@@ -133,6 +133,12 @@ namespace Emberline.Enemies
         [Tooltip("How long the guard-break window lasts.")]
         public float guardBreakSeconds = 2.2f;
 
+        [Header("Card")]
+        [Tooltip("Boss intro title, for named foes. Empty: no intro card.")]
+        public string bossTitle = "";
+        [Tooltip("Boss intro taunt, for named foes.")]
+        [TextArea] public string bossTaunt = "";
+
         [Header("Behaviour")]
         [Tooltip("Chance to sidestep when the player's heavy telegraph is up.")]
         [Range(0f, 1f)] public float dodgeChance;
@@ -209,4 +215,23 @@ namespace Emberline.Enemies
     /// launch or execute, and get an intro card; elites sit in between.
     /// </summary>
     public enum EnemyRank { Mook, Elite, MiniBoss, Boss }
+
+    /// <summary>Def lookup by id. Asset file names and ids differ (Goro.asset is
+    /// "goro"), and everything that names a foe names it by id.</summary>
+    public static class EnemyDefs
+    {
+        private static EnemyDef[] _all;
+
+        public static EnemyDef Find(string id)
+        {
+            if (string.IsNullOrEmpty(id)) return null;
+            _all ??= Resources.LoadAll<EnemyDef>("Enemies");
+            foreach (var d in _all) if (d != null && d.id == id) return d;
+            var byFile = Resources.Load<EnemyDef>("Enemies/" + id);
+            if (byFile != null) return byFile;
+            _all = Resources.LoadAll<EnemyDef>("Enemies"); // a def authored since the cache
+            foreach (var d in _all) if (d != null && d.id == id) return d;
+            return null;
+        }
+    }
 }

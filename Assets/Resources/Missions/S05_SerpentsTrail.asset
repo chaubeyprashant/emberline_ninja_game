@@ -12,16 +12,21 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 814b8fc7fb4eb427480893eff898b203, type: 3}
   m_Name: S05_SerpentsTrail
   m_EditorClassIdentifier: Assembly-CSharp::Emberline.Missions.MissionPlan
-  id: 5
-  missionName: THE SERPENT'S TRAIL
+  id: 6
+  missionName: THE MISSING GIRL
   missionType: INVESTIGATION
   briefing: The raiders went into the marsh with eleven people and came out without
     them. Follow what they left.
-  debrief: The orders in his coat are signed with a serpent. The name under it is
-    Kagehira. This is not banditry.
-  marsh: 1
+  debrief: The trail leaves the road and enters the black pines.
+  marsh: 0
   nightOverride: 0
   rain: 0
+  snow: 0
+  fog: 0
+  applyTheme: 1
+  theme: 0
+  nextReason: The forest is where the trail goes. Renzo follows it in.
+  region: FOREST
   stages:
   - goal: 8
     objective: FOLLOW WHAT THEY LEFT
@@ -32,6 +37,8 @@ MonoBehaviour:
     spawn: 
     pointB: {x: 0, y: 0, z: 0}
     spawnB: 
+    foeDef: 
+    beatId: 
     bossHealthGate: 0.6
     onComplete: 0
     optional: 0
@@ -46,6 +53,8 @@ MonoBehaviour:
     spawn: 0b000000
     pointB: {x: 0, y: 0, z: 0}
     spawnB: 
+    foeDef: 
+    beatId: 
     bossHealthGate: 0.6
     onComplete: 7
     optional: 0
@@ -60,6 +69,8 @@ MonoBehaviour:
     spawn: 090000000900000001000000
     pointB: {x: 0, y: 0, z: 0}
     spawnB: 
+    foeDef: 
+    beatId: 
     bossHealthGate: 0.6
     onComplete: 0
     optional: 0
@@ -74,6 +85,8 @@ MonoBehaviour:
     spawn: 
     pointB: {x: 0, y: 0, z: 0}
     spawnB: 
+    foeDef: 
+    beatId: 
     bossHealthGate: 0.6
     onComplete: 0
     optional: 0
@@ -88,6 +101,8 @@ MonoBehaviour:
     spawn: 
     pointB: {x: 0, y: 0, z: 0}
     spawnB: 
+    foeDef: 
+    beatId: 
     bossHealthGate: 0.6
     onComplete: 0
     optional: 0

@@ -22,6 +22,19 @@ namespace Emberline.Missions
         [Tooltip("Starts the mission dark — vision ranges drop for everyone.")]
         public bool nightOverride;
         public bool rain;
+        public bool snow;
+        public bool fog;
+
+        [Tooltip("Apply this lighting/weather theme when the mission starts, so " +
+                 "one arena geometry can be a forest, a mountain pass or a snowfield.")]
+        public bool applyTheme;
+        public Core.EnvThemeId theme = Core.EnvThemeId.Village;
+
+        [Tooltip("Shown on the results screen: why the next mission follows this one.")]
+        [TextArea] public string nextReason = "";
+
+        [Tooltip("Where this sits in the journey; shown on the briefing.")]
+        public string region = "";
 
         [Header("Flow")]
         public MissionStage[] stages = System.Array.Empty<MissionStage>();

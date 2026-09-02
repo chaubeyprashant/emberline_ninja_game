@@ -579,6 +579,12 @@ namespace Emberline
                     };
                 }
                 var enemy = EnemyPool.Spawn(prefab, p, Quaternion.identity);
+                if (ModeNow == LaunchMode.Duel && CurrentDuel != null && !string.IsNullOrEmpty(CurrentDuel.defId))
+                {
+                    var namedDef = EnemyDefs.Find(CurrentDuel.defId);
+                    var namedBrain = enemy != null ? enemy.GetComponent<EnemyBrain>() : null;
+                    if (namedDef != null && namedBrain != null) namedBrain.SetDef(namedDef);
+                }
                 var brain = enemy.GetComponent<EnemyBrain>();
                 if (brain != null)
                 {
@@ -645,6 +651,24 @@ namespace Emberline
             }
         }
 
+        private readonly System.Collections.Generic.HashSet<string> _namedIntrosShown = new();
+
+        /// <summary>Intro card for a named foe. Once per name per mission.</summary>
+        private void TryNamedIntro(string name, string title, string taunt)
+        {
+            if (string.IsNullOrEmpty(name) || !_namedIntrosShown.Add(name)) return;
+            foreach (var e in EnemyBrain.Active)
+            {
+                if (e == null || e.Dead || e.isClone || e.def == null || e.def.displayName != name) continue;
+                e.transform.LookAt(_playerT != null
+                    ? new Vector3(_playerT.position.x, 0, _playerT.position.z)
+                    : Vector3.zero);
+                UI.BossIntroDirector.Play(this, _rig, e.transform,
+                    e.GetComponent<CharacterRig>(), name, title, taunt, e.weapon);
+                return;
+            }
+        }
+
         /// <summary>Enemy speed multiplier (rises with distance marched). Reset per scene.</summary>
         public static float EnemySpeedMul { get; private set; } = 1f;
 
@@ -669,10 +693,13 @@ namespace Emberline
                 Session.SaveStars(CurrentLevel.id, StarsEarned);
                 Session.StoryUnlocked = CurrentLevel.id + 1;
                 ShardsEarned = 1 + (r.rank == "S" ? 2 : r.rank == "A" ? 1 : 0);
-                if (CurrentLevel.id == 10 && !Session.NewGamePlus)
+                // The campaign ends at a hundred. Everything that outlives it —
+                // New Game+, the duel roster, the Infinite March — opens here.
+                if (CurrentLevel.id == Campaign.Campaign.Count && !Session.NewGamePlus)
                 {
                     Session.NewGamePlus = true;
-                    Announce("NEW GAME+ UNLOCKED — THE MARSH REMEMBERS");
+                    Session.DuelsUnlocked = Session.Duels.Length;
+                    Announce("NEW GAME+ · DUELS · INFINITE MARCH — UNLOCKED");
                 }
             }
             else if (ModeNow == LaunchMode.Duel && CurrentDuel != null)
@@ -781,6 +808,36 @@ namespace Emberline
             Difficulty.ApplyTo(brain);
             brain.SyncHpToMax();
             if (unaware) brain.SetUnaware(true);
+        }
+
+        /// <summary>
+        /// Spawn a named foe: a def by id on the body of the given kind. Returns
+        /// the brain so a stage can watch it (Endure, BossPhase) or withdraw it.
+        /// </summary>
+        public EnemyBrain SpawnNamed(EnemyKind kind, string defId, bool unaware = false)
+        {
+            var prefab = enemyPrefabs != null && (int)kind < enemyPrefabs.Length
+                ? enemyPrefabs[(int)kind] : null;
+            if (prefab == null) return null;
+            var edge = Random.Range(0, 4);
+            var p = edge switch
+            {
+                0 => new Vector3(Random.Range(-arenaHalfExtents.x * 0.6f, arenaHalfExtents.x * 0.6f), 0, arenaHalfExtents.y - 1f),
+                1 => new Vector3(Random.Range(-arenaHalfExtents.x * 0.6f, arenaHalfExtents.x * 0.6f), 0, -arenaHalfExtents.y + 1f),
+                2 => new Vector3(-arenaHalfExtents.x + 1f, 0, Random.Range(-arenaHalfExtents.y * 0.6f, arenaHalfExtents.y * 0.6f)),
+                _ => new Vector3(arenaHalfExtents.x - 1f, 0, Random.Range(-arenaHalfExtents.y * 0.6f, arenaHalfExtents.y * 0.6f)),
+            };
+            var go = EnemyPool.Spawn(prefab, p, Quaternion.Euler(0, 180f, 0));
+            var brain = go != null ? go.GetComponent<EnemyBrain>() : null;
+            if (brain == null) return null;
+            var def = EnemyDefs.Find(defId);
+            if (def != null) brain.SetDef(def);
+            Difficulty.ApplyTo(brain);
+            brain.SyncHpToMax();
+            if (unaware) brain.SetUnaware(true);
+            if (def != null && !string.IsNullOrEmpty(def.bossTitle))
+                TryNamedIntro(def.displayName, def.bossTitle, def.bossTaunt);
+            return brain;
         }
 
         // ---- surface the director needs. Endless owns *what* happens; the

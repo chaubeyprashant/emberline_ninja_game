@@ -1,0 +1,130 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 814b8fc7fb4eb427480893eff898b203, type: 3}
+  m_Name: C095
+  m_EditorClassIdentifier: Assembly-CSharp::Emberline.Missions.MissionPlan
+  id: 95
+  missionName: THE SERPENT'S SHADOW
+  missionType: ENDURE
+  briefing: Survive Kagehira's ambush.
+  debrief: '''Alone,'' he says. ''Come alone.'' Aiko is gone from Renzo''s side.'
+  marsh: 0
+  nightOverride: 1
+  rain: 0
+  snow: 0
+  fog: 1
+  applyTheme: 1
+  theme: 3
+  nextReason: Kagehira has Aiko. Renzo goes up alone, as he was told.
+  region: SEAL
+  stages:
+  - goal: 0
+    objective: SURVIVE KAGEHIRA'S AMBUSH
+    banner: THE SERPENT'S SHADOW
+    count: 1
+    duration: 0
+    point: {x: 0, y: 0, z: 6.5}
+    spawn: 
+    pointB: {x: 0, y: 0, z: 0}
+    spawnB: 
+    foeDef: 
+    beatId: 
+    bossHealthGate: 0.6
+    onComplete: 0
+    optional: 0
+    bonusShards: 1
+    checkpoint: 1
+  - goal: 8
+    objective: SOMETHING IS HERE
+    banner: THE WARLORD AS AN AMBUSHER
+    count: 1
+    duration: 0
+    point: {x: 0, y: 0, z: 0}
+    spawn: 
+    pointB: {x: 0, y: 0, z: 0}
+    spawnB: 
+    foeDef: 
+    beatId: 
+    bossHealthGate: 0.6
+    onComplete: 0
+    optional: 0
+    bonusShards: 1
+    checkpoint: 0
+  - goal: 16
+    objective: SURVIVE
+    banner: KAGEHIRA IS FASTER THAN RENZO EXPECTED,
+    count: 1
+    duration: 45
+    point: {x: 0, y: 0, z: 0}
+    spawn: 0300000009000000
+    pointB: {x: 0, y: 0, z: 0}
+    spawnB: 
+    foeDef: kagachi
+    beatId: 
+    bossHealthGate: 0.6
+    onComplete: 13
+    optional: 0
+    bonusShards: 1
+    checkpoint: 0
+  - goal: 0
+    objective: GET OFF ITS GROUND
+    banner: MOVE
+    count: 1
+    duration: 0
+    point: {x: 0, y: 0, z: -6.5}
+    spawn: 
+    pointB: {x: 0, y: 0, z: 0}
+    spawnB: 
+    foeDef: 
+    beatId: 
+    bossHealthGate: 0.6
+    onComplete: 0
+    optional: 0
+    bonusShards: 1
+    checkpoint: 1
+  - goal: 7
+    objective: LEAVE NO TRAIL
+    banner: KAGEHIRA'S BLADE AT RENZO'S BACK,
+    count: 1
+    duration: 0
+    point: {x: 0, y: 0, z: 0}
+    spawn: 0300000009000000
+    pointB: {x: 0, y: 0, z: 0}
+    spawnB: 
+    foeDef: 
+    beatId: 
+    bossHealthGate: 0.6
+    onComplete: 0
+    optional: 0
+    bonusShards: 1
+    checkpoint: 0
+  - goal: 0
+    objective: GONE
+    banner: IT LET YOU GO
+    count: 1
+    duration: 0
+    point: {x: -10, y: 0, z: 0}
+    spawn: 
+    pointB: {x: 0, y: 0, z: 0}
+    spawnB: 
+    foeDef: 
+    beatId: 
+    bossHealthGate: 0.6
+    onComplete: 0
+    optional: 0
+    bonusShards: 1
+    checkpoint: 0
+  dressing: 090000000400000002000000
+  challenge: 5
+  challengeSeconds: 300
+  challengeShards: 2
+  baseShards: 4

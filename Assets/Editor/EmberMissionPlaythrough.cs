@@ -20,9 +20,17 @@ namespace Emberline.EditorTools
         {
             var args = System.Environment.GetCommandLineArgs();
             for (var i = 0; i < args.Length - 1; i++)
+            {
                 if (args[i] == "-playLevel" && int.TryParse(args[i + 1], out var lv))
                     MissionPlaythroughDriver.OnlyLevel = lv;
+                if (args[i] == "-playFrom" && int.TryParse(args[i + 1], out var from))
+                    MissionPlaythroughDriver.FromLevel = from;
+                if (args[i] == "-playTo" && int.TryParse(args[i + 1], out var to))
+                    MissionPlaythroughDriver.ToLevel = to;
+            }
             SessionState.SetInt(LevelKey, MissionPlaythroughDriver.OnlyLevel);
+            SessionState.SetInt(LevelKey + ".from", MissionPlaythroughDriver.FromLevel);
+            SessionState.SetInt(LevelKey + ".to", MissionPlaythroughDriver.ToLevel);
             EditorSceneManager.OpenScene("Assets/Scenes/Rooftop.unity");
             Session.Mode = LaunchMode.Story;
             Session.LevelIndex = 0;
@@ -51,6 +59,8 @@ namespace Emberline.EditorTools
             Session.Mode = LaunchMode.Story;
             Session.LevelIndex = 0;
             MissionPlaythroughDriver.OnlyLevel = SessionState.GetInt(LevelKey, -1);
+            MissionPlaythroughDriver.FromLevel = SessionState.GetInt(LevelKey + ".from", 0);
+            MissionPlaythroughDriver.ToLevel = SessionState.GetInt(LevelKey + ".to", 9999);
             var d = new GameObject("MissionPlaythrough").AddComponent<MissionPlaythroughDriver>();
             d.onFinished = code =>
             {

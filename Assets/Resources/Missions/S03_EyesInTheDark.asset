@@ -17,11 +17,17 @@ MonoBehaviour:
   missionType: STEALTH
   briefing: Something is watching the terraces from the chimneys, and it has not
     seen you yet. Keep it that way.
-  debrief: The banner on the last roof is a serpent eating a lantern. Nobody in Yorune
-    has seen that mark before.
+  debrief: 'The last order on the table: Goro is closing the northern pass tonight.'
   marsh: 0
   nightOverride: 1
   rain: 1
+  snow: 0
+  fog: 0
+  applyTheme: 1
+  theme: 0
+  nextReason: If the pass closes, the prisoners' trail closes with it. Renzo goes
+    north before Goro can shut the door.
+  region: RUINS
   stages:
   - goal: 0
     objective: GET UP TO THE ROOFLINE
@@ -32,6 +38,8 @@ MonoBehaviour:
     spawn: 
     pointB: {x: 0, y: 0, z: 0}
     spawnB: 
+    foeDef: 
+    beatId: 
     bossHealthGate: 0.6
     onComplete: 0
     optional: 0
@@ -46,6 +54,8 @@ MonoBehaviour:
     spawn: 0100000001000000
     pointB: {x: 0, y: 0, z: 0}
     spawnB: 
+    foeDef: 
+    beatId: 
     bossHealthGate: 0.6
     onComplete: 4
     optional: 0
@@ -60,6 +70,8 @@ MonoBehaviour:
     spawn: 
     pointB: {x: 0, y: 0, z: 0}
     spawnB: 
+    foeDef: 
+    beatId: 
     bossHealthGate: 0.6
     onComplete: 0
     optional: 0
@@ -74,6 +86,8 @@ MonoBehaviour:
     spawn: 0100000007000000
     pointB: {x: 0, y: 0, z: 0}
     spawnB: 
+    foeDef: 
+    beatId: 
     bossHealthGate: 0.6
     onComplete: 0
     optional: 0
@@ -88,6 +102,8 @@ MonoBehaviour:
     spawn: 0b000000
     pointB: {x: 0, y: 0, z: 0}
     spawnB: 
+    foeDef: 
+    beatId: 
     bossHealthGate: 0.6
     onComplete: 0
     optional: 0
@@ -102,6 +118,8 @@ MonoBehaviour:
     spawn: 
     pointB: {x: 0, y: 0, z: 0}
     spawnB: 
+    foeDef: 
+    beatId: 
     bossHealthGate: 0.6
     onComplete: 0
     optional: 0

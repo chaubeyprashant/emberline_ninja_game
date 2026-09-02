@@ -1,0 +1,130 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 814b8fc7fb4eb427480893eff898b203, type: 3}
+  m_Name: C072
+  m_EditorClassIdentifier: Assembly-CSharp::Emberline.Missions.MissionPlan
+  id: 72
+  missionName: THE FROZEN CAMP
+  missionType: SABOTAGE
+  briefing: Destroy the artillery and supply camp.
+  debrief: The camp goes up. The mountain shivers.
+  marsh: 0
+  nightOverride: 1
+  rain: 0
+  snow: 1
+  fog: 0
+  applyTheme: 1
+  theme: 3
+  nextReason: The explosion has loosened the slope above the road. Renzo has minutes.
+  region: SNOW
+  stages:
+  - goal: 0
+    objective: DESTROY THE ARTILLERY AND
+    banner: THE FROZEN CAMP
+    count: 1
+    duration: 0
+    point: {x: -10, y: 0, z: 0}
+    spawn: 
+    pointB: {x: 0, y: 0, z: 0}
+    spawnB: 
+    foeDef: 
+    beatId: 
+    bossHealthGate: 0.6
+    onComplete: 0
+    optional: 0
+    bonusShards: 1
+    checkpoint: 1
+  - goal: 7
+    objective: THE WATCH, UNSEEN
+    banner: QUIET
+    count: 1
+    duration: 0
+    point: {x: 0, y: 0, z: 0}
+    spawn: 0800000007000000
+    pointB: {x: 0, y: 0, z: 0}
+    spawnB: 
+    foeDef: 
+    beatId: 
+    bossHealthGate: 0.6
+    onComplete: 0
+    optional: 0
+    bonusShards: 1
+    checkpoint: 0
+  - goal: 8
+    objective: FIND WHAT BURNS
+    banner: THE CAMP'S SUPPLIES WERE MEANT FOR A
+    count: 1
+    duration: 0
+    point: {x: 0, y: 0, z: 0}
+    spawn: 
+    pointB: {x: 0, y: 0, z: 0}
+    spawnB: 
+    foeDef: 
+    beatId: 
+    bossHealthGate: 0.6
+    onComplete: 0
+    optional: 0
+    bonusShards: 1
+    checkpoint: 1
+  - goal: 5
+    objective: SET THE FIRE
+    banner: FIRES SET IN THE COLD BURN SLOW,
+    count: 1
+    duration: 30
+    point: {x: 10, y: 0, z: 0}
+    spawn: 070000000100000006000000
+    pointB: {x: 0, y: 0, z: 0}
+    spawnB: 
+    foeDef: 
+    beatId: 
+    bossHealthGate: 0.6
+    onComplete: 2
+    optional: 0
+    bonusShards: 1
+    checkpoint: 0
+  - goal: 12
+    objective: BEFORE IT GOES UP
+    banner: THE MAGAZINE, WHEN THE LAST FIRE
+    count: 1
+    duration: 45
+    point: {x: 0, y: 0, z: -6.5}
+    spawn: 0800000007000000
+    pointB: {x: 0, y: 0, z: 0}
+    spawnB: 
+    foeDef: 
+    beatId: 
+    bossHealthGate: 0.6
+    onComplete: 0
+    optional: 0
+    bonusShards: 1
+    checkpoint: 0
+  - goal: 0
+    objective: WATCH IT BURN
+    banner: FROM THE TREES
+    count: 1
+    duration: 0
+    point: {x: 0, y: 0, z: -6.5}
+    spawn: 
+    pointB: {x: 0, y: 0, z: 0}
+    spawnB: 
+    foeDef: 
+    beatId: 
+    bossHealthGate: 0.6
+    onComplete: 0
+    optional: 0
+    bonusShards: 1
+    checkpoint: 0
+  dressing: 040000000300000002000000
+  challenge: 1
+  challengeSeconds: 300
+  challengeShards: 2
+  baseShards: 4

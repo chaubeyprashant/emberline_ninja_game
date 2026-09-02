@@ -3,14 +3,21 @@ using UnityEditor;
 using UnityEngine;
 using Emberline.Enemies;
 using Emberline.Missions;
+using Emberline.Campaign;
+using Emberline.Core;
+using System.Collections.Generic;
 
 namespace Emberline.EditorTools
 {
     /// <summary>
-    /// Authors the ten story missions as ScriptableObjects under
-    /// Resources/Missions. Every mission is a sequence of generic stage goals, so
-    /// none of this is mission-specific code — an eleventh is another block here
-    /// and nothing else.
+    /// Authors the campaign's hundred mission plans under Resources/Missions.
+    ///
+    /// Ten are bespoke, hand-built stage by stage — the ones the design phase
+    /// proved out — re-slotted to the campaign numbers they became. The other
+    /// ninety are generated from a template per gameplay type, fed by the
+    /// mission's own ten fields: its objective becomes the main stage's text,
+    /// its climax the climax banner, its discovery the search, its unique event
+    /// the scripted turn, its roster the spawns. Same framework, no two alike.
     ///
     /// These replace the twelve mission-*type* templates that used to live here.
     /// Those were named for their mechanic rather than for the mission that
@@ -42,14 +49,14 @@ namespace Emberline.EditorTools
             int count = 1, float duration = 0f, Vector3 point = default,
             EnemyKind[] spawn = null, StageEvent onComplete = StageEvent.None,
             bool optional = false, bool checkpoint = false, int bonus = 1,
-            EnemyKind[] spawnB = null) => new()
+            EnemyKind[] spawnB = null, string foeDef = "", string beatId = "") => new()
         {
             goal = goal, objective = objective, banner = banner, count = count,
             duration = duration, point = point,
             spawn = spawn ?? System.Array.Empty<EnemyKind>(),
             spawnB = spawnB ?? System.Array.Empty<EnemyKind>(),
             onComplete = onComplete, optional = optional, checkpoint = checkpoint,
-            bonusShards = bonus,
+            bonusShards = bonus, foeDef = foeDef, beatId = beatId,
         };
 
         /// <summary>A split-route stage: two ways in, each with its own guard.</summary>
@@ -73,19 +80,409 @@ namespace Emberline.EditorTools
         public static void BuildMissions()
         {
             Directory.CreateDirectory("Assets/Resources/Missions");
-
-            MissionPlan P_(string file)
+            BuildBespoke();
+            var generated = 0;
+            foreach (var m in Campaign.Campaign.Missions)
             {
-                var path = $"Assets/Resources/Missions/{file}.asset";
-                var m = AssetDatabase.LoadAssetAtPath<MissionPlan>(path);
-                if (m == null)
-                {
-                    m = ScriptableObject.CreateInstance<MissionPlan>();
-                    AssetDatabase.CreateAsset(m, path);
-                }
-                return m;
+                var plan = P_(m.PlanAsset);
+                if (string.IsNullOrEmpty(m.plan)) { Generate(plan, m); generated++; }
+                Reslot(plan, m);
+                EditorUtility.SetDirty(plan);
+            }
+            AssetDatabase.SaveAssets();
+            Debug.Log($"[Emberline] Missions authored: 100 plans ({generated} generated, {100 - generated} bespoke)");
+        }
+
+        private static MissionPlan P_(string file)
+        {
+            var path = $"Assets/Resources/Missions/{file}.asset";
+            var m = AssetDatabase.LoadAssetAtPath<MissionPlan>(path);
+            if (m == null)
+            {
+                m = ScriptableObject.CreateInstance<MissionPlan>();
+                AssetDatabase.CreateAsset(m, path);
+            }
+            return m;
+        }
+
+        /// <summary>Everything a plan carries that comes from the campaign entry.</summary>
+        private static void Reslot(MissionPlan plan, CampaignMission m)
+        {
+            plan.id = m.id;
+            plan.missionName = m.name;
+            plan.missionType = m.Primary.ToString().ToUpperInvariant();
+            plan.marsh = m.marsh;
+            plan.nightOverride = m.night;
+            plan.rain = m.rain;
+            plan.snow = m.snow;
+            plan.fog = m.fog;
+            plan.applyTheme = true;
+            plan.theme = m.theme;
+            plan.region = m.region.ToString().ToUpperInvariant();
+            plan.nextReason = m.nextReason;
+            if (string.IsNullOrEmpty(plan.briefing) || string.IsNullOrEmpty(m.plan)) plan.briefing = m.primaryObjective;
+            plan.debrief = m.ending;
+            if (plan.baseShards < 3) plan.baseShards = 3;
+            if (m.IsMajorBoss && plan.baseShards < 5) plan.baseShards = 5;
+        }
+
+        // ================================================================ generation
+
+        private static readonly Vector3 North = new(0f, 0f, 6.5f), South = new(0f, 0f, -6.5f),
+            East = new(10f, 0f, 0f), West = new(-10f, 0f, 0f),
+            NorthEast = new(9f, 0f, 5.5f), NorthWest = new(-9f, 0f, 5.5f);
+
+        /// <summary>
+        /// Build a mission's stages from its type and its own words. The
+        /// template gives the shape; the fields give it a face.
+        /// </summary>
+        private static void Generate(MissionPlan plan, CampaignMission m)
+        {
+            var st = new List<MissionStage>();
+            var roster = m.enemies;
+            // Distinct kinds first, so a pack of three from a roster of five
+            // kinds is three *different* enemies, then repeats. Consecutive
+            // missions with overlapping rosters still field different packs.
+            var distinct = new List<EnemyKind>();
+            foreach (var k in roster) if (!distinct.Contains(k)) distinct.Add(k);
+            EnemyKind[] Pack(int from, int count)
+            {
+                var list = new List<EnemyKind>();
+                if (distinct.Count == 0) return list.ToArray();
+                for (var i = 0; i < count; i++) list.Add(distinct[(from + i) % distinct.Count]);
+                return list.ToArray();
+            }
+            var light = Pack(0, Mathf.Min(2, roster.Length));
+            var mid = Pack(1, Mathf.Min(3, roster.Length));
+            var heavy = Pack(m.id % 2, Mathf.Min(5, roster.Length + 1));
+            var ranged = System.Array.Exists(roster, k => k == R);
+            var foe = m.foe;
+            var upperName = m.name;
+            var obj = Short(m.primaryObjective).ToUpperInvariant();
+            var disc = Short(m.storyDiscovery, 40).ToUpperInvariant();
+            var climax = Short(m.climax, 34).ToUpperInvariant();
+            var unique = Short(m.uniqueEvent, 34).ToUpperInvariant();
+
+            // Which scripted turn the unique event most resembles.
+            var ev = EventFor(m);
+
+            switch (m.Primary)
+            {
+                case GameplayType.Exploration:
+                    st.Add(St(StageGoal.Reach, obj, upperName, point: North, checkpoint: true));
+                    st.Add(St(StageGoal.Investigate, "READ THE GROUND", unique, count: 2));
+                    if (m.Has(GameplayType.Combat) || m.Has(GameplayType.Stealth))
+                        st.Add(St(m.Has(GameplayType.Stealth) ? StageGoal.Stealth : StageGoal.Wave,
+                            m.Has(GameplayType.Stealth) ? "UNSEEN" : "WHAT WAS WAITING", disc, spawn: light, onComplete: ev));
+                    else st.Add(St(StageGoal.Reach, "FURTHER IN", disc, point: East, onComplete: ev));
+                    st.Add(St(StageGoal.Investigate, "WHAT IT MEANS", "THE LAST PIECE", count: 1, checkpoint: true));
+                    if (m.Has(GameplayType.Combat) || m.Has(GameplayType.Survival) || roster.Length > 2)
+                        st.Add(FoeOrWave(m, "THE ANSWER COMES ARMED", climax, mid));
+                    st.Add(St(StageGoal.Reach, "TAKE IT WITH YOU", "OUT", point: South));
+                    break;
+
+                case GameplayType.Combat:
+                    if (roster.Length == 0) roster = new[] { B, A };
+                    st.Add(St(StageGoal.Reach, obj, upperName, point: North, checkpoint: true));
+                    st.Add(St(StageGoal.Investigate, "READ THE FIELD", unique, count: 1));
+                    st.Add(St(StageGoal.Wave, "THE FIRST OF THEM", "CONTACT", spawn: light, onComplete: ev));
+                    st.Add(St(StageGoal.Reach, "PRESS ON", disc, point: East, checkpoint: true));
+                    if (m.Has(GameplayType.Defense))
+                        st.Add(St(StageGoal.Defend, "HOLD WHAT YOU TOOK", "HOLD", duration: 40f, point: East, spawn: mid));
+                    st.Add(FoeOrWave(m, "THE REST OF THEM", climax, heavy));
+                    st.Add(St(StageGoal.Reach, "CLEAR", "IT IS DONE", point: South));
+                    break;
+
+                case GameplayType.Stealth:
+                    st.Add(St(StageGoal.Reach, obj, upperName, point: West, checkpoint: true));
+                    st.Add(St(StageGoal.Stealth, "THE OUTER WATCH, UNSEEN", "THEY HAVE NOT SEEN YOU", spawn: light));
+                    st.Add(St(StageGoal.Investigate, "FIND WHAT YOU CAME FOR", disc, count: 2, checkpoint: true));
+                    if (m.Has(GameplayType.Rescue))
+                        st.Add(St(StageGoal.FreePrisoners, "CUT THEM LOOSE", unique, count: 3, onComplete: ev));
+                    else if (m.Has(GameplayType.Sabotage))
+                        st.Add(St(StageGoal.Defend, "SET THE FIRE", unique, duration: 25f, point: East, spawn: light, onComplete: ev));
+                    else
+                        st.Add(St(StageGoal.Stealth, "THE INNER WATCH", unique, spawn: mid, onComplete: ev));
+                    if (!string.IsNullOrEmpty(foe))
+                        st.Add(St(StageGoal.Assassinate, "THE ONE IN CHARGE", climax, foeDef: foe));
+                    else if (m.Has(GameplayType.Chase))
+                        st.Add(St(StageGoal.Chase, "THEY RUN", climax, duration: 40f, spawn: Pack(2, 1)));
+                    else if (m.Has(GameplayType.Combat) || m.Has(GameplayType.Investigation))
+                        st.Add(St(StageGoal.Escape, "OUT BEFORE THEY CLOSE IT", climax, duration: 50f, point: East,
+                            spawn: ranged ? new[] { R } : light));
+                    else
+                        st.Add(St(StageGoal.Escape, "LEAVE NO TRACE", climax, duration: 55f, point: East));
+                    st.Add(St(StageGoal.Reach, "GONE", "NOBODY KNOWS", point: South));
+                    break;
+
+                case GameplayType.Investigation:
+                    st.Add(St(StageGoal.Investigate, obj, upperName, count: 3, checkpoint: true));
+                    st.Add(m.Has(GameplayType.Stealth)
+                        ? St(StageGoal.Stealth, "SOMEONE IS GUARDING THE REST", "QUIET", spawn: light, onComplete: ev)
+                        : St(StageGoal.Wave, "SOMEONE OBJECTS", "YOU ARE NOT ALONE", spawn: light, onComplete: ev));
+                    st.Add(St(StageGoal.Investigate, "THE LAST PIECES", disc, count: 2, checkpoint: true));
+                    if (!(m.Has(GameplayType.Combat) || m.Has(GameplayType.Survival) || m.Has(GameplayType.Chase)))
+                        st.Add(St(StageGoal.Reach, "PUT IT TOGETHER", climax, point: East));
+                    if (m.Has(GameplayType.Combat) || m.Has(GameplayType.Survival) || m.Has(GameplayType.Chase))
+                        st.Add(m.Has(GameplayType.Chase)
+                            ? St(StageGoal.Chase, "THEY SAW YOU READ IT", climax, duration: 40f, spawn: Pack(1, 1))
+                            : FoeOrWave(m, "THEY CAME BACK FOR IT", climax, mid));
+                    st.Add(St(StageGoal.Reach, "TAKE IT BACK", unique, point: West));
+                    break;
+
+                case GameplayType.Rescue:
+                    st.Add(St(StageGoal.Reach, obj, upperName, point: North, checkpoint: true));
+                    st.Add(St(StageGoal.Investigate, "FIND WHERE THEY ARE KEPT", unique, count: 1));
+                    st.Add(St(StageGoal.Wave, "THE GUARD", "GUARDS", spawn: light, onComplete: ev));
+                    st.Add(St(StageGoal.FreePrisoners, "CUT THEM LOOSE", disc, count: 3, checkpoint: true));
+                    if (m.Has(GameplayType.Defense))
+                        st.Add(St(StageGoal.Defend, "KEEP THEM OFF THE PEN", climax, duration: 40f, point: North, spawn: mid));
+                    else if (m.Has(GameplayType.Chase))
+                        st.Add(St(StageGoal.Chase, "THE ONE WHO RUNS", climax, duration: 40f, spawn: Pack(2, 1)));
+                    else st.Add(FoeOrWave(m, "THEY WANT THEM BACK", climax, mid));
+                    st.Add(St(m.Has(GameplayType.Escort) ? StageGoal.Escort : StageGoal.Reach,
+                        m.Has(GameplayType.Escort) ? "WALK THEM OUT" : "SEE THEM OFF", "THE ROAD", point: South));
+                    break;
+
+                case GameplayType.Defense:
+                    st.Add(St(StageGoal.Reach, obj, upperName, point: North, checkpoint: true));
+                    st.Add(St(StageGoal.Defend, "HOLD", "THEY ARE COMING", duration: 40f, point: North, spawn: light));
+                    st.Add(St(StageGoal.Investigate, "SEE TO THE WALLS", disc, count: 1, checkpoint: true));
+                    st.Add(St(StageGoal.Defend, "HOLD THEM AGAIN", unique, duration: 45f, point: North, spawn: mid, onComplete: ev));
+                    st.Add(FoeOrWave(m, "THE LAST OF THEM", climax, heavy));
+                    st.Add(St(StageGoal.Reach, "IT HELD", "STILL STANDING", point: South));
+                    break;
+
+                case GameplayType.Escort:
+                    st.Add(St(StageGoal.Reach, obj, upperName, point: West, checkpoint: true));
+                    st.Add(St(StageGoal.Investigate, "CLEAR THE ROAD AHEAD", unique, count: 1));
+                    st.Add(St(StageGoal.Wave, "THE FIRST PATROL", "PATROL", spawn: light, onComplete: ev));
+                    st.Add(St(StageGoal.Reach, "GO BACK FOR THEM", disc, point: South, checkpoint: true));
+                    st.Add(St(StageGoal.Escort, "WALK THEM HOME", "MOVE WITH THEM", spawn: mid));
+                    st.Add(St(StageGoal.Reach, "THROUGH", climax, point: North));
+                    break;
+
+                case GameplayType.Chase:
+                    st.Add(St(StageGoal.Investigate, "PICK UP THE TRAIL", upperName, count: 2, checkpoint: true));
+                    st.Add(St(StageGoal.Chase, obj, "THERE", duration: 40f, spawn: Pack(roster.Length - 1, 1), onComplete: StageEvent.TargetFlees));
+                    st.Add(St(StageGoal.Wave, "THEY HAD FRIENDS", unique, spawn: light, onComplete: ev));
+                    st.Add(St(StageGoal.Investigate, "WHERE DID THEY GO?", disc, count: 1, checkpoint: true));
+                    if (!string.IsNullOrEmpty(foe)) st.Add(St(StageGoal.Duel, "NO MORE RUNNING", climax, foeDef: foe));
+                    else if (m.Has(GameplayType.Survival))
+                        st.Add(St(StageGoal.Escape, "GET OUT BEFORE IT FALLS", climax, duration: 45f, point: South, spawn: light));
+                    else st.Add(St(StageGoal.Chase, "DO NOT LET THEM REACH THE EDGE", climax, duration: 30f, spawn: Pack(roster.Length - 1, 1)));
+                    st.Add(St(StageGoal.Reach, "DONE", "IT IS OVER", point: South));
+                    break;
+
+                case GameplayType.Survival:
+                    st.Add(St(StageGoal.Reach, obj, upperName, point: North, checkpoint: true, onComplete: m.fog ? StageEvent.FogRolls : StageEvent.None));
+                    st.Add(St(StageGoal.Survive, "STAY ALIVE", "THEY COME", duration: 40f, spawn: light));
+                    st.Add(St(StageGoal.Investigate, "A BREATH", disc, count: 1, checkpoint: true));
+                    st.Add(St(StageGoal.Survive, "STILL STANDING", unique, duration: 45f, spawn: mid, onComplete: ev));
+                    st.Add(m.Has(GameplayType.Chase)
+                        ? St(StageGoal.Escape, "GET OUT", climax, duration: 45f, point: South, spawn: light)
+                        : FoeOrWave(m, "WHAT IS LEFT", climax, heavy));
+                    st.Add(St(StageGoal.Reach, "OUT", "THE FAR SIDE", point: South));
+                    break;
+
+                case GameplayType.Boss:
+                    st.Add(St(StageGoal.Reach, "WALK OUT TO MEET THEM", upperName, point: North, checkpoint: true));
+                    st.Add(St(StageGoal.Investigate, "READ THE GROUND", unique, count: 1));
+                    if (roster.Length > 0 && !(m.boss.HasValue && roster.Length == 0))
+                        st.Add(St(StageGoal.Wave, "THEIR CHOSEN", "THEY DO NOT STEP ASIDE", spawn: light, onComplete: ev));
+                    st.Add(St(StageGoal.Reach, "THE HELD BREATH", disc, point: default, checkpoint: true));
+                    if (m.Has(GameplayType.Combat) && !m.boss.HasValue)
+                        st.Add(St(StageGoal.Defend, "HOLD THE GROUND", "THEY PRESS", duration: 35f, point: default, spawn: mid));
+                    if (m.boss.HasValue)
+                    {
+                        st.Add(Phase(obj, climax, 0.6f, new[] { m.boss.Value }, ev));
+                        st.Add(St(StageGoal.Wave, "THEY CALL FOR HELP", "ADDS", spawn: light));
+                        st.Add(St(StageGoal.BossFight, "FINISH IT", "THE LAST PHASE", checkpoint: true));
+                    }
+                    else st.Add(St(StageGoal.BossFight, obj, climax, foeDef: foe, spawn: string.IsNullOrEmpty(foe) ? light : System.Array.Empty<EnemyKind>(), checkpoint: true, onComplete: ev));
+                    st.Add(St(StageGoal.Reach, "WALK AWAY", "IT IS OVER", point: South));
+                    break;
+
+                case GameplayType.Sabotage:
+                    st.Add(St(StageGoal.Reach, obj, upperName, point: West, checkpoint: true));
+                    st.Add(St(StageGoal.Stealth, "THE WATCH, UNSEEN", "QUIET", spawn: light));
+                    st.Add(St(StageGoal.Investigate, "FIND WHAT BURNS", disc, count: 1, checkpoint: true));
+                    st.Add(St(StageGoal.Defend, "SET THE FIRE", unique, duration: 30f, point: East, spawn: mid, onComplete: ev));
+                    st.Add(St(StageGoal.Escape, "BEFORE IT GOES UP", climax, duration: 45f, point: South, spawn: light));
+                    st.Add(St(StageGoal.Reach, "WATCH IT BURN", "FROM THE TREES", point: South));
+                    break;
+
+                case GameplayType.Memory:
+                    st.Add(St(StageGoal.Cinematic, "REMEMBER", upperName, beatId: m.beat, checkpoint: true));
+                    st.Add(St(StageGoal.Reach, "WALK IT AGAIN", unique, point: North, onComplete: ev));
+                    st.Add(St(StageGoal.Investigate, "WHAT WAS THERE", disc, count: 2, checkpoint: true));
+                    if (roster.Length > 0)
+                        st.Add(m.Has(GameplayType.Stealth)
+                            ? St(StageGoal.Stealth, "AS SHE DID", climax, spawn: light)
+                            : m.Has(GameplayType.Escort)
+                                ? St(StageGoal.Escort, "AS SHE DID", climax, spawn: light)
+                                : FoeOrWave(m, "AS IT WAS", climax, light));
+                    else st.Add(St(StageGoal.Reach, "THE PLACE IT ENDED", climax, point: East));
+                    st.Add(St(StageGoal.Reach, "WAKE", "THE TEMPLE FLOOR", point: South));
+                    break;
+
+                case GameplayType.Conversation:
+                    st.Add(St(StageGoal.Reach, obj, upperName, point: North, checkpoint: true));
+                    st.Add(St(StageGoal.Cinematic, "LISTEN", unique, beatId: m.beat, onComplete: ev));
+                    if (roster.Length > 0)
+                    {
+                        st.Add(St(StageGoal.Investigate, "A BREATH", disc, count: 1, checkpoint: true));
+                        st.Add(m.Has(GameplayType.Endure) && !string.IsNullOrEmpty(foe)
+                            ? St(StageGoal.Endure, "LAST THE LESSON", climax, duration: 40f, foeDef: foe, spawn: light)
+                            : m.Has(GameplayType.Defense)
+                                ? St(StageGoal.Defend, "HOLD WHILE SHE SPEAKS", climax, duration: 45f, point: North, spawn: mid)
+                                : FoeOrWave(m, "THEY INTERRUPT", climax, light));
+                    }
+                    else
+                    {
+                        st.Add(St(StageGoal.Reach, "WALK", disc, point: East));
+                        st.Add(St(StageGoal.Investigate, m.id == 100 ? "THE THREAD ON HIS WRIST" : "TAKE IT IN", climax, count: 1, checkpoint: true));
+                    }
+                    st.Add(St(StageGoal.Reach, m.id == 100 ? "LEAVE THE FORTRESS" : "GO", m.id == 100 ? "SUNRISE" : "ON", point: South));
+                    break;
+
+                case GameplayType.Endure:
+                    st.Add(St(StageGoal.Reach, obj, upperName, point: North, checkpoint: true));
+                    st.Add(St(StageGoal.Investigate, "SOMETHING IS HERE", unique, count: 1));
+                    st.Add(St(StageGoal.Endure, "SURVIVE", "IT IS HERE", duration: 45f, foeDef: foe, spawn: light, onComplete: StageEvent.FoeWithdraws));
+                    st.Add(St(StageGoal.Reach, "GET OFF ITS GROUND", disc, point: South, checkpoint: true));
+                    st.Add(m.Has(GameplayType.Chase)
+                        ? St(StageGoal.Escape, "RUN", climax, duration: 45f, point: West, spawn: light)
+                        : m.Has(GameplayType.Boss)
+                            ? St(StageGoal.Cinematic, "ON YOUR KNEES", climax, beatId: m.beat, onComplete: ev)
+                            : St(StageGoal.Stealth, "LEAVE NO TRAIL", climax, spawn: light));
+                    st.Add(St(StageGoal.Reach, "GONE", "IT LET YOU GO", point: West));
+                    break;
             }
 
+            // A mid-mission beat on a non-memory mission plays before the climax.
+            if (!string.IsNullOrEmpty(m.beat) && m.Primary is not (GameplayType.Memory or GameplayType.Conversation)
+                && !st.Exists(x => x.goal == StageGoal.Cinematic))
+                st.Insert(Mathf.Max(1, st.Count - 2), St(StageGoal.Cinematic, "LISTEN", "", beatId: m.beat));
+
+            plan.stages = st.ToArray();
+            plan.challenge = ChallengeFor(m);
+            plan.challengeSeconds = m.Has(GameplayType.Chase) || m.Has(GameplayType.Survival) ? 240f : 300f;
+            plan.challengeShards = m.IsMajorBoss ? 3 : 2;
+            plan.baseShards = m.IsMajorBoss ? 5 : m.id > 60 ? 4 : 3;
+            plan.dressing = DressingFor(m);
+        }
+
+        private static MissionStage FoeOrWave(CampaignMission m, string objective, string banner, EnemyKind[] pack) =>
+            string.IsNullOrEmpty(m.foe)
+                ? St(StageGoal.Wave, objective, banner, spawn: pack)
+                : St(StageGoal.BossFight, objective, banner, foeDef: m.foe, spawn: pack.Length > 2 ? new[] { pack[0], pack[1] } : pack);
+
+        private static StageEvent EventFor(CampaignMission m)
+        {
+            var e = m.uniqueEvent.ToLowerInvariant();
+            if (e.Contains("collapse") || e.Contains("comes down") || e.Contains("avalanche") || e.Contains("falls around")) return StageEvent.Collapse;
+            if (e.Contains("turn against") || e.Contains("mutin")) return StageEvent.Mutiny;
+            if (e.Contains("fog")) return StageEvent.FogRolls;
+            if (e.Contains("water")) return StageEvent.WaterRises;
+            if (e.Contains("alarm")) return StageEvent.AlarmTriggered;
+            if (e.Contains("ambush") || e.Contains("behind")) return StageEvent.Ambush;
+            if (e.Contains("dark") || e.Contains("lantern")) return StageEvent.LightsOut;
+            if (e.Contains("rain")) return StageEvent.RainStarts;
+            if (e.Contains("reinforce") || e.Contains("come back") || e.Contains("arrive")) return StageEvent.Reinforcements;
+            return StageEvent.Reinforcements;
+        }
+
+        private static MissionChallenge ChallengeFor(CampaignMission m) => m.Primary switch
+        {
+            GameplayType.Stealth => MissionChallenge.NoAlarm,
+            GameplayType.Investigation => MissionChallenge.NoAlarm,
+            GameplayType.Sabotage => MissionChallenge.NoAlarm,
+            GameplayType.Rescue => MissionChallenge.SaveAllPrisoners,
+            GameplayType.Escort => MissionChallenge.NoCivilianDeaths,
+            GameplayType.Defense => MissionChallenge.NoCivilianDeaths,
+            GameplayType.Exploration => string.IsNullOrEmpty(m.foe) ? MissionChallenge.UnderTime : MissionChallenge.SilentKill,
+            GameplayType.Memory => MissionChallenge.UnderTime,
+            GameplayType.Conversation => m.enemies.Length > 0 ? MissionChallenge.UnderTime : MissionChallenge.None,
+            GameplayType.Endure => MissionChallenge.UnderTime,
+            _ => MissionChallenge.UnderTime,
+        };
+
+        private static DressingKind[] DressingFor(CampaignMission m)
+        {
+            var d = new List<DressingKind>();
+            switch (m.region)
+            {
+                case Region.Ruins: d.Add(DressingKind.BurnedHome); d.Add(DressingKind.MissingNotice); d.Add(DressingKind.HidingVillagers); break;
+                case Region.Forest: d.Add(DressingKind.AbandonedWeapons); d.Add(DressingKind.DestroyedCart); d.Add(DressingKind.EmptyHome); break;
+                case Region.Mountains: d.Add(DressingKind.KagehiraBanners); d.Add(DressingKind.PrisonerCamp); d.Add(DressingKind.DestroyedCart); break;
+                case Region.Marsh: d.Add(DressingKind.DestroyedCart); d.Add(DressingKind.AbandonedWeapons); d.Add(DressingKind.EmptyHome); break;
+                case Region.Temples: d.Add(DressingKind.KagehiraBanners); d.Add(DressingKind.EmptyHome); d.Add(DressingKind.AbandonedWeapons); break;
+                case Region.Villages: d.Add(DressingKind.HidingVillagers); d.Add(DressingKind.EmptyHome); d.Add(DressingKind.DestroyedCart); break;
+                case Region.Fortresses: d.Add(DressingKind.KagehiraBanners); d.Add(DressingKind.PrisonerCamp); d.Add(DressingKind.AbandonedWeapons); break;
+                case Region.Snow: d.Add(DressingKind.AbandonedWeapons); d.Add(DressingKind.DestroyedCart); d.Add(DressingKind.EmptyHome); break;
+                case Region.Stronghold: d.Add(DressingKind.KagehiraBanners); d.Add(DressingKind.PrisonerCamp); d.Add(DressingKind.AbandonedWeapons); break;
+                case Region.Seal: d.Add(DressingKind.KagehiraBanners); d.Add(DressingKind.AbandonedWeapons); d.Add(DressingKind.EmptyHome); break;
+                case Region.Dawn: d.Add(DressingKind.EmptyHome); d.Add(DressingKind.MissingNotice); d.Add(DressingKind.HidingVillagers); break;
+            }
+            // Blood, sparingly: only where the mission's own words put it there.
+            var words = (m.uniqueEvent + " " + m.storyDiscovery + " " + m.climax).ToLowerInvariant();
+            if (words.Contains("blood") || words.Contains("killed") || words.Contains("execution") || words.Contains("bodies"))
+                d.Add(DressingKind.BloodTrail);
+            if (m.Has(GameplayType.Rescue) && !d.Contains(DressingKind.PrisonerCamp)) d.Add(DressingKind.PrisonerCamp);
+            if (m.region is Region.Ruins or Region.Villages && m.Has(GameplayType.Escort) && !d.Contains(DressingKind.HidingVillagers))
+                d.Add(DressingKind.HidingVillagers);
+            return d.ToArray();
+        }
+
+        /// <summary>
+        /// A banner-sized phrase from a sentence of authored prose. Prefers a
+        /// quoted line if there is one, otherwise the first clause; never ends
+        /// on a word that needs the next one, so a cut reads as a title rather
+        /// than as a sentence that stopped.
+        /// </summary>
+        private static string Short(string text, int max = 30)
+        {
+            if (string.IsNullOrEmpty(text)) return "";
+            var t = text.Trim();
+
+            // "AIKO: 'Where will you go?' RENZO: 'Home.'" → the first spoken line.
+            var q1 = t.IndexOfAny(new[] { '\'', '“', '"' });
+            if (q1 >= 0)
+            {
+                var q2 = t.IndexOfAny(new[] { '\'', '”', '"' }, q1 + 1);
+                if (q2 > q1 + 3) t = t.Substring(q1 + 1, q2 - q1 - 1);
+            }
+            // Drop a speaker prefix that survived without quotes.
+            var colon = t.IndexOf(':');
+            if (colon > 0 && colon < 12 && t.Substring(0, colon).ToUpperInvariant() == t.Substring(0, colon)) t = t.Substring(colon + 1);
+
+            // First clause.
+            var cut = t.IndexOfAny(new[] { '.', ':', ';', '—', '?', '!' });
+            if (cut > 8) t = t.Substring(0, cut + (t[cut] == '?' ? 1 : 0));
+            var comma = t.IndexOf(',');
+            if (comma > 12 && comma <= max) t = t.Substring(0, comma);
+
+            // Fit, on a word boundary.
+            t = t.Trim().TrimEnd('.', ',', ';', ':');
+            if (t.Length > max)
+            {
+                var sp = t.LastIndexOf(' ', max);
+                t = sp > 8 ? t.Substring(0, sp) : t.Substring(0, max);
+            }
+
+            // Never end on a word that needs the next one.
+            var dangling = new HashSet<string> { "a", "an", "the", "and", "or", "of", "to", "for", "in", "on", "at",
+                "with", "by", "from", "into", "that", "who", "as", "but", "his", "her", "its", "their", "is", "are", "was" };
+            var words = new List<string>(t.Split(' ', System.StringSplitOptions.RemoveEmptyEntries));
+            while (words.Count > 2 && dangling.Contains(words[^1].ToLowerInvariant().Trim('\'', '\"')))
+                words.RemoveAt(words.Count - 1);
+            return string.Join(" ", words).Trim().TrimEnd(',', ';', ':', '\'', '\"');
+        }
+
+        /// <summary>The ten hand-built plans, re-slotted to the campaign numbers they became.</summary>
+        private static void BuildBespoke()
+        {
             var north = new Vector3(0f, 0f, 6.5f);
             var south = new Vector3(0f, 0f, -6.5f);
             var east = new Vector3(10f, 0f, 0f);
@@ -342,8 +739,6 @@ namespace Emberline.EditorTools
             };
             EditorUtility.SetDirty(m10);
 
-            AssetDatabase.SaveAssets();
-            Debug.Log("[Emberline] Missions authored: 10 story plans under Resources/Missions");
         }
     }
 }

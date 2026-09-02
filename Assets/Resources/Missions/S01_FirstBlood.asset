@@ -14,14 +14,20 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Emberline.Missions.MissionPlan
   id: 1
   missionName: FIRST BLOOD
-  missionType: ASSASSINATION
+  missionType: STEALTH
   briefing: Raiders on the east terraces. One of them is watching the lantern line
     and has not looked behind him once.
-  debrief: They carried nothing away. Whatever they came for, they did not find it.
-    The notice on the post is three weeks old.
+  debrief: 'In the assassin''s coat: a map with one road marked in red. LANTERN ROAD.'
   marsh: 0
   nightOverride: 0
   rain: 0
+  snow: 0
+  fog: 0
+  applyTheme: 1
+  theme: 8
+  nextReason: The map is the only lead there is. Renzo follows it before whoever
+    drew it comes looking.
+  region: RUINS
   stages:
   - goal: 0
     objective: GET ABOVE HIS POST
@@ -32,6 +38,8 @@ MonoBehaviour:
     spawn: 
     pointB: {x: 0, y: 0, z: 0}
     spawnB: 
+    foeDef: 
+    beatId: 
     bossHealthGate: 0.6
     onComplete: 0
     optional: 0
@@ -46,6 +54,8 @@ MonoBehaviour:
     spawn: 00000000
     pointB: {x: 0, y: 0, z: 0}
     spawnB: 
+    foeDef: 
+    beatId: 
     bossHealthGate: 0.6
     onComplete: 1
     optional: 0
@@ -60,6 +70,8 @@ MonoBehaviour:
     spawn: 
     pointB: {x: 0, y: 0, z: 0}
     spawnB: 
+    foeDef: 
+    beatId: 
     bossHealthGate: 0.6
     onComplete: 0
     optional: 0
@@ -74,6 +86,8 @@ MonoBehaviour:
     spawn: 000000000000000001000000
     pointB: {x: 0, y: 0, z: 0}
     spawnB: 
+    foeDef: 
+    beatId: 
     bossHealthGate: 0.6
     onComplete: 0
     optional: 0
@@ -88,6 +102,8 @@ MonoBehaviour:
     spawn: 
     pointB: {x: 0, y: 0, z: 0}
     spawnB: 
+    foeDef: 
+    beatId: 
     bossHealthGate: 0.6
     onComplete: 0
     optional: 0

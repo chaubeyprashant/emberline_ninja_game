@@ -12,16 +12,22 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 814b8fc7fb4eb427480893eff898b203, type: 3}
   m_Name: S06_IntoTheReeds
   m_EditorClassIdentifier: Assembly-CSharp::Emberline.Missions.MissionPlan
-  id: 6
-  missionName: INTO THE REEDS
+  id: 9
+  missionName: INTO THE FOG
   missionType: SURVIVAL
   briefing: "The reeds are full of something that was not born there. Go in. Do not
     run \u2014 you will not hear them coming."
-  debrief: They came apart like wet paper and left no bodies. Whatever they were,
-    they were made, and made here.
+  debrief: Through the fog, lanterns. Dozens of them. A temple.
   marsh: 1
   nightOverride: 0
   rain: 0
+  snow: 0
+  fog: 1
+  applyTheme: 1
+  theme: 7
+  nextReason: The temple is what the soldiers fear and what his father's route pointed
+    to. Renzo goes to it.
+  region: MARSH
   stages:
   - goal: 0
     objective: INTO THE REEDS
@@ -32,6 +38,8 @@ MonoBehaviour:
     spawn: 
     pointB: {x: 0, y: 0, z: 0}
     spawnB: 
+    foeDef: 
+    beatId: 
     bossHealthGate: 0.6
     onComplete: 8
     optional: 0
@@ -46,6 +54,8 @@ MonoBehaviour:
     spawn: 0300000003000000
     pointB: {x: 0, y: 0, z: 0}
     spawnB: 
+    foeDef: 
+    beatId: 
     bossHealthGate: 0.6
     onComplete: 0
     optional: 0
@@ -60,6 +70,8 @@ MonoBehaviour:
     spawn: 
     pointB: {x: 0, y: 0, z: 0}
     spawnB: 
+    foeDef: 
+    beatId: 
     bossHealthGate: 0.6
     onComplete: 0
     optional: 0
@@ -74,6 +86,8 @@ MonoBehaviour:
     spawn: 030000000300000008000000
     pointB: {x: 0, y: 0, z: 0}
     spawnB: 
+    foeDef: 
+    beatId: 
     bossHealthGate: 0.6
     onComplete: 0
     optional: 0
@@ -88,6 +102,8 @@ MonoBehaviour:
     spawn: 0300000003000000
     pointB: {x: 0, y: 0, z: 0}
     spawnB: 
+    foeDef: 
+    beatId: 
     bossHealthGate: 0.6
     onComplete: 0
     optional: 0
@@ -102,6 +118,8 @@ MonoBehaviour:
     spawn: 
     pointB: {x: 0, y: 0, z: 0}
     spawnB: 
+    foeDef: 
+    beatId: 
     bossHealthGate: 0.6
     onComplete: 0
     optional: 0

@@ -285,6 +285,20 @@ namespace Emberline.Enemies
         }
 
         /// <summary>Copy the definition's stats onto the instance fields.</summary>
+        /// <summary>
+        /// Rebind this body to another def — a named foe on a common kind's
+        /// model: the Pale Shade is a Shade with a boss's stats and a card, the
+        /// Convoy Captain a ronin with a name. Call right after spawning, before
+        /// the spawner scales anything.
+        /// </summary>
+        public void SetDef(EnemyDef d)
+        {
+            if (d == null) return;
+            def = d;
+            ApplyDef();
+            Hp = maxHp;
+        }
+
         private void ApplyDef()
         {
             if (def == null) return;

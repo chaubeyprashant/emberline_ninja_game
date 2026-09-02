@@ -1501,6 +1501,39 @@ namespace Emberline.EditorTools
             jin.codexLine = "The storm blade. He never blocks twice the same way.";
             EditorUtility.SetDirty(jin);
 
+            // ---- Named foes. Boss-ranked defs on common bodies: the campaign
+            // needs a captain, a guardian and a pale thing in the marsh without a
+            // model each. A named foe is its base kind's def, heavier, with a card.
+            EnemyDef Named(string id, EnemyDef baseDef, string display, string title, string taunt,
+                float hpMul, float dmgMul, EnemyRank rank)
+            {
+                var d = D(id);
+                EditorUtility.CopySerialized(baseDef, d);
+                d.id = id; d.displayName = display; d.rank = rank;
+                d.maxHp = baseDef.maxHp * hpMul; d.damage = baseDef.damage * dmgMul;
+                d.maxPosture = baseDef.maxPosture * 1.5f;
+                d.bossTitle = title; d.bossTaunt = taunt;
+                d.staggerDecay = Mathf.Min(d.staggerDecay, 0.5f);
+                d.readsHeavies = true; d.punishesExposure = true;
+                d.codexLine = $"{display}. {baseDef.codexLine}";
+                EditorUtility.SetDirty(d);
+                return d;
+            }
+            Named("convoycaptain", samurai, "THE CONVOY CAPTAIN", "KEEPER OF THE LANTERN ROAD",
+                "“Everything on this road is counted. You were not.”", 1.6f, 1.15f, EnemyRank.MiniBoss);
+            Named("raiderleader", heavy, "THE SCAVENGER KING", "WHAT THE VILLAGE LEFT",
+                "“They searched too. They found me.”", 1.5f, 1.1f, EnemyRank.MiniBoss);
+            Named("paleshade", shade, "THE PALE SHADE", "WHAT THE FOREST KEPT",
+                "“…she went north… so will you…”", 4.5f, 1.3f, EnemyRank.MiniBoss);
+            Named("drownedguardian", elite, "THE DROWNED GUARDIAN", "WARDEN OF THE SECOND KEY",
+                "“Your father set me here. He did not say you would come.”", 1.8f, 1.2f, EnemyRank.MiniBoss);
+            Named("ironguard", elite, "THE IRON GUARD", "KAGEHIRA'S SHIELD",
+                "“The warlord does not see you. I make sure of it.”", 1.7f, 1.2f, EnemyRank.MiniBoss);
+            Named("finalcommander", samurai, "COMMANDER HOSHU", "THE INNER GATE",
+                "“He said you would reach this door. He did not say you would open it.”", 1.9f, 1.25f, EnemyRank.MiniBoss);
+            Named("threeblades", assassin, "THE THREE BLADES", "SISTERS OF THE SILENT FOREST",
+                "“One for the throat. One for the heart. One to watch.”", 2.2f, 1.2f, EnemyRank.Elite);
+
             // Bind each def to its prefab so spawned instances carry their data.
             void Bind(EnemyKind k, EnemyDef d)
             {

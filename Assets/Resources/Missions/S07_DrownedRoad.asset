@@ -12,16 +12,22 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 814b8fc7fb4eb427480893eff898b203, type: 3}
   m_Name: S07_DrownedRoad
   m_EditorClassIdentifier: Assembly-CSharp::Emberline.Missions.MissionPlan
-  id: 7
+  id: 41
   missionName: THE DROWNED ROAD
-  missionType: CROSSING
+  missionType: SURVIVAL
   briefing: The causeway floods twice a night. Between the tides it is the only road
     east. Cross it.
-  debrief: Every cart on the road is untouched except the lanterns. A hundred of
-    them, gone, and nothing else taken.
+  debrief: The far bank, and voices in the fog that are not soldiers.
   marsh: 1
   nightOverride: 0
   rain: 0
+  snow: 0
+  fog: 0
+  applyTheme: 1
+  theme: 7
+  nextReason: The voices are coming from the fog ahead. Renzo goes to find who is
+    making them.
+  region: MARSH
   stages:
   - goal: 0
     objective: GET ON THE CAUSEWAY
@@ -32,6 +38,8 @@ MonoBehaviour:
     spawn: 
     pointB: {x: 0, y: 0, z: 0}
     spawnB: 
+    foeDef: 
+    beatId: 
     bossHealthGate: 0.6
     onComplete: 6
     optional: 0
@@ -46,6 +54,8 @@ MonoBehaviour:
     spawn: 
     pointB: {x: 0, y: 0, z: 0}
     spawnB: 
+    foeDef: 
+    beatId: 
     bossHealthGate: 0.6
     onComplete: 0
     optional: 0
@@ -60,6 +70,8 @@ MonoBehaviour:
     spawn: 070000000700000001000000
     pointB: {x: 0, y: 0, z: 0}
     spawnB: 
+    foeDef: 
+    beatId: 
     bossHealthGate: 0.6
     onComplete: 9
     optional: 0
@@ -74,6 +86,8 @@ MonoBehaviour:
     spawn: 0900000000000000
     pointB: {x: 0, y: 0, z: 0}
     spawnB: 
+    foeDef: 
+    beatId: 
     bossHealthGate: 0.6
     onComplete: 0
     optional: 0
@@ -88,6 +102,8 @@ MonoBehaviour:
     spawn: 03000000
     pointB: {x: 0, y: 0, z: 0}
     spawnB: 
+    foeDef: 
+    beatId: 
     bossHealthGate: 0.6
     onComplete: 6
     optional: 0
@@ -102,6 +118,8 @@ MonoBehaviour:
     spawn: 
     pointB: {x: 0, y: 0, z: 0}
     spawnB: 
+    foeDef: 
+    beatId: 
     bossHealthGate: 0.6
     onComplete: 0
     optional: 0

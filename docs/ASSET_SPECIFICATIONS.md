@@ -304,3 +304,63 @@ adding a scene.
 **Acceptance for every asset:** passes the validator, renders correctly in
 `EmberSnapshot`/`EmberStorySnapshot`, and holds frame rate on device with
 8 enemies present.
+
+## 10. The hundred-mission campaign — what it still needs
+
+The campaign is authored and playable on the two existing arenas. Every
+region of the journey is carried on them by lighting theme, weather,
+visibility and set dressing. The following are **not built**; the game marks
+each stand-in it uses so that none of them can be mistaken for finished work.
+
+### 10.1 Characters
+
+**Adult Aiko Kurogawa** — appears from mission 80 on; escorted in 83;
+framed in the beats of 81, 82, 86, 99, 100. Today: `PLACEHOLDER_AIKO_StandIn`
+on the primitive rig, dark-red cloth with a red-thread accent.
+Specification: same skeleton, socket set and proportions contract as Renzo
+(§1), 2 cm shorter, unarmed. Ten years of captivity in the silhouette: thin,
+straight-backed, sleeves too long. Red thread bracelet on the left wrist is
+the one required prop. Animation set: the civilian subset of §3 (idle, walk,
+run, flinch, crouch, two conversational idles) plus `kneel` and `reach` for
+the beats. Texture and polygon budgets as Renzo.
+
+**Jin Kurogane, gameplay model** — the duel character exists as a boss; the
+campaign frames him in beats (63, 68, 69) that need a cast member.
+Today: `PLACEHOLDER_JIN_StandIn`. Specification: promote the existing Jin
+boss model to a cast member with the conversational idle pair and a
+`sheathe`/`draw` pair; half mask (left half) as a detachable prop for
+missions 67–70.
+
+**Named foes** — Convoy Captain, Scavenger King, the Three Blades, Pale
+Shade, Drowned Guardian, Iron Guard, Commander Hoshu. Today: the base kind's
+body with a boss-ranked def and an intro card. Specification: a material and
+armour-piece variant per foe on the base model — no new skeletons — so the
+card and the silhouette agree. Pale Shade: the Shade model at 1.3× with a
+ragged outer layer that reads at distance.
+
+### 10.2 Environments
+
+Each set is an arena of the same footprint as the rooftop deck (26 × 16 m
+walkable, obstacle registration per §5's contract) so the mission plans
+transfer without re-authoring points.
+
+| Set | Missions | Carries today | Needs |
+|---|---|---|---|
+| Black pines forest | 7, 15–17, 21–30 | rooftop deck, Forest/Bamboo theme, fog | trunks and undergrowth as registered obstacles, canopy occlusion for vision, a clearing |
+| Mountain pass, snow | 23, 38, 71–73, 92–95 | rooftop deck, Mountain theme, snow weather | ridge walls, a drop on one side, deep-snow slow zones, avalanche debris states for 73 |
+| Drowned temple | 10, 48–60 | marsh, Temple theme | a flooded nave (chest-deep water zone), a sealed door prop with the Kurogawa mark, carvings for the Seal chamber |
+| Fortress / stronghold | 4, 31–40, 74–91 | rooftop deck, Castle/Fortress theme, banners | a gate that opens, a wall with a walkable top, a prison wing with cells, a throne hall |
+| Dawn ridge | 100 | rooftop deck, VillageDawn theme | a ridge road with Yorune visible below; no combat geometry at all |
+
+Priority order for sourcing: fortress (28 missions), forest (14), temple
+(14), mountain (11), dawn ridge (1, but it is the ending).
+
+### 10.3 Mechanics that are geometry
+
+- Kagehira's fourth phase, a physically collapsing arena (99). Today the
+  fight has three mission-level phases with arena changes (water rising,
+  lanterns out) and the refusal beat; a collapsing floor needs the temple
+  set with breakable tiles.
+- The avalanche (73) as moving debris rather than shake, dust and a clock.
+- The tower's verticality (16). The plan holds the tower as a point on the
+  deck; the set needs a stair and a top.

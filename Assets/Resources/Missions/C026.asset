@@ -1,0 +1,130 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 814b8fc7fb4eb427480893eff898b203, type: 3}
+  m_Name: C026
+  m_EditorClassIdentifier: Assembly-CSharp::Emberline.Missions.MissionPlan
+  id: 26
+  missionName: THE BLIND PATH
+  missionType: SURVIVAL
+  briefing: Navigate the fog-covered path to the far side of the forest.
+  debrief: The thread runs out at a clearing. Someone tied it here on purpose.
+  marsh: 0
+  nightOverride: 0
+  rain: 0
+  snow: 0
+  fog: 1
+  applyTheme: 1
+  theme: 1
+  nextReason: Red thread. Aiko's bracelet was red thread. Renzo follows it.
+  region: FOREST
+  stages:
+  - goal: 0
+    objective: NAVIGATE THE FOG-COVERED PATH
+    banner: THE BLIND PATH
+    count: 1
+    duration: 0
+    point: {x: 0, y: 0, z: 6.5}
+    spawn: 
+    pointB: {x: 0, y: 0, z: 0}
+    spawnB: 
+    foeDef: 
+    beatId: 
+    bossHealthGate: 0.6
+    onComplete: 8
+    optional: 0
+    bonusShards: 1
+    checkpoint: 1
+  - goal: 4
+    objective: STAY ALIVE
+    banner: THEY COME
+    count: 1
+    duration: 40
+    point: {x: 0, y: 0, z: 0}
+    spawn: 0300000009000000
+    pointB: {x: 0, y: 0, z: 0}
+    spawnB: 
+    foeDef: 
+    beatId: 
+    bossHealthGate: 0.6
+    onComplete: 0
+    optional: 0
+    bonusShards: 1
+    checkpoint: 0
+  - goal: 8
+    objective: A BREATH
+    banner: THE FOREST PATH IS MARKED WITH RED
+    count: 1
+    duration: 0
+    point: {x: 0, y: 0, z: 0}
+    spawn: 
+    pointB: {x: 0, y: 0, z: 0}
+    spawnB: 
+    foeDef: 
+    beatId: 
+    bossHealthGate: 0.6
+    onComplete: 0
+    optional: 0
+    bonusShards: 1
+    checkpoint: 1
+  - goal: 4
+    objective: STILL STANDING
+    banner: FOG AND LISTENING AGAIN, DEEPER
+    count: 1
+    duration: 45
+    point: {x: 0, y: 0, z: 0}
+    spawn: 090000000b00000003000000
+    pointB: {x: 0, y: 0, z: 0}
+    spawnB: 
+    foeDef: 
+    beatId: 
+    bossHealthGate: 0.6
+    onComplete: 8
+    optional: 0
+    bonusShards: 1
+    checkpoint: 0
+  - goal: 1
+    objective: WHAT IS LEFT
+    banner: EVERYTHING THAT WAS FOLLOWING IN
+    count: 1
+    duration: 0
+    point: {x: 0, y: 0, z: 0}
+    spawn: 03000000090000000b0000000300000009000000
+    pointB: {x: 0, y: 0, z: 0}
+    spawnB: 
+    foeDef: 
+    beatId: 
+    bossHealthGate: 0.6
+    onComplete: 0
+    optional: 0
+    bonusShards: 1
+    checkpoint: 0
+  - goal: 0
+    objective: OUT
+    banner: THE FAR SIDE
+    count: 1
+    duration: 0
+    point: {x: 0, y: 0, z: -6.5}
+    spawn: 
+    pointB: {x: 0, y: 0, z: 0}
+    spawnB: 
+    foeDef: 
+    beatId: 
+    bossHealthGate: 0.6
+    onComplete: 0
+    optional: 0
+    bonusShards: 1
+    checkpoint: 0
+  dressing: 040000000300000002000000
+  challenge: 5
+  challengeSeconds: 240
+  challengeShards: 2
+  baseShards: 3

@@ -1,0 +1,87 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9f3b1ee5018f440738f3a40a8004f072, type: 3}
+  m_Name: you_came
+  m_EditorClassIdentifier: Assembly-CSharp::Emberline.Story.StoryBeat
+  id: you_came
+  title: YOU CAME
+  shots:
+  - subject: AIKO
+    camera: 3
+    duration: 5
+    letterbox: 1
+    speaker: 
+    line: 
+    voice: {fileID: 0}
+    applyTheme: 0
+    theme: 0
+    audio: 12
+    setState: 0
+    card: 
+    fadeOutAfter: 0
+    blackAfter: 0
+  - subject: AIKO
+    camera: 2
+    duration: 5
+    letterbox: 1
+    speaker: AIKO
+    line: You came.
+    voice: {fileID: 0}
+    applyTheme: 0
+    theme: 0
+    audio: 0
+    setState: 0
+    card: 
+    fadeOutAfter: 0
+    blackAfter: 0
+  - subject: RENZO
+    camera: 0
+    duration: 4
+    letterbox: 1
+    speaker: RENZO
+    line: I said I would.
+    voice: {fileID: 0}
+    applyTheme: 0
+    theme: 0
+    audio: 0
+    setState: 0
+    card: 
+    fadeOutAfter: 0
+    blackAfter: 0
+  - subject: AIKO
+    camera: 0
+    duration: 4
+    letterbox: 1
+    speaker: AIKO
+    line: You were nine.
+    voice: {fileID: 0}
+    applyTheme: 0
+    theme: 0
+    audio: 0
+    setState: 0
+    card: 
+    fadeOutAfter: 0
+    blackAfter: 0
+  - subject: RENZO
+    camera: 5
+    duration: 4.5
+    letterbox: 1
+    speaker: 
+    line: 
+    voice: {fileID: 0}
+    applyTheme: 0
+    theme: 0
+    audio: 0
+    setState: 0
+    card: 
+    fadeOutAfter: 1
+    blackAfter: 1.5

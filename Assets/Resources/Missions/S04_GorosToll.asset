@@ -12,16 +12,23 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 814b8fc7fb4eb427480893eff898b203, type: 3}
   m_Name: S04_GorosToll
   m_EditorClassIdentifier: Assembly-CSharp::Emberline.Missions.MissionPlan
-  id: 4
+  id: 5
   missionName: GORO'S TOLL
-  missionType: ASSAULT
+  missionType: BOSS
   briefing: They have put a toll on the north road. Those who cannot pay are kept.
     The toll-captain is called Goro.
-  debrief: The ledger at the post records eleven names and no coin. Goro was not
-    collecting money.
+  debrief: The prisoner ledger at the post carries a name Renzo has not heard spoken
+    in ten years. AIKO KUROGAWA.
   marsh: 0
   nightOverride: 0
   rain: 0
+  snow: 0
+  fog: 0
+  applyTheme: 1
+  theme: 5
+  nextReason: Aiko is alive, or was. The trail the prisoners took is the only way
+    to find out which.
+  region: MOUNTAINS
   stages:
   - goal: 0
     objective: WALK UP TO THE POST
@@ -32,6 +39,8 @@ MonoBehaviour:
     spawn: 
     pointB: {x: 0, y: 0, z: 0}
     spawnB: 
+    foeDef: 
+    beatId: 
     bossHealthGate: 0.6
     onComplete: 0
     optional: 0
@@ -46,6 +55,8 @@ MonoBehaviour:
     spawn: 
     pointB: {x: 0, y: 0, z: 0}
     spawnB: 
+    foeDef: 
+    beatId: 
     bossHealthGate: 0.6
     onComplete: 0
     optional: 0
@@ -60,6 +71,8 @@ MonoBehaviour:
     spawn: 070000000600000001000000
     pointB: {x: 0, y: 0, z: 0}
     spawnB: 
+    foeDef: 
+    beatId: 
     bossHealthGate: 0.6
     onComplete: 3
     optional: 0
@@ -74,6 +87,8 @@ MonoBehaviour:
     spawn: 020000000000000000000000
     pointB: {x: 0, y: 0, z: 0}
     spawnB: 
+    foeDef: 
+    beatId: 
     bossHealthGate: 0.6
     onComplete: 0
     optional: 0
@@ -88,6 +103,8 @@ MonoBehaviour:
     spawn: 
     pointB: {x: 0, y: 0, z: 0}
     spawnB: 
+    foeDef: 
+    beatId: 
     bossHealthGate: 0.6
     onComplete: 0
     optional: 0
@@ -97,4 +114,4 @@ MonoBehaviour:
   challenge: 2
   challengeSeconds: 240
   challengeShards: 3
-  baseShards: 4
+  baseShards: 5

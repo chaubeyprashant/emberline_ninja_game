@@ -2,6 +2,7 @@ using UnityEngine;
 using Emberline.Core;
 using Emberline.Enemies;
 using Emberline.UI;
+using Emberline.Story;
 
 namespace Emberline.Missions
 {
@@ -51,6 +52,8 @@ namespace Emberline.Missions
                     StageGoal.Investigate => $"{text} — {_progress}/{s.count}",
                     StageGoal.Eliminate or StageGoal.Assassinate =>
                         $"{text} — {Mathf.Max(0, s.count - _progress)} LEFT",
+                    StageGoal.Endure => $"{text} — {Mathf.CeilToInt(Mathf.Max(0f, _stageT))}s",
+                    StageGoal.FreePrisoners => $"{text} — {Prisoner.Freed}/{s.count}",
                     StageGoal.BossPhase => _phaseBoss != null && _phaseBoss.maxHp > 0f
                         ? $"{text} — {Mathf.RoundToInt(_phaseBoss.Hp / _phaseBoss.maxHp * 100f)}%"
                         : text,
@@ -70,6 +73,9 @@ namespace Emberline.Missions
         private Vector3 _point, _pointB;
         private Transform _markerB;
         private EnemyBrain _phaseBoss;
+        private EnemyBrain _foe;            // the stage's named foe, if any
+        private CinematicDirector _beat;
+        private bool _beatDone;
         private GameManager _gm;
         private Transform _player;
         private Transform _marker;
@@ -105,6 +111,26 @@ namespace Emberline.Missions
         {
             if (plan == null) return;
             if (plan.rain) LevelFx.EnableRain();
+            if (plan.applyTheme)
+            {
+                // One arena geometry, many places: the theme carries the light,
+                // the fog and the weather that make the same deck a mountain
+                // pass or a burning village.
+                var theme = EnvThemes.Get(plan.theme);
+                if (plan.snow) theme.weather = Weather.Snow;
+                if (plan.fog) { theme.fogDensity = Mathf.Max(theme.fogDensity, 0.06f); theme.weather = Weather.Mist; }
+                Atmosphere.Apply(theme, SceneRefs.Cam != null ? SceneRefs.Cam.transform : null);
+                RenderSettings.ambientSkyColor = theme.ambientSky;
+                RenderSettings.ambientEquatorColor = theme.ambientEquator;
+                RenderSettings.ambientGroundColor = theme.ambientGround;
+                foreach (var l in Object.FindObjectsByType<Light>(FindObjectsSortMode.None))
+                    if (l.type == LightType.Directional)
+                    {
+                        l.color = theme.keyLight;
+                        l.intensity = theme.keyIntensity;
+                    }
+            }
+            if (plan.fog) Visibility.AmbientScale *= 0.7f;
             if (!plan.nightOverride) return;
 
             Visibility.AmbientScale *= 0.6f;
@@ -163,6 +189,33 @@ namespace Emberline.Missions
                     SpawnClues(s.count);
                     break;
 
+                case StageGoal.Cinematic:
+                {
+                    // The mission holds while the beat plays. A missing beat is
+                    // not a stuck mission: the director reports it and moves on.
+                    _beatDone = false;
+                    var beat = string.IsNullOrEmpty(s.beatId) ? null
+                        : Resources.Load<Story.StoryBeat>("Story/" + s.beatId);
+                    if (beat == null)
+                    {
+                        Debug.LogWarning($"[Mission] beat '{s.beatId}' missing on stage {StageIndex}");
+                        _beatDone = true;
+                        break;
+                    }
+                    CastStandIn.EnsureFor(beat); // adult Aiko, Jin: marked stand-ins
+                    var rig = SceneRefs.Cam != null ? SceneRefs.Cam.GetComponent<CameraRig>() : null;
+                    _beat = CinematicDirector.Play(beat, _gm, rig, () => _beatDone = true);
+                    break;
+                }
+
+                case StageGoal.Endure:
+                    _stageT = Mathf.Max(10f, s.duration);
+                    break;
+
+                case StageGoal.FreePrisoners:
+                    if (Prisoner.Total < s.count) MissionDressing.SpawnPen(_gm != null ? _gm.arenaHalfExtents : new Vector2(13f, 8f), s.count - Prisoner.Total);
+                    break;
+
                 case StageGoal.Stealth:
                 case StageGoal.Listen:
                     foreach (var e in EnemyBrain.Active)
@@ -185,6 +238,7 @@ namespace Emberline.Missions
             }
 
             SpawnStageEnemies(s);
+            SpawnStageFoe(s);
         }
 
         private void SpawnStageEnemies(MissionStage s)
@@ -200,6 +254,17 @@ namespace Emberline.Missions
             foreach (var kind in list) _gm.SpawnOne(kind, unaware);
         }
 
+        /// <summary>A stage's named foe, spawned on the first kind in its roster.</summary>
+        private void SpawnStageFoe(MissionStage s)
+        {
+            _foe = null;
+            if (_gm == null || string.IsNullOrEmpty(s.foeDef)) return;
+            var def = EnemyDefs.Find(s.foeDef);
+            var kind = def != null ? def.kind : (s.spawn.Length > 0 ? s.spawn[0] : EnemyKind.Samurai);
+            _foe = _gm.SpawnNamed(kind, s.foeDef, s.goal is StageGoal.Stealth);
+            if (_foe != null && s.goal == StageGoal.BossPhase) _phaseBoss = _foe;
+        }
+
         private void Update()
         {
             if (Complete || Failed || Plan == null) return;
@@ -209,6 +274,7 @@ namespace Emberline.Missions
 
             if (s.duration > 0f) _stageT -= Time.deltaTime;
             Challenge?.Tick(Time.deltaTime);
+            RecallStragglers(s);
             if (Evaluate(s)) CompleteStage();
         }
 
@@ -249,6 +315,18 @@ namespace Emberline.Missions
                     // circling you is still the actual goal.
                     ListenPulse();
                     return AliveEnemies() == 0;
+
+                case StageGoal.Cinematic:
+                    return _beatDone;
+
+                case StageGoal.Endure:
+                    // A fight you are not meant to win. Lasting the clock is the
+                    // win; killing the foe anyway is allowed and also counts.
+                    if (_foe != null && _foe.Dead) return true;
+                    return _stageT <= 0f;
+
+                case StageGoal.FreePrisoners:
+                    return Prisoner.Freed >= s.count;
 
                 case StageGoal.Survive:
                     return _stageT <= 0f;
@@ -306,6 +384,12 @@ namespace Emberline.Missions
                     _gm?.Announce($"OPTIONAL COMPLETE — ◆ +{s.bonusShards}");
                 }
                 FireEvent(s.onComplete);
+                if (s.goal == StageGoal.Endure && _foe != null && !_foe.Dead)
+                {
+                    _gm?.Announce("HE LETS YOU LIVE");
+                    EnemyPool.Release(_foe);
+                    _foe = null;
+                }
             }
             ClearMarker();
             StageIndex++;
@@ -362,6 +446,21 @@ namespace Emberline.Missions
                     _gm?.Announce("THE OTHER GATE IS AWAKE");
                     _tookRouteB = !_tookRouteB;
                     break;
+                case StageEvent.Collapse:
+                    _gm?.Announce("IT IS COMING DOWN");
+                    RenderSettings.fogDensity = Mathf.Max(RenderSettings.fogDensity, 0.045f);
+                    if (SceneRefs.Rig != null) SceneRefs.Rig.Shake(9f, 1.2f);
+                    Sfx3D.ImpactAt(_player != null ? _player.position : Vector3.zero, Sfx3D.ImpactKind.Heavy, 1.8f);
+                    break;
+                case StageEvent.Mutiny:
+                    _gm?.Announce("THE GUARDS TURN AWAY");
+                    WithdrawAll();
+                    break;
+                case StageEvent.FoeWithdraws:
+                    _gm?.Announce(_foe != null && _foe.def != null ? $"{_foe.def.displayName} WITHDRAWS" : "THEY WITHDRAW");
+                    if (_foe != null && !_foe.Dead) EnemyPool.Release(_foe);
+                    _foe = null;
+                    break;
             }
         }
 
@@ -417,6 +516,72 @@ namespace Emberline.Missions
             _progress++;
             Sfx3D.Ui();
             _gm?.Announce($"CLUE FOUND — {_progress}/{Stage?.count ?? 0}");
+        }
+
+        private float _stragglerT;
+        private int _stragglerAlive = -1;
+
+        /// <summary>
+        /// A fight that has to end cannot be held open by one enemy nobody can
+        /// reach. When a clearing stage has been sitting on its last one or two
+        /// enemies for a long while with nobody closing the distance, the
+        /// stragglers are brought back to walkable ground near the player. It
+        /// is not subtle, and it is far better than a mission that cannot end.
+        /// </summary>
+        private void RecallStragglers(MissionStage s)
+        {
+            var clearing = s.goal is StageGoal.Wave or StageGoal.Eliminate or StageGoal.Assassinate
+                or StageGoal.Duel or StageGoal.BossFight or StageGoal.Stealth or StageGoal.Listen or StageGoal.Chase;
+            if (!clearing || _player == null) { _stragglerT = 0f; return; }
+
+            var alive = AliveExcludingPhaseBoss();
+            if (alive == 0 || alive > 2) { _stragglerT = 0f; _stragglerAlive = alive; return; }
+            if (alive != _stragglerAlive) { _stragglerAlive = alive; _stragglerT = 0f; }
+
+            // Is anyone actually closing? A straggler that is walking toward the
+            // player is not stuck, and must not be yanked mid-approach.
+            var closing = false;
+            var far = false;
+            foreach (var e in EnemyBrain.Active)
+            {
+                if (e == null || e.Dead || e == _phaseBoss) continue;
+                var d = Vector3.Distance(e.transform.position, _player.position);
+                if (d < 6f) closing = true;
+                if (d > 9f) far = true;
+            }
+            if (closing || !far) { _stragglerT = 0f; return; }
+
+            _stragglerT += Time.deltaTime;
+            if (_stragglerT < 40f) return;
+            _stragglerT = 0f;
+
+            var flat = new Vector3(_player.position.x, 0f, _player.position.z);
+            var n = 0;
+            foreach (var e in EnemyBrain.Active)
+            {
+                if (e == null || e.Dead || e == _phaseBoss) continue;
+                if (Vector3.Distance(e.transform.position, _player.position) <= 9f) continue;
+                var angle = (n++ * 137f) * Mathf.Deg2Rad;
+                var at = ArenaMarkers.Resolve(flat + new Vector3(Mathf.Cos(angle), 0f, Mathf.Sin(angle)) * 5f, 1.2f);
+                at = Walkable(at);
+                UI.FxPools.Puff(e.transform.position + Vector3.up, new Color(0.3f, 0.28f, 0.26f, 0.8f), 6);
+                e.transform.position = new Vector3(at.x, e.transform.position.y, at.z);
+                e.SetUnaware(false);
+                UI.FxPools.Puff(at + Vector3.up, new Color(0.3f, 0.28f, 0.26f, 0.8f), 6);
+            }
+            if (n > 0) _gm?.Announce("THEY COME OUT OF THE REEDS");
+        }
+
+        /// <summary>Every living enemy leaves the field. The mutiny, or mercy.</summary>
+        private static void WithdrawAll()
+        {
+            for (var i = EnemyBrain.Active.Count - 1; i >= 0; i--)
+            {
+                var e = EnemyBrain.Active[i];
+                if (e == null || e.Dead) continue;
+                UI.FxPools.Puff(e.transform.position + Vector3.up, new Color(0.3f, 0.28f, 0.26f, 0.8f), 8);
+                EnemyPool.Release(e);
+            }
         }
 
         private EnemyBrain FindBoss()

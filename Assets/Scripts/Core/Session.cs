@@ -66,6 +66,8 @@ namespace Emberline.Core
         public string taunt;
         public bool marsh;
         public EnemyKind kind;
+        /// <summary>Named foe def (Resources/Enemies) on `kind`'s body; empty for the kind itself.</summary>
+        public string defId = "";
     }
 
     /// <summary>
@@ -92,11 +94,17 @@ namespace Emberline.Core
         private const EnemyKind O = EnemyKind.Bomber;
 
         /// <summary>Act title for a level id — shown on briefings and the level select.</summary>
-        public static string ActName(int levelId) => levelId <= 4
-            ? "ACT I — THE LANTERN FALLS"
-            : levelId <= 7 ? "ACT II — INTO THE MARSH" : "ACT III — THE SERPENT'S COIL";
+        public static string ActName(int levelId) => Campaign.Campaign.ActName(levelId);
 
-        public static readonly LevelDef[] Story =
+        /// <summary>
+        /// The story catalogue is the hundred-mission campaign. The ten levels
+        /// that used to live here were the first draft of the same story; they
+        /// survive as the bespoke plans for the missions they became.
+        /// </summary>
+        public static LevelDef[] Story => Campaign.Campaign.Levels;
+
+        /// <summary>Kept for the endless and duel catalogues that still read it.</summary>
+        public static readonly LevelDef[] LegacyStory =
         {
             new() { id = 1, name = "FIRST BLOOD", marsh = false,
                 story = "Raiders hit the Yorune terraces at dusk. Renzo is the only blade on the roof.",
@@ -234,6 +242,18 @@ namespace Emberline.Core
                 taunt = "“Three lives, ninja. How many do you have?”" },
             new() { id = 4, name = "JIN KUROGANE", title = "THE STORM BLADE", kind = EnemyKind.Jin, marsh = false,
                 taunt = "“Attachments slow the sword. I cut mine away. Show me why you keep yours.”" },
+            // Campaign foes, for the roster the brief asks for: bosses and elites
+            // from the hundred missions, on the bodies they used there.
+            new() { id = 5, name = "THE CONVOY CAPTAIN", title = "KEEPER OF THE LANTERN ROAD", kind = EnemyKind.Samurai,
+                defId = "convoycaptain", marsh = false, taunt = "“Everything on this road is counted. You were not.”" },
+            new() { id = 6, name = "THE THREE BLADES", title = "SISTERS OF THE SILENT FOREST", kind = EnemyKind.Assassin,
+                defId = "threeblades", marsh = false, taunt = "“One for the throat. One for the heart. One to watch.”" },
+            new() { id = 7, name = "THE DROWNED GUARDIAN", title = "WARDEN OF THE SECOND KEY", kind = EnemyKind.EliteWarrior,
+                defId = "drownedguardian", marsh = true, taunt = "“Your father set me here. He did not say you would come.”" },
+            new() { id = 8, name = "THE IRON GUARD", title = "KAGEHIRA'S SHIELD", kind = EnemyKind.EliteWarrior,
+                defId = "ironguard", marsh = false, taunt = "“The warlord does not see you. I make sure of it.”" },
+            new() { id = 9, name = "COMMANDER HOSHU", title = "THE INNER GATE", kind = EnemyKind.Samurai,
+                defId = "finalcommander", marsh = false, taunt = "“He said you would reach this door. He did not say you would open it.”" },
         };
 
         // ---------------------------------------------------- duel modifiers

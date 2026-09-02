@@ -1,0 +1,90 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c978fcae96c7b41229485f6e7e15f0b0, type: 3}
+  m_Name: EliteWarrior
+  m_EditorClassIdentifier: Assembly-CSharp::Emberline.Enemies.EnemyDef
+  id: ironguard
+  displayName: THE IRON GUARD
+  codexLine: THE IRON GUARD. Captains of the road. They have an answer for every
+    range.
+  kind: 12
+  weapon: 2
+  rank: 2
+  modelSpec: EliteWarriorModel
+  scale: 1.12
+  maxHp: 357
+  moveSpeed: 3.2
+  attackRange: 2.5
+  damage: 24
+  windupTime: 0.55
+  spawnTime: 1.3
+  movement: 0
+  preferredRange: 2.2
+  attacks:
+  - kind: 0
+    minRange: 0
+    maxRange: 2.9
+    weight: 1.2
+    damageMultiplier: 1
+    windupOverride: 0
+    cooldown: 1.6
+    redTelegraph: 0
+    telegraphScale: 1
+  - kind: 4
+    minRange: 0
+    maxRange: 4.5
+    weight: 0.6
+    damageMultiplier: 1.2
+    windupOverride: 0.9
+    cooldown: 3.2
+    redTelegraph: 1
+    telegraphScale: 2.4
+  - kind: 3
+    minRange: 0
+    maxRange: 3.8
+    weight: 0.6
+    damageMultiplier: 1.15
+    windupOverride: 0.8
+    cooldown: 3
+    redTelegraph: 1
+    telegraphScale: 2
+  - kind: 9
+    minRange: 4
+    maxRange: 10
+    weight: 0.8
+    damageMultiplier: 1
+    windupOverride: 0.45
+    cooldown: 2.4
+    redTelegraph: 1
+    telegraphScale: 1.2
+  armor: 5
+  poise: 0.75
+  blockChance: 0.3
+  maxPosture: 60
+  postureRegen: 9
+  postureRegenDelay: 1.6
+  guardBreakSeconds: 2.2
+  bossTitle: KAGEHIRA'S SHIELD
+  bossTaunt: "\u201CThe warlord does not see you. I make sure of it.\u201D"
+  dodgeChance: 0.15
+  counterChance: 0.4
+  punishesExposure: 1
+  readsHeavies: 1
+  guardsWhenPostureLow: 1
+  protectsRanged: 1
+  retreatBelowHp: 0
+  panicRange: 0
+  staggerDecay: 0.5
+  backstabMultiplier: 1.2
+  crushMultiplier: 1.25
+  thrownMultiplier: 1
+  elementalMultiplier: 1

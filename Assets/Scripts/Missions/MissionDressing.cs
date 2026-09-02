@@ -120,6 +120,24 @@ namespace Emberline.Missions
             }
         }
 
+        /// <summary>A pen with `count` prisoners, for a rescue beat that needs them.</summary>
+        public static void SpawnPen(Vector2 halfExtents, int count)
+        {
+            if (_root == null) _root = new GameObject("MissionDressing");
+            var at = new Vector3(Random.Range(-halfExtents.x * 0.45f, halfExtents.x * 0.45f), 0f,
+                Random.Range(-halfExtents.y * 0.45f, halfExtents.y * 0.45f));
+            for (var i = 0; i < 6; i++)
+            {
+                var a = i / 6f * Mathf.PI * 2f;
+                Prop("column", at + new Vector3(Mathf.Cos(a) * 2.3f, 0f, Mathf.Sin(a) * 2.3f), 0f, 0.55f);
+            }
+            for (var i = 0; i < count; i++)
+            {
+                var a = i / (float)Mathf.Max(1, count) * Mathf.PI * 2f;
+                Prisoner.Spawn(at + new Vector3(Mathf.Cos(a) * 0.8f, 0f, Mathf.Sin(a) * 0.8f));
+            }
+        }
+
         // ------------------------------------------------------------ pieces
 
         private static Vector3 Off(float r)
