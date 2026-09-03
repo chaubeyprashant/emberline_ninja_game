@@ -31,7 +31,11 @@ namespace Emberline.UI
 
         public static bool Enabled
         {
-            get => PlayerPrefs.GetInt("perf_overlay", 0) == 1;
+            // Also honours a flag file in the app's external data folder, so the
+            // overlay can be switched on from adb on a release build without a
+            // settings entry: `adb shell touch /sdcard/Android/data/<pkg>/files/perf_overlay`.
+            get => PlayerPrefs.GetInt("perf_overlay", 0) == 1
+                   || System.IO.File.Exists(System.IO.Path.Combine(Application.persistentDataPath, "perf_overlay"));
             set
             {
                 PlayerPrefs.SetInt("perf_overlay", value ? 1 : 0);

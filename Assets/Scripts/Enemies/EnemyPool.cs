@@ -37,6 +37,8 @@ namespace Emberline.Enemies
             if (brain == null)
             {
                 var spawned = Object.Instantiate(prefab, pos, rot);
+                var vr = spawned.GetComponentInChildren<Emberline.Core.VisualRoot>(true);
+                Debug.Log($"[Cast] enemy spawn prefab={prefab.name} model={(vr != null ? vr.modelId : "NONE")}");
                 brain = spawned.GetComponent<EnemyBrain>();
                 if (brain == null) return spawned; // no brain: caller owns its lifetime
                 brain.poolKey = prefab;

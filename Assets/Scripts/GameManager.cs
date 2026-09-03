@@ -206,6 +206,12 @@ namespace Emberline
             // was redrawn sixty times a second behind every menu and pause screen.
             QualitySettings.vSyncCount = 0;
             PerfGovernor.Ensure(gameObject);
+            {
+                // Identity log for device diagnosis: the bodies actually present at scene start.
+                var all = Object.FindObjectsByType<Emberline.Core.VisualRoot>(FindObjectsSortMode.None);
+                Debug.Log($"[Cast] scene={UnityEngine.SceneManagement.SceneManager.GetActiveScene().name} " +
+                          $"visualRoots={all.Length} all=[{string.Join(",", System.Array.ConvertAll(all, v => v.modelId))}]");
+            }
             QualitySettings.shadowDistance = 28f;
             // Statics survive scene loads but the objects they point at do not, so
             // every cross-scene cache is reset here, once, before anything spawns.

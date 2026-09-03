@@ -1,5 +1,6 @@
 using System.IO;
 using System.Text;
+using System.Linq;
 using UnityEditor;
 using UnityEngine;
 
@@ -12,9 +13,72 @@ namespace Emberline.EditorTools
     /// </summary>
     public class EmberArtImport : AssetPostprocessor
     {
+        /// <summary>The rig every Mixamo animation retargets through.</summary>
+        private const string MixamoRig = "Assets/Art/Characters/Mixamo/MixamoNinja.fbx";
+
+        /// <summary>
+        /// Mixamo names every exported take "mixamo.com", so a folder of
+        /// animations would collapse to one clip. Rename each take after its
+        /// file and set looping per pose.
+        /// </summary>
+        private void OnPreprocessAnimation()
+        {
+            if (!assetPath.StartsWith("Assets/Art/Characters/Mixamo/Anims")) return;
+            var mi = (ModelImporter)assetImporter;
+            var defs = mi.defaultClipAnimations;
+            if (defs == null || defs.Length == 0) return;
+
+            var take = System.IO.Path.GetFileNameWithoutExtension(assetPath);
+            var loops = take is "Idle" or "Run" or "Block" or "SideStep" or "Backstep";
+            var clip = defs[0];
+            clip.name = take;
+            clip.loopTime = loops;
+            clip.loopPose = loops;
+            mi.clipAnimations = new[] { clip };
+        }
+
         private void OnPreprocessModel()
         {
-            if (assetPath.StartsWith("Assets/Art/Characters"))
+            // Mixamo models carry their own PBR materials and a standard humanoid
+            // skeleton, so they take the Humanoid path with authored materials.
+            // The KayKit characters below stay Generic — their clips bind by
+            // transform path and must not be disturbed.
+            // Mixamo animation clips: retarget onto the character's avatar and
+            // take the file's name. Every Mixamo export names its take
+            // "mixamo.com", so without the rename a whole folder of animations
+            // collapses to a single dictionary entry.
+            if (assetPath.StartsWith("Assets/Art/Characters/Mixamo/Anims"))
+            {
+                var mi = (ModelImporter)assetImporter;
+                mi.animationType = ModelImporterAnimationType.Human;
+                mi.avatarSetup = ModelImporterAvatarSetup.CopyFromOther;
+                var srcAvatar = AssetDatabase.LoadAllAssetsAtPath(MixamoRig)
+                    .FirstOrDefault(a => a is Avatar) as Avatar;
+                if (srcAvatar != null) mi.sourceAvatar = srcAvatar;
+                mi.importAnimation = true;
+                mi.materialImportMode = ModelImporterMaterialImportMode.None;
+                mi.animationCompression = ModelImporterAnimationCompression.Optimal;
+                mi.importCameras = false;
+                mi.importLights = false;
+                mi.isReadable = false;
+
+            }
+            else if (assetPath.StartsWith("Assets/Art/Characters/Mixamo"))
+            {
+                var mi = (ModelImporter)assetImporter;
+                mi.animationType = ModelImporterAnimationType.Human;
+                mi.avatarSetup = ModelImporterAvatarSetup.CreateFromThisModel;
+                mi.importAnimation = true;
+                mi.materialImportMode = ModelImporterMaterialImportMode.ImportStandard;
+                mi.materialLocation = ModelImporterMaterialLocation.InPrefab;
+                mi.meshCompression = ModelImporterMeshCompression.Medium;
+                mi.animationCompression = ModelImporterAnimationCompression.Optimal;
+                mi.importCameras = false;
+                mi.importLights = false;
+                mi.isReadable = false;
+                mi.optimizeGameObjects = false;   // SkeletalRig needs real bone transforms
+            }
+            else if (assetPath.StartsWith("Assets/Art/Characters"))
             {
                 var mi = (ModelImporter)assetImporter;
                 mi.animationType = ModelImporterAnimationType.Generic;

@@ -30,6 +30,14 @@ namespace Emberline.EditorTools
 
             /// <summary>Keep the materials authored on the FBX (realistic PBR).</summary>
             KeepAuthored,
+
+            /// <summary>
+            /// One game-shader material per authored slot, each carrying that slot's
+            /// own albedo (`slotTextures`, matched by material-name prefix; unmapped
+            /// slots fall back to `texture`). For multi-part Mixamo bodies — hair,
+            /// eyes, clothing — where a single palette would paint everything alike.
+            /// </summary>
+            ConvertAuthored,
         }
 
         public class Spec
@@ -64,6 +72,32 @@ namespace Emberline.EditorTools
             /// existing specs keep working and a new rig declares its own.
             /// </summary>
             public string[] socketRight, socketLeft;
+
+            /// <summary>
+            /// Extra FBX paths to harvest animation clips from, unioned over the
+            /// model's own. A Mixamo character ships no animations — the motion
+            /// comes from separate downloads that retarget through the humanoid
+            /// avatar — so the clip library can no longer be just `fbx`.
+            /// </summary>
+            public string[] clipSources;
+
+            /// <summary>
+            /// Grip correction for a prop. KayKit's handslot empties already
+            /// carry the grip pose, so these stay zero there; a Mixamo hand bone
+            /// is the wrist joint, so a weapon needs an offset to sit in the palm.
+            /// </summary>
+            public Vector3 propOffsetPos = Vector3.zero;
+            public Vector3 propOffsetRot = Vector3.zero;
+
+            /// <summary>ConvertAuthored: authored material name (prefix match) → albedo path.</summary>
+            public Dictionary<string, string> slotTextures;
+
+            /// <summary>
+            /// Child renderers to deactivate by name fragment — eyelashes, earrings,
+            /// an embedded weapon mesh the prop system replaces. Deactivated, not
+            /// merely disabled, so after-image bakes and ghosting skip them too.
+            /// </summary>
+            public string[] hideRenderers;
         }
 
         /// <summary>Is `c` the dominant channel by a clear margin (cloth detection)?</summary>
@@ -139,6 +173,93 @@ namespace Emberline.EditorTools
             // Dark ninja: the rogue's green hood/tunic becomes ink-blue charcoal.
             recolor = c => Dominant(c.g, c.r, c.b) ? Toward(c, new Color(0.17f, 0.20f, 0.30f)) : c,
             clips = OneHanded(),
+        };
+
+        // ------------------------------------------------------- Mixamo (candidate)
+        //
+        // A replacement-cast candidate built to docs/ART_DIRECTION.md §4.1: adult
+        // athletic proportions, one skinned mesh, and a Humanoid rig whose
+        // skeleton every other Mixamo character shares — which is the property
+        // §4.1 requires so one animation set drives the whole cast.
+
+        private const string MixDir = "Assets/Art/Characters/Mixamo";
+
+        /// <summary>Every Mixamo pose clip, one file per take, keyed by pose name.</summary>
+        public static string[] MixamoClipSources()
+        {
+            var names = new[] { "Idle", "Run", "Strike1", "Strike2", "Strike3", "Cleave", "Stab",
+                "Sweep", "Hurt", "Dead", "Block", "BlockHit", "Kick", "Jump", "Windup", "Delayed",
+                "Throw", "SideStep", "Backstep", "Spawn", "Taunt" };
+            var paths = new string[names.Length];
+            for (var i = 0; i < names.Length; i++) paths[i] = $"{MixDir}/Anims/{names[i]}.fbx";
+            return paths;
+        }
+
+        /// <summary>Pose map for the Mixamo set. Files are named after their pose,
+        /// so this is near-identity; the two takes the pack lacks borrow a sibling.</summary>
+        public static Dictionary<RigPose, string> MixamoClips() => new()
+        {
+            [RigPose.Idle] = "Idle",
+            [RigPose.Run] = "Run",
+            [RigPose.Strike1] = "Strike1",
+            [RigPose.Strike2] = "Strike2",
+            [RigPose.Strike3] = "Strike3",
+            [RigPose.Cleave] = "Cleave",
+            [RigPose.Stab] = "Stab",
+            [RigPose.Sweep] = "Sweep",
+            [RigPose.Hurt] = "Hurt",
+            [RigPose.Dead] = "Dead",
+            [RigPose.Block] = "Block",
+            [RigPose.BlockHit] = "BlockHit",
+            [RigPose.Kick] = "Kick",
+            [RigPose.Jump] = "Jump",
+            [RigPose.Windup] = "Windup",
+            [RigPose.Delayed] = "Delayed",
+            [RigPose.Throw] = "Throw",
+            [RigPose.SideStep] = "SideStep",
+            [RigPose.Backstep] = "Backstep",
+            [RigPose.Spawn] = "Spawn",
+            [RigPose.Taunt] = "Taunt",
+            [RigPose.Dash] = "Backstep",   // the pack has no dedicated dodge-forward
+            [RigPose.Charge] = "Run",
+        };
+
+        /// <summary>
+        /// The spec the player is built from. One switch, so the replacement cast
+        /// can be tried on device and reverted without touching the bootstrap:
+        /// return Renzo() for the KayKit placeholder, MixamoRenzo() for the
+        /// realistic body described in docs/ART_DIRECTION.md §4.1.
+        /// </summary>
+        public static Spec PlayerSpec() => MixamoRenzo();
+
+        /// <summary>Renzo on the Mixamo ninja body — the replacement-cast candidate.</summary>
+        public static Spec MixamoRenzo() => new()
+        {
+            name = "MixamoRenzoModel",
+            fbx = $"{MixDir}/MixamoNinja.fbx",
+            height = 1.8f,
+            lantern = true,
+            trail = true,
+            propRight = "sword_1handed",
+            // Render through the game's own surface shader, not Unity's Standard,
+            // so the character takes the same lighting as everything else in the
+            // scene. On Standard it read washed out against the night arenas.
+            // The model has a single material slot and one albedo, so the
+            // one-material path fits it exactly.
+            texture = $"{MixDir}/Textures/Ch24_1001_Diffuse.png",
+            materialMode = MaterialMode.PaletteOverride,
+            socketRight = new[] { "mixamorig:RightHand" },
+            socketLeft = new[] { "mixamorig:LeftHand" },
+            // The wrist joint is not the palm: nudge the grip forward along the
+            // hand and roll the blade upright.
+            // The wrist joint is not a grip: rotate the blade out of the fist and
+            // lift it into the palm. Chosen from the sweep in Logs/grip_sweep.png.
+            propOffsetPos = new Vector3(0f, 0.02f, 0f),
+            propOffsetRot = new Vector3(0f, 0f, -90f),
+            // The KayKit sword is sized for chibi hands; shrink it for a realistic one.
+            propScale = new Vector3(0.62f, 0.62f, 0.62f),
+            clipSources = MixamoClipSources(),
+            clips = MixamoClips(),
         };
 
         // ------------------------------------------------------------- story cast
@@ -222,299 +343,219 @@ namespace Emberline.EditorTools
             clips = OneHanded(),
         };
 
-        public static Spec Bandit()
+        // ------------------------------------------------------------- enemy cast
+        //
+        // Every enemy is built from one of five Mixamo bodies (Akai, Brute,
+        // Kachujin, Nightshade, Ganfaul) plus the Ninja the player uses, so the
+        // whole cast shares Renzo's proportions, rig and shader. Identity comes
+        // from material variants — tint, weapon, height — not from more meshes
+        // (docs/ENEMY_CHARACTER_SELECTION.md). Bodies are all Humanoid on the one
+        // Mixamo skeleton, so the 21-clip set in Mixamo/Anims drives all of them.
+
+        private static string MixTex(string body, string file) => $"{MixDir}/Textures/{body}/{file}";
+
+        /// <summary>The fields every Mixamo-bodied spec shares: rig, clips, sockets, grip.</summary>
+        private static Spec Mixamo(Spec s, string body, string albedo, float propScale = 0.62f)
         {
-            var clips = OneHanded();
-            clips[RigPose.Strike1] = "Dualwield_Melee_Attack_Slice";
-            clips[RigPose.Strike2] = "Dualwield_Melee_Attack_Stab";
-            clips[RigPose.Strike3] = "Dualwield_Melee_Attack_Chop";
-            DualWieldCombatClips(clips);
-            return new Spec
-            {
-                name = "BanditModel",
-                fbx = $"{AdvDir}/Rogue.fbx",
-                texture = $"{AdvDir}/rogue_texture.png",
-                height = 1.72f,
-                keepEmbedded = new[] { "Knife", "Knife_Offhand" }, // dual daggers, palette-matched
-                // Ragged raider: greens become worn maroon leather.
-                recolor = c => Dominant(c.g, c.r, c.b) ? Toward(c, new Color(0.42f, 0.22f, 0.15f)) : c,
-                clips = clips,
-            };
+            s.fbx = $"{MixDir}/{body}.fbx";
+            s.texture = MixTex(body, albedo);
+            s.materialMode = s.slotTextures != null ? MaterialMode.ConvertAuthored : MaterialMode.PaletteOverride;
+            s.socketRight = new[] { "mixamorig:RightHand" };
+            s.socketLeft = new[] { "mixamorig:LeftHand" };
+            s.propOffsetPos = new Vector3(0f, 0.02f, 0f);
+            s.propOffsetRot = new Vector3(0f, 0f, -90f);
+            s.propScale = Vector3.one * propScale;
+            s.clipSources = MixamoClipSources();
+            s.clips ??= MixamoClips();
+            return s;
         }
 
-        public static Spec Goro()
+        /// <summary>Brute's parts worth drawing; the rest is jewellery and an embedded axe.</summary>
+        private static Dictionary<string, string> BruteSlots() => new()
         {
-            var clips = OneHanded();
-            clips[RigPose.Idle] = "2H_Melee_Idle";
-            clips[RigPose.Strike1] = "2H_Melee_Attack_Chop";
-            clips[RigPose.Strike2] = "2H_Melee_Attack_Slice";
-            clips[RigPose.Strike3] = "2H_Melee_Attack_Spinning";
-            TwoHandedCombatClips(clips);
-            clips[RigPose.Cleave] = "2H_Melee_Attack_Spin";
-            clips[RigPose.Hurt] = "Hit_B";
-            clips[RigPose.Dead] = "Death_B";
-            return new Spec
-            {
-                name = "GoroModel",
-                fbx = $"{AdvDir}/Barbarian.fbx",
-                texture = $"{AdvDir}/barbarian_texture.png",
-                height = 2.45f,
-                keepEmbedded = new[] { "2H_Axe" }, // palette-matched greataxe
-                // Red-armored chief: blue/grey cloth becomes lacquered red.
-                recolor = c => Dominant(c.b, c.r, c.g) || (c.b > 0.3f && Mathf.Abs(c.r - c.b) < 0.08f && c.r < 0.55f)
-                    ? Toward(c, new Color(0.52f, 0.13f, 0.10f)) : c,
-                clips = clips,
-            };
-        }
+            ["Body_MAT"] = MixTex("MixamoBrute", "MaleBruteA_Body_diffuse.png"),
+            ["EyeSpec"] = MixTex("MixamoBrute", "MaleBruteA_Body_diffuse.png"),
+            ["MaleBruteA_Bottom"] = MixTex("MixamoBrute", "MaleBruteA_Bottom_diffuse1.jpg"),
+            ["MaleBruteA_Hair"] = MixTex("MixamoBrute", "MaleBruteA_Hair_diffuse.png"),
+            ["MaleBruteA_Shoes"] = MixTex("MixamoBrute", "MaleBruteA_Shoes_diffuse1.jpg"),
+        };
+        private static readonly string[] BruteHide = { "BattleAxe", "Earrings", "Eyelashes", "Moustache" };
 
-        public static Spec Kagachi()
+        private static Dictionary<string, string> KachujinSlots() => new()
         {
-            var clips = OneHanded();
-            clips[RigPose.Spawn] = "Skeletons_Awaken_Floor";
-            clips[RigPose.Taunt] = "Taunt_Longer";
-            clips[RigPose.Cleave] = "2H_Melee_Attack_Spinning";
-            return new Spec
-            {
-                name = "KagachiModel",
-                fbx = $"{SkelDir}/Skeleton_Warrior.fbx",
-                texture = $"{SkelDir}/skeleton_texture.png",
-                height = 2.1f,
-                trail = true,
-                propRight = "sword_1handed",
-                // Serpent armor: anything with color becomes venom teal; bone stays bone.
-                recolor = c => Sat(c) > 0.22f ? Toward(c, new Color(0.13f, 0.42f, 0.34f)) : c,
-                clips = clips,
-            };
-        }
+            ["kachujin_MAT"] = MixTex("MixamoKachujin", "Kachujin_diffuse.png"),
+            ["kachujin_MAT_"] = MixTex("MixamoKachujin", "Kachujin_diffuse_body.png"),
+        };
 
-        public static Spec Jin()
+        /// <summary>Raider: the common low-rank warrior — a hooded rogue in worn brown, twin daggers.</summary>
+        public static Spec Bandit() => Mixamo(new Spec
         {
-            var clips = OneHanded();
-            clips[RigPose.Idle] = "2H_Melee_Idle";
-            clips[RigPose.Strike1] = "2H_Melee_Attack_Slice";
-            clips[RigPose.Strike2] = "2H_Melee_Attack_Chop";
-            clips[RigPose.Strike3] = "2H_Melee_Attack_Spinning";
-            TwoHandedCombatClips(clips);
-            clips[RigPose.Cleave] = "2H_Melee_Attack_Spin";
-            return new Spec
-            {
-                name = "JinModel",
-                fbx = $"{AdvDir}/Knight.fbx",
-                texture = $"{AdvDir}/knight_texture.png",
-                height = 1.85f,
-                trail = true,
-                keepEmbedded = new[] { "2H_Sword" }, // the storm blade itself
-                // Storm-forged: colored plate turns thunderhead indigo.
-                recolor = c => Sat(c) > 0.2f ? Toward(c, new Color(0.26f, 0.30f, 0.55f)) : c,
-                clips = clips,
-            };
-        }
+            name = "BanditModel",
+            height = 1.72f,
+            tint = new Color(0.78f, 0.62f, 0.50f),
+            propRight = "dagger",
+            propLeft = "dagger",
+        }, "MixamoAkai", "akai_diffuse.png");
 
+        /// <summary>Goro: the toll-captain — the biggest body on the roof, bare-chested, greataxe.</summary>
+        public static Spec Goro() => Mixamo(new Spec
+        {
+            name = "GoroModel",
+            height = 2.25f,
+            slotTextures = BruteSlots(),
+            hideRenderers = BruteHide,
+            propRight = "axe_2handed",
+        }, "MixamoBrute", "MaleBruteA_Body_diffuse.png", propScale: 0.78f);
+
+        /// <summary>Kagachi / Kagehira: the warlord — spiked plate and a long coat, unique body.</summary>
+        public static Spec Kagachi() => Mixamo(new Spec
+        {
+            name = "KagachiModel",
+            height = 2.1f,
+            trail = true,
+            propRight = "sword_1handed",
+        }, "MixamoGanfaul", "Ganfaul_diffuse.png");
+
+        /// <summary>Jin Kurogane: the storm blade — ornate horned armour, greatsword, unique body.</summary>
+        public static Spec Jin() => Mixamo(new Spec
+        {
+            name = "JinModel",
+            height = 1.85f,
+            trail = true,
+            propRight = "sword_2handed",
+        }, "MixamoNightshade", "Nightshade_diffuse.png", propScale: 0.7f);
+
+        /// <summary>Weaver / archer: the hooded rogue with the quiver, hand crossbow.</summary>
         public static Spec Archer()
         {
-            var clips = OneHanded();
-            clips[RigPose.Strike1] = "1H_Melee_Attack_Chop";     // panic bash
-            clips[RigPose.Strike2] = "1H_Ranged_Shoot";          // EnemyBrain's shoot pose
-            clips[RigPose.Windup] = "1H_Ranged_Aiming";
-            clips[RigPose.Dash] = "Dodge_Backward";              // archers retreat
-            return new Spec
+            var clips = MixamoClips();
+            clips[RigPose.Windup] = "Windup";     // the aim
+            clips[RigPose.Strike2] = "Throw";     // EnemyBrain's shoot pose
+            clips[RigPose.Dash] = "Backstep";     // archers retreat
+            return Mixamo(new Spec
             {
                 name = "ArcherModel",
-                fbx = $"{AdvDir}/Mage.fbx",
-                texture = $"{AdvDir}/mage_texture.png",
                 height = 1.7f,
                 propRight = "crossbow_1handed",
-                // Lantern Archer: robes go night-indigo, hood-dark.
-                recolor = c => Sat(c) > 0.2f ? Toward(c, new Color(0.22f, 0.18f, 0.36f)) : c,
                 clips = clips,
-            };
+            }, "MixamoAkai", "akai_diffuse.png");
         }
 
-        /// <summary>Axe raider: a heavier bandit built on the Knight frame.</summary>
-        public static Spec RaiderAxe()
+        /// <summary>Axe raider: Goro's body between raider and chief in height, dressed in soot.</summary>
+        public static Spec RaiderAxe() => Mixamo(new Spec
         {
-            var clips = OneHanded();
-            clips[RigPose.Idle] = "2H_Melee_Idle";
-            clips[RigPose.Strike1] = "2H_Melee_Attack_Chop";
-            clips[RigPose.Strike2] = "2H_Melee_Attack_Slice";
-            clips[RigPose.Strike3] = "2H_Melee_Attack_Spin";
-            TwoHandedCombatClips(clips);
-            clips[RigPose.Hurt] = "Hit_B";
-            return new Spec
-            {
-                name = "RaiderAxeModel",
-                fbx = $"{AdvDir}/Knight.fbx",
-                texture = $"{AdvDir}/knight_texture.png",
-                height = 1.95f,
-                propRight = "axe_2handed",
-                // Raider colours: rust and soot. Saturation test, not a channel
-                // test — the knight palette is mostly desaturated steel, so
-                // "blue is dominant" almost never fires on it.
-                recolor = c => Sat(c) > 0.18f
-                    ? Toward(c, new Color(0.46f, 0.24f, 0.15f)) : c,
-                clips = clips,
-            };
-        }
+            name = "RaiderAxeModel",
+            height = 1.95f,
+            tint = new Color(0.62f, 0.56f, 0.54f),
+            slotTextures = BruteSlots(),
+            hideRenderers = BruteHide,
+            propRight = "axe_2handed",
+        }, "MixamoBrute", "MaleBruteA_Body_diffuse.png", propScale: 0.78f);
 
-        /// <summary>
-        /// Pike guard: the two-handed sword stretched into a spear shaft, which is
-        /// the closest the KayKit set gets to a polearm without new art.
-        /// </summary>
+        /// <summary>Pike guard: the ronin body in garrison steel-blue, the greatsword stretched into a spear.</summary>
         public static Spec PikeGuard()
         {
-            var clips = OneHanded();
-            clips[RigPose.Idle] = "2H_Melee_Idle";
-            TwoHandedCombatClips(clips);
-            clips[RigPose.Strike1] = "2H_Melee_Attack_Stab";
-            clips[RigPose.Strike2] = "2H_Melee_Attack_Stab";
-            clips[RigPose.Strike3] = "2H_Melee_Attack_Chop";
-            return new Spec
+            var clips = MixamoClips();
+            clips[RigPose.Strike1] = "Stab";
+            clips[RigPose.Strike2] = "Stab";
+            var s = Mixamo(new Spec
             {
                 name = "PikeGuardModel",
-                fbx = $"{AdvDir}/Knight.fbx",
-                texture = $"{AdvDir}/knight_texture.png",
                 height = 1.9f,
+                tint = new Color(0.66f, 0.74f, 0.88f),
+                slotTextures = KachujinSlots(),
                 propRight = "sword_2handed",
-                propScale = new Vector3(0.55f, 2.1f, 0.55f), // sword → spear shaft
-                // Toll-guard livery: cold green over the knight's steel.
-                recolor = c => Sat(c) > 0.18f
-                    ? Toward(c, new Color(0.20f, 0.40f, 0.30f)) : c,
                 clips = clips,
-            };
+            }, "MixamoKachujin", "Kachujin_diffuse.png");
+            s.propScale = new Vector3(0.36f, 1.35f, 0.36f);   // sword → spear shaft
+            return s;
         }
 
-        /// <summary>Bomber: a mage frame that lobs charges instead of casting.</summary>
+        /// <summary>Powder carrier: a ninja body in ochre with the charge in hand.</summary>
         public static Spec Bomber()
         {
-            var clips = OneHanded();
-            clips[RigPose.Strike1] = "Spellcast_Shoot";
-            clips[RigPose.Strike2] = "Spellcast_Shoot";
-            clips[RigPose.Windup] = "Spellcast_Raise";
-            return new Spec
+            var clips = MixamoClips();
+            clips[RigPose.Strike1] = "Throw";
+            clips[RigPose.Strike2] = "Throw";
+            clips[RigPose.Windup] = "Windup";
+            return Mixamo(new Spec
             {
                 name = "BomberModel",
-                fbx = $"{AdvDir}/Mage.fbx",
-                texture = $"{AdvDir}/mage_texture.png",
                 height = 1.7f,
+                tint = new Color(0.80f, 0.70f, 0.50f),
                 propRight = "smokebomb",
-                // Powder-stained: the mage's robe goes dull ochre.
-                recolor = c => Dominant(c.b, c.r, c.g)
-                    ? Toward(c, new Color(0.44f, 0.36f, 0.18f)) : c,
                 clips = clips,
-            };
+            }, "MixamoNinja", "Ch24_1001_Diffuse.png");
         }
 
-        /// <summary>Assassin: light, fast, twin blades. Skeleton rogue frame.</summary>
+        /// <summary>Assassin: the hooded rogue in bruised violet, twin daggers, sidesteps.</summary>
         public static Spec Assassin()
         {
-            var clips = OneHanded();
-            clips[RigPose.Strike1] = "Dualwield_Melee_Attack_Slice";
-            DualWieldCombatClips(clips);
-            clips[RigPose.Strike2] = "Dualwield_Melee_Attack_Stab";
-            clips[RigPose.Strike3] = "Dualwield_Melee_Attack_Chop";
-            clips[RigPose.Dash] = "Dodge_Left";
-            return new Spec
+            var clips = MixamoClips();
+            clips[RigPose.Dash] = "SideStep";
+            return Mixamo(new Spec
             {
                 name = "AssassinModel",
-                fbx = $"{SkelDir}/Skeleton_Rogue.fbx",
-                texture = $"{SkelDir}/skeleton_texture.png",
                 height = 1.74f,
+                tint = new Color(0.58f, 0.52f, 0.68f),
                 propRight = "dagger",
                 propLeft = "dagger",
-                // Ash-grey wraps with a bruised violet edge — reads fast and cold.
-                recolor = c => Sat(c) > 0.2f ? Toward(c, new Color(0.28f, 0.24f, 0.34f)) : c,
                 clips = clips,
-            };
+            }, "MixamoAkai", "akai_diffuse.png");
         }
 
-        /// <summary>Samurai: heavy guard, two-handed blade, deliberate.</summary>
-        public static Spec Samurai()
+        /// <summary>Samurai: the red-and-white ronin as authored, greatsword, deliberate.</summary>
+        public static Spec Samurai() => Mixamo(new Spec
         {
-            var clips = OneHanded();
-            clips[RigPose.Idle] = "2H_Melee_Idle";
-            TwoHandedCombatClips(clips);
-            clips[RigPose.Strike1] = "2H_Melee_Attack_Chop";
-            clips[RigPose.Strike2] = "2H_Melee_Attack_Slice";
-            clips[RigPose.Windup] = "2H_Melee_Idle";
-            clips[RigPose.Hurt] = "Hit_B";
-            return new Spec
-            {
-                name = "SamuraiModel",
-                fbx = $"{AdvDir}/Knight.fbx",
-                texture = $"{AdvDir}/knight_texture.png",
-                height = 1.92f,
-                trail = true,
-                propRight = "sword_2handed",
-                // Lacquered oxblood over dark steel.
-                recolor = c => Sat(c) > 0.18f ? Toward(c, new Color(0.38f, 0.12f, 0.13f)) : c,
-                clips = clips,
-            };
-        }
+            name = "SamuraiModel",
+            height = 1.92f,
+            trail = true,
+            slotTextures = KachujinSlots(),
+            propRight = "sword_2handed",
+        }, "MixamoKachujin", "Kachujin_diffuse.png", propScale: 0.7f);
 
-        /// <summary>Rogue Ninja: the mirror of Renzo — hooded, quick, single blade.</summary>
+        /// <summary>Rogue Ninja: Renzo's body in a colder charcoal, so the two never read as one man.</summary>
         public static Spec RogueNinja()
         {
-            var clips = OneHanded();
-            clips[RigPose.Dash] = "Dodge_Forward";
-            clips[RigPose.Strike2] = "1H_Melee_Attack_Stab";
-            return new Spec
+            var clips = MixamoClips();
+            clips[RigPose.Strike2] = "Stab";
+            return Mixamo(new Spec
             {
                 name = "RogueNinjaModel",
-                fbx = $"{AdvDir}/RogueHooded.fbx",
-                texture = $"{AdvDir}/rogue_texture.png",
                 height = 1.78f,
+                tint = new Color(0.50f, 0.53f, 0.60f),
                 propRight = "dagger",
-                // Near-black with a cold cast: Renzo's silhouette, hostile palette.
-                recolor = c => Sat(c) > 0.15f ? Toward(c, new Color(0.13f, 0.15f, 0.19f)) : c,
                 clips = clips,
-            };
+            }, "MixamoNinja", "Ch24_1001_Diffuse.png");
         }
 
-        /// <summary>Elite Warrior: the biggest non-boss silhouette on the field.</summary>
-        public static Spec EliteWarrior()
+        /// <summary>Elite Warrior: the ronin body in dark bronze at captain's height, greataxe.</summary>
+        public static Spec EliteWarrior() => Mixamo(new Spec
         {
-            var clips = OneHanded();
-            clips[RigPose.Idle] = "2H_Melee_Idle";
-            TwoHandedCombatClips(clips);
-            clips[RigPose.Strike1] = "2H_Melee_Attack_Chop";
-            clips[RigPose.Strike2] = "2H_Melee_Attack_Spinning";
-            clips[RigPose.Strike3] = "2H_Melee_Attack_Spin";
-            clips[RigPose.Hurt] = "Hit_B";
-            clips[RigPose.Dead] = "Death_B";
-            return new Spec
-            {
-                name = "EliteWarriorModel",
-                fbx = $"{SkelDir}/Skeleton_Warrior.fbx",
-                texture = $"{SkelDir}/skeleton_texture.png",
-                height = 2.2f,
-                trail = true,
-                propRight = "axe_2handed",
-                // Tarnished brass over bone — a captain's kit, long unpolished.
-                recolor = c => Sat(c) > 0.2f ? Toward(c, new Color(0.42f, 0.33f, 0.14f)) : c,
-                clips = clips,
-            };
-        }
+            name = "EliteWarriorModel",
+            height = 2.1f,
+            tint = new Color(0.60f, 0.50f, 0.40f),
+            trail = true,
+            slotTextures = KachujinSlots(),
+            propRight = "axe_2handed",
+        }, "MixamoKachujin", "Kachujin_diffuse.png", propScale: 0.78f);
 
+        /// <summary>Shade: the hooded rogue as a ghost — unarmed, translucent, pale blue.</summary>
         public static Spec Shade()
         {
-            var clips = OneHanded();
-            clips[RigPose.Idle] = "Unarmed_Idle";
-            clips[RigPose.Strike1] = "Unarmed_Melee_Attack_Punch_A";
-            clips[RigPose.Strike2] = "Unarmed_Melee_Attack_Punch_B";
-            clips[RigPose.Strike3] = "Unarmed_Melee_Attack_Kick";
-            clips[RigPose.Spawn] = "Skeletons_Awaken_Standing";
-            clips[RigPose.Taunt] = "Taunt_Longer";
-            return new Spec
+            var clips = MixamoClips();
+            clips[RigPose.Strike1] = "Kick";
+            clips[RigPose.Strike2] = "Stab";
+            clips[RigPose.Strike3] = "Kick";
+            return Mixamo(new Spec
             {
                 name = "ShadeModel",
-                fbx = $"{SkelDir}/Skeleton_Minion.fbx",
-                texture = $"{SkelDir}/skeleton_texture.png",
-                tint = new Color(0.55f, 0.72f, 0.88f),
                 height = 1.62f,
+                tint = new Color(0.55f, 0.72f, 0.88f),
                 ghost = true,
                 ghostAlpha = 0.55f,
                 clips = clips,
-            };
+            }, "MixamoAkai", "akai_diffuse.png");
         }
 
         /// <summary>Builds the character visual under `root`. False → FBX missing, use NinjaRig.</summary>
@@ -569,10 +610,23 @@ namespace Emberline.EditorTools
                 ? CharacterMaterial(spec) : null;
             foreach (var r in instance.GetComponentsInChildren<Renderer>(true))
             {
+                if (spec.hideRenderers != null && spec.hideRenderers.Any(h =>
+                        r.name.IndexOf(h, System.StringComparison.OrdinalIgnoreCase) >= 0))
+                {
+                    r.gameObject.SetActive(false);
+                    continue;
+                }
                 if (mat != null)
                 {
                     var mats = r.sharedMaterials;
                     for (var i = 0; i < mats.Length; i++) mats[i] = mat;
+                    r.sharedMaterials = mats;
+                }
+                else if (spec.materialMode == MaterialMode.ConvertAuthored)
+                {
+                    var mats = r.sharedMaterials;
+                    for (var i = 0; i < mats.Length; i++)
+                        mats[i] = SlotMaterial(spec, mats[i] != null ? mats[i].name : $"slot{i}");
                     r.sharedMaterials = mats;
                 }
                 if (r is SkinnedMeshRenderer smr) smr.updateWhenOffscreen = false;
@@ -583,9 +637,14 @@ namespace Emberline.EditorTools
             if (animator == null) animator = instance.AddComponent<Animator>();
             animator.runtimeAnimatorController = BuildController(spec);
             animator.applyRootMotion = false;
+            // A humanoid model carries an Avatar sub-asset; without it every
+            // retargeted clip binds to nothing and the character stands still.
+            var srcAvatar = AssetDatabase.LoadAllAssetsAtPath(spec.fbx)
+                .OfType<Avatar>().FirstOrDefault();
+            if (srcAvatar != null) animator.avatar = srcAvatar;
 
-            visual.socketRight = FindSocket(instance, "r", spec.socketRight);
-            visual.socketLeft = FindSocket(instance, "l", spec.socketLeft);
+            visual.socketRight = FindSocket(instance, "r", spec.socketRight, spec);
+            visual.socketLeft = FindSocket(instance, "l", spec.socketLeft, spec);
 
             AttachProps(instance, spec);
 
@@ -597,7 +656,7 @@ namespace Emberline.EditorTools
             var poseCount = System.Enum.GetValues(typeof(RigPose)).Length;
             rig.poseStates = new string[poseCount];
             rig.poseClipLengths = new float[poseCount];
-            var clipLib = Clips(spec.fbx);
+            var clipLib = Clips(spec);
             for (var i = 0; i < poseCount; i++)
             {
                 var pose = (RigPose)i;
@@ -607,6 +666,43 @@ namespace Emberline.EditorTools
                     rig.poseClipLengths[i] = clip.length;
             }
             return true;
+        }
+
+        /// <summary>
+        /// A game-shader material for one authored slot of a multi-part body. The
+        /// slot's albedo comes from `spec.slotTextures` by prefix on the authored
+        /// material name, else `spec.texture`. Cached per spec+slot as
+        /// `Mat_{spec}_{slot}.mat` beside the other generated materials.
+        /// </summary>
+        private static Material SlotMaterial(Spec spec, string slotName)
+        {
+            System.IO.Directory.CreateDirectory(OutDir);
+            var safe = new string(slotName.Where(char.IsLetterOrDigit).ToArray());
+            if (safe.Length == 0) safe = "slot";
+            var path = $"{OutDir}/Mat_{spec.name}_{safe}.mat";
+            var mat = AssetDatabase.LoadAssetAtPath<Material>(path);
+            var shader = spec.ghost ? Shader.Find("Emberline/Ghost") : SurfaceKit.SurfaceShader;
+            if (mat == null)
+            {
+                mat = new Material(shader);
+                AssetDatabase.CreateAsset(mat, path);
+            }
+            mat.shader = shader;
+
+            // Longest matching prefix wins, so "kachujin_MAT_" beats "kachujin_MAT".
+            string texPath = null; var best = -1;
+            if (spec.slotTextures != null)
+                foreach (var kv in spec.slotTextures)
+                    if (kv.Key.Length > best &&
+                        slotName.StartsWith(kv.Key, System.StringComparison.OrdinalIgnoreCase))
+                    { texPath = kv.Value; best = kv.Key.Length; }
+            texPath ??= spec.texture;
+            var tex = string.IsNullOrEmpty(texPath) ? null : AssetDatabase.LoadAssetAtPath<Texture2D>(texPath);
+            if (tex != null && mat.HasProperty("_MainTex")) mat.mainTexture = tex;
+            if (spec.ghost) mat.color = new Color(spec.tint.r, spec.tint.g, spec.tint.b, spec.ghostAlpha);
+            else SurfaceKit.Apply(mat, Surface.Cloth, Color.white);
+            EditorUtility.SetDirty(mat);
+            return mat;
         }
 
         private static Material CharacterMaterial(Spec spec)
@@ -676,9 +772,9 @@ namespace Emberline.EditorTools
         private static void AttachProps(GameObject instance, Spec spec)
         {
             AttachProp(instance, spec.propRight, "r", spec.trail, spec.name, spec.propScale,
-                spec.socketRight);
+                spec.socketRight, spec);
             AttachProp(instance, spec.propLeft, "l", spec.trail, spec.name, spec.propScale,
-                spec.socketLeft);
+                spec.socketLeft, spec);
         }
 
         /// <summary>
@@ -686,7 +782,31 @@ namespace Emberline.EditorTools
         /// declares none we fall back to the KayKit-era search so the existing
         /// placeholder roster keeps building unchanged.
         /// </summary>
-        private static Transform FindSocket(GameObject instance, string side, string[] declared)
+        /// <summary>
+        /// KayKit rigs carry purpose-built `handslot` empties that already hold the
+        /// grip pose, so a prop parents to them with an identity transform. A
+        /// Mixamo rig has only the wrist joint, so the weapon needs a declared
+        /// grip correction — `Spec.propOffsetPos` / `propOffsetRot`, expressed in
+        /// the hand bone's own space. Mirrored for the left hand.
+        /// </summary>
+        private static Transform GripAnchor(Transform hand, string side, Spec spec)
+        {
+            if (hand == null) return null;
+            var name = "GripAnchor_" + side;
+            var existing = hand.Find(name);
+            if (existing != null) return existing;
+
+            var go = new GameObject(name);
+            go.transform.SetParent(hand, false);
+            var pos = spec?.propOffsetPos ?? Vector3.zero;
+            var rot = spec?.propOffsetRot ?? Vector3.zero;
+            if (side == "l") { pos.x = -pos.x; rot.y = -rot.y; rot.z = -rot.z; }
+            go.transform.localPosition = pos;
+            go.transform.localRotation = Quaternion.Euler(rot);
+            return go.transform;
+        }
+
+        private static Transform FindSocket(GameObject instance, string side, string[] declared, Spec spec = null)
         {
             var all = instance.GetComponentsInChildren<Transform>(true);
 
@@ -696,13 +816,23 @@ namespace Emberline.EditorTools
                     if (string.IsNullOrEmpty(want)) continue;
                     var hit = all.FirstOrDefault(t =>
                         string.Equals(t.name, want, System.StringComparison.OrdinalIgnoreCase));
-                    if (hit != null) return hit;
+                    if (hit == null) continue;
+                    // A declared bone that is the hand itself still needs a grip frame.
+                    return hit.name.ToLowerInvariant().Contains("handslot") ? hit : GripAnchor(hit, side, spec);
                 }
 
-            return all.FirstOrDefault(t => t.name.ToLowerInvariant().Contains("handslot." + side))
-                   ?? all.FirstOrDefault(t => t.name.ToLowerInvariant().Contains("handslot" + side))
-                   ?? all.FirstOrDefault(t => t.name.ToLowerInvariant().Contains("hand." + side))
-                   ?? all.FirstOrDefault(t => t.name.ToLowerInvariant() == "hand" + side);
+            var slot = all.FirstOrDefault(t => t.name.ToLowerInvariant().Contains("handslot." + side))
+                       ?? all.FirstOrDefault(t => t.name.ToLowerInvariant().Contains("handslot" + side));
+            if (slot != null) return slot;
+
+            // No purpose-built slot: fall back to the hand bone and derive a grip.
+            var mixamo = side == "r" ? "righthand" : "lefthand";
+            var hand = all.FirstOrDefault(t => t.name.ToLowerInvariant().Contains("hand." + side))
+                       ?? all.FirstOrDefault(t => t.name.ToLowerInvariant() == "hand" + side)
+                       // Mixamo: mixamorig:RightHand / mixamorig:LeftHand. Ends-with, so
+                       // the finger bones (RightHandIndex1 …) can never win the match.
+                       ?? all.FirstOrDefault(t => t.name.ToLowerInvariant().EndsWith(mixamo));
+            return hand != null ? GripAnchor(hand, side, spec) : null;
         }
 
         /// <summary>
@@ -713,10 +843,10 @@ namespace Emberline.EditorTools
         /// </summary>
         public static GameObject AttachProp(GameObject instance, string propName, string side,
             bool trail = false, string ownerName = "", Vector3? scale = null,
-            string[] declaredSocket = null)
+            string[] declaredSocket = null, Spec gripSpec = null)
         {
             if (string.IsNullOrEmpty(propName)) return null;
-            var slot = FindSocket(instance, side, declaredSocket);
+            var slot = FindSocket(instance, side, declaredSocket, gripSpec);
             if (slot == null)
             {
                 var all = instance.GetComponentsInChildren<Transform>(true);
@@ -768,10 +898,40 @@ namespace Emberline.EditorTools
         private static Dictionary<string, AnimationClip> Clips(string fbxPath)
         {
             var dict = new Dictionary<string, AnimationClip>();
-            foreach (var o in AssetDatabase.LoadAllAssetsAtPath(fbxPath))
-                if (o is AnimationClip clip && !clip.name.StartsWith("__preview"))
-                    dict[clip.name] = clip;
+            Harvest(dict, fbxPath);
             return dict;
+        }
+
+        /// <summary>The clip a pose resolves to on this spec, or null — for tooling that poses a built body.</summary>
+        public static AnimationClip ResolveClip(Spec spec, RigPose pose)
+        {
+            var lib = Clips(spec);
+            if (spec.clips != null && spec.clips.TryGetValue(pose, out var n) && lib.TryGetValue(n, out var c)) return c;
+            return lib.TryGetValue("Idle", out var idle) ? idle : null;
+        }
+
+        /// <summary>Clip library for a spec: the model's own takes plus any declared sources.</summary>
+        private static Dictionary<string, AnimationClip> Clips(Spec spec)
+        {
+            var dict = Clips(spec.fbx);
+            if (spec.clipSources != null)
+                foreach (var src in spec.clipSources) Harvest(dict, src);
+            return dict;
+        }
+
+        private static void Harvest(Dictionary<string, AnimationClip> dict, string fbxPath)
+        {
+            if (string.IsNullOrEmpty(fbxPath)) return;
+            var file = System.IO.Path.GetFileNameWithoutExtension(fbxPath);
+            foreach (var o in AssetDatabase.LoadAllAssetsAtPath(fbxPath))
+            {
+                if (o is not AnimationClip clip || clip.name.StartsWith("__preview")) continue;
+                // A single-take file whose clip still carries Mixamo's placeholder
+                // name is keyed by its filename instead, so the pose map can find it
+                // even when the importer rename has not been applied.
+                var key = clip.name == "mixamo.com" ? file : clip.name;
+                dict[key] = clip;
+            }
         }
 
         private static RuntimeAnimatorController BuildController(Spec spec)
@@ -784,7 +944,7 @@ namespace Emberline.EditorTools
             controller.AddParameter("AtkSpeed", AnimatorControllerParameterType.Float);
             var sm = controller.layers[0].stateMachine;
 
-            var lib = Clips(spec.fbx);
+            var lib = Clips(spec);
             AnimationClip Find(RigPose pose)
             {
                 if (spec.clips.TryGetValue(pose, out var n) && lib.TryGetValue(n, out var c)) return c;
