@@ -74,7 +74,7 @@ namespace Emberline.EditorTools
                 setScreen.Invoke(hud, new[] { System.Enum.Parse(screenEnum, name) });
                 if (pause) toggleSettings.Invoke(hud, null);
                 Canvas.ForceUpdateCanvases();
-                Shoot(cam, file, 1600, 900);
+                Shoot(cam, file, 1600, 720);   // the canvas reference and the A33's 20:9
                 if (pause)
                 {
                     // CloseSettings destroys its root with a deferred Destroy, which

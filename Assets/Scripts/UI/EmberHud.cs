@@ -421,8 +421,7 @@ namespace Emberline.UI
             UiKit.Hairline(rt, new Vector2(0, 0), 0.09f).rectTransform.anchoredPosition = new Vector2(0, 40);
             UiKit.Kicker(rt, "OPEN", new Vector2(0, 0), new Vector2(18, 16), new Vector2(120, 16),
                 color: UiKit.EmberBright, align: TextAnchor.MiddleLeft, size: 12);
-            UiKit.Label(rt, "→", 20, UiKit.EmberBright, new Vector2(1, 0), new Vector2(-16, 14),
-                new Vector2(24, 26), display: true, align: TextAnchor.MiddleRight);
+            UiKit.Arrow(rt, new Vector2(1, 0), new Vector2(-18, 24), UiKit.EmberBright);
         }
 
         private void BuildCodex()
@@ -931,37 +930,80 @@ namespace Emberline.UI
             BuildEmberLayer();
             ScreenHeader("DUELS", "CHOOSE YOUR OPPONENT");
             UiKit.Label(_screenRoot, "One life. Full strength. No mercy.", 14, UiKit.Dim,
-                new Vector2(0, 1), new Vector2(104, -140), new Vector2(700, 20), align: TextAnchor.MiddleLeft);
+                new Vector2(0, 1), new Vector2(104, -132), new Vector2(700, 20), align: TextAnchor.MiddleLeft);
 
-            var y = -186f;
+            // The opponents as a card grid, the same language as the home screen:
+            // a raised surface, an ember tick, a faint index, the name, the
+            // epithet and philosophy, and a FIGHT / WON / LOCKED foot.
+            // Left edge on the header's, right edge on the screen margin; three
+            // rows of 148 with 14 between end at 630, clear of BACK (649+).
+            const float x0 = 104f, cardW = (1496f - x0 - 2f * 24f) / 3f, cardH = 148f, gapX = 24f, gapY = 14f;
+            const int perRow = 3;
             for (var i = 0; i < Session.Duels.Length; i++)
             {
-                var duel = Session.Duels[i];
-                var unlocked = duel.id <= Session.DuelsUnlocked;
-                var won = Session.DuelWon(duel.id);
-                var rt = UiKit.Rect(_screenRoot, "Duel" + duel.id, new Vector2(0, 1), new Vector2(100, y),
-                    new Vector2(720, 66), new Vector2(0, 1));
-                var img = UiKit.Img(rt, null, new Color(1, 1, 1, unlocked ? 0.025f : 0f));
-                img.raycastTarget = unlocked;
-                if (unlocked)
-                {
-                    var idx = i;
-                    var btn = rt.gameObject.AddComponent<Button>();
-                    btn.targetGraphic = img;
-                    btn.onClick.AddListener(() => { Sfx3D.Confirm(); _gm.LaunchDuel(idx); });
-                }
-                UiKit.Label(rt, unlocked ? duel.name : "LOCKED", 20, unlocked ? UiKit.Pale : UiKit.Faint,
-                    new Vector2(0, 1), new Vector2(14, -16), new Vector2(500, 26), display: true,
-                    align: TextAnchor.MiddleLeft);
-                UiKit.Label(rt, unlocked ? duel.title : "Defeat the previous opponent", 12,
-                    unlocked ? UiKit.Dim : UiKit.Faint, new Vector2(0, 1), new Vector2(14, -42),
-                    new Vector2(500, 16), align: TextAnchor.MiddleLeft).characterSpacing = 3f;
-                if (won) UiKit.Label(rt, "WON", 11, UiKit.Ember, new Vector2(1, 0.5f), new Vector2(-24, 0),
-                    new Vector2(80, 16), align: TextAnchor.MiddleRight).characterSpacing = 3f;
-                UiKit.Hairline(rt, new Vector2(0, 0), 0.07f);
-                y -= 72f;
+                var col = i % perRow;
+                var row = i / perRow;
+                DuelCard(i, new Vector2(x0 + col * (cardW + gapX), -158f - row * (cardH + gapY)),
+                    new Vector2(cardW, cardH));
             }
             BackButton();
+        }
+
+        /// <summary>One opponent as a card, matching the home grid's language.</summary>
+        private void DuelCard(int i, Vector2 pos, Vector2 size)
+        {
+            var duel = Session.Duels[i];
+            var unlocked = duel.id <= Session.DuelsUnlocked;
+            var won = Session.DuelWon(duel.id);
+            var rt = UiKit.Rect(_screenRoot, "Duel" + duel.id, new Vector2(0, 1), pos, size, new Vector2(0, 1));
+            var img = UiKit.Img(rt, null, new Color(UiKit.Panel.r, UiKit.Panel.g, UiKit.Panel.b, unlocked ? 0.55f : 0.28f));
+            img.raycastTarget = unlocked;
+            if (unlocked)
+            {
+                var idx = i;
+                var btn = rt.gameObject.AddComponent<Button>();
+                btn.targetGraphic = img;
+                var colors = btn.colors;
+                colors.normalColor = Color.white;
+                colors.highlightedColor = new Color(1.28f, 1.24f, 1.18f);
+                colors.pressedColor = new Color(1.5f, 1.4f, 1.25f);
+                colors.fadeDuration = 0.12f;
+                btn.colors = colors;
+                btn.onClick.AddListener(() => { Sfx3D.Confirm(); _gm.LaunchDuel(idx); });
+                rt.gameObject.AddComponent<UiKit.ButtonPunch>();
+            }
+
+            UiKit.Hairline(rt, new Vector2(0, 1), unlocked ? 0.14f : 0.06f);
+            UiKit.Img(UiKit.Rect(rt, "Tick", new Vector2(0, 1), new Vector2(0, -16), new Vector2(3, 24),
+                new Vector2(0, 1)), UiKit.White, unlocked ? UiKit.Ember : UiKit.Faint);
+            UiKit.Label(rt, (i + 1).ToString("00"), 42,
+                new Color(UiKit.Pale.r, UiKit.Pale.g, UiKit.Pale.b, unlocked ? 0.06f : 0.03f),
+                new Vector2(1, 1), new Vector2(-14, -8), new Vector2(84, 52), display: true,
+                align: TextAnchor.UpperRight);
+
+            // A locked opponent still shows their name, faintly — the roster is
+            // the promise — with the concrete way to reach them.
+            var prev = i > 0 ? Session.Duels[i - 1] : null;
+            var hint = prev == null ? "" : prev.id <= Session.DuelsUnlocked
+                ? $"Defeat {prev.name} to unlock" : $"Defeat opponent {i:00} to unlock";
+            UiKit.Label(rt, duel.name, 22, unlocked ? UiKit.Pale : UiKit.Faint,
+                new Vector2(0, 1), new Vector2(18, -18), new Vector2(size.x - 40, 28), display: true,
+                align: TextAnchor.MiddleLeft).characterSpacing = 2f;
+            UiKit.Accent(rt, new Vector2(0, 1), new Vector2(19, -50), unlocked ? 26f : 14f);
+            UiKit.Label(rt, unlocked ? duel.title : hint, 11,
+                unlocked ? UiKit.Dim : UiKit.Faint, new Vector2(0, 1), new Vector2(18, -62),
+                new Vector2(size.x - 34, 16), align: TextAnchor.MiddleLeft).characterSpacing = 2f;
+            if (unlocked && !string.IsNullOrEmpty(duel.philosophy))
+                UiKit.Label(rt, duel.philosophy, 11, UiKit.Faint, new Vector2(0, 1),
+                    new Vector2(18, -82), new Vector2(size.x - 34, 16), align: TextAnchor.MiddleLeft)
+                    .characterSpacing = 1f;
+
+            UiKit.Hairline(rt, new Vector2(0, 0), unlocked ? 0.09f : 0.05f).rectTransform.anchoredPosition = new Vector2(0, 36);
+            var foot = won ? "WON" : unlocked ? "FIGHT" : "LOCKED";
+            UiKit.Kicker(rt, foot, new Vector2(0, 0), new Vector2(18, 14), new Vector2(140, 16),
+                color: won ? UiKit.Ember : unlocked ? UiKit.EmberBright : UiKit.Faint,
+                align: TextAnchor.MiddleLeft, size: 12);
+            if (unlocked) UiKit.Arrow(rt, new Vector2(1, 0), new Vector2(-18, 22), won ? UiKit.Ember : UiKit.EmberBright);
         }
 
         private void BuildBio()

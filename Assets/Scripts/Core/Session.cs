@@ -303,15 +303,20 @@ namespace Emberline.Core
             // Campaign foes, for the roster the brief asks for: bosses and elites
             // from the hundred missions, on the bodies they used there.
             new() { id = 5, name = "THE CONVOY CAPTAIN", title = "KEEPER OF THE LANTERN ROAD", kind = EnemyKind.Samurai,
-                defId = "convoycaptain", marsh = false, taunt = "“Everything on this road is counted. You were not.”" },
+                defId = "convoycaptain", marsh = false, taunt = "“Everything on this road is counted. You were not.”",
+                philosophy = "DISCIPLINE · FORMATION · ATTRITION" },
             new() { id = 6, name = "THE THREE BLADES", title = "SISTERS OF THE SILENT FOREST", kind = EnemyKind.Assassin,
-                defId = "threeblades", marsh = false, taunt = "“One for the throat. One for the heart. One to watch.”" },
+                defId = "threeblades", marsh = false, taunt = "“One for the throat. One for the heart. One to watch.”",
+                philosophy = "AMBUSH · ROTATION · PATIENCE" },
             new() { id = 7, name = "THE DROWNED GUARDIAN", title = "WARDEN OF THE SECOND KEY", kind = EnemyKind.EliteWarrior,
-                defId = "drownedguardian", marsh = true, taunt = "“Your father set me here. He did not say you would come.”" },
+                defId = "drownedguardian", marsh = true, taunt = "“Your father set me here. He did not say you would come.”",
+                philosophy = "ENDURANCE · REACH · REFUSAL" },
             new() { id = 8, name = "THE IRON GUARD", title = "KAGEHIRA'S SHIELD", kind = EnemyKind.EliteWarrior,
-                defId = "ironguard", marsh = false, taunt = "“The warlord does not see you. I make sure of it.”" },
+                defId = "ironguard", marsh = false, taunt = "“The warlord does not see you. I make sure of it.”",
+                philosophy = "GUARD · PUNISHMENT · NO GROUND GIVEN" },
             new() { id = 9, name = "COMMANDER HOSHU", title = "THE INNER GATE", kind = EnemyKind.Samurai,
-                defId = "finalcommander", marsh = false, taunt = "“He said you would reach this door. He did not say you would open it.”" },
+                defId = "finalcommander", marsh = false, taunt = "“He said you would reach this door. He did not say you would open it.”",
+                philosophy = "COMMAND · TIMING · THE LAST DOOR" },
         };
 
         // ---------------------------------------------------- duel modifiers

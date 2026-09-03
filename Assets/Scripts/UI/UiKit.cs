@@ -380,6 +380,27 @@ namespace Emberline.UI
         }
 
         /// <summary>Small ember dash used under headings — the one flourish permitted.</summary>
+        /// <summary>
+        /// A drawn arrow — shaft plus a chevron head built from rotated bars — so
+        /// it is crisp at any size and never depends on the display font having
+        /// the glyph (it does not; "→" fell back to a tiny dash).
+        /// </summary>
+        public static RectTransform Arrow(Transform parent, Vector2 anchor, Vector2 pos, Color color,
+            float length = 22f, float head = 8f, float thick = 2f)
+        {
+            var root = Rect(parent, "Arrow", anchor, pos, new Vector2(length, head * 2f), new Vector2(1, 0.5f));
+            // Every bar pivots on its right end, so all three share the tip at the root's right-centre.
+            Img(Rect(root, "Shaft", new Vector2(1, 0.5f), Vector2.zero, new Vector2(length, thick),
+                new Vector2(1, 0.5f)), White, color);
+            var up = Rect(root, "Up", new Vector2(1, 0.5f), Vector2.zero, new Vector2(head, thick), new Vector2(1, 0.5f));
+            up.localRotation = Quaternion.Euler(0, 0, 45f);
+            Img(up, White, color);
+            var dn = Rect(root, "Down", new Vector2(1, 0.5f), Vector2.zero, new Vector2(head, thick), new Vector2(1, 0.5f));
+            dn.localRotation = Quaternion.Euler(0, 0, -45f);
+            Img(dn, White, color);
+            return root;
+        }
+
         public static Image Accent(Transform parent, Vector2 anchor, Vector2 pos, float width = 36f)
         {
             var rt = Rect(parent, "Accent", anchor, pos, new Vector2(width, 2));
