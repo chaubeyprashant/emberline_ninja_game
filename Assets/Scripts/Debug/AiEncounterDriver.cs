@@ -281,7 +281,9 @@ namespace Emberline.DebugTools
                 {
                     var b = EnemyBrain.Active[i];
                     if (b != null && b.gameObject.activeInHierarchy)
-                        Debug.Log("[ENC]   why: " + b.DebugLine);
+                        Debug.Log("[ENC]   why: " + b.DebugLine + $" intent='{b.Intent}' observed={b.LastObserved} " +
+                                  $"decision={b.LastDecision} profile={(b.ActiveProfile != null ? b.ActiveProfile.id : "none")} " +
+                                  $"kit={(b.def != null ? b.def.attacks.Length : -1)} windupLeft={b.WindupRemaining:0.00}");
                 }
             if (!ok)
                 Debug.Log($"[ENC]   world: timeScale={Time.timeScale} cinematic={GameManager.CinematicActive} " +
