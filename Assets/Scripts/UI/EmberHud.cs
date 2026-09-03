@@ -77,18 +77,25 @@ namespace Emberline.UI
         }
 
         /// <summary>
-        /// Render-resolution scale per tier. This is the biggest single GPU lever on
-        /// a fill-rate-bound mobile game: dropping the low tier to 75% of native
-        /// costs roughly half the shaded pixels and buys the 30fps floor on weak
-        /// hardware, while the UI keeps drawing at full device resolution.
+        /// The back buffer stays at native resolution on every tier.
+        ///
+        /// This used to drop it to 90 % (default tier) and 75 % (low) through
+        /// Screen.SetResolution on the theory that the UI would keep drawing at
+        /// device resolution. It does not: SetResolution shrinks the whole
+        /// back buffer, overlay canvases included, so every menu and every line
+        /// of text was being upscaled — which read as a soft, pixelated UI on
+        /// the Galaxy A33. The lever was also the wrong one for that device,
+        /// whose thermal problem measured as CPU, not fill rate; the tiers keep
+        /// their real savings (frame cap, shadows, particles, lantern lights).
+        /// A 3D-only downscale belongs on the camera (a render texture, or
+        /// dynamic resolution under Vulkan), never on the screen.
         /// </summary>
         private static void ApplyRenderScale(int tier)
         {
-            var scale = tier == 0 ? 0.75f : tier == 1 ? 0.9f : 1f;
-            var w = Mathf.RoundToInt(UnityEngine.Screen.currentResolution.width * scale);
-            var h = Mathf.RoundToInt(UnityEngine.Screen.currentResolution.height * scale);
+            var w = UnityEngine.Screen.currentResolution.width;
+            var h = UnityEngine.Screen.currentResolution.height;
             if (w <= 0 || h <= 0) return;
-            // No-op when already there — SetResolution reallocates the back buffer.
+            // Restore native if an earlier build left the buffer reduced.
             if (Mathf.Abs(UnityEngine.Screen.width - w) <= 2) return;
             UnityEngine.Screen.SetResolution(w, h, UnityEngine.Screen.fullScreen);
         }
@@ -271,95 +278,117 @@ namespace Emberline.UI
 
         // -------------------------------------------------------------- menus
 
+        /// <summary>
+        /// The home screen uses the whole screen. Left third: the title and a
+        /// CONTINUE hero that says which mission is next, where it sits in the
+        /// campaign and what it is about, with the one button that matters.
+        /// Right two thirds: the six modes as large cards, each with its own
+        /// live line. The old single left-hand list left seventy percent of a
+        /// landscape phone empty and its text too small to read at arm's length.
+        /// </summary>
         private void BuildMenuRoot()
         {
             BuildEmberLayer();
 
-            // Left column on a cinematic plate. Sparse by design: a title, a
-            // hairline, seven lines. Everything else the old menu shouted —
-            // weapon line, finish line, daily strip, three mode cards — lives one
-            // tap deeper where it is wanted.
-            var col = UiKit.Rect(_screenRoot, "Column", new Vector2(0, 1), new Vector2(104, 0),
-                new Vector2(520, 720), new Vector2(0, 1));
-
-            UiKit.Kicker(col, "AN EMBERLINE STORY", new Vector2(0, 1), new Vector2(0, -78),
-                new Vector2(520, 20), align: TextAnchor.MiddleLeft);
-            UiKit.Label(col, "EMBERLINE", 58, UiKit.Pale, new Vector2(0, 1), new Vector2(-4, -128),
-                new Vector2(520, 72), display: true, align: TextAnchor.MiddleLeft);
-            UiKit.Accent(col, new Vector2(0, 1), new Vector2(18, -172), 36);
+            // ---- left third: title + the next mission
+            var col = UiKit.Rect(_screenRoot, "Column", new Vector2(0, 1), new Vector2(96, 0),
+                new Vector2(480, 720), new Vector2(0, 1));
+            UiKit.Kicker(col, "AN EMBERLINE STORY", new Vector2(0, 1), new Vector2(0, -56),
+                new Vector2(480, 26), align: TextAnchor.MiddleLeft, size: 18);
+            UiKit.Label(col, "EMBERLINE", 66, UiKit.Pale, new Vector2(0, 1), new Vector2(-4, -104),
+                new Vector2(480, 80), display: true, align: TextAnchor.MiddleLeft);
+            UiKit.Accent(col, new Vector2(0, 1), new Vector2(18, -152), 44);
 
             var next = Mathf.Clamp(Session.StoryUnlocked - 1, 0, Session.Story.Length - 1);
             var cleared = Session.StoryUnlocked - 1;
+            var finished = cleared >= Session.Story.Length;
+            var level = Session.Story[next];
+            var chapter = Campaign.Campaign.ChapterOf(level.id);
+
+            var hero = UiKit.Rect(col, "Hero", new Vector2(0, 1), new Vector2(0, -180),
+                new Vector2(480, 318), new Vector2(0, 1));
+            UiKit.Surface(hero, 0.55f);
+            UiKit.Img(UiKit.Rect(hero, "Mark", new Vector2(0, 1), new Vector2(2, -34),
+                new Vector2(3, 44), new Vector2(0, 1)), UiKit.White, UiKit.Ember);
+            UiKit.Kicker(hero, finished ? "THE ROAD IS WALKED" : "CONTINUE", new Vector2(0, 1),
+                new Vector2(22, -16), new Vector2(440, 22), align: TextAnchor.MiddleLeft, size: 16);
+            UiKit.Label(hero, finished ? "REPLAY ANY CHAPTER" : $"{level.id:00}  {level.name}", 30,
+                finished ? UiKit.Pale : UiKit.EmberBright, new Vector2(0, 1), new Vector2(22, -42),
+                new Vector2(440, 40), align: TextAnchor.MiddleLeft).characterSpacing = 3f;
+            UiKit.Label(hero, finished
+                    ? $"{Session.Story.Length} of {Session.Story.Length} missions · {Session.TotalStars} stars"
+                    : $"CHAPTER {chapter.number} — {chapter.name}  ·  {Campaign.Campaign.ActName(level.id)}",
+                16, UiKit.Dim, new Vector2(0, 1), new Vector2(22, -86), new Vector2(440, 22),
+                align: TextAnchor.MiddleLeft).characterSpacing = 2f;
+            UiKit.Paragraph(hero, UiKit.Clean(finished
+                    ? "Every mission stays open. New Game+ and the full duel roster are yours."
+                    : level.story), 17, UiKit.Pale, new Vector2(0, 1), new Vector2(22, -116),
+                new Vector2(436, 92), TextAnchor.UpperLeft);
+            UiKit.MakeButton(hero, finished ? "STORY" : "MARCH", new Vector2(0, 0), new Vector2(132, 46),
+                new Vector2(220, 56), () => { if (finished) SetScreen(Screen.Story); else _gm.LaunchStory(next); },
+                19, primary: !finished);
+            UiKit.Label(hero, finished ? "" : $"{Mathf.Clamp(cleared, 0, Session.Story.Length)} of {Session.Story.Length} cleared",
+                15, UiKit.Dim, new Vector2(0, 0), new Vector2(262, 36), new Vector2(200, 20),
+                align: TextAnchor.MiddleLeft);
+
+            // Reference pages, bottom-left, under the hero.
+            UiKit.MakeButton(_screenRoot, "RENZO", new Vector2(0, 0), new Vector2(168, 34),
+                new Vector2(144, 52), () => SetScreen(Screen.Bio), 16);
+            UiKit.MakeButton(_screenRoot, "CODEX", new Vector2(0, 0), new Vector2(322, 34),
+                new Vector2(144, 52), () => SetScreen(Screen.Codex), 16);
+            UiKit.MakeButton(_screenRoot, "ARMOURY", new Vector2(0, 0), new Vector2(488, 34),
+                new Vector2(168, 52), () => SetScreen(Screen.Weapons), 16);
+
+            // ---- right two thirds: the modes, as cards
             var items = new (string label, string sub, System.Action go)[]
             {
-                ("CONTINUE", cleared >= Session.Story.Length
-                    ? "The road is walked — replay any chapter"
-                    : $"{Session.Story[next].id:00} {Session.Story[next].name.ToLowerInvariant()} · "
-                      + Campaign.Campaign.ChapterOf(Session.Story[next].id).name.ToLowerInvariant(),
-                    () => _gm.LaunchStory(next)),
-                ("STORY", $"{Mathf.Clamp(cleared, 0, Session.Story.Length)} of {Session.Story.Length} missions · "
-                    + $"chapter {Campaign.Campaign.ChapterOf(Mathf.Min(Session.StoryUnlocked, Session.Story.Length)).number} of {Campaign.Campaign.Chapters.Length}",
+                ("STORY", $"{Mathf.Clamp(cleared, 0, Session.Story.Length)} of {Session.Story.Length} missions\nChapter {chapter.number} of {Campaign.Campaign.Chapters.Length}",
                     () => SetScreen(Screen.Story)),
-                ("DUELS", "One life. Full strength.", () => SetScreen(Screen.Fight)),
+                ("DUELS", $"{Session.DuelsUnlocked} of {Session.Duels.Length} opponents\nOne life. Full strength.",
+                    () => SetScreen(Screen.Fight)),
                 ("THE ROAD NORTH", Endless.RunStats.BestScore > 0
-                    ? $"Best {Endless.RunStats.BestScore:N0} pts" : "Seven countries, no end",
-                    () => SetScreen(Screen.March)),
-                ("THE FORGE", $"{Core.Wallet.Ryo:N0} ryo", () => SetScreen(Screen.Forge)),
-                ("SKILLS", $"{SkillTree.Shards} shards · {SkillTree.OwnedCount}/{SkillTree.Nodes.Count} learned",
+                    ? $"Best {Endless.RunStats.BestScore:N0} pts\nSeven countries, no end"
+                    : "Seven countries, no end", () => SetScreen(Screen.March)),
+                ("THE FORGE", $"{Core.Wallet.Ryo:N0} ryo\nUpgrades and dyes", () => SetScreen(Screen.Forge)),
+                ("SKILLS", $"{SkillTree.Shards} shards\n{SkillTree.OwnedCount}/{SkillTree.Nodes.Count} learned",
                     () => SetScreen(Screen.Skills)),
-                ("SETTINGS", Difficulty.Name.ToLowerInvariant(), ToggleSettings),
+                ("SETTINGS", $"{Difficulty.Name}\nControls, audio, gyro", ToggleSettings),
             };
-
-            var y = -212f;
+            const float cardW = 284f, cardH = 226f, gap = 24f;
+            const float gridX = 616f, gridY = -104f;
             for (var i = 0; i < items.Length; i++)
             {
                 var (label, sub, go) = items[i];
-                MenuRow(col, label, sub, y, i == 0, go);
-                y -= 54f;
+                var cx = gridX + (i % 3) * (cardW + gap);
+                var cy = gridY - (i / 3) * (cardH + gap);
+                ModeCard(label, sub, new Vector2(cx, cy), new Vector2(cardW, cardH), go);
             }
 
-            // Secondary, small, bottom-left: the reference pages.
-            UiKit.MakeButton(_screenRoot, "RENZO", new Vector2(0, 0), new Vector2(150, 40),
-                new Vector2(96, 44), () => SetScreen(Screen.Bio), 12);
-            UiKit.MakeButton(_screenRoot, "CODEX", new Vector2(0, 0), new Vector2(254, 40),
-                new Vector2(96, 44), () => SetScreen(Screen.Codex), 12);
-            UiKit.MakeButton(_screenRoot, "ARMOURY", new Vector2(0, 0), new Vector2(368, 40),
-                new Vector2(112, 44), () => SetScreen(Screen.Weapons), 12);
-
-            UiKit.Label(_screenRoot, "v" + Application.version, 11, UiKit.Faint, new Vector2(1, 0),
-                new Vector2(-40, 30), new Vector2(200, 16), align: TextAnchor.MiddleRight);
+            UiKit.Label(_screenRoot, "v" + Application.version, 13, UiKit.Faint, new Vector2(1, 0),
+                new Vector2(-40, 30), new Vector2(200, 18), align: TextAnchor.MiddleRight);
         }
 
-        /// <summary>
-        /// One menu line: a label, a one-line hint beneath, a hairline. The row
-        /// is the tap target; there is no box. The primary row carries the accent.
-        /// </summary>
-        private void MenuRow(RectTransform col, string label, string sub, float y, bool primary,
-            System.Action go)
+        /// <summary>One mode: a plate, a large name, two live lines, a hairline.</summary>
+        private void ModeCard(string label, string sub, Vector2 pos, Vector2 size, System.Action go)
         {
-            var rt = UiKit.Rect(col, "Row_" + label, new Vector2(0, 1), new Vector2(0, y),
-                new Vector2(440, 52), new Vector2(0, 1));
-            var hit = UiKit.Img(rt, null, new Color(1, 1, 1, 0.001f));
-            hit.raycastTarget = true;
+            var rt = UiKit.Rect(_screenRoot, "Mode_" + label, new Vector2(0, 1), pos, size, new Vector2(0, 1));
+            var img = UiKit.Img(rt, null, new Color(1, 1, 1, 0.035f));
+            img.raycastTarget = true;
             var btn = rt.gameObject.AddComponent<Button>();
-            btn.targetGraphic = hit;
-            btn.transition = Selectable.Transition.None;
+            btn.targetGraphic = img;
+            var colors = btn.colors; colors.highlightedColor = new Color(1, 1, 1, 0.08f) * 4f;
+            colors.pressedColor = new Color(1, 1, 1, 0.12f) * 6f; btn.colors = colors;
             btn.onClick.AddListener(() => { Sfx3D.Confirm(); go?.Invoke(); });
-            var punch = rt.gameObject.AddComponent<UiKit.ButtonPunch>();
-            var trig = rt.gameObject.AddComponent<EventTrigger>();
-            var down = new EventTrigger.Entry { eventID = EventTriggerType.PointerDown };
-            down.callback.AddListener(_ => punch.Punch());
-            trig.triggers.Add(down);
+            rt.gameObject.AddComponent<UiKit.ButtonPunch>();
 
-            var t = UiKit.Label(rt, label, primary ? 22 : 19, primary ? UiKit.EmberBright : UiKit.Pale,
-                new Vector2(0, 1), new Vector2(18, -14), new Vector2(420, 26), align: TextAnchor.MiddleLeft);
-            t.characterSpacing = 5f;
-            if (!string.IsNullOrEmpty(sub))
-                UiKit.Label(rt, UiKit.Clean(sub), 12, UiKit.Dim, new Vector2(0, 1), new Vector2(18, -37),
-                    new Vector2(420, 16), align: TextAnchor.MiddleLeft);
+            UiKit.Label(rt, label, 26, UiKit.Pale, new Vector2(0, 1), new Vector2(18, -20),
+                new Vector2(size.x - 36, 34), align: TextAnchor.MiddleLeft).characterSpacing = 4f;
+            UiKit.Hairline(rt, new Vector2(0, 1), 0.12f).rectTransform.anchoredPosition = new Vector2(0, -64);
+            UiKit.Paragraph(rt, UiKit.Clean(sub), 18, UiKit.Dim, new Vector2(0, 1), new Vector2(18, -80),
+                new Vector2(size.x - 36, 90), TextAnchor.UpperLeft);
+            UiKit.Kicker(rt, "OPEN", new Vector2(1, 0), new Vector2(-18, 18), new Vector2(120, 16),
+                color: UiKit.Ember, align: TextAnchor.MiddleRight, size: 12);
             UiKit.Hairline(rt, new Vector2(0, 0), 0.08f);
-            if (primary) UiKit.Img(UiKit.Rect(rt, "Mark", new Vector2(0, 0.5f), new Vector2(4, 4),
-                new Vector2(3, 22)), UiKit.White, UiKit.Ember);
         }
 
         private void BuildCodex()

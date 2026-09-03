@@ -1,0 +1,356 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e430e8521d06d43428f3cce260b16eda, type: 3}
+  m_Name: Moveset_daggers
+  m_EditorClassIdentifier: Assembly-CSharp::Emberline.Player.PlayerMoveset
+  weaponId: daggers
+  attacks:
+  - id: flick
+    displayName: FLICK
+    context: 16
+    startup: 0.05
+    animTime: 0.17
+    recovery: 0
+    cooldown: 0
+    rangeMultiplier: 1
+    arcDeg: 120
+    lunge: 6.8
+    damageMultiplier: 1
+    postureMultiplier: 1
+    crush: 0
+    launch: 0
+    execute: 0
+    pose: 2
+    heavyWhoosh: 0
+    cameraImpact: 0
+    hitStop: 0.04
+    chainStage: 1
+  - id: flick_2
+    displayName: FLICK 2
+    context: 15
+    startup: 0.05
+    animTime: 0.17
+    recovery: 0
+    cooldown: 0
+    rangeMultiplier: 1
+    arcDeg: 120
+    lunge: 6.8
+    damageMultiplier: 1
+    postureMultiplier: 1
+    crush: 0
+    launch: 0
+    execute: 0
+    pose: 3
+    heavyWhoosh: 0
+    cameraImpact: 0
+    hitStop: 0.04
+    chainStage: 2
+  - id: twin_fang
+    displayName: TWIN FANG
+    context: 14
+    startup: 0.05
+    animTime: 0.2
+    recovery: 0.12
+    cooldown: 0
+    rangeMultiplier: 1
+    arcDeg: 130
+    lunge: 5.5
+    damageMultiplier: 1.75
+    postureMultiplier: 1
+    crush: 1
+    launch: 1
+    execute: 0
+    pose: 9
+    heavyWhoosh: 0
+    cameraImpact: 0.3
+    hitStop: 0.04
+    chainStage: 3
+  - id: whirl
+    displayName: WHIRL
+    context: 13
+    startup: 0.05
+    animTime: 0.28
+    recovery: 0.18
+    cooldown: 0
+    rangeMultiplier: 0.85
+    arcDeg: 360
+    lunge: 2
+    damageMultiplier: 1.8
+    postureMultiplier: 0.6
+    crush: 1
+    launch: 0
+    execute: 0
+    pose: 4
+    heavyWhoosh: 1
+    cameraImpact: 0.4
+    hitStop: 0.04
+    chainStage: 0
+  - id: double_stab
+    displayName: DOUBLE STAB
+    context: 11
+    startup: 0.05
+    animTime: 0.28
+    recovery: 0.18
+    cooldown: 0
+    rangeMultiplier: 1.2
+    arcDeg: 40
+    lunge: 8
+    damageMultiplier: 1.6
+    postureMultiplier: 0.6
+    crush: 0
+    launch: 0
+    execute: 0
+    pose: 12
+    heavyWhoosh: 1
+    cameraImpact: 0
+    hitStop: 0.04
+    chainStage: 0
+  - id: whirl_finish
+    displayName: WHIRL FINISH
+    context: 10
+    startup: 0.05
+    animTime: 0.28
+    recovery: 0.24
+    cooldown: 0
+    rangeMultiplier: 0.9
+    arcDeg: 360
+    lunge: 5.5
+    damageMultiplier: 2.1
+    postureMultiplier: 0.7
+    crush: 1
+    launch: 1
+    execute: 0
+    pose: 13
+    heavyWhoosh: 0
+    cameraImpact: 0.5
+    hitStop: 0.06
+    chainStage: 0
+  - id: flow
+    displayName: FLOW
+    context: 12
+    startup: 0.05
+    animTime: 0.15
+    recovery: 0
+    cooldown: 0
+    rangeMultiplier: 1
+    arcDeg: 130
+    lunge: 5.5
+    damageMultiplier: 1
+    postureMultiplier: 1
+    crush: 0
+    launch: 0
+    execute: 0
+    pose: 2
+    heavyWhoosh: 0
+    cameraImpact: 0
+    hitStop: 0.04
+    chainStage: 1
+  - id: hilt_strike
+    displayName: HILT STRIKE
+    context: 5
+    startup: 0.05
+    animTime: 0.28
+    recovery: 0.18
+    cooldown: 0
+    rangeMultiplier: 1
+    arcDeg: 80
+    lunge: 5.5
+    damageMultiplier: 0.8
+    postureMultiplier: 1.6
+    crush: 1
+    launch: 0
+    execute: 0
+    pose: 18
+    heavyWhoosh: 0
+    cameraImpact: 0
+    hitStop: 0.04
+    chainStage: 0
+  - id: twin_riposte
+    displayName: TWIN RIPOSTE
+    context: 2
+    startup: 0.05
+    animTime: 0.28
+    recovery: 0
+    cooldown: 0
+    rangeMultiplier: 1
+    arcDeg: 130
+    lunge: 7
+    damageMultiplier: 2
+    postureMultiplier: 1.4
+    crush: 1
+    launch: 0
+    execute: 0
+    pose: 9
+    heavyWhoosh: 0
+    cameraImpact: 0.6
+    hitStop: 0.07
+    chainStage: 0
+  - id: shadow_fang
+    displayName: SHADOW FANG
+    context: 3
+    startup: 0.05
+    animTime: 0.28
+    recovery: 0
+    cooldown: 0
+    rangeMultiplier: 1
+    arcDeg: 60
+    lunge: 10
+    damageMultiplier: 2.2
+    postureMultiplier: 1.4
+    crush: 0
+    launch: 0
+    execute: 0
+    pose: 12
+    heavyWhoosh: 0
+    cameraImpact: 0.6
+    hitStop: 0.07
+    chainStage: 0
+  - id: twin_backstab
+    displayName: TWIN BACKSTAB
+    context: 4
+    startup: 0.05
+    animTime: 0.28
+    recovery: 0
+    cooldown: 0
+    rangeMultiplier: 1
+    arcDeg: 130
+    lunge: 5.5
+    damageMultiplier: 2.2
+    postureMultiplier: 2.4
+    crush: 1
+    launch: 0
+    execute: 0
+    pose: 12
+    heavyWhoosh: 0
+    cameraImpact: 0.5
+    hitStop: 0.04
+    chainStage: 0
+  - id: throat
+    displayName: THROAT
+    context: 1
+    startup: 0.05
+    animTime: 0.28
+    recovery: 0
+    cooldown: 0
+    rangeMultiplier: 1
+    arcDeg: 130
+    lunge: 5.5
+    damageMultiplier: 1.8
+    postureMultiplier: 1
+    crush: 1
+    launch: 0
+    execute: 1
+    pose: 9
+    heavyWhoosh: 0
+    cameraImpact: 0.6
+    hitStop: 0.04
+    chainStage: 0
+  - id: silent_end
+    displayName: SILENT END
+    context: 0
+    startup: 0.05
+    animTime: 0.28
+    recovery: 0
+    cooldown: 0
+    rangeMultiplier: 1
+    arcDeg: 90
+    lunge: 5.5
+    damageMultiplier: 1
+    postureMultiplier: 1
+    crush: 0
+    launch: 0
+    execute: 1
+    pose: 12
+    heavyWhoosh: 0
+    cameraImpact: 0
+    hitStop: 0.04
+    chainStage: 0
+  - id: blink_in
+    displayName: BLINK IN
+    context: 6
+    startup: 0.05
+    animTime: 0.17
+    recovery: 0
+    cooldown: 0
+    rangeMultiplier: 1
+    arcDeg: 70
+    lunge: 12
+    damageMultiplier: 1.1
+    postureMultiplier: 1
+    crush: 0
+    launch: 0
+    execute: 0
+    pose: 21
+    heavyWhoosh: 0
+    cameraImpact: 0
+    hitStop: 0.04
+    chainStage: 1
+  - id: running_flick
+    displayName: RUNNING FLICK
+    context: 9
+    startup: 0.05
+    animTime: 0.17
+    recovery: 0
+    cooldown: 0
+    rangeMultiplier: 1
+    arcDeg: 130
+    lunge: 9
+    damageMultiplier: 1.1
+    postureMultiplier: 1
+    crush: 0
+    launch: 0
+    execute: 0
+    pose: 2
+    heavyWhoosh: 0
+    cameraImpact: 0
+    hitStop: 0.04
+    chainStage: 1
+  - id: dropping_fangs
+    displayName: DROPPING FANGS
+    context: 7
+    startup: 0.05
+    animTime: 0.28
+    recovery: 0.18
+    cooldown: 0
+    rangeMultiplier: 0.8
+    arcDeg: 360
+    lunge: 1
+    damageMultiplier: 1.5
+    postureMultiplier: 1
+    crush: 0
+    launch: 0
+    execute: 0
+    pose: 20
+    heavyWhoosh: 0
+    cameraImpact: 0.4
+    hitStop: 0.04
+    chainStage: 0
+  - id: wall_fangs
+    displayName: WALL FANGS
+    context: 8
+    startup: 0.05
+    animTime: 0.28
+    recovery: 0.18
+    cooldown: 0
+    rangeMultiplier: 0.9
+    arcDeg: 360
+    lunge: 6
+    damageMultiplier: 1.7
+    postureMultiplier: 1
+    crush: 0
+    launch: 0
+    execute: 0
+    pose: 20
+    heavyWhoosh: 0
+    cameraImpact: 0
+    hitStop: 0.04
+    chainStage: 0

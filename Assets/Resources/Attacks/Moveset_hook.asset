@@ -1,0 +1,356 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e430e8521d06d43428f3cce260b16eda, type: 3}
+  m_Name: Moveset_hook
+  m_EditorClassIdentifier: Assembly-CSharp::Emberline.Player.PlayerMoveset
+  weaponId: hook
+  attacks:
+  - id: hook_swing
+    displayName: HOOK SWING
+    context: 16
+    startup: 0.05
+    animTime: 0.36
+    recovery: 0
+    cooldown: 0
+    rangeMultiplier: 1
+    arcDeg: 130
+    lunge: 4.5
+    damageMultiplier: 1
+    postureMultiplier: 1
+    crush: 0
+    launch: 0
+    execute: 0
+    pose: 2
+    heavyWhoosh: 0
+    cameraImpact: 0
+    hitStop: 0.04
+    chainStage: 1
+  - id: hook_return
+    displayName: HOOK RETURN
+    context: 15
+    startup: 0.05
+    animTime: 0.36
+    recovery: 0
+    cooldown: 0
+    rangeMultiplier: 1
+    arcDeg: 160
+    lunge: 4
+    damageMultiplier: 1.15
+    postureMultiplier: 1
+    crush: 0
+    launch: 0
+    execute: 0
+    pose: 13
+    heavyWhoosh: 0
+    cameraImpact: 0
+    hitStop: 0.04
+    chainStage: 2
+  - id: hook_drag
+    displayName: HOOK DRAG
+    context: 14
+    startup: 0.05
+    animTime: 0.4
+    recovery: 0.32
+    cooldown: 0
+    rangeMultiplier: 1
+    arcDeg: 130
+    lunge: 5.5
+    damageMultiplier: 1.8
+    postureMultiplier: 1
+    crush: 1
+    launch: 1
+    execute: 0
+    pose: 9
+    heavyWhoosh: 0
+    cameraImpact: 0.5
+    hitStop: 0.07
+    chainStage: 3
+  - id: hook_cleave
+    displayName: HOOK CLEAVE
+    context: 13
+    startup: 0.05
+    animTime: 0.28
+    recovery: 0.42
+    cooldown: 0
+    rangeMultiplier: 1.15
+    arcDeg: 180
+    lunge: 2.5
+    damageMultiplier: 2.5
+    postureMultiplier: 1
+    crush: 1
+    launch: 0
+    execute: 0
+    pose: 4
+    heavyWhoosh: 1
+    cameraImpact: 0.7
+    hitStop: 0.07
+    chainStage: 0
+  - id: long_reach
+    displayName: LONG REACH
+    context: 11
+    startup: 0.05
+    animTime: 0.28
+    recovery: 0.4
+    cooldown: 0
+    rangeMultiplier: 1.9
+    arcDeg: 34
+    lunge: 5
+    damageMultiplier: 2
+    postureMultiplier: 1.5
+    crush: 1
+    launch: 0
+    execute: 0
+    pose: 12
+    heavyWhoosh: 1
+    cameraImpact: 0.5
+    hitStop: 0.04
+    chainStage: 0
+  - id: reaper
+    displayName: REAPER
+    context: 10
+    startup: 0.05
+    animTime: 0.28
+    recovery: 0.5
+    cooldown: 0
+    rangeMultiplier: 1.25
+    arcDeg: 220
+    lunge: 2
+    damageMultiplier: 3.1
+    postureMultiplier: 1
+    crush: 1
+    launch: 1
+    execute: 0
+    pose: 13
+    heavyWhoosh: 1
+    cameraImpact: 0.9
+    hitStop: 0.09
+    chainStage: 0
+  - id: short_hook
+    displayName: SHORT HOOK
+    context: 12
+    startup: 0.05
+    animTime: 0.3
+    recovery: 0
+    cooldown: 0
+    rangeMultiplier: 1
+    arcDeg: 130
+    lunge: 5.5
+    damageMultiplier: 1
+    postureMultiplier: 1
+    crush: 0
+    launch: 0
+    execute: 0
+    pose: 2
+    heavyWhoosh: 0
+    cameraImpact: 0
+    hitStop: 0.04
+    chainStage: 1
+  - id: hook_pull
+    displayName: HOOK PULL
+    context: 5
+    startup: 0.05
+    animTime: 0.28
+    recovery: 0.35
+    cooldown: 0
+    rangeMultiplier: 1
+    arcDeg: 80
+    lunge: 5.5
+    damageMultiplier: 1.2
+    postureMultiplier: 3.2
+    crush: 1
+    launch: 0
+    execute: 0
+    pose: 18
+    heavyWhoosh: 1
+    cameraImpact: 0.5
+    hitStop: 0.04
+    chainStage: 0
+  - id: hooked_riposte
+    displayName: HOOKED RIPOSTE
+    context: 2
+    startup: 0.05
+    animTime: 0.28
+    recovery: 0
+    cooldown: 0
+    rangeMultiplier: 1
+    arcDeg: 130
+    lunge: 5
+    damageMultiplier: 2.2
+    postureMultiplier: 2.2
+    crush: 1
+    launch: 0
+    execute: 0
+    pose: 9
+    heavyWhoosh: 0
+    cameraImpact: 0.7
+    hitStop: 0.08
+    chainStage: 0
+  - id: catch
+    displayName: CATCH
+    context: 3
+    startup: 0.05
+    animTime: 0.28
+    recovery: 0
+    cooldown: 0
+    rangeMultiplier: 1
+    arcDeg: 160
+    lunge: 6
+    damageMultiplier: 1.6
+    postureMultiplier: 1.4
+    crush: 0
+    launch: 0
+    execute: 0
+    pose: 13
+    heavyWhoosh: 0
+    cameraImpact: 0.5
+    hitStop: 0.04
+    chainStage: 0
+  - id: spine_hook
+    displayName: SPINE HOOK
+    context: 4
+    startup: 0.05
+    animTime: 0.28
+    recovery: 0
+    cooldown: 0
+    rangeMultiplier: 1
+    arcDeg: 130
+    lunge: 5.5
+    damageMultiplier: 1.7
+    postureMultiplier: 2.2
+    crush: 1
+    launch: 0
+    execute: 0
+    pose: 9
+    heavyWhoosh: 0
+    cameraImpact: 0
+    hitStop: 0.04
+    chainStage: 0
+  - id: dragged_down
+    displayName: DRAGGED DOWN
+    context: 1
+    startup: 0.05
+    animTime: 0.28
+    recovery: 0
+    cooldown: 0
+    rangeMultiplier: 1
+    arcDeg: 130
+    lunge: 5.5
+    damageMultiplier: 2.2
+    postureMultiplier: 1
+    crush: 1
+    launch: 0
+    execute: 1
+    pose: 4
+    heavyWhoosh: 0
+    cameraImpact: 0.7
+    hitStop: 0.08
+    chainStage: 0
+  - id: silent_hook
+    displayName: SILENT HOOK
+    context: 0
+    startup: 0.05
+    animTime: 0.28
+    recovery: 0
+    cooldown: 0
+    rangeMultiplier: 1
+    arcDeg: 90
+    lunge: 5.5
+    damageMultiplier: 1
+    postureMultiplier: 1
+    crush: 0
+    launch: 0
+    execute: 1
+    pose: 12
+    heavyWhoosh: 0
+    cameraImpact: 0
+    hitStop: 0.04
+    chainStage: 0
+  - id: cast
+    displayName: CAST
+    context: 6
+    startup: 0.05
+    animTime: 0.34
+    recovery: 0
+    cooldown: 0
+    rangeMultiplier: 1.3
+    arcDeg: 60
+    lunge: 9
+    damageMultiplier: 1.3
+    postureMultiplier: 1
+    crush: 0
+    launch: 0
+    execute: 0
+    pose: 21
+    heavyWhoosh: 0
+    cameraImpact: 0
+    hitStop: 0.04
+    chainStage: 1
+  - id: running_hook
+    displayName: RUNNING HOOK
+    context: 9
+    startup: 0.05
+    animTime: 0.34
+    recovery: 0
+    cooldown: 0
+    rangeMultiplier: 1
+    arcDeg: 130
+    lunge: 6.5
+    damageMultiplier: 1.4
+    postureMultiplier: 1
+    crush: 0
+    launch: 0
+    execute: 0
+    pose: 3
+    heavyWhoosh: 0
+    cameraImpact: 0
+    hitStop: 0.04
+    chainStage: 1
+  - id: falling_hook
+    displayName: FALLING HOOK
+    context: 7
+    startup: 0.05
+    animTime: 0.28
+    recovery: 0.36
+    cooldown: 0
+    rangeMultiplier: 0.95
+    arcDeg: 360
+    lunge: 1
+    damageMultiplier: 2
+    postureMultiplier: 1
+    crush: 1
+    launch: 0
+    execute: 0
+    pose: 20
+    heavyWhoosh: 0
+    cameraImpact: 0.6
+    hitStop: 0.04
+    chainStage: 0
+  - id: wall_hook
+    displayName: WALL HOOK
+    context: 8
+    startup: 0.05
+    animTime: 0.28
+    recovery: 0.36
+    cooldown: 0
+    rangeMultiplier: 1
+    arcDeg: 360
+    lunge: 5
+    damageMultiplier: 2.3
+    postureMultiplier: 1
+    crush: 1
+    launch: 0
+    execute: 0
+    pose: 20
+    heavyWhoosh: 0
+    cameraImpact: 0
+    hitStop: 0.04
+    chainStage: 0

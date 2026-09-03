@@ -23,7 +23,7 @@ namespace Emberline.EditorTools
                   && m.ExtraAttackers == 0 && m.Score == 1f, "Medium is exactly 1.0 on every axis");
 
             var defs = Resources.LoadAll<EnemyDef>("Enemies");
-            Check(defs.Length == 13, $"13 enemy defs loaded ({defs.Length})");
+            Check(defs.Length >= 13, $"the enemy roster loads ({defs.Length} defs: 13 kinds + named foes)");
 
             // Telegraph floor: every damaging pattern must be readable. Punish and
             // riposte paths clamp to 0.3s / 0.32s in code; cold attacks use the

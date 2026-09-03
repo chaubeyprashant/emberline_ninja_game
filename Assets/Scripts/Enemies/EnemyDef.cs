@@ -33,37 +33,9 @@ namespace Emberline.Enemies
         PoisonSpit,   // projectile that slows
         DashStrike,   // closing dash that damages on contact
         Parry,        // defensive stance that punishes a hit
-    }
-
-    /// <summary>
-    /// One move in an enemy's kit. The brain chooses among these by range and
-    /// weight, so attack *patterns* differ per enemy without branching per enemy.
-    /// </summary>
-    [System.Serializable]
-    public class AttackPattern
-    {
-        public AttackKind kind = AttackKind.Slash;
-
-        [Tooltip("Usable when the player is within this band.")]
-        public float minRange;
-        public float maxRange = 2.4f;
-
-        [Tooltip("Relative pick chance among patterns currently in range.")]
-        public float weight = 1f;
-
-        public float damageMultiplier = 1f;
-
-        [Tooltip("Telegraph length. 0 uses the enemy's default windup.")]
-        public float windupOverride;
-
-        [Tooltip("Seconds before this enemy may attack again after using it.")]
-        public float cooldown = 1.5f;
-
-        [Tooltip("Red ring — reserved for attacks that genuinely hurt.")]
-        public bool redTelegraph;
-
-        [Tooltip("Telegraph footprint multiplier; describes the threatened area.")]
-        public float telegraphScale = 1f;
+        Sweep,        // wide horizontal arc: punishes circling, owns the space
+        GuardBreak,   // a blow that goes through a raised guard and opens it
+        RetreatSlash, // strikes and steps away in the same motion
     }
 
     /// <summary>
@@ -106,7 +78,15 @@ namespace Emberline.Enemies
         public float preferredRange = 2f;
 
         [Header("Moveset")]
-        public AttackPattern[] attacks = System.Array.Empty<AttackPattern>();
+        public AttackDefinition[] attacks = System.Array.Empty<AttackDefinition>();
+
+        [Tooltip("Who this enemy is in a fight. Null = the legacy weighted-random pick.")]
+        public EnemyCombatProfile profile;
+
+        [Tooltip("Bosses: the personality of later phases. A phase changes how he decides, not only his HP.")]
+        public EnemyCombatProfile phase2Profile;
+        public EnemyCombatProfile phase3Profile;
+        public EnemyCombatProfile phase4Profile;
 
         [Header("Defence")]
         [Tooltip("Flat damage subtracted from every hit, before multipliers.")]
@@ -175,7 +155,7 @@ namespace Emberline.Enemies
         public float elementalMultiplier = 1f;
 
         /// <summary>Picks a pattern usable at this distance, weighted. Null if none.</summary>
-        public AttackPattern ChooseAttack(float distance)
+        public AttackDefinition ChooseAttack(float distance)
         {
             if (attacks == null || attacks.Length == 0) return null;
             var total = 0f;

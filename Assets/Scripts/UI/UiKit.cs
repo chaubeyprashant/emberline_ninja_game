@@ -453,9 +453,9 @@ namespace Emberline.UI
 
         /// <summary>Uppercase tracking label — section kickers ("ACT I", "OBJECTIVE").</summary>
         public static TMP_Text Kicker(Transform parent, string content, Vector2 anchor, Vector2 pos,
-            Vector2 box, Color? color = null, TextAnchor align = TextAnchor.MiddleCenter)
+            Vector2 box, Color? color = null, TextAnchor align = TextAnchor.MiddleCenter, int size = 13)
         {
-            var t = Label(parent, content.ToUpperInvariant(), 13, color ?? Ember, anchor, pos, box,
+            var t = Label(parent, content.ToUpperInvariant(), size, color ?? Ember, anchor, pos, box,
                 align: align);
             t.characterSpacing = 8f;
             return t;
