@@ -16,8 +16,8 @@ namespace Emberline.Enemies
         public static int MaxSimultaneousAttackers;
 
         // Combat 2.0: what kind of attacks, and how varied.
-        public static int GuardBreaks, Delayed, Thrusts, Sweeps, Feints, Backstabs, GapClosers, RetreatAttacks, Counters;
-        public static int MissedHeavies, ParryRecoils, AllyReactions, PhaseChanges, GuardBreaksLanded;
+        public static int GuardBreaks, Delayed, Thrusts, Sweeps, Feints, Backstabs, GapClosers, RetreatAttacks, Counters, RangedShots;
+        public static int MissedHeavies, ParryRecoils, AllyReactions, PhaseChanges, GuardBreaksLanded, Mistakes;
         public static int MaxSameAttackRun;
         public static float ArcherMinDistance = float.MaxValue;
         private static readonly System.Collections.Generic.HashSet<string> DistinctIds = new();
@@ -43,6 +43,7 @@ namespace Emberline.Enemies
                 case AttackCategory.GapCloser: GapClosers++; break;
                 case AttackCategory.RetreatAttack: RetreatAttacks++; break;
                 case AttackCategory.Counter: Counters++; break;
+                case AttackCategory.Ranged: RangedShots++; break;
             }
             if (a.requires == TargetStateRequirement.BackTurned) Backstabs++;
         }
@@ -55,8 +56,8 @@ namespace Emberline.Enemies
             Attacks = OutOfTurnPunishes = ReactiveBlocks = Dodges = Ripostes = 0;
             Retreats = GuardHolds = ProtectMoves = StaggersShortened = 0;
             MaxSimultaneousAttackers = 0;
-            GuardBreaks = Delayed = Thrusts = Sweeps = Feints = Backstabs = GapClosers = RetreatAttacks = Counters = 0;
-            MissedHeavies = ParryRecoils = AllyReactions = PhaseChanges = GuardBreaksLanded = 0;
+            GuardBreaks = Delayed = Thrusts = Sweeps = Feints = Backstabs = GapClosers = RetreatAttacks = Counters = RangedShots = 0;
+            MissedHeavies = ParryRecoils = AllyReactions = PhaseChanges = GuardBreaksLanded = Mistakes = 0;
             MaxSameAttackRun = 0; ArcherMinDistance = float.MaxValue; DistinctIds.Clear(); _lastId = null; _run = 0;
             _next = Time.time + LogEvery;
         }

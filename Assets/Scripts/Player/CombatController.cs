@@ -508,7 +508,7 @@ namespace Emberline.Player
             var dmg = cleaveDamage * def.damageMultiplier / 2.6f; // katana cleave = 2.6× a base cut
             StrikeArc(cleaveRange * def.rangeMultiplier, def.arcDeg, dmg, crush: def.crush,
                 launch: def.launch, postureMul: def.postureMultiplier);
-            if (def.cameraImpact > 0f) { _rig?.Shake(def.cameraImpact * 7f, 0.25f); _rig?.ImpactZoom(def.cameraImpact); }
+            if (def.cameraImpact > 0f) { _rig?.Shake(def.cameraImpact * 6f, 0.22f); _rig?.RequestCameraImpact(def.cameraImpact * 0.7f, 0.3f); }
             if (_weapon != null && _weapon.poisonCleave)
                 PoisonPuddle.Spawn(transform.position + _motor.Facing * 1.6f);
             _afterHeavyT = 0.5f;
@@ -792,7 +792,7 @@ namespace Emberline.Player
 
             StrikeArc(strikeRange * def.rangeMultiplier, def.arcDeg, dmg, crush: def.crush,
                 launch: def.launch, postureMul: def.postureMultiplier);
-            if (def.cameraImpact > 0f) { _rig?.Shake(def.cameraImpact * 6f, 0.2f); _rig?.ImpactZoom(def.cameraImpact); }
+            if (def.cameraImpact > 0f) { _rig?.Shake(def.cameraImpact * 6f, 0.2f); _rig?.RequestCameraImpact(def.cameraImpact * 0.7f, 0.3f); }
             if (_weapon != null && _weapon.archetype == WeaponArchetype.Daggers)
                 FxPools.QuickSlash(transform.position + Vector3.up * 1.1f + _motor.Facing * 1.2f, _motor.Facing);
 

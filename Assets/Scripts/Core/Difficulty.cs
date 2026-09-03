@@ -34,6 +34,22 @@ namespace Emberline.Core
             public float AdaptationScale => Level switch { DifficultyLevel.Easy => 0f, DifficultyLevel.Hard => 1.2f, DifficultyLevel.Lethal => 1.6f, _ => 1f };
             public float DecisionScale => Level switch { DifficultyLevel.Easy => 1.6f, DifficultyLevel.Hard => 0.9f, DifficultyLevel.Lethal => 0.7f, _ => 1f };
 
+            // Difficulty 2.0: defence, punishment, spacing, reaction and mistakes.
+            // Medium is neutral (1.0 / the baseline delay) on every one. Nothing
+            // here touches HP or damage — this is how the enemy *thinks*.
+            /// <summary>Multiplies reactive dodge/block/counter chance. Capped so defence is never perfect.</summary>
+            public float DefenseScale => Level switch { DifficultyLevel.Easy => 0.5f, DifficultyLevel.Hard => 1.35f, DifficultyLevel.Lethal => 1.7f, _ => 1f };
+            /// <summary>Probability a spotted opening (whiff, recovery, dodge) is actually taken.</summary>
+            public float RecoveryPunishChance => Level switch { DifficultyLevel.Easy => 0.4f, DifficultyLevel.Hard => 0.9f, DifficultyLevel.Lethal => 1f, _ => 0.75f };
+            /// <summary>How tightly the enemy holds its preferred band. Easy over-approaches.</summary>
+            public float SpacingScale => Level switch { DifficultyLevel.Easy => 0.5f, DifficultyLevel.Hard => 1.2f, DifficultyLevel.Lethal => 1.4f, _ => 1f };
+            /// <summary>Seconds before a read/punish may fire again — the reaction floor.</summary>
+            public float ReactionDelay => Level switch { DifficultyLevel.Easy => 0.5f, DifficultyLevel.Hard => 0.18f, DifficultyLevel.Lethal => 0.12f, _ => 0.28f };
+            /// <summary>Per-decision chance the enemy errs. Never zero — even Lethal makes mistakes.</summary>
+            public float MistakeChance => Level switch { DifficultyLevel.Easy => 0.35f, DifficultyLevel.Hard => 0.07f, DifficultyLevel.Lethal => 0.03f, _ => 0.15f };
+            /// <summary>How many steps of a combo the enemy will chain.</summary>
+            public int MaxComboLength => Level switch { DifficultyLevel.Easy => 1, DifficultyLevel.Hard => 3, DifficultyLevel.Lethal => 4, _ => 2 };
+
             public Def(DifficultyLevel level, string name, string blurb, float enemyDamage,
                 float enemyHp, float heal, float playerHp, int extraAttackers, float score)
             {

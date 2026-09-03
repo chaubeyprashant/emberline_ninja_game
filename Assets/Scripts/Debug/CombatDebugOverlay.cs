@@ -35,6 +35,11 @@ namespace Emberline.DebugTools
             _style ??= new GUIStyle(GUI.skin.label) { fontSize = 22, richText = true };
             var cam = Camera.main;
             if (cam == null) return;
+            var diff = Core.Difficulty.Now;
+            GUI.Label(new Rect(20, 24, Screen.width - 40, 30),
+                $"<b>DIFFICULTY: {diff.Name}</b>  decision×{diff.DecisionScale:0.0}  defence×{diff.DefenseScale:0.0}  " +
+                $"punish {diff.RecoveryPunishChance:P0}  feint×{diff.FeintScale:0.0}  adapt×{diff.AdaptationScale:0.0}  " +
+                $"mistake {diff.MistakeChance:P0}  combo≤{diff.MaxComboLength}", _style ??= new GUIStyle(GUI.skin.label) { fontSize = 20, richText = true });
             var y = 60f;
             for (var i = 0; i < EnemyBrain.Active.Count; i++)
             {
