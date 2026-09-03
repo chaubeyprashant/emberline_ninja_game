@@ -33,6 +33,17 @@ namespace Emberline.Core
         private Light _lantern;
         private RigMood _mood = RigMood.Calm;
 
+        // Hit-flash colour. Every solid character rests at tint == Color.white
+        // (EmberCharacterFactory only authors a tint for ghosts), so the old
+        // flash to Color.white multiplied albedo by 1 and was invisible. Hot
+        // ember pushed past 1.0 reads under any lighting: lit faces blow out to
+        // orange-white, shadowed faces still shift hue. Components stay <= 2
+        // because Emberline/Surface declares _Color as fixed4, whose lowp range
+        // on strict mobile drivers is -2..+2 (Ghost adds _Color, so it clamps
+        // to a bright yellow-white there).
+        private static readonly Color FlashColor = new(2f, 1.2f, 0.55f);
+        private const float FlashDuration = 0.13f;
+
         private float _flashT;
         private bool _forcedThisFrame, _forcedActive;
         private RigPose _forcedPose;
@@ -94,7 +105,7 @@ namespace Emberline.Core
             _forcedPhase = phase;
         }
 
-        public override void Flash() => _flashT = 0.13f;
+        public override void Flash() => _flashT = FlashDuration;
 
         public override void MakeGhost(float alpha)
         {
@@ -163,7 +174,7 @@ namespace Emberline.Core
             {
                 _flashT -= dt;
                 if (_flashT <= 0f) ApplyTint();
-                else SetAllColors(Color.white, ghost ? Mathf.Min(1f, ghostAlpha + 0.3f) : 1f);
+                else SetAllColors(FlashColor, ghost ? Mathf.Min(1f, ghostAlpha + 0.3f) : 1f);
             }
 
             UpdateLantern(dt);
