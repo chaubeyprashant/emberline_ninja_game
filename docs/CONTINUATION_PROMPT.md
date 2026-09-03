@@ -282,7 +282,10 @@ geometry, adult Aiko and Jin gameplay models (stand-ins are named
 `docs/ASSET_SPECIFICATIONS.md` §10.
 
 
-Branch `feature/story-endless-polish`, no remote.
+Branch `campaign/verification`, pushed; `main` synced to it as of 515d549.
+Uncommitted on top: the duel-select card grid, the Mixamo character pipeline
+and the full enemy cast conversion — see `docs/MIXAMO_CAST_HANDOFF.md` and
+`docs/ENEMY_CHARACTER_OVERHAUL_REPORT.md`.
 
 **Verified on hardware**: opening cinematic (letterbox, scripted camera,
 subtitles), main menu, story select, briefing with dialogue, in-mission HUD,
@@ -342,6 +345,13 @@ close-up on a face lands as funny, not devastating.
   cinematic" is unreachable by shader work. Replacement specs are in
   `docs/ART_DIRECTION.md` §4 (characters) and §5 (story cast). Story cast
   entries in `EmberCharacterFactory` are marked `PLACEHOLDER` on purpose.
+  **Done for the player and all thirteen enemy kinds** (2026-09-04): the
+  factory imports and animates Mixamo humanoid models, and the whole combat
+  cast is built from six of them on one shared skeleton. Bones are over the
+  §4.1 budget on every body; four of six bodies are inside the triangle
+  budget. The five story-cast characters (Father, Mother, Aiko as a child,
+  the village child, young Ren) are still chibi — a story-art task. See
+  `docs/ENEMY_CHARACTER_OVERHAUL_REPORT.md`; that work is uncommitted.
 - **Music.** One music-length clip exists (`marsh_ambience.ogg`). The state
   machine and 9 themed ambience beds are wired and fall back cleanly, so the
   marsh loop plays everywhere. Spec table in `docs/CHANGELOG.md` under 1.2.0.

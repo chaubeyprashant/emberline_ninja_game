@@ -34,27 +34,28 @@ namespace Emberline.EditorTools
             var groundMat = new Material(Shader.Find("Emberline/Toon")) { color = new Color(0.16f, 0.19f, 0.24f) };
             ground.GetComponent<Renderer>().sharedMaterial = groundMat;
 
-            // Roster: (spec, sampled clip, time) — a pose that sells the character.
-            var entries = new (EmberCharacterFactory.Spec spec, string clip, float t)[]
+            // Roster: (spec, pose, time) — a pose that sells the character. Resolved
+            // through each spec's own clip map, so the roster is body-agnostic.
+            var entries = new (EmberCharacterFactory.Spec spec, RigPose pose, float t)[]
             {
-                (EmberCharacterFactory.Renzo(), "1H_Melee_Attack_Slice_Diagonal", 0.45f),
-                (EmberCharacterFactory.Bandit(), "Dualwield_Melee_Attack_Slice", 0.5f),
-                (EmberCharacterFactory.Goro(), "2H_Melee_Attack_Chop", 0.55f),
-                (EmberCharacterFactory.Shade(), "Skeletons_Awaken_Standing", 0.8f),
-                (EmberCharacterFactory.Kagachi(), "Taunt_Longer", 0.5f),
-                (EmberCharacterFactory.Jin(), "2H_Melee_Attack_Slice", 0.5f),
-                (EmberCharacterFactory.Archer(), "1H_Ranged_Aiming", 0.5f),
-                (EmberCharacterFactory.RaiderAxe(), "2H_Melee_Attack_Chop", 0.5f),
-                (EmberCharacterFactory.PikeGuard(), "2H_Melee_Attack_Stab", 0.55f),
-                (EmberCharacterFactory.Bomber(), "Spellcast_Raise", 0.7f),
-                (EmberCharacterFactory.Assassin(), "Dualwield_Melee_Attack_Slice", 0.5f),
-                (EmberCharacterFactory.Samurai(), "2H_Melee_Attack_Chop", 0.5f),
-                (EmberCharacterFactory.RogueNinja(), "1H_Melee_Attack_Stab", 0.5f),
-                (EmberCharacterFactory.EliteWarrior(), "2H_Melee_Attack_Spin", 0.5f),
+                (EmberCharacterFactory.PlayerSpec(), RigPose.Strike1, 0.45f),
+                (EmberCharacterFactory.Bandit(), RigPose.Strike1, 0.5f),
+                (EmberCharacterFactory.Goro(), RigPose.Cleave, 0.55f),
+                (EmberCharacterFactory.Shade(), RigPose.Spawn, 0.8f),
+                (EmberCharacterFactory.Kagachi(), RigPose.Taunt, 0.5f),
+                (EmberCharacterFactory.Jin(), RigPose.Strike2, 0.5f),
+                (EmberCharacterFactory.Archer(), RigPose.Windup, 0.5f),
+                (EmberCharacterFactory.RaiderAxe(), RigPose.Cleave, 0.5f),
+                (EmberCharacterFactory.PikeGuard(), RigPose.Stab, 0.55f),
+                (EmberCharacterFactory.Bomber(), RigPose.Windup, 0.7f),
+                (EmberCharacterFactory.Assassin(), RigPose.Strike1, 0.5f),
+                (EmberCharacterFactory.Samurai(), RigPose.Strike3, 0.5f),
+                (EmberCharacterFactory.RogueNinja(), RigPose.Stab, 0.5f),
+                (EmberCharacterFactory.EliteWarrior(), RigPose.Sweep, 0.5f),
             };
 
-            var x = -14.3f;
-            foreach (var (spec, clipName, t) in entries)
+            var x = -17.6f;
+            foreach (var (spec, pose, t) in entries)
             {
                 var root = new GameObject(spec.name);
                 root.transform.position = new Vector3(x, 0, 0);
@@ -62,14 +63,58 @@ namespace Emberline.EditorTools
                 if (EmberCharacterFactory.Build(root, spec))
                 {
                     var model = Core.VisualRoot.Of(root)?.gameObject;
-                    var clip = FindClip(spec.fbx, clipName);
+                    var clip = EmberCharacterFactory.ResolveClip(spec, pose);
                     if (model != null && clip != null) clip.SampleAnimation(model, clip.length * t);
                 }
-                x += 2.2f;
+                x += 2.7f;
             }
 
-            Shoot(new Vector3(0, 1.9f, -12.2f), Quaternion.Euler(3f, 0, 0), "Logs/lineup.png", 2400, 560);
+            Shoot(new Vector3(0, 1.7f, -15.5f), Quaternion.Euler(2f, 0, 0), "Logs/lineup.png", 2400, 560);
             Debug.Log("[Emberline] Snapshot written to Logs/lineup.png");
+            if (Application.isBatchMode) EditorApplication.Exit(0);
+        }
+
+        /// <summary>The hierarchy sheet: Renzo, Goro, Pale Shade, Jin, Kagehira, Elite — large and posed.</summary>
+        [MenuItem("Emberline/Snapshot Bosses")]
+        public static void RenderBosses()
+        {
+            var sun = new GameObject("Sun").AddComponent<Light>();
+            sun.type = LightType.Directional;
+            sun.intensity = 1.35f;
+            sun.color = new Color(1f, 0.93f, 0.85f);
+            sun.transform.rotation = Quaternion.Euler(38f, 12f, 0);   // from the camera side
+            RenderSettings.ambientLight = new Color(0.40f, 0.42f, 0.50f);
+            var ground = GameObject.CreatePrimitive(PrimitiveType.Plane);
+            ground.transform.localScale = Vector3.one * 4f;
+            ground.GetComponent<Renderer>().sharedMaterial =
+                new Material(Shader.Find("Emberline/Toon")) { color = new Color(0.16f, 0.19f, 0.24f) };
+
+            var entries = new (EmberCharacterFactory.Spec spec, RigPose pose, float t)[]
+            {
+                (EmberCharacterFactory.PlayerSpec(), RigPose.Idle, 0.3f),
+                (EmberCharacterFactory.Bandit(), RigPose.Idle, 0.3f),
+                (EmberCharacterFactory.Goro(), RigPose.Windup, 0.6f),
+                (EmberCharacterFactory.Shade(), RigPose.Idle, 0.4f),
+                (EmberCharacterFactory.Jin(), RigPose.Idle, 0.3f),
+                (EmberCharacterFactory.Kagachi(), RigPose.Idle, 0.3f),
+                (EmberCharacterFactory.Samurai(), RigPose.Idle, 0.3f),
+            };
+            var x = -7.8f;
+            foreach (var (spec, pose, t) in entries)
+            {
+                var root = new GameObject(spec.name);
+                root.transform.position = new Vector3(x, 0, 0);
+                root.transform.rotation = Quaternion.Euler(0, 180f, 0);
+                if (EmberCharacterFactory.Build(root, spec))
+                {
+                    var model = root.GetComponentInChildren<Animator>()?.gameObject;
+                    var clip = EmberCharacterFactory.ResolveClip(spec, pose);
+                    if (model != null && clip != null) clip.SampleAnimation(model, clip.length * t);
+                }
+                x += 2.6f;
+            }
+            Shoot(new Vector3(0, 1.3f, -10.5f), Quaternion.Euler(3f, 0, 0), "Logs/bosses.png", 2400, 900);
+            Debug.Log("[Emberline] Snapshot written to Logs/bosses.png");
             if (Application.isBatchMode) EditorApplication.Exit(0);
         }
 

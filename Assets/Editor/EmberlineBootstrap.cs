@@ -867,8 +867,9 @@ namespace Emberline.EditorTools
             cc.center = new Vector3(0, 0.95f, 0);
             cc.radius = 0.35f;
 
-            // Skeletal Renzo (KayKit RogueHooded); NinjaRig primitives as fallback.
-            if (EmberCharacterFactory.Build(player, EmberCharacterFactory.Renzo()))
+            // Skeletal Renzo (EmberCharacterFactory.PlayerSpec); NinjaRig primitives as fallback.
+            var playerSpec = EmberCharacterFactory.PlayerSpec();
+            if (EmberCharacterFactory.Build(player, playerSpec))
             {
                 // Pre-attach every prop the weapon catalogue can ask for. A player
                 // build cannot instantiate FBX assets, so CombatController swaps
@@ -878,13 +879,18 @@ namespace Emberline.EditorTools
                 // holding the entire armoury at once.
                 foreach (var prop in WeaponPropsRight)
                 {
-                    if (prop == EmberCharacterFactory.Renzo().propRight) continue;
-                    var go = EmberCharacterFactory.AttachProp(player, prop, "r", true, "RenzoModel");
+                    if (prop == playerSpec.propRight) continue;
+                    // Pass the spec so every catalogue weapon gets the same grip
+                    // correction and scale as the one the spec attaches itself —
+                    // without it a Mixamo rig hangs them off the bare wrist joint.
+                    var go = EmberCharacterFactory.AttachProp(player, prop, "r", true, "RenzoModel",
+                        playerSpec.propScale, playerSpec.socketRight, playerSpec);
                     if (go != null) go.SetActive(false);
                 }
                 foreach (var prop in WeaponPropsLeft)
                 {
-                    var go = EmberCharacterFactory.AttachProp(player, prop, "l", false, "RenzoModel");
+                    var go = EmberCharacterFactory.AttachProp(player, prop, "l", false, "RenzoModel",
+                        playerSpec.propScale, playerSpec.socketLeft, playerSpec);
                     if (go != null) go.SetActive(false);
                 }
             }
