@@ -361,7 +361,7 @@ namespace Emberline.UI
                 var (label, sub, go) = items[i];
                 var cx = gridX + (i % 3) * (cardW + gap);
                 var cy = gridY - (i / 3) * (cardH + gap);
-                ModeCard(label, sub, new Vector2(cx, cy), new Vector2(cardW, cardH), go);
+                ModeCard(i + 1, label, sub, new Vector2(cx, cy), new Vector2(cardW, cardH), go);
             }
 
             UiKit.Label(_screenRoot, "v" + Application.version, 13, UiKit.Faint, new Vector2(1, 0),
@@ -369,26 +369,60 @@ namespace Emberline.UI
         }
 
         /// <summary>One mode: a plate, a large name, two live lines, a hairline.</summary>
-        private void ModeCard(string label, string sub, Vector2 pos, Vector2 size, System.Action go)
+        /// <summary>
+        /// One mode as a raised card: a real surface, an ember accent tick, a
+        /// big faint index watermark for identity, a headline stat and a second
+        /// line, and an OPEN affordance. Flat and hairline-based — the house
+        /// language — but with enough weight and hierarchy to read as premium
+        /// rather than as six identical dark rectangles.
+        /// </summary>
+        private void ModeCard(int index, string label, string sub, Vector2 pos, Vector2 size, System.Action go)
         {
             var rt = UiKit.Rect(_screenRoot, "Mode_" + label, new Vector2(0, 1), pos, size, new Vector2(0, 1));
-            var img = UiKit.Img(rt, null, new Color(1, 1, 1, 0.035f));
+            // The card body: a genuine translucent surface, not a whisper of white.
+            var img = UiKit.Img(rt, null, new Color(UiKit.Panel.r, UiKit.Panel.g, UiKit.Panel.b, 0.55f));
             img.raycastTarget = true;
             var btn = rt.gameObject.AddComponent<Button>();
             btn.targetGraphic = img;
-            var colors = btn.colors; colors.highlightedColor = new Color(1, 1, 1, 0.08f) * 4f;
-            colors.pressedColor = new Color(1, 1, 1, 0.12f) * 6f; btn.colors = colors;
+            var colors = btn.colors;
+            colors.normalColor = Color.white;
+            colors.highlightedColor = new Color(1.28f, 1.24f, 1.18f);   // warm lift on hover
+            colors.pressedColor = new Color(1.5f, 1.4f, 1.25f);
+            colors.fadeDuration = 0.12f;
+            btn.colors = colors;
             btn.onClick.AddListener(() => { Sfx3D.Confirm(); go?.Invoke(); });
             rt.gameObject.AddComponent<UiKit.ButtonPunch>();
 
-            UiKit.Label(rt, label, 26, UiKit.Pale, new Vector2(0, 1), new Vector2(18, -20),
-                new Vector2(size.x - 36, 34), align: TextAnchor.MiddleLeft).characterSpacing = 4f;
-            UiKit.Hairline(rt, new Vector2(0, 1), 0.12f).rectTransform.anchoredPosition = new Vector2(0, -64);
-            UiKit.Paragraph(rt, UiKit.Clean(sub), 18, UiKit.Dim, new Vector2(0, 1), new Vector2(18, -80),
-                new Vector2(size.x - 36, 90), TextAnchor.UpperLeft);
-            UiKit.Kicker(rt, "OPEN", new Vector2(1, 0), new Vector2(-18, 18), new Vector2(120, 16),
-                color: UiKit.Ember, align: TextAnchor.MiddleRight, size: 12);
-            UiKit.Hairline(rt, new Vector2(0, 0), 0.08f);
+            // Top hairline, and an ember accent tick anchored to it — the signature.
+            UiKit.Hairline(rt, new Vector2(0, 1), 0.14f);
+            UiKit.Img(UiKit.Rect(rt, "Tick", new Vector2(0, 1), new Vector2(0, -18), new Vector2(3, 26),
+                new Vector2(0, 1)), UiKit.White, UiKit.Ember);
+
+            // A large, very faint index numeral in the far corner: curated, not busy.
+            UiKit.Label(rt, index.ToString("00"), 46, new Color(UiKit.Pale.r, UiKit.Pale.g, UiKit.Pale.b, 0.06f),
+                new Vector2(1, 1), new Vector2(-14, -8), new Vector2(90, 56), display: true,
+                align: TextAnchor.UpperRight);
+
+            // Title + a short accent line under it.
+            UiKit.Label(rt, label, 25, UiKit.Pale, new Vector2(0, 1), new Vector2(18, -20),
+                new Vector2(size.x - 40, 32), align: TextAnchor.MiddleLeft).characterSpacing = 3f;
+            UiKit.Accent(rt, new Vector2(0, 1), new Vector2(19, -56), 28f);
+
+            // The stat: the first line loud, the rest quiet — a clear hierarchy.
+            var lines = (sub ?? "").Split('\n');
+            UiKit.Label(rt, UiKit.Clean(lines.Length > 0 ? lines[0] : ""), 19, UiKit.Pale,
+                new Vector2(0, 1), new Vector2(18, -76), new Vector2(size.x - 36, 26),
+                align: TextAnchor.MiddleLeft);
+            if (lines.Length > 1)
+                UiKit.Label(rt, UiKit.Clean(lines[1]), 15, UiKit.Dim, new Vector2(0, 1),
+                    new Vector2(18, -102), new Vector2(size.x - 36, 22), align: TextAnchor.MiddleLeft);
+
+            // Bottom row: OPEN with a chevron, over a hairline.
+            UiKit.Hairline(rt, new Vector2(0, 0), 0.09f).rectTransform.anchoredPosition = new Vector2(0, 40);
+            UiKit.Kicker(rt, "OPEN", new Vector2(0, 0), new Vector2(18, 16), new Vector2(120, 16),
+                color: UiKit.EmberBright, align: TextAnchor.MiddleLeft, size: 12);
+            UiKit.Label(rt, "→", 20, UiKit.EmberBright, new Vector2(1, 0), new Vector2(-16, 14),
+                new Vector2(24, 26), display: true, align: TextAnchor.MiddleRight);
         }
 
         private void BuildCodex()
@@ -1305,9 +1339,10 @@ namespace Emberline.UI
             if (_gm.ModeNow == LaunchMode.Duel && _gm.CurrentDuel != null)
             {
                 var d = _gm.CurrentDuel;
-                kicker = "DUEL"; title = d.name;
-                location = d.marsh ? "ASHFEN MARSH" : "YORUNE ROOFTOPS";
-                objective = "Win the duel. One life each.";
+                kicker = string.IsNullOrEmpty(d.philosophy) ? "DUEL" : $"DUEL  ·  {d.philosophy}";
+                title = d.name;
+                location = $"{d.title}  ·  {(d.marsh ? "ASHFEN MARSH" : "YORUNE ROOFTOPS")}";
+                objective = "Learn how this one fights. One life each.";
                 optional = d.taunt;
             }
             else if (_gm.ModeNow == LaunchMode.Endless)
@@ -1393,6 +1428,10 @@ namespace Emberline.UI
                 && _gm.CurrentLevel.dialogue.Length > 0)
                 DialogueBox.Show(_screenRoot, _gm.CurrentLevel.dialogue,
                     () => StoryMemory.MarkDialogueSeen(_gm.CurrentLevel.id));
+
+            if (_gm.ModeNow == LaunchMode.Duel && _gm.CurrentDuel != null
+                && _gm.CurrentDuel.intro.Length > 0)
+                DialogueBox.Show(_screenRoot, _gm.CurrentDuel.intro, null);
 
             if (_gm.ModeNow == LaunchMode.Duel)
             {
@@ -2065,6 +2104,26 @@ namespace Emberline.UI
             }
 
             var nextLabel = "NEXT MISSION";
+            if (duel && _gm.CurrentDuel != null && _gm.CurrentDuel.defeat.Length > 0)
+            {
+                // A duel does not end at HP 0 and a victory card — the opponent
+                // gets a last word, and it moves the story on.
+                var lines = _gm.CurrentDuel.defeat;
+                var dy = y - 6f;
+                foreach (var raw in lines)
+                {
+                    var bar = raw.IndexOf('|');
+                    var who = bar > 0 ? raw.Substring(0, bar) : "";
+                    var text = bar > 0 ? raw.Substring(bar + 1) : raw;
+                    if (who.Length > 0)
+                        UiKit.Kicker(_screenRoot, who, new Vector2(0.5f, 1), new Vector2(0, dy),
+                            new Vector2(680, 12), color: UiKit.Ember, align: TextAnchor.MiddleCenter);
+                    var line = UiKit.Paragraph(_screenRoot, UiKit.Clean(text), 13, UiKit.Pale,
+                        new Vector2(0.5f, 1), new Vector2(0, dy - 14), new Vector2(700, 34), TextAnchor.UpperCenter);
+                    line.fontStyle = FontStyles.Italic;
+                    dy -= 52f;
+                }
+            }
             if (!duel && _gm.CurrentLevel != null && !string.IsNullOrEmpty(_gm.CurrentLevel.debrief))
             {
                 var debrief = UiKit.Paragraph(_screenRoot, _gm.CurrentLevel.debrief, 13, UiKit.Dim,

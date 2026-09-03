@@ -19,7 +19,14 @@ namespace Emberline
         [Tooltip("Extra distance per nearby enemy, so a crowd fits in frame.")]
         [SerializeField] private float crowdPullback = 0.55f;
         [SerializeField] private float maxPullback = 3.2f;
+        [Header("FOV — the only place it is written")]
         [SerializeField] private float baseFov = 50f;
+        [Tooltip("Hard floor: no combat effect zooms tighter than this.")]
+        [SerializeField] private float minFov = 44f;
+        [Tooltip("Hard ceiling: no effect zooms wider than this.")]
+        [SerializeField] private float maxFov = 52f;
+        [Tooltip("Degrees of pull-in at full impact strength.")]
+        [SerializeField] private float maxImpactDegrees = 4f;
 
         private Transform _execFocus;
         private float _execT, _execDur, _zoom, _distanceBoost;
@@ -98,8 +105,34 @@ namespace Emberline
         public bool ScriptedShot => _shotDur > 0f && _shotT < _shotDur;
 
         /// <summary>Punch the FOV in on impact — a weight cue that costs nothing.</summary>
-        public void ImpactZoom(float strength = 1f) =>
-            _zoom = Mathf.Max(_zoom, Mathf.Clamp01(strength));
+        private float _impactDur, _impactMaxDur;
+
+        /// <summary>
+        /// The one way anything asks for a combat zoom. Attacks, parries and
+        /// executions <b>request</b> an impact; the rig decides how much FOV
+        /// actually moves and for how long. The strongest live request wins —
+        /// impacts never stack or multiply, so Heavy + Light + Light reads as a
+        /// Heavy, not as three zooms compounding. A weaker request may only
+        /// extend the tail slightly, never deepen it.
+        /// </summary>
+        public void RequestCameraImpact(float strength, float duration = 0.3f)
+        {
+            strength = Mathf.Clamp01(strength);
+            if (strength <= 0f) return;
+            if (strength >= _zoom)
+            {
+                _zoom = strength;
+                _impactDur = _impactMaxDur = Mathf.Max(0.05f, duration);
+            }
+            else if (_impactDur > 0f)
+            {
+                // Weaker: nudge the duration out a touch, leave the depth alone.
+                _impactDur = Mathf.Max(_impactDur, Mathf.Min(duration, _impactMaxDur));
+            }
+        }
+
+        /// <summary>Back-compat: the old name routes to the one API.</summary>
+        public void ImpactZoom(float strength = 1f) => RequestCameraImpact(strength);
 
         /// <summary>
         /// Frame a finisher: swing in close and low, keeping both bodies in shot.
@@ -118,10 +151,22 @@ namespace Emberline
         {
             if (_cam == null) _cam = GetComponent<UnityEngine.Camera>();
             if (_cam == null) return;
-            if (_zoom > 0f) _zoom = Mathf.Max(0f, _zoom - Time.unscaledDeltaTime * 3.2f);
-            // Four degrees: felt, without reading as a lens artefact.
-            _cam.fieldOfView = Mathf.Lerp(_cam.fieldOfView, baseFov - _zoom * 4f,
-                1f - Mathf.Exp(-16f * Time.unscaledDeltaTime));
+            // Decay on a timer, not a per-frame subtraction, so the impact always
+            // returns cleanly to base at a rate independent of frame rate.
+            if (_impactDur > 0f)
+            {
+                _impactDur -= Time.unscaledDeltaTime;
+                if (_impactDur <= 0f) { _impactDur = 0f; _zoom = 0f; }
+                else _zoom *= Mathf.Exp(-4f * Time.unscaledDeltaTime);
+            }
+            else _zoom = 0f;
+            // FOV is BASE minus the current impact — additive from base every
+            // frame, never multiplied by the last frame's value, so it cannot
+            // accumulate. Then hard-clamped so nothing leaves the safe band.
+            var target = Mathf.Clamp(baseFov - _zoom * maxImpactDegrees, minFov, maxFov);
+            _cam.fieldOfView = Mathf.Clamp(
+                Mathf.Lerp(_cam.fieldOfView, target, 1f - Mathf.Exp(-16f * Time.unscaledDeltaTime)),
+                minFov, maxFov);
         }
 
         private void LateUpdate()

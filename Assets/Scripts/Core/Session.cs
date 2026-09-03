@@ -68,6 +68,24 @@ namespace Emberline.Core
         public EnemyKind kind;
         /// <summary>Named foe def (Resources/Enemies) on `kind`'s body; empty for the kind itself.</summary>
         public string defId = "";
+
+        // ---- Duel identity (Duel overhaul). 0 = fall back to the generic floor.
+        [System.Serializable] public class Tuning { }
+        /// <summary>The opponent's fighting philosophy, shown on the briefing.</summary>
+        public string philosophy = "";
+        /// <summary>HP for this duel. Tuned per opponent for the length targets.</summary>
+        public float hp;
+        /// <summary>Posture pool — the meter the fight is really about. Earned, not chipped in three hits.</summary>
+        public float posture = 120f;
+        public float postureRegen = 7f;
+        /// <summary>HP damage taken from ordinary swings (outside the guard-break punish). Low = posture-paced.</summary>
+        public float dmgResist = 0.28f;
+        /// <summary>Arena mood: lighting theme + weather, so each duel is its own place.</summary>
+        public EnvThemeId theme = EnvThemeId.Village;
+        public bool night, rain, fog;
+        /// <summary>Short intro/defeat lines, "SPEAKER|text", shown through the story dialogue box.</summary>
+        public string[] intro = System.Array.Empty<string>();
+        public string[] defeat = System.Array.Empty<string>();
     }
 
     /// <summary>
@@ -235,13 +253,53 @@ namespace Emberline.Core
         public static readonly DuelDef[] Duels =
         {
             new() { id = 1, name = "GORO", title = "THE TOLL-CAPTAIN", kind = EnemyKind.Chief, marsh = false,
-                taunt = "“Every roof pays. Even yours, little lantern.”" },
+                taunt = "“Every roof pays. Even yours, little lantern.”",
+                philosophy = "POWER · PRESSURE · COMMITMENT",
+                hp = 360f, posture = 120f, postureRegen = 10f, dmgResist = 0.32f,
+                theme = EnvThemeId.BurningVillage, night = true,
+                intro = new[] {
+                    "GORO|You came up the toll road on your own feet. Brave. Stupid.",
+                    "RENZO|Move, or be moved.",
+                    "GORO|Boys who swing first bleed first. Come on, then." },
+                defeat = new[] {
+                    "GORO|…heh. You waited. Your father… never learned that.",
+                    "GORO|The serpent has her. Kagehira. Go north… if you still can." } },
             new() { id = 2, name = "THE PALE SHADE", title = "WHAT THE MARSH KEPT", kind = EnemyKind.Shade, marsh = true,
-                taunt = "“…come closer…”" },
-            new() { id = 3, name = "KAGACHI", title = "THE MARSH SERPENT", kind = EnemyKind.Kagachi, marsh = true,
-                taunt = "“Three lives, ninja. How many do you have?”" },
-            new() { id = 4, name = "JIN KUROGANE", title = "THE STORM BLADE", kind = EnemyKind.Jin, marsh = false,
-                taunt = "“Attachments slow the sword. I cut mine away. Show me why you keep yours.”" },
+                defId = "paleshade", taunt = "“…come closer…”",
+                philosophy = "SPEED · DECEPTION · POSITIONING",
+                hp = 280f, posture = 140f, postureRegen = 12f, dmgResist = 0.30f,
+                theme = EnvThemeId.Graveyard, fog = true, night = true,
+                intro = new[] {
+                    "PALE SHADE|…you carry her thread… the girl who tied it still breathes…",
+                    "RENZO|Where. Say it.",
+                    "PALE SHADE|…catch me, and I will tell you where the marsh took her…" },
+                defeat = new[] {
+                    "PALE SHADE|…she lives… north, past the drowned road… find her before he does…",
+                    "RENZO|Aiko." } },
+            new() { id = 3, name = "JIN KUROGANE", title = "THE STORM BLADE", kind = EnemyKind.Jin, marsh = false,
+                taunt = "“Attachments slow the sword. I cut mine away. Show me why you keep yours.”",
+                philosophy = "TECHNIQUE · COUNTERS · ADAPTATION",
+                hp = 340f, posture = 160f, postureRegen = 11f, dmgResist = 0.28f,
+                theme = EnvThemeId.RainyBattlefield, rain = true,
+                intro = new[] {
+                    "JIN|I have watched you fight. You repeat yourself.",
+                    "RENZO|And you talk.",
+                    "JIN|Then teach me something new. I will teach you what you are becoming." },
+                defeat = new[] {
+                    "JIN|Better. You changed. He never did — and you are walking his road.",
+                    "JIN|Reach Kagehira, and look at him. That is your ending, unless you choose another." } },
+            new() { id = 4, name = "KAGACHI", title = "THE SERPENT, KAGEHIRA", kind = EnemyKind.Kagachi, marsh = true,
+                taunt = "“Three lives, ninja. How many do you have?”",
+                philosophy = "MASTERY · EVERYTHING YOU HAVE LEARNED",
+                hp = 480f, posture = 190f, postureRegen = 10f, dmgResist = 0.26f,
+                theme = EnvThemeId.Temple, night = true, fog = true,
+                intro = new[] {
+                    "KAGACHI|The Kurogawa boy. You have your father's eyes. I closed his.",
+                    "RENZO|You took everything.",
+                    "KAGACHI|And you have come to take it back with a sword. How like him. Show me." },
+                defeat = new[] {
+                    "KAGACHI|…so this is where it ends. Finish it, then. Become me.",
+                    "RENZO|No. I am not you." } },
             // Campaign foes, for the roster the brief asks for: bosses and elites
             // from the hundred missions, on the bodies they used there.
             new() { id = 5, name = "THE CONVOY CAPTAIN", title = "KEEPER OF THE LANTERN ROAD", kind = EnemyKind.Samurai,

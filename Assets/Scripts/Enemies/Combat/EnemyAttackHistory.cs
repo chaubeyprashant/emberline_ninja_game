@@ -24,6 +24,27 @@ namespace Emberline.Enemies
         }
 
         public string LastId => _count == 0 ? null : _ids[(_head - 1 + Size) % Size];
+
+        /// <summary>How many attacks in a row have been thrown recently (combo depth).</summary>
+        public int ComboStep
+        {
+            get
+            {
+                // Count back while attacks are close in time — a chain, not a lull.
+                var n = 0;
+                for (var i = 0; i < _count && i < Size; i++)
+                {
+                    var idx = (_head - 1 - i + Size) % Size;
+                    if (i > 0)
+                    {
+                        var prev = (_head - i + Size) % Size;
+                        if (_times[prev] - _times[idx] > 2f) break;
+                    }
+                    n++;
+                }
+                return n;
+            }
+        }
         public AttackCategory? LastCategory => _count == 0 ? null : _cats[(_head - 1 + Size) % Size];
 
         private int Back(int n) => (_head - 1 - n + Size) % Size;

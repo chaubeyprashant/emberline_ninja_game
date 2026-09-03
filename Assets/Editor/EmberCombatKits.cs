@@ -233,6 +233,16 @@ namespace Emberline.EditorTools
                 Profile("ironguard", "iron_guard", ag: .65f, br: 1f, af: .6f, df: .8f, dg: .15f, pa: .8f, rt: .1f, fe: .13f, co: .7f, gb: .6f, tw: .9f,
                     pref: 2.2f, min: 1.4f, max: 3.2f, low: LowHealthBehaviour.Guard, ally: AllyDeathReaction.Aggress, adapt: .9f, interval: .2f,
                     combos: new[] { C("shield", "guard_break", "thrust", "retreat_slash"), C("wall", "spin", "slam") });
+            // The Pale Shade duel is phased like the story bosses: hunt → bait → fragile fury.
+            if (Def("paleshade") != null)
+            {
+                Phase("paleshade", 2, "pale_shade_bait", ag: .6f, br: .7f, af: .7f, df: .3f, dg: .7f, pa: 0f, rt: .5f, fe: .3f, co: .5f, gb: 0f, tw: .2f,
+                    pref: 2.4f, min: 1.2f, max: 4f, low: LowHealthBehaviour.Desperate, adapt: .5f, interval: .18f,
+                    combos: new[] { C("bait", "feint", "delayed_claws", "retreat_swipe"), C("angle", "lunge", "retreat_swipe") });
+                Phase("paleshade", 3, "pale_shade_fury", ag: .95f, br: .5f, af: .9f, df: .1f, dg: .5f, pa: 0f, rt: .2f, fe: .15f, co: .3f, gb: 0f, tw: .1f,
+                    pref: 1.8f, min: 1f, max: 2.8f, low: LowHealthBehaviour.Desperate, adapt: .3f, interval: .14f,
+                    combos: new[] { C("fury", "lunge", "claws", "claws"), C("close", "claws", "delayed_claws") });
+            }
             if (Def("threeblades") != null)
                 Profile("threeblades", "three_blades", ag: .6f, br: .5f, af: .7f, df: .3f, dg: .6f, pa: .2f, rt: .5f, fe: .05f, co: .4f, gb: .1f, tw: .9f,
                     pref: 2.2f, min: 1.3f, max: 3.2f, low: LowHealthBehaviour.Retreat, ally: AllyDeathReaction.Aggress, adapt: .4f, interval: .2f,

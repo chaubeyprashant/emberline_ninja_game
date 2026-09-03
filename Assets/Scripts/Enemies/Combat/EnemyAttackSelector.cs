@@ -70,8 +70,10 @@ namespace Emberline.Enemies
                     ? memory.Bias(a.category, c.playerMemory, profile.adaptation * d.AdaptationScale) : 0f;
                 dec.repetition = history != null ? history.Penalty(a) : 1f;
 
-                // Combo continuation: the next step of a chain the enemy is on.
-                if (profile != null && history != null)
+                // Combo continuation: the next step of a chain the enemy is on —
+                // but only within the difficulty's combo cap, so Easy throws one
+                // or two attacks and Lethal chains four.
+                if (profile != null && history != null && history.ComboStep < d.MaxComboLength)
                 {
                     var next = profile.NextComboStep(history.LastId);
                     if (next != null && next == a.id) dec.personality += 1.4f;

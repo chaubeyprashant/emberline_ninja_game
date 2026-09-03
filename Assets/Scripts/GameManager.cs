@@ -310,6 +310,7 @@ namespace Emberline
                     // The chosen handicap only touches the duel's own terms.
                     _playerHealth?.SetMax(110f * Session.CurrentDuelModifier.playerHpMul
                         * Difficulty.Now.PlayerHp);
+                    ApplyDuelArena(duel);
                     State = Phase.Intro;
                     break;
                 }
@@ -336,6 +337,31 @@ namespace Emberline
 
         private static void LoadThemeScene(bool marsh) =>
             SceneManager.LoadScene(marsh ? "Marsh" : "Rooftop");
+
+        /// <summary>
+        /// Give a duel its own place: the opponent's lighting theme and weather
+        /// over the shared arena, so Goro's gate, the Shade's fog, Jin's rain and
+        /// the serpent's temple each read as somewhere, not the same grey box.
+        /// </summary>
+        private void ApplyDuelArena(DuelDef duel)
+        {
+            if (duel == null) return;
+            var theme = EnvThemes.Get(duel.theme);
+            if (duel.fog) { theme.fogDensity = Mathf.Max(theme.fogDensity, 0.06f); theme.weather = Weather.Mist; }
+            if (duel.rain) LevelFx.EnableRain();
+            Atmosphere.Apply(theme, SceneRefs.Cam != null ? SceneRefs.Cam.transform : transform);
+            RenderSettings.ambientSkyColor = theme.ambientSky;
+            RenderSettings.ambientEquatorColor = theme.ambientEquator;
+            RenderSettings.ambientGroundColor = theme.ambientGround;
+            var scale = duel.night ? 0.5f : 1f;
+            foreach (var l in FindObjectsByType<Light>(FindObjectsSortMode.None))
+                if (l.type == LightType.Directional)
+                {
+                    l.color = theme.keyLight;
+                    l.intensity = theme.keyIntensity * scale;
+                }
+            if (duel.fog) Enemies.Visibility.AmbientScale = 0.75f;
+        }
 
         /// <summary>Escort levels: the bearer walks the long axis of the arena.</summary>
         private void SpawnEscort(LevelDef level)
@@ -590,10 +616,18 @@ namespace Emberline
                 {
                     // Duels are full-strength showdowns: mook kinds get a boss-grade
                     // HP floor so "one life each" doesn't end in three seconds.
-                    if (ModeNow == LaunchMode.Duel)
+                    if (ModeNow == LaunchMode.Duel && CurrentDuel != null)
                     {
-                        brain.maxHp = Mathf.Max(brain.maxHp, 190f);
+                        // The opponent's own HP and posture — a duel is not "a
+                        // mook with a floor" any more. Posture is the meter the
+                        // fight is won on, so it is large and it regenerates:
+                        // pressure has to be sustained, not chipped in three hits.
+                        brain.maxHp = CurrentDuel.hp > 0f ? CurrentDuel.hp : Mathf.Max(brain.maxHp, 190f);
                         brain.damage = Mathf.Max(brain.damage, 12f);
+                        brain.BossDuel = true;
+                        if (CurrentDuel.posture > 0f) brain.PostureOverride = CurrentDuel.posture;
+                        if (CurrentDuel.postureRegen > 0f) brain.PostureRegenOverride = CurrentDuel.postureRegen;
+                        if (CurrentDuel.dmgResist > 0f) brain.DuelResist = CurrentDuel.dmgResist;
                         var mod = Session.CurrentDuelModifier;
                         brain.maxHp *= mod.bossHpMul;
                         brain.speed *= mod.bossSpeedMul;

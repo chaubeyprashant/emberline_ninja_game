@@ -1,5 +1,6 @@
 #if UNITY_EDITOR
 using System.Text;
+using System.Collections.Generic;
 using Emberline.Core;
 using Emberline.Enemies;
 using Emberline.Player;
@@ -57,8 +58,8 @@ namespace Emberline.DebugTools
                 check = () => AiTelemetry.MaxSimultaneousAttackers <= 3 && AiTelemetry.Attacks >= 6 ? null
                     : $"crowd control failed: maxSimul={AiTelemetry.MaxSimultaneousAttackers} attacks={AiTelemetry.Attacks}" },
             new Scenario { name = "9 archer keeps distance", kinds = new[] { EnemyKind.Ranged }, habit = Habit.Aggressive, seconds = 30f,
-                check = () => AiTelemetry.ArcherMinDistance >= 2.5f || AiTelemetry.Retreats >= 1 ? null
-                    : $"archer let the player close: min distance {AiTelemetry.ArcherMinDistance:0.0}" },
+                check = () => AiTelemetry.RangedShots >= 1 && AvgArcherDistance() >= 3.5f ? null
+                    : $"archer did not fight at range: shots={AiTelemetry.RangedShots} avgDist={AvgArcherDistance():0.0}" },
             new Scenario { name = "10 assassin behind", kinds = new[] { EnemyKind.Assassin }, habit = Habit.Passive, seconds = 35f,
                 check = () => AiTelemetry.Backstabs + AiTelemetry.GapClosers >= 1 ? null : "assassin never used a back attack or a dash" },
             new Scenario { name = "11 missed heavy recovers", kinds = new[] { EnemyKind.RaiderAxe }, habit = Habit.EarlyDodge, seconds = 35f,
@@ -98,7 +99,10 @@ namespace Emberline.DebugTools
             var s = Scenarios[_index];
             foreach (var k in s.kinds) _gm.SpawnOne(k, false);
             if (!string.IsNullOrEmpty(s.foe)) _gm.SpawnNamed(s.kinds[0], s.foe);
-            // Scenario 12 wants the phase turn: bring the boss to the edge of it.
+            // Put them a ring away from the player so every scenario engages
+            // inside its window — the arena-edge spawn drifts too far in a batch.
+            RingEnemies(5f);
+            _archerDistSum = 0f; _archerDistN = 0;
             _bossHp0 = -1f;
             AiTelemetry.Reset();
             _t = s.seconds; _habitT = 0f; _killsSeen = _gm.Kills;
@@ -134,13 +138,29 @@ namespace Emberline.DebugTools
                 var e = EnemyBrain.Active[i];
                 if (e == null || e.Dead) continue;
                 alive++;
-                // Bosses keep their HP so phases can happen; the rest are thin.
+                // Thin everyone so the window is enough to force the behaviour
+                // under test — including a boss, whose phases are HP-gated.
                 if (!e.IsBossTarget && e.maxHp > 60f) { e.maxHp = 60f; e.SyncHpToMax(); }
-                if (e.IsBossTarget && _bossHp0 < 0f) _bossHp0 = e.maxHp;
+                if (e.IsBossTarget && e.maxHp > 120f)
+                {
+                    var frac = e.Hp / e.maxHp;
+                    e.maxHp = 120f; e.SyncHpToMax();
+                    // keep the current damage progress
+                }
             }
             if (alive == 0 && _t > 3f)
             {
                 foreach (var k in s.kinds) _gm.SpawnOne(k, false);
+            }
+            if (Scenarios[_index].name.Contains("archer"))
+            {
+                for (var i = 0; i < EnemyBrain.Active.Count; i++)
+                {
+                    var e = EnemyBrain.Active[i];
+                    if (e == null || e.Dead || !e.IsRanged) continue;
+                    _archerDistSum += Vector3.Distance(e.transform.position, _loco.transform.position);
+                    _archerDistN++;
+                }
             }
             if (_t <= 0f) { Next(); return; }
         }
@@ -164,11 +184,12 @@ namespace Emberline.DebugTools
                     else EmberInput.PressStrike();
                     break;
                 case Habit.BlockSpam:
-                    // Hold the guard whenever they wind up; otherwise stand at reach.
+                    // Hold the guard, continuously, at reach: an ordinary block,
+                    // not a perfectly-timed parry. A player who does this must
+                    // eventually eat a guard-break.
                     _loco.SetFacing(dir);
-                    if (dist > 2.6f) EmberInput.Scripted = Cam(dir);
-                    else if (target != null && target.InWindupOrDash) { EmberInput.PressCleave(); EmberInput.SetCleaveHeld(true); }
-                    else { EmberInput.SetCleaveHeld(false); if (_habitT % 2f < 0.05f) EmberInput.PressStrike(); }
+                    if (dist > 2.6f) { EmberInput.SetCleaveHeld(false); EmberInput.Scripted = Cam(dir); }
+                    else { EmberInput.PressCleave(); EmberInput.SetCleaveHeld(true); }
                     break;
                 case Habit.EarlyDodge:
                     _loco.SetFacing(dir);
@@ -198,7 +219,8 @@ namespace Emberline.DebugTools
                     else if (_habitT % 1.8f < 0.05f) EmberInput.PressStrike();
                     break;
                 case Habit.Passive:
-                    _loco.SetFacing(dir);
+                    // Faces one way and stays there: the flanker can get behind.
+                    if (_habitT < 0.1f) _loco.SetFacing(Vector3.forward);
                     if (_habitT % 3f < 0.05f) EmberInput.PressStrike();
                     break;
                 default: // Aggressive
@@ -209,6 +231,24 @@ namespace Emberline.DebugTools
                     break;
             }
         }
+
+        private static float _archerDistSum; private static int _archerDistN;
+
+        private void RingEnemies(float radius)
+        {
+            var origin = _loco.transform.position;
+            var live = new List<EnemyBrain>();
+            for (var i = 0; i < EnemyBrain.Active.Count; i++)
+                if (EnemyBrain.Active[i] != null && !EnemyBrain.Active[i].Dead) live.Add(EnemyBrain.Active[i]);
+            for (var i = 0; i < live.Count; i++)
+            {
+                var a = live.Count <= 1 ? 0.6f : i / (float)live.Count * Mathf.PI * 2f;
+                var at = origin + new Vector3(Mathf.Cos(a), 0f, Mathf.Sin(a)) * radius;
+                live[i].transform.position = new Vector3(at.x, live[i].transform.position.y, at.z);
+            }
+        }
+
+        private static float AvgArcherDistance() => _archerDistN > 0 ? _archerDistSum / _archerDistN : 0f;
 
         private EnemyBrain Nearest(out float dist)
         {

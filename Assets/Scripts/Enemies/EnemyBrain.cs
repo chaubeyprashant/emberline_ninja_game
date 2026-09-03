@@ -92,7 +92,12 @@ namespace Emberline.Enemies
         /// <summary>Remaining guard pool. 0 means the guard is broken.</summary>
         public float Posture { get; private set; }
 
-        public float MaxPosture => def != null ? def.maxPosture : 40f;
+        /// <summary>Per-instance posture ceiling, for duels. 0 = use the def's.</summary>
+        public float PostureOverride { get; set; }
+        public float PostureRegenOverride { get; set; }
+
+        public float MaxPosture => PostureOverride > 0f ? PostureOverride
+            : def != null ? def.maxPosture : 40f;
 
         /// <summary>0..1 for the HUD posture pip.</summary>
         public float Posture01 => MaxPosture > 0f ? Mathf.Clamp01(Posture / MaxPosture) : 1f;
@@ -111,10 +116,27 @@ namespace Emberline.Enemies
         /// </summary>
         public bool CanExecute =>
             !Dead && (Unaware
-                      // A broken guard is the real opening — it is how a fight
-                      // ends against something that would never drop below 20%.
-                      || GuardBroken && Rank < EnemyRank.Boss
-                      || !IsBoss && Staggered && Hp <= maxHp * 0.2f);
+                      // A broken guard opens a mook or an elite to a finisher.
+                      // A boss, or anyone fought in a duel, is not killed by an
+                      // ordinary guard break — that is a punish window, not an
+                      // execution. The earned final blow comes only once the boss
+                      // is nearly spent (low HP) and its guard is broken.
+                      || GuardBroken && Rank < EnemyRank.MiniBoss && !BossDuel
+                      || GuardBroken && (IsBoss || BossDuel) && Hp <= maxHp * 0.15f
+                      || !IsBoss && !BossDuel && Staggered && Hp <= maxHp * 0.2f
+                      || (IsBoss || BossDuel) && Staggered && Hp <= maxHp * 0.12f);
+
+        /// <summary>Set at duel spawn: this is a 1-v-1 boss, protected from the
+        /// guard-break execution shortcut so the fight is fought, not skipped.</summary>
+        public bool BossDuel { get; set; }
+
+        /// <summary>
+        /// Fraction of HP damage a duel boss takes from ordinary swings. Small,
+        /// so a normal combo mostly builds posture rather than draining life —
+        /// HP is survival, posture is control (Duel overhaul, Part 5). Full
+        /// damage still lands inside the guard-break punish window.
+        /// </summary>
+        public float DuelResist { get; set; } = 1f;
 
         /// <summary>Fights at range — never told to crowd the player.</summary>
         public bool IsRanged => weapon is EnemyWeapon.Crossbow or EnemyWeapon.Bomb;
@@ -396,6 +418,7 @@ namespace Emberline.Enemies
             _history.Clear();
             _decisionT = 0f; _feinted = false; _moraleAggroT = 0f; _hesitateT = 0f; _isolateT = 0f;
             _lowHealthReacted = false; Intent = "";
+            BossDuel = false; PostureOverride = 0f; PostureRegenOverride = 0f; DuelResist = 1f;
             CaptureBaseStats();
             maxHp = _baseMaxHp;
             damage = _baseDamage;
@@ -624,7 +647,8 @@ namespace Emberline.Enemies
                     }
 
                     if (def != null && def.punishesExposure && _attackCd <= 0f && _readCd <= 0f
-                        && PlayerExposed() && dist < def.MaxAttackRange + 0.4f)
+                        && PlayerExposed() && dist < def.MaxAttackRange + 0.4f
+                        && Random.value < Difficulty.Now.RecoveryPunishChance)
                     {
                         var pick = Pick(to, dist, role, punish: true);
                         if (pick != null && pick.kind != AttackKind.Parry
@@ -1274,6 +1298,7 @@ namespace Emberline.Enemies
                     new Color(1f, 0.8f, 0.5f), 0.9f);
             }
             _lastHitLanded = false;
+            if (_mistakeRecovery > 0f) { _t *= _mistakeRecovery; _mistakeRecovery = 0f; }
         }
 
         private void ResolveAttack(float dist)
@@ -1392,7 +1417,10 @@ namespace Emberline.Enemies
             }
             _lastHitLanded = true;
             _playerCombat?.OnIncomingHit(heavy);
+            var before = _playerHealth != null ? _playerHealth.Hp : 0f;
             _playerHealth?.Damage(amount, transform.position);
+            CombatLog.EnemyHitPlayer(def, def != null ? def.id : kind.ToString(), amount, before, _playerHealth != null ? _playerHealth.Hp : 0f,
+                heavy, _playerHealth != null ? _playerHealth.MaxHp : 0f);
         }
 
         /// <summary>
@@ -1444,7 +1472,8 @@ namespace Emberline.Enemies
                 return;
             }
             if (_postureIdleT > 0f) { _postureIdleT -= dt; return; }
-            var regen = def != null ? def.postureRegen : 9f;
+            var regen = PostureRegenOverride > 0f ? PostureRegenOverride
+                : def != null ? def.postureRegen : 9f;
             Posture = Mathf.Min(MaxPosture, Posture + regen * dt);
         }
 
@@ -1558,7 +1587,7 @@ namespace Emberline.Enemies
                 // A raised guard always blocks a light hit; a cold block is a roll.
                 // Reading enemies raise it against the wind-up (ReadPlayer), so for
                 // them the roll mostly never happens — the block was earned.
-                if (!crush && (_guardT > 0f || Random.value < def.blockChance))
+                if (!crush && (_guardT > 0f || Random.value < Mathf.Min(0.85f, def.blockChance * Difficulty.Now.DefenseScale)))
                 {
                     _guardT = 0f;
                     _attackCd = Mathf.Min(_attackCd, 0.35f); // riposte window
@@ -1566,7 +1595,7 @@ namespace Emberline.Enemies
                     // Riposte: the counter-attack a blocked swing invites. Two
                     // blocks in a row make it certain — repetition is punished.
                     if (_state is State.Chase or State.Recover
-                        && (_blocksInRow >= 2 || Random.value < def.counterChance))
+                        && (_blocksInRow >= 2 || Random.value < Mathf.Min(0.9f, def.counterChance * Difficulty.Now.DefenseScale)))
                     {
                         var toP = from - transform.position; toP.y = 0f;
                         var pick = Pick(toP, toP.magnitude, SquadRole.Engage, punish: true);
@@ -1612,7 +1641,15 @@ namespace Emberline.Enemies
             // Being hit is the loudest tell there is.
             if (Unaware) { Unaware = false; Detection = 0f; }
             LastHitTime = Time.unscaledTime; // unscaled: hit-stop must not stall the bar
+            // Posture, not HP, is how a duel is won: outside the guard-break
+            // window a duel boss shrugs most of a swing's HP damage (it went
+            // into their guard), and the broken-guard window is where the real
+            // HP punish lands. One or the other, never both.
+            if (_guardBreakT > 0f) amount *= 1.5f;
+            else if (BossDuel) amount *= DuelResist;
+            var hpBefore = Hp;
             Hp -= amount;
+            CombatLog.PlayerHit(def, def != null ? def.id : kind.ToString(), amount, hpBefore, Hp, Posture, crush, maxHp);
             _rig?.Flash();
             if (Hp <= 0)
             {
@@ -1749,8 +1786,28 @@ namespace Emberline.Enemies
         }
 
         /// <summary>Start the chosen attack's wind-up. One place, so every path agrees.</summary>
+        private float _mistakeRecovery;
+
         private void Commit(AttackDefinition pick, Vector3 to, bool cold, float windupOverride = 0f)
         {
+            // Difficulty's mistake axis. Harder enemies err less; none is
+            // perfect. A mistake reads as human — a beat of hesitation, or an
+            // over-committed heavy that leaves a real opening — not random noise.
+            if (cold && Random.value < Difficulty.Now.MistakeChance)
+            {
+                AiTelemetry.Mistakes++;
+                if (Random.value < 0.5f)
+                {
+                    Intent = "hesitates (mistake)";
+                    _attackCd = Mathf.Max(_attackCd, 0.6f + Random.value * 0.5f);
+                    _decisionT = _attackCd;
+                    return;
+                }
+                Intent = "overcommits (mistake)";
+                windupOverride = (windupOverride > 0f ? windupOverride
+                    : pick.windupOverride > 0f ? pick.windupOverride : Windup) * 1.3f;
+                _mistakeRecovery = 1.5f;
+            }
             _pattern = pick;
             _dashAttack = pick.kind == AttackKind.DashStrike;
             _feinted = false;
@@ -1938,9 +1995,15 @@ namespace Emberline.Enemies
             var facing = Vector3.Angle(_player.forward, -to) < 70f; // the swing is aimed here
             if (!facing) return false;
 
-            if (def.dodgeChance > 0f && Random.value < def.dodgeChance)
+            // Difficulty shapes defence: Easy reacts rarely and after a long
+            // pause, Lethal often and quickly — but never perfectly (capped),
+            // never for free (reaction delay is the cooldown floor).
+            var diff = Difficulty.Now;
+            var dodge = Mathf.Min(0.85f, def.dodgeChance * diff.DefenseScale);
+            var block = Mathf.Min(0.85f, def.blockChance * diff.DefenseScale);
+            if (dodge > 0f && Random.value < dodge)
             {
-                _readCd = 1.1f;
+                _readCd = 1.1f + diff.ReactionDelay;
                 AiTelemetry.Dodges++;
                 _sidestepDir = Strafe(to).normalized;
                 _sidestepT = 0.28f;
@@ -1949,10 +2012,10 @@ namespace Emberline.Enemies
                 _rig?.PlayOneShot(RigPose.Dash, 0.3f);
                 return true;
             }
-            if (def.readsHeavies && def.blockChance > 0f)
+            if (def.readsHeavies && block > 0f && Random.value < block + 0.2f)
             {
                 // Reactive, not random: the block goes up because the swing was seen.
-                _readCd = 1.1f;
+                _readCd = 1.1f + diff.ReactionDelay;
                 AiTelemetry.ReactiveBlocks++;
                 _guardT = Mathf.Max(_guardT, 0.7f);
                 _rig?.ForcePose(RigPose.Windup, 0.6f);
