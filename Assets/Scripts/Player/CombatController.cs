@@ -231,8 +231,10 @@ namespace Emberline.Player
             // Cosmetic blade finish: recolors the trail and the weapon prop.
             var finish = BladeFinish.Current;
             var trailColor = finish.starsRequired > 0 ? finish.trail : Cosmetics.Current.Accent;
-            var trail = GetComponentInChildren<TrailRenderer>(true);
-            if (trail != null) trail.startColor = new Color(trailColor.r, trailColor.g, trailColor.b, 0.8f);
+            // Every right-hand catalogue prop carries its own trail; recolor them all so
+            // the finish follows whichever weapon SwapHandProps just made visible.
+            var tinted = new Color(trailColor.r, trailColor.g, trailColor.b, 0.8f);
+            foreach (var trail in GetComponentsInChildren<TrailRenderer>(true)) trail.startColor = tinted;
             var mpb = new MaterialPropertyBlock();
             mpb.SetColor("_Color", finish.blade);
             foreach (var r in GetComponentsInChildren<Renderer>(true))
