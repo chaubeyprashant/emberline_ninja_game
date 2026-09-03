@@ -29,7 +29,7 @@ namespace Emberline.Core
         private readonly List<Renderer> _renderers = new();
         private readonly List<SkinnedMeshRenderer> _skinned = new();
         private MaterialPropertyBlock _mpb;
-        private TrailRenderer _trail;
+        private TrailRenderer[] _trails = System.Array.Empty<TrailRenderer>();
         private Light _lantern;
         private RigMood _mood = RigMood.Calm;
 
@@ -54,11 +54,21 @@ namespace Emberline.Core
             _mpb = new MaterialPropertyBlock();
             GetComponentsInChildren(true, _renderers);
             GetComponentsInChildren(true, _skinned);
-            _trail = GetComponentInChildren<TrailRenderer>(true);
+            // Every right-hand catalogue prop carries its own Trail child; only the
+            // equipped one is active, so drive them all rather than caching first-found.
+            _trails = GetComponentsInChildren<TrailRenderer>(true);
             if (ghost) ApplyGhostMaterials(ghostAlpha);
             else ApplyTint();
             if (hasLantern) BuildLantern();
             if (_anim != null) _anim.cullingMode = AnimatorCullingMode.CullUpdateTransforms;
+        }
+
+        /// <summary>Drives every cached trail. Emitting on an inactive prop is harmless,
+        /// so no active-check is needed; the swapped-in weapon just picks it up.</summary>
+        private void SetTrails(bool emitting)
+        {
+            for (var i = 0; i < _trails.Length; i++)
+                if (_trails[i] != null) _trails[i].emitting = emitting;
         }
 
         // ------------------------------------------------------------ contract
@@ -117,7 +127,7 @@ namespace Emberline.Core
             _forcedThisFrame = false;
             _forcedActive = false;
             _flashT = 0f;
-            if (_trail != null) _trail.emitting = false; // died mid-swing
+            SetTrails(false); // died mid-swing
             tint = _authoredTint;
             _mood = RigMood.Calm;
             ApplyTint();
@@ -182,13 +192,12 @@ namespace Emberline.Core
             {
                 _oneT += dt;
                 var phase = _oneT / _oneDur;
-                if (_trail != null)
-                    _trail.emitting = _onePose is RigPose.Strike1 or RigPose.Strike2 or RigPose.Strike3 or RigPose.Cleave
-                                      && phase is > 0.1f and < 0.85f;
+                SetTrails(_onePose is RigPose.Strike1 or RigPose.Strike2 or RigPose.Strike3 or RigPose.Cleave
+                          && phase is > 0.1f and < 0.85f);
                 if (_oneT >= _oneDur)
                 {
                     _oneActive = false;
-                    if (_trail != null) _trail.emitting = false;
+                    SetTrails(false);
                     if (!_deadLatched) _anim.CrossFadeInFixedTime(LocomotionState, 0.12f, 0);
                 }
                 return;
