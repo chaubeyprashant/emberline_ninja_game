@@ -355,7 +355,7 @@ namespace Emberline.EditorTools
             camGo.tag = "MainCamera";
             var cam = camGo.AddComponent<UnityEngine.Camera>();
             cam.clearFlags = CameraClearFlags.Skybox;
-            cam.fieldOfView = 50f;
+            cam.fieldOfView = 56f;
             camGo.AddComponent<AudioListener>();
             camGo.AddComponent<UI.CinematicGrade>();
             camGo.AddComponent<CameraRig>();
@@ -922,12 +922,14 @@ namespace Emberline.EditorTools
             var cam = camGo.AddComponent<UnityEngine.Camera>();
             cam.clearFlags = CameraClearFlags.Skybox;
             cam.backgroundColor = new Color(0.05f, 0.07f, 0.1f);
-            cam.fieldOfView = 50f;
+            cam.fieldOfView = 56f;
             camGo.AddComponent<AudioListener>();
             camGo.AddComponent<UI.CinematicGrade>();
             var rig = camGo.AddComponent<CameraRig>();
             rig.SetTarget(target);
-            camGo.transform.position = target.position + new Vector3(0, 8.2f, -6.9f);
+            // Seed at the close over-the-shoulder placement so the first frame is
+            // already framed; CameraRig owns it from there.
+            camGo.transform.position = target.position + new Vector3(0.55f, 2.8f, -3.8f);
         }
 
         /// <summary>
@@ -1817,39 +1819,134 @@ namespace Emberline.EditorTools
         private static void EnsureIcon()
         {
             const string path = "Assets/Icon.png";
-            if (!File.Exists(path))
-            {
-                const int S = 512;
-                var tex = new Texture2D(S, S, TextureFormat.RGBA32, false);
-                var ink = new Color(0.075f, 0.09f, 0.13f);
-                var inkTop = new Color(0.10f, 0.125f, 0.18f);
-                var ember = new Color(1f, 0.42f, 0.29f);
-                var pale = new Color(0.92f, 0.9f, 0.86f);
-                var c = S / 2f;
-                for (var y = 0; y < S; y++)
-                for (var x = 0; x < S; x++)
-                {
-                    var col = Color.Lerp(ink, inkTop, y / (float)S);
-                    var man = Mathf.Abs(x - c) + Mathf.Abs(y - c);       // diamond metric
-                    var rad = Vector2.Distance(new Vector2(x, y), new Vector2(c, c));
-                    // warm glow
-                    var glow = Mathf.Pow(Mathf.Clamp01(1f - rad / (S * 0.45f)), 2.2f) * 0.55f;
-                    col = Color.Lerp(col, ember, glow * 0.5f);
-                    // diamond body with pale outline
-                    if (man < S * 0.30f) col = Color.Lerp(ember, new Color(1f, 0.62f, 0.4f), 1f - man / (S * 0.30f));
-                    else if (man < S * 0.315f) col = pale;
-                    // crack line through the gate
-                    var crack = Mathf.Abs((x - c) * 0.85f - (y - c));
-                    if (man < S * 0.29f && crack < S * 0.012f) col = ink;
-                    tex.SetPixel(x, S - 1 - y, col);
-                }
-                tex.Apply();
-                File.WriteAllBytes(path, tex.EncodeToPNG());
-                AssetDatabase.ImportAsset(path);
-            }
+            if (!File.Exists(path)) WriteIcon(path);
             var icon = AssetDatabase.LoadAssetAtPath<Texture2D>(path);
             if (icon != null)
                 PlayerSettings.SetIcons(NamedBuildTarget.Unknown, new[] { icon }, IconKind.Any);
+        }
+
+        /// <summary>Regenerate the launcher icon from scratch.</summary>
+        [MenuItem("Emberline/Build Icon")]
+        public static void RebuildIcon()
+        {
+            WriteIcon("Assets/Icon.png");
+            EnsureIcon();
+            Debug.Log("[Emberline] Icon written to Assets/Icon.png");
+            if (Application.isBatchMode) EditorApplication.Exit(0);
+        }
+
+        /// <summary>
+        /// The launcher icon: Renzo's ember lantern on ink.
+        ///
+        /// The lantern is the game — the title is the road of flame-keepers, the
+        /// chōchin is the family heirloom that has not gone out in two hundred
+        /// years, and the ember is the UI's accent colour. It also survives being
+        /// shrunk: one lit shape against near-black, no text, no thin detail.
+        ///
+        /// Everything sits inside the central 62% because Android's adaptive
+        /// icons crop the edges to a circle or squircle.
+        /// </summary>
+        private static void WriteIcon(string path)
+        {
+            const int S = 512;
+            var tex = new Texture2D(S, S, TextureFormat.RGBA32, false);
+
+            var ink = new Color(0.045f, 0.050f, 0.065f);
+            var inkTop = new Color(0.085f, 0.095f, 0.125f);
+            var ember = new Color(0.93f, 0.44f, 0.22f);
+            var emberBright = new Color(1.00f, 0.72f, 0.42f);
+            var emberDeep = new Color(0.55f, 0.22f, 0.12f);
+            var core = new Color(1.00f, 0.93f, 0.78f);
+            var pale = new Color(0.90f, 0.88f, 0.84f);
+
+            const float px = 2f / S;              // one pixel in -1..1 space
+            const float aa = 1.3f * px;
+            const float bodyRx = 0.320f, bodyRy = 0.375f, bodyCy = -0.045f;
+
+            for (var iy = 0; iy < S; iy++)
+            for (var ix = 0; ix < S; ix++)
+            {
+                var u = (ix + 0.5f) * px - 1f;
+                var v = 1f - (iy + 0.5f) * px;
+
+                // Ground: a cool vertical gradient, warmed by the lantern's spill.
+                var col = Color.Lerp(ink, inkTop, Mathf.Clamp01(v * 0.5f + 0.5f));
+                var rad = Mathf.Sqrt(u * u + (v - bodyCy) * (v - bodyCy));
+                // Light adds, it does not blend. Lerping toward a warm colour only
+                // tints the dark; summing it makes the lantern read as the source.
+                var halo = Mathf.Pow(Mathf.Clamp01(1f - rad / 1.15f), 2.0f) * 0.55f
+                           + Mathf.Pow(Mathf.Clamp01(1f - rad / 0.62f), 2.8f) * 0.85f
+                           + Mathf.Pow(Mathf.Clamp01(1f - rad / 0.40f), 4.0f) * 0.55f;
+                col += new Color(ember.r, ember.g, ember.b) * halo * 0.55f;
+
+                // Paper body — a superellipse, so the sides are straighter than an
+                // ellipse and it reads as a barrel rather than an egg.
+                var d = SuperD(u, v - bodyCy, bodyRx, bodyRy, 2.6f);
+                var body = 1f - Smooth(-aa, aa, d);
+                if (body > 0f)
+                {
+                    // Lit from within: hottest just above centre, deepening at the rim.
+                    var t = Mathf.Clamp01(-d / (bodyRx * 0.95f));
+                    var lift = Mathf.Clamp01((v - bodyCy) / bodyRy * 0.5f + 0.5f);
+                    var paper = Color.Lerp(ember, emberBright, Mathf.Pow(t, 0.60f));
+                    paper = Color.Lerp(paper, core, Mathf.Pow(t, 2.2f) * (0.72f + 0.28f * lift));
+                    paper = Color.Lerp(emberDeep, paper, Mathf.Clamp01(0.22f + t * 1.8f));
+
+                    // Ribs: the chōchin's bamboo hoops, subtle so they vanish at 48px
+                    // instead of turning into noise.
+                    var ribs = Mathf.Abs(Mathf.Sin((v - bodyCy) * 26f));
+                    paper = Color.Lerp(paper * 0.80f, paper, Smooth(0.0f, 0.35f, ribs));
+
+                    col = Color.Lerp(col, paper, body);
+                }
+
+                // A warm rim just outside the paper lifts it off the ink.
+                var rim = Smooth(aa * 2.5f, 0f, Mathf.Abs(d) - 0.008f);
+                if (d > -0.004f) col = Color.Lerp(col, emberBright, rim * 0.55f);
+
+                // Cap and base: near-black bars, the only cool shapes in the mark.
+                var cap = 1f - Smooth(-aa, aa, Box(u, v - (bodyCy + bodyRy), 0.150f, 0.052f, 0.022f));
+                var baseBar = 1f - Smooth(-aa, aa, Box(u, v - (bodyCy - bodyRy), 0.128f, 0.044f, 0.020f));
+                var wood = new Color(0.105f, 0.095f, 0.105f);
+                col = Color.Lerp(col, wood, Mathf.Max(cap, baseBar));
+
+                // The bail Renzo carries it by.
+                var hy = v - (bodyCy + bodyRy + 0.075f);
+                var ring = Mathf.Abs(Mathf.Sqrt(u * u + hy * hy) - 0.072f) - 0.011f;
+                if (hy > -0.01f)
+                    col = Color.Lerp(col, Color.Lerp(pale, emberBright, 0.35f) * 0.78f,
+                        1f - Smooth(-aa, aa, ring));
+
+                tex.SetPixel(ix, S - 1 - iy, new Color(
+                    Mathf.Clamp01(col.r), Mathf.Clamp01(col.g), Mathf.Clamp01(col.b), 1f));
+            }
+
+            tex.Apply();
+            File.WriteAllBytes(path, tex.EncodeToPNG());
+            AssetDatabase.ImportAsset(path);
+        }
+
+        private static float Smooth(float a, float b, float x)
+        {
+            var t = Mathf.Clamp01((x - a) / (b - a));
+            return t * t * (3f - 2f * t);
+        }
+
+        /// <summary>Approximate signed distance to a superellipse.</summary>
+        private static float SuperD(float u, float v, float rx, float ry, float n)
+        {
+            var a = Mathf.Pow(Mathf.Abs(u / rx), n) + Mathf.Pow(Mathf.Abs(v / ry), n);
+            return (Mathf.Pow(a, 1f / n) - 1f) * Mathf.Min(rx, ry);
+        }
+
+        /// <summary>Signed distance to a rounded box.</summary>
+        private static float Box(float u, float v, float hx, float hy, float r)
+        {
+            var dx = Mathf.Abs(u) - hx + r;
+            var dy = Mathf.Abs(v) - hy + r;
+            var ox = Mathf.Max(dx, 0f);
+            var oy = Mathf.Max(dy, 0f);
+            return Mathf.Sqrt(ox * ox + oy * oy) + Mathf.Min(Mathf.Max(dx, dy), 0f) - r;
         }
 
         /// <summary>
