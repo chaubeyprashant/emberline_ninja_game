@@ -42,37 +42,86 @@ Per the brief's §6, a small number of bases with variants beats thirteen
 unrelated models. Variants are material variants: one body, one texture, a
 different `tint` on the game shader, a different weapon, a different height.
 
-| Enemy | Selected character | Reason | Rig | Approx. complexity | Animation compatibility | Commercial licence |
-| --- | --- | --- | --- | --- | --- | --- |
-| Goro (Chief) | **Brute** | Shirtless, tattooed, bald heavy — a toll-road bully. Largest silhouette in the family at 2.25 m (down from the chibi's 2.45; a realistic body at 2.45 read as a giant). Greataxe prop; the axe embedded in the model is hidden in favour of the shared prop (no slash trail — Goro's spec sets no `trail`; among the enemies only Jin, Kagachi, Samurai and the Elite Warrior's greataxe carry one). | Mixamo humanoid | see table below | Shares the 21-clip sword set through Humanoid retargeting; two-handed poses borrow Cleave/Sweep | Adobe Mixamo, royalty-free incl. games |
-| Pale Shade (duel) / Shade | Akai, ghost shader | A hooded wraith: the rogue body under the translucent ghost material, pale blue, unarmed. Brady (white oni mask) was the first choice and is rejected below on cost. | — | — | same set | same |
-| Jin Kurogane | **Nightshade J Friedrich** | Ornate dark armour with a horned helm and green accents; refined, clearly above a mook. Head is helmeted, so the model's build does not fight the story's pronoun. Greatsword prop, trail. | Mixamo humanoid | see below | same set | same |
-| Kagehira / Kagachi | **Ganfaul M Aure** | Silver-haired warlord in spiked plate and a long coat. The one body that reads as commanding armies. Unique to him. | Mixamo humanoid | see below | same set; clones + ghost survive (one skinned mesh) | same |
-| Samurai | **Kachujin G Rosales** | Red-and-white ronin with a topknot, wrapped forearms and thighs — the most authentically Japanese figure Mixamo has. Greatsword, trail. | Mixamo humanoid | see below | same set | same |
-| Pike Guard | Kachujin, steel-blue tint | Same body read as a garrison soldier; spear prop (scaled sword shaft as today). | — | — | — | — |
-| Elite Warrior | Kachujin, dark bronze tint, 2.1 m | Same body, heavier presence through height and the greataxe. | — | — | — | — |
-| Assassin | **Akai E Espiritu** | Hooded, quiver on the back, wrapped cloth. Twin daggers as today. | Mixamo humanoid | see below | same set; dual-wield poses borrow Stab/Sweep | same |
-| Archer / Weaver (Ranged) | Akai, natural | The quiver is on the model already; hand crossbow prop as today. | — | — | ranged poses use Windup/Throw/Delayed from the shared set | — |
-| Rogue Ninja | Ninja, charcoal tint | Renzo's body in a colder grey so the two never read as the same man. | — | — | — | — |
-| Raider (Bandit) | Akai, worn-brown tint, 1.72 m | The common low-rank warrior is the lightest body in the set (10.4k tris) — a hooded rogue in worn leather, twin daggers. Brute was the first plan and lost on cost: it is three times the triangles and ten material slots, on the enemy that appears most. | — | — | — | — |
-| Axe Raider | Brute, soot tint, 1.95 m | Goro's body between raider and chief in height; greataxe. Rare enough on screen for the heavier body. | — | — | — | — |
-| Powder Carrier (Bomber) | Ninja, ochre tint, 1.7 m | A ninja body carrying the smoke bomb prop; reads as a saboteur. | — | — | — | — |
+| Enemy | Body | Why it reads as itself | Tint (multiplies albedo) | Height |
+| --- | --- | --- | --- | --- |
+| Renzo (player) | **Ninja** | The hero silhouette: hooded, masked, navy | none | 1.80 |
+| Raider (Bandit) | **Akai** | The commonest mook gets the cheapest body (10.4k): hooded rogue, twin daggers | warm tanned leather 1.05/0.72/0.45 | 1.72 |
+| Weaver / Archer | **Erika Archer** | Dark layered leather with a quiver on her back — reads "ranged" before she shoots | none | 1.68 |
+| Assassin | **Vampire A Lusth** | A red hood over pale wrapped grey — the one splash of red among the mooks | none | 1.76 |
+| Rogue Ninja | Ninja, pale cold | Renzo's own body, deliberately: the mirror. Lifted and cooled so the two never read as one man | moonlit steel 0.70/0.88/1.25 | 1.78 |
+| Powder Carrier (Bomber) | **Pirate** | A cloaked, hooded saboteur. The atlas is mostly white, so the tint takes it down to night slate | night slate 0.40/0.38/0.48 | 1.70 |
+| Shade / Pale Shade | Akai, ghosted | Translucent, so it shares the Raider's body without ever reading as it | pale blue + 0.55 alpha | 1.62 |
+| Pike Guard | **Kachujin**, cold | Garrison steel-blue against the Samurai's red, and a spear where the Samurai has a greatsword | cold steel 0.40/0.66/1.30 | 1.95 |
+| Samurai | Kachujin, as authored | The red-and-white ronin, topknot and wrapped limbs | none | 1.88 |
+| Elite Warrior | **Uriel A Plotexia** | Ornate gilded plate — status you can read at a glance, above every other non-boss | none | 2.05 |
+| Axe Raider | **Brute**, cold | Goro's body 0.27 m shorter and sooted cold, so the pair are two different men | soot 0.42/0.45/0.58 | 1.98 |
+| Goro (Chief) | Brute, warm | The biggest thing on the roof, bare-chested and firelit | firelit 1.20/0.82/0.68 | 2.25 |
+| Jin Kurogane | **Nightshade J Friedrich** | Horned ornate armour, unique to him | none | 1.85 |
+| Kagehira / Kagachi | **Ganfaul M Aure** | Spiked plate and a long coat — the one body that commands armies | none | 2.10 |
 
-The seven named campaign foes (convoy captain, three blades, drowned guardian,
-iron guard, final commander, raider leader, pale shade) need no work: they
-spawn on the base kind's prefab and inherit its body.
+Nine bodies carry fourteen roles. The rule is that **no two enemies which can
+share a wave share a body**; where a body is reused it is only across a pair
+separated by something stronger than colour:
+
+| Body | Shared by | What separates them |
+| --- | --- | --- |
+| Ninja | Renzo / Rogue Ninja | A deliberate mirror — the story's point. Navy vs pale cold |
+| Akai | Raider / Shade | The Shade is translucent |
+| Kachujin | Samurai / Pike Guard | Greatsword vs spear, red vs steel-blue |
+| Brute | Goro / Axe Raider | 2.25 m warm and bare-chested vs 1.98 m cold and sooted |
+
+Tints multiply the albedo in `Emberline/Surface`, so a value above 1 brightens
+rather than washes. The first pass used 0.5–0.8 greys, which only darkened
+already-dark textures and left the cast looking alike — that is the defect
+this table replaces.
+
+### The named foes needed their own bodies after all
+
+The seven named campaign foes are `CopySerialized` clones of a base kind's def,
+so they inherited its body — and `EnemyDef.modelSpec` existed for exactly this
+but nothing read it. `GameManager.PrefabFor(kind, defId)` is now the single
+place that decides which body a spawn uses, and the bootstrap builds an
+`Assets/Prefabs/Named_<id>.prefab` for any named foe that declares a visual.
+
+### A recolour is not a unique character
+
+The first attempt at the named foes gave the Drowned Guardian **Goro's body in
+green** and Commander Hoshu **Jin's armour in bronze**. That is the same defect
+as the grey tints, one level up: a repainted model still reads as the same
+character. Three more bodies were downloaded so that **every one of the nine
+duel opponents is a different model**, not a different colour:
+
+| Rung | Opponent | Body | Was |
+| --- | --- | --- | --- |
+| 01 | Goro | Brute | — |
+| 02 | The Pale Shade | Akai, ghosted | — |
+| 03 | Jin Kurogane | Nightshade | — |
+| 04 | Kagachi | Ganfaul | — |
+| 05 | The Convoy Captain | Kachujin | — |
+| 06 | The Three Blades | Vampire | shared the Assassin's body |
+| 07 | The Drowned Guardian | **Maw** — antlered marsh brute in hide and bone | Goro recoloured green |
+| 08 | The Iron Guard | Uriel | — |
+| 09 | Commander Hoshu | **Paladin** — full dark plate and a great helm | Jin recoloured bronze |
+
+The Assassin moved to **Arissa** (hooded cutthroat in a long coat) to free the
+Vampire for the Three Blades, so the mook and the named foe differ too.
+
+Three bodies were downloaded for this and one was rejected: **Morak** is 47,768
+triangles from a 114 MB source — nearly three times the hero budget — so the
+Assassin took Arissa (8,970) instead.
 
 ## Hierarchy the silhouettes give
 
 ```
-KAGEHIRA   Ganfaul — spiked plate, long coat, unique body, 2.1 m
-JIN        Nightshade — horned ornate armour, unique body, 1.85 m
-PALE SHADE Akai — hooded, ghosted, pale blue, 1.62 m
-GORO       Brute — 2.25 m, the tallest thing on the roof
-ELITE      Kachujin at 2.1 m, dark bronze
-SAMURAI    Kachujin, red, 1.92 m
-ASSASSIN   Akai, violet, hooded, 1.74 m
-RAIDERS    Akai, worn brown, 1.72 m
+KAGEHIRA    Ganfaul — spiked plate and long coat, 2.10 m
+JIN         Nightshade — horned ornate armour, 1.85 m
+GORO        Brute — 2.25 m, bare-chested, the tallest thing on the roof
+ELITE       Uriel — gilded plate, 2.05 m
+PALE SHADE  Akai — hooded and translucent, 1.62 m
+SAMURAI     Kachujin, red, 1.88 m       PIKE GUARD  Kachujin, steel-blue, spear, 1.95 m
+AXE RAIDER  Brute, cold, 1.98 m         ASSASSIN    Vampire, red hood, 1.76 m
+ARCHER      Erika, quiver, 1.68 m       BOMBER      Pirate, cloaked, 1.70 m
+RAIDER      Akai, warm brown, 1.72 m    ROGUE NINJA Ninja, pale cold, 1.78 m
 ```
 
 ## Measured complexity
@@ -80,19 +129,33 @@ RAIDERS    Akai, worn brown, 1.72 m
 From `EmberMixamoProbe.Run` (`Logs/mx_all2.log`), against the §4.1 budget of
 12–18k triangles for a hero and ≤ 48 bones:
 
-| Body | Triangles (drawn) | Bones | Material slots | Used for |
+| Body | Triangles (drawn) | Renderers | Bones | Used for |
 | --- | --- | --- | --- | --- |
-| Akai | 10,386 | 65 | 1 | Raider, Assassin, Archer, Shade |
-| Kachujin | 12,610 | 75 | 2 | Samurai, Pike Guard, Elite Warrior |
-| Nightshade | 12,999 | 68 | 1 | Jin |
-| Ganfaul | 13,801 | 99 | 1 | Kagehira |
-| Brute | ~22,800 of 31,301 (axe, earrings, lashes, moustache hidden) | 72 | 6 of 10 | Goro, Axe Raider |
-| Ninja | 24,780 | 52 | 1 | Renzo, Rogue Ninja, Bomber |
+| Arissa | 8,970 | 4 | 73 | Assassin |
+| Akai | 10,386 | 1 | 65 | Raider, Shade |
+| Uriel | 11,026 | 22 | 72 | Elite Warrior, Iron Guard |
+| Kachujin | 12,610 | 1 | 75 | Samurai, Pike Guard, Convoy Captain |
+| Nightshade | 12,999 | 1 | 68 | Jin |
+| Pirate | 13,115 | 1 | 76 | Bomber, Scavenger King |
+| Ganfaul | 13,801 | 1 | 99 | Kagehira |
+| Maw | 13,910 | 1 | 64 | Drowned Guardian |
+| Paladin | 14,660 | 2 | 67 | Commander Hoshu |
+| Vampire | 15,022 | 1 | 99 | Three Blades |
+| Erika | 20,526 | 4 | 67 | Archer |
+| Brute | ~22,800 of 31,301 | 5 of 9 | 72 | Goro, Axe Raider |
+| Ninja | 24,780 | 1 | 52 | Renzo, Rogue Ninja |
 
-Four of the six bodies sit inside the triangle budget. Every body is over the
-bone budget; that is what Mixamo's auto-rig produces and it is not editable
-here. The common mook body (Akai) is the lightest in the set, which is where
-the count matters most.
+Rejected on cost: **Morak** 47,768 tris (114 MB source), **Brady** 52,972.
+
+Nine of the thirteen bodies sit inside the triangle budget, and the commonest
+mook body (Akai) is near the lightest, which is where the count matters most.
+Every body is over the bone budget; that is what Mixamo's auto-rig produces and
+it is not editable here.
+
+**Uriel is the one to watch.** Its triangle count is modest but it arrives as
+22 separate skinned meshes, so it costs 22 draw calls rather than one. That is
+why it went to the Elite Warrior — tough, and never numerous — instead of a
+wave mook. If Elites ever spawn in threes, this is the first thing to revisit.
 
 ## What was not downloaded
 

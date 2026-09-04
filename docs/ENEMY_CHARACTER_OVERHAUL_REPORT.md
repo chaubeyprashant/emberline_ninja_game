@@ -8,42 +8,100 @@ Closing report for the enemy visual overhaul. Audit:
 
 ## What changed, in one sentence
 
-Every enemy kind is now built from one of five free Mixamo bodies on the same
+Every enemy kind is now built from one of thirteen free Mixamo bodies on the same
 skeleton, shader and pipeline as the Mixamo player, through the existing
 generator — no combat, AI, difficulty, duel, story, camera or UI code changed.
+No two enemies that can share a wave share a body.
 
 ## Per-character result
 
 Status is what a runtime build actually does, not what the spec says.
 "Device" means seen on the Galaxy A33 in the build from this session.
 
-| Character | Old asset | New asset | Source | Licence | Rig | Animation strategy | Weapon | Prefab | Performance notes | Status |
-| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| Renzo (player) | KayKit `RogueHooded.fbx` | Mixamo **Ninja** (`MixamoNinja.fbx`) | mixamo.com | Adobe Mixamo, royalty-free incl. commercial games | Humanoid | 21 retargeted clips (`Mixamo/Anims`) | sword_1handed prop on grip anchor | built into each scene by `BuildPlayer` | 24,780 tris, 52 bones, 1 slot | Device: gameplay, combat |
-| Raider (Bandit) | `Rogue.fbx` | **Akai E Espiritu**, worn-brown tint | mixamo.com | same | Humanoid | shared set | twin daggers (props; were embedded knives) | `Assets/Prefabs/Bandit.prefab` | 10,386 tris, 65 bones, 1 slot | Regenerated; lineup |
-| Weaver / Archer (Ranged) | `Mage.fbx` | Akai, natural | same | same | Humanoid | shared set; aim = Windup, shoot = Throw, retreat = Backstep | hand crossbow prop | `RangedWeaver.prefab` | as Akai | Regenerated; lineup |
-| Goro (Chief) | `Barbarian.fbx` | **Brute**, 2.25 m | same | same | Humanoid | shared set | greataxe prop (model's own axe hidden) | `BanditChief.prefab` | ~22.8k tris drawn of 31,301; 72 bones; 6 of 10 slots | Device: duel |
-| Shade / Pale Shade | `Skeleton_Minion.fbx` | Akai under the ghost shader, pale blue | same | same | Humanoid | shared set; unarmed strikes = Kick/Stab | none | `Shade.prefab` (Pale Shade rides it by def) | as Akai; ghost material, no shadows | Device: Pale Shade duel |
-| Kagehira / Kagachi | `Skeleton_Warrior.fbx` | **Ganfaul M Aure**, 2.1 m | same | same | Humanoid | shared set | sword_1handed prop, trail | `Kagachi.prefab` | 13,801 tris, 99 bones, 1 slot; clones ×2 in phase 4 | Regenerated; lineup |
-| Jin Kurogane | `Knight.fbx` | **Nightshade J Friedrich**, 1.85 m | same | same | Humanoid | shared set | sword_2handed prop, trail (trail was inert before: no prop) | `Jin.prefab` | 12,999 tris, 68 bones, 1 slot | Regenerated; lineup |
-| Axe Raider | `Knight.fbx` | Brute, soot tint, 1.95 m | same | same | Humanoid | shared set | greataxe prop | `RaiderAxe.prefab` | as Brute | Regenerated; lineup |
-| Pike Guard | `Knight.fbx` | **Kachujin G Rosales**, steel-blue tint | same | same | Humanoid | shared set; Strike1/2 = Stab | sword_2handed scaled into a spear shaft | `PikeGuard.prefab` | 12,610 tris, 75 bones, 2 slots | Regenerated; lineup |
-| Powder Carrier (Bomber) | `Mage.fbx` | Ninja, ochre tint | same | same | Humanoid | shared set; lob = Throw, wind-up = Windup | smoke bomb prop | `Bomber.prefab` | as Ninja | Regenerated; lineup |
-| Assassin | `Skeleton_Rogue.fbx` | Akai, bruised-violet tint | same | same | Humanoid | shared set; dash = SideStep | twin daggers | `Assassin.prefab` | as Akai | Regenerated; lineup |
-| Samurai | `Knight.fbx` | Kachujin, natural red | same | same | Humanoid | shared set | sword_2handed, trail | `Samurai.prefab` | as Kachujin | Regenerated; lineup |
-| Rogue Ninja | `RogueHooded.fbx` | Ninja, charcoal tint | same | same | Humanoid | shared set; Strike2 = Stab | dagger | `RogueNinja.prefab` | as Ninja | Regenerated; lineup |
-| Elite Warrior | `Skeleton_Warrior.fbx` | Kachujin, dark-bronze tint, 2.1 m | same | same | Humanoid | shared set | greataxe, trail | `EliteWarrior.prefab` | as Kachujin | Regenerated; lineup |
-| Named foes (×7) | base kind's body | base kind's new body | — | — | — | — | — | none of their own | — | Inherit (verified in audit §0) |
+| Character | Body | Tint | Height | Prefab | Cost | Status |
+| --- | --- | --- | --- | --- | --- | --- |
+| Renzo (player) | Ninja | none | 1.80 | built into each scene | 24,780 tris, 1 rend | Device |
+| Raider (Bandit) | Akai | warm leather | 1.72 | `Bandit.prefab` | 10,386, 1 | Sheet |
+| Weaver / Archer | **Erika Archer** | none | 1.68 | `RangedWeaver.prefab` | 20,526, 4 | Sheet |
+| Assassin | **Arissa** — hooded cutthroat, long coat | none | 1.76 | `Assassin.prefab` | 8,970, 4 | Sheet |
+| Rogue Ninja | Ninja, pale cold | moonlit steel | 1.78 | `RogueNinja.prefab` | as Ninja | Sheet |
+| Powder Carrier | **Pirate** | night slate | 1.70 | `Bomber.prefab` | 13,115, 1 | Sheet |
+| Shade / Pale Shade | Akai, ghosted | pale blue, 0.55α | 1.62 | `Shade.prefab` | as Akai | Device |
+| Pike Guard | Kachujin, cold | cold steel | 1.95 | `PikeGuard.prefab` | 12,610, 1 | Sheet |
+| Samurai | Kachujin | none | 1.88 | `Samurai.prefab` | as Kachujin | Device (Convoy Captain) |
+| Elite Warrior | **Uriel A Plotexia** | none | 2.05 | `EliteWarrior.prefab` | 11,026 but **22 rend** | Device (Iron Guard) |
+| Axe Raider | Brute, cold | soot | 1.98 | `RaiderAxe.prefab` | ~22.8k, 5 | Sheet |
+| Goro (Chief) | Brute, warm | firelit | 2.25 | `BanditChief.prefab` | as Brute | Device |
+| Jin Kurogane | Nightshade | none | 1.85 | `Jin.prefab` | 12,999, 1 | Device |
+| Kagehira / Kagachi | Ganfaul | none | 2.10 | `Kagachi.prefab` | 13,801, 1 | Sheet |
+| The Iron Guard | Uriel, cold iron | iron | 2.10 | `Named_ironguard.prefab` | as Uriel | Device |
+| The Drowned Guardian | **Maw** — antlered marsh brute | none | 2.30 | `Named_drownedguardian.prefab` | 13,910, 1 | Device |
+| Commander Hoshu | **Paladin** — dark plate, great helm | none | 1.98 | `Named_finalcommander.prefab` | 14,660, 2 | Device |
+| The Three Blades | Vampire | none | 1.74 | `Named_threeblades.prefab` | 15,022, 1 | Sheet |
+| The Scavenger King | Pirate, rust | rust | 1.95 | `Named_raiderleader.prefab` | as Pirate | Sheet |
+| Convoy Captain, Three Blades, Pale Shade | base kind's body | — | — | none of their own | — | Inherit (no collision) |
 
 ### Successfully replaced
 
-All thirteen enemy kinds. Every `Assets/Prefabs/<Name>.prefab` now nests a
-Mixamo body plus its prop (verified by GUID), `SetupScenes` regenerates them,
-the three gates pass, and the lineup poses every body through its own clip
-map.
+All thirteen enemy kinds, across ten bodies. Every
+`Assets/Prefabs/<Name>.prefab` nests its intended body plus its prop (verified
+by GUID), `SetupScenes` regenerates them, the three gates pass, and
+`EmberCastCheck` reports every body slot resolving to a texture.
+
+### The second pass, and what it fixed
+
+The first pass put thirteen enemies on five bodies and separated them with
+0.5–0.8 grey tints. That failed: multiplying an already-dark albedo by a grey
+only darkens it, so four enemies on the Akai body and three on Kachujin read
+as the same character. Four more bodies were added (Erika, Vampire, Uriel,
+Pirate) and the tints rebuilt around values that actually shift hue and can
+exceed 1.0 to brighten.
+
+Three real defects surfaced while verifying it, all found by looking rather
+than by reasoning:
+
+1. **`SlotMaterial` collapsed distinct slots onto one asset.** It stripped
+   non-alphanumerics for the filename, so Kachujin's `kachujin_MAT` and
+   `kachujin_MAT_` both became `Mat_X_kachujinMAT.mat` and the second
+   overwrote the first. All three Kachujin characters silently lost their
+   armour texture. Fixed with a deterministic FNV-1a tag — not
+   `string.GetHashCode`, which is randomised per process and would churn asset
+   names on every regeneration.
+2. **The Archer rendered nude.** Erika's mesh and material names are shuffled
+   against each other, and the two slots were mapped the wrong way round, so
+   her armour drew with the skin atlas. `Body_MAT` is the skin.
+3. **The Bomber was white.** The Pirate atlas is mostly pale grey, and the
+   first tint brightened it further — the opposite of what a night saboteur
+   needs.
+
+**A fourth defect only showed up in play: the named foes were clones.** The
+seven named campaign foes are `CopySerialized` copies of a base kind's def, so
+they inherited its body. `EnemyDef.modelSpec` existed for this and nothing read
+it, which left two pairs of *duel opponents* in identical skins two rungs
+apart — the Drowned Guardian and the Iron Guard, the Convoy Captain and
+Commander Hoshu. `GameManager.PrefabFor(kind, defId)` is now the one place that
+picks a body, and the bootstrap emits `Named_<id>.prefab` for any foe that
+declares its own; the rest still fall back to their kind.
+
+**A fifth, on the same theme: a recolour is not a unique character.** The first
+pass at the named foes gave the Drowned Guardian Goro's body in green and
+Commander Hoshu Jin's armour in bronze — the tint defect one level up. Three
+more bodies (Maw, Paladin, Arissa) were added so that **all nine duel
+opponents are different models**, not different colours. Morak was downloaded
+for this and rejected at 47,768 triangles from a 114 MB source.
+
+**The contact sheet was itself misleading and had to be fixed first.**
+`SkeletalRig` pushes `spec.tint` into a `MaterialPropertyBlock` in `Awake`,
+which never runs in edit mode, so every variant of a shared body rendered
+identically in the preview — precisely the thing the preview exists to catch.
+`EmberCastSheet` now applies the tint itself.
 
 ### Needs manual review
 
+- **Uriel costs 22 draw calls.** Its triangle count is modest (11k) but it
+  arrives as 22 separate skinned meshes. It went to the Elite Warrior — tough
+  and never numerous — for that reason, and the Iron Guard duel held 59.8 fps
+  at 247 setpass calls. If Elites ever spawn in threes, revisit this first.
 - **Per-weapon grip.** One grip correction serves every weapon on every body.
   The greataxe and the spear shaft are the ones to eyeball in play.
 - **Goro and the Axe Raider have no slash trail.** Their specs set no
@@ -86,6 +144,10 @@ there. The gameplay cap on this save was 60.
 | Scene | Bodies on screen | fps | p50 / p99 frame | worst | tris | setpass |
 | --- | --- | --- | --- | --- | --- | --- |
 | Jin duel (Rooftop, rain) | Renzo + Jin | 59.8 | 16.7 / 16.8 ms | 67–100 ms (boss intro) | 228k | 181–183 |
+| Iron Guard duel (Uriel, 22 renderers) | Renzo + Elite | 59.8 | 16.7 / 16.8 ms | 284 ms (intro) | 219k | 247 |
+| Convoy Captain duel (Kachujin) | Renzo + Samurai | 59.5 | 16.7 / 16.7 ms | 67 ms | 226k | 184 |
+| Drowned Guardian duel (Maw) | Renzo + Guardian | 59.8 | 16.7 / 16.8 ms | 251 ms (intro) | 218k | 158 |
+| Iron Guard duel (named prefab, Uriel) | Renzo + Iron Guard | 57.4 | 16.7 / 50.2 ms | 50 ms | 220k | 258 |
 | Jin duel, three fresh launches | same | 59.8 each | 16.7 / 16.8 ms | 67 ms | 228k | 181 |
 | Main menu | — | 29.9 (30 cap) | 33.5 ms | 184 ms (load) | 1k | 14 |
 

@@ -16,6 +16,12 @@ namespace Emberline
     {
         public MissionDef mission;               // legacy, unused in v2
         public GameObject[] enemyPrefabs;        // indexed by (int)EnemyKind
+        // Named foes are stat copies of a base kind, so they used to inherit its
+        // body — two pairs of duel opponents were identical. These parallel
+        // arrays give a named foe its own prefab; anything absent still falls
+        // back to the kind's body.
+        public string[] namedVisualIds = System.Array.Empty<string>();
+        public GameObject[] namedVisualPrefabs = System.Array.Empty<GameObject>();
         public Vector2 arenaHalfExtents = new(13f, 8f);
         public string otherSceneName = "";       // legacy
         public string otherMissionLabel = "";    // legacy
@@ -568,6 +574,17 @@ namespace Emberline
                 SpawnWave();
         }
 
+        /// <summary>The body for this spawn: the named foe's own if it has one, else the kind's.</summary>
+        public GameObject PrefabFor(EnemyKind kind, string defId)
+        {
+            if (!string.IsNullOrEmpty(defId) && namedVisualIds != null)
+                for (var i = 0; i < namedVisualIds.Length; i++)
+                    if (namedVisualIds[i] == defId && i < namedVisualPrefabs.Length
+                        && namedVisualPrefabs[i] != null)
+                        return namedVisualPrefabs[i];
+            return (int)kind < enemyPrefabs.Length ? enemyPrefabs[(int)kind] : null;
+        }
+
         private void SpawnWave()
         {
             WaveIndex++;
@@ -585,7 +602,8 @@ namespace Emberline
 
             foreach (var kind in kinds)
             {
-                var prefab = enemyPrefabs[(int)kind];
+                var prefab = PrefabFor(kind, ModeNow == LaunchMode.Duel && CurrentDuel != null
+                    ? CurrentDuel.defId : null);
                 if (prefab == null) continue;
                 Vector3 p;
                 if (ModeNow == LaunchMode.Duel)
@@ -856,8 +874,7 @@ namespace Emberline
         /// </summary>
         public EnemyBrain SpawnNamed(EnemyKind kind, string defId, bool unaware = false)
         {
-            var prefab = enemyPrefabs != null && (int)kind < enemyPrefabs.Length
-                ? enemyPrefabs[(int)kind] : null;
+            var prefab = enemyPrefabs != null ? PrefabFor(kind, defId) : null;
             if (prefab == null) return null;
             var edge = Random.Range(0, 4);
             var p = edge switch

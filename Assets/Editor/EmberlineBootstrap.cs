@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.IO;
 using UnityEditor;
 using UnityEditor.Build;
@@ -164,6 +165,9 @@ namespace Emberline.EditorTools
             var gm = gmGo.AddComponent<GameManager>();
             gm.mission = mission;
             gm.enemyPrefabs = prefabs;
+            var named = BuildNamedFoePrefabs(prefabs);
+            gm.namedVisualIds = named.ids;
+            gm.namedVisualPrefabs = named.prefabs;
             gm.arenaHalfExtents = new Vector2(13f, 8f);
             gm.otherSceneName = otherScene;
             gm.otherMissionLabel = otherLabel;
@@ -1578,6 +1582,50 @@ namespace Emberline.EditorTools
             Bind(EnemyKind.Bomber, bomber);
             Bind(EnemyKind.Jin, jin);
             AssetDatabase.SaveAssets();
+        }
+
+        /// <summary>
+        /// Prefabs for the named duel foes that declare their own body. They copy
+        /// their base kind's stats at spawn through SetDef, so only the visual and
+        /// the EnemyBrain identity need to exist here.
+        /// </summary>
+        private static (string[] ids, GameObject[] prefabs) BuildNamedFoePrefabs(GameObject[] byKind)
+        {
+            var ids = new List<string>();
+            var made = new List<GameObject>();
+            foreach (var id in EmberCharacterFactory.NamedFoeIds)
+            {
+                var spec = EmberCharacterFactory.NamedFoe(id);
+                if (spec == null) continue;
+                var def = AssetDatabase.LoadAssetAtPath<EnemyDef>($"Assets/Resources/Enemies/{id}.asset");
+                if (def == null) { Debug.LogWarning($"[Emberline] named foe {id}: no def"); continue; }
+
+                var root = new GameObject($"Named_{id}");
+                if (!EmberCharacterFactory.Build(root, spec))
+                {
+                    Object.DestroyImmediate(root);
+                    Debug.LogWarning($"[Emberline] named foe {id}: model missing, inherits its kind");
+                    continue;
+                }
+                var brain = root.AddComponent<EnemyBrain>();
+                brain.kind = def.kind;
+                brain.weapon = def.weapon;
+                brain.maxHp = def.maxHp;
+                brain.speed = def.moveSpeed;
+                brain.attackRange = def.attackRange;
+                brain.damage = def.damage;
+                brain.windupTime = def.windupTime;
+                brain.spawnTime = def.spawnTime;
+                brain.arenaHalfExtents = new Vector2(13f, 8f);
+                brain.def = def;
+
+                var prefab = PrefabUtility.SaveAsPrefabAsset(root, $"Assets/Prefabs/Named_{id}.prefab");
+                Object.DestroyImmediate(root);
+                ids.Add(id);
+                made.Add(prefab);
+            }
+            Debug.Log($"[Emberline] named foe visuals: {string.Join(", ", ids)}");
+            return (ids.ToArray(), made.ToArray());
         }
 
         private static GameObject SkeletalEnemyPrefab(EnemyKind kind, string name,
