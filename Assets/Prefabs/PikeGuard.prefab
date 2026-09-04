@@ -109,7 +109,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5a1bbc5d3fee84e8b9586529ac7c40fc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Emberline.Core.SkeletalRig
-  tint: {r: 0.66, g: 0.74, b: 0.88, a: 1}
+  tint: {r: 0.4, g: 0.66, b: 1.3, a: 1}
   ghost: 0
   ghostAlpha: 0.5
   hasLantern: 0
@@ -194,15 +194,15 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: -8679921383154817045, guid: f7fc4e7b7c2fd47109cc2c102e8f0ef9, type: 3}
       propertyPath: m_LocalScale.x
-      value: 0.8629848
+      value: 0.8856949
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: f7fc4e7b7c2fd47109cc2c102e8f0ef9, type: 3}
       propertyPath: m_LocalScale.y
-      value: 0.8629848
+      value: 0.8856949
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: f7fc4e7b7c2fd47109cc2c102e8f0ef9, type: 3}
       propertyPath: m_LocalScale.z
-      value: 0.8629848
+      value: 0.8856949
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: f7fc4e7b7c2fd47109cc2c102e8f0ef9, type: 3}
       propertyPath: m_LocalPosition.x
@@ -247,11 +247,11 @@ PrefabInstance:
     - target: {fileID: -4601992614122945897, guid: f7fc4e7b7c2fd47109cc2c102e8f0ef9, type: 3}
       propertyPath: 'm_Materials.Array.data[0]'
       value: 
-      objectReference: {fileID: 2100000, guid: 45c2d925c61e84c828eeddd4c869366d, type: 2}
+      objectReference: {fileID: 2100000, guid: a3409e37bb86240d7be060a46f05f1a1, type: 2}
     - target: {fileID: -4601992614122945897, guid: f7fc4e7b7c2fd47109cc2c102e8f0ef9, type: 3}
       propertyPath: 'm_Materials.Array.data[1]'
       value: 
-      objectReference: {fileID: 2100000, guid: 45c2d925c61e84c828eeddd4c869366d, type: 2}
+      objectReference: {fileID: 2100000, guid: efba45b83dc174df3911d14f8b998836, type: 2}
     - target: {fileID: 919132149155446097, guid: f7fc4e7b7c2fd47109cc2c102e8f0ef9, type: 3}
       propertyPath: m_Name
       value: VisualRoot
@@ -303,7 +303,7 @@ MonoBehaviour:
   modelId: PikeGuardModel
   socketRight: {fileID: 3787635154994651078}
   socketLeft: {fileID: 7335609556901548924}
-  normalisedHeight: 1.9
+  normalisedHeight: 1.95
 --- !u!4 &4120434630365910575 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 1852576806548013000, guid: f7fc4e7b7c2fd47109cc2c102e8f0ef9, type: 3}

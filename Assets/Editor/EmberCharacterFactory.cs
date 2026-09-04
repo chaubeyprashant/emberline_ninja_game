@@ -345,12 +345,20 @@ namespace Emberline.EditorTools
 
         // ------------------------------------------------------------- enemy cast
         //
-        // Every enemy is built from one of five Mixamo bodies (Akai, Brute,
-        // Kachujin, Nightshade, Ganfaul) plus the Ninja the player uses, so the
-        // whole cast shares Renzo's proportions, rig and shader. Identity comes
-        // from material variants — tint, weapon, height — not from more meshes
-        // (docs/ENEMY_CHARACTER_SELECTION.md). Bodies are all Humanoid on the one
-        // Mixamo skeleton, so the 21-clip set in Mixamo/Anims drives all of them.
+        // Ten Mixamo bodies cover the player and thirteen enemy kinds, all on the
+        // one Mixamo skeleton so the 21-clip set drives every one of them
+        // (docs/ENEMY_CHARACTER_SELECTION.md). The rule is that no two enemies
+        // which can share a wave share a body. Where a body is reused it is only
+        // between characters separated by something stronger than colour:
+        //
+        //   Ninja      Renzo / Rogue Ninja   — a deliberate mirror, cold vs warm
+        //   Akai       Raider / Shade        — the Shade is translucent
+        //   Kachujin   Samurai / Pike Guard  — greatsword vs spear silhouette
+        //   Brute      Goro / Axe Raider     — 2.25 m bare-chested vs 1.98 m sooted
+        //
+        // Tints multiply the albedo in Emberline/Surface, so a value above 1 is a
+        // real brightening, not a wash. The earlier pass used 0.5-0.8 greys, which
+        // only darkened already-dark textures and left the cast looking alike.
 
         private static string MixTex(string body, string file) => $"{MixDir}/Textures/{body}/{file}";
 
@@ -387,12 +395,33 @@ namespace Emberline.EditorTools
             ["kachujin_MAT_"] = MixTex("MixamoKachujin", "Kachujin_diffuse_body.png"),
         };
 
-        /// <summary>Raider: the common low-rank warrior — a hooded rogue in worn brown, twin daggers.</summary>
+        /// <summary>
+        /// Erika's mesh names are shuffled against her materials — the renderer
+        /// called "Eyelashes_Mesh" carries 12.5k triangles. Map by what each
+        /// material means, not by the mesh it sits on: `Body_MAT` is skin and the
+        /// leftover `Akai_MAT` is the leather. Getting this pair the wrong way
+        /// round paints the armour with the skin atlas and she renders nude.
+        /// </summary>
+        private static Dictionary<string, string> ErikaSlots() => new()
+        {
+            ["Akai_MAT"] = MixTex("MixamoErika", "Erika_Archer_Clothes_diffuse.png"),
+            ["Body_MAT"] = MixTex("MixamoErika", "FemaleFitA_Body_diffuse.png"),
+            ["eyelash_MAT"] = MixTex("MixamoErika", "FemaleFitA_eyelash_diffuse.png"),
+            ["EyeSpec_MAT"] = MixTex("MixamoErika", "FemaleFitA_Body_diffuse.png"),
+        };
+
+        private static Dictionary<string, string> VampireSlots() => new()
+        {
+            ["Vampire_MAT1"] = MixTex("MixamoVampire", "Vampire_diffuse.png"),
+            ["Vampire_MAT_Transparent"] = MixTex("MixamoVampire", "Vampire_diffuse_transparent.png"),
+        };
+
+        /// <summary>Raider: the common low-rank warrior — hooded, worn leather, twin daggers.</summary>
         public static Spec Bandit() => Mixamo(new Spec
         {
             name = "BanditModel",
             height = 1.72f,
-            tint = new Color(0.78f, 0.62f, 0.50f),
+            tint = new Color(1.05f, 0.72f, 0.45f),   // warm tanned leather
             propRight = "dagger",
             propLeft = "dagger",
         }, "MixamoAkai", "akai_diffuse.png");
@@ -402,6 +431,7 @@ namespace Emberline.EditorTools
         {
             name = "GoroModel",
             height = 2.25f,
+            tint = new Color(1.20f, 0.82f, 0.68f),   // firelit, warm — the Axe Raider is cold
             slotTextures = BruteSlots(),
             hideRenderers = BruteHide,
             propRight = "axe_2handed",
@@ -416,7 +446,7 @@ namespace Emberline.EditorTools
             propRight = "sword_1handed",
         }, "MixamoGanfaul", "Ganfaul_diffuse.png");
 
-        /// <summary>Jin Kurogane: the storm blade — ornate horned armour, greatsword, unique body.</summary>
+        /// <summary>Jin Kurogane: the storm blade — horned ornate armour, greatsword, unique body.</summary>
         public static Spec Jin() => Mixamo(new Spec
         {
             name = "JinModel",
@@ -425,7 +455,7 @@ namespace Emberline.EditorTools
             propRight = "sword_2handed",
         }, "MixamoNightshade", "Nightshade_diffuse.png", propScale: 0.7f);
 
-        /// <summary>Weaver / archer: the hooded rogue with the quiver, hand crossbow.</summary>
+        /// <summary>Weaver / archer: a hooded archer in dark leather, quiver on her back.</summary>
         public static Spec Archer()
         {
             var clips = MixamoClips();
@@ -435,24 +465,25 @@ namespace Emberline.EditorTools
             return Mixamo(new Spec
             {
                 name = "ArcherModel",
-                height = 1.7f,
+                height = 1.68f,
+                slotTextures = ErikaSlots(),
                 propRight = "crossbow_1handed",
                 clips = clips,
-            }, "MixamoAkai", "akai_diffuse.png");
+            }, "MixamoErika", "Erika_Archer_Clothes_diffuse.png");
         }
 
-        /// <summary>Axe raider: Goro's body between raider and chief in height, dressed in soot.</summary>
+        /// <summary>Axe raider: Goro's body, shorter and sooted, swinging the same greataxe.</summary>
         public static Spec RaiderAxe() => Mixamo(new Spec
         {
             name = "RaiderAxeModel",
-            height = 1.95f,
-            tint = new Color(0.62f, 0.56f, 0.54f),
+            height = 1.98f,
+            tint = new Color(0.42f, 0.45f, 0.58f),   // soot and ash, cold against Goro's warmth
             slotTextures = BruteSlots(),
             hideRenderers = BruteHide,
             propRight = "axe_2handed",
         }, "MixamoBrute", "MaleBruteA_Body_diffuse.png", propScale: 0.78f);
 
-        /// <summary>Pike guard: the ronin body in garrison steel-blue, the greatsword stretched into a spear.</summary>
+        /// <summary>Pike guard: the ronin in garrison steel-blue, greatsword stretched to a spear.</summary>
         public static Spec PikeGuard()
         {
             var clips = MixamoClips();
@@ -461,8 +492,8 @@ namespace Emberline.EditorTools
             var s = Mixamo(new Spec
             {
                 name = "PikeGuardModel",
-                height = 1.9f,
-                tint = new Color(0.66f, 0.74f, 0.88f),
+                height = 1.95f,
+                tint = new Color(0.40f, 0.66f, 1.30f),   // cold garrison steel against the Samurai's red
                 slotTextures = KachujinSlots(),
                 propRight = "sword_2handed",
                 clips = clips,
@@ -471,7 +502,7 @@ namespace Emberline.EditorTools
             return s;
         }
 
-        /// <summary>Powder carrier: a ninja body in ochre with the charge in hand.</summary>
+        /// <summary>Powder carrier: a cloaked, hooded saboteur with the charge in hand.</summary>
         public static Spec Bomber()
         {
             var clips = MixamoClips();
@@ -481,14 +512,14 @@ namespace Emberline.EditorTools
             return Mixamo(new Spec
             {
                 name = "BomberModel",
-                height = 1.7f,
-                tint = new Color(0.80f, 0.70f, 0.50f),
+                height = 1.70f,
+                tint = new Color(0.40f, 0.38f, 0.48f),   // the pale cloak taken down to night slate
                 propRight = "smokebomb",
                 clips = clips,
-            }, "MixamoNinja", "Ch24_1001_Diffuse.png");
+            }, "MixamoPirate", "void_diffuse.png");
         }
 
-        /// <summary>Assassin: the hooded rogue in bruised violet, twin daggers, sidesteps.</summary>
+        /// <summary>Assassin: a hooded cutthroat in a long coat, twin daggers.</summary>
         public static Spec Assassin()
         {
             var clips = MixamoClips();
@@ -496,25 +527,26 @@ namespace Emberline.EditorTools
             return Mixamo(new Spec
             {
                 name = "AssassinModel",
-                height = 1.74f,
-                tint = new Color(0.58f, 0.52f, 0.68f),
+                height = 1.76f,
+                // The model carries its own blades; the prop system supplies ours.
+                hideRenderers = new[] { "Weapons_Geo" },
                 propRight = "dagger",
                 propLeft = "dagger",
                 clips = clips,
-            }, "MixamoAkai", "akai_diffuse.png");
+            }, "MixamoArissa", "Arissa_DIFF_diffuse.png");
         }
 
         /// <summary>Samurai: the red-and-white ronin as authored, greatsword, deliberate.</summary>
         public static Spec Samurai() => Mixamo(new Spec
         {
             name = "SamuraiModel",
-            height = 1.92f,
+            height = 1.88f,
             trail = true,
             slotTextures = KachujinSlots(),
             propRight = "sword_2handed",
         }, "MixamoKachujin", "Kachujin_diffuse.png", propScale: 0.7f);
 
-        /// <summary>Rogue Ninja: Renzo's body in a colder charcoal, so the two never read as one man.</summary>
+        /// <summary>Rogue Ninja: Renzo's body gone cold — the mirror, deliberately.</summary>
         public static Spec RogueNinja()
         {
             var clips = MixamoClips();
@@ -523,22 +555,20 @@ namespace Emberline.EditorTools
             {
                 name = "RogueNinjaModel",
                 height = 1.78f,
-                tint = new Color(0.50f, 0.53f, 0.60f),
+                tint = new Color(0.70f, 0.88f, 1.25f),   // moonlit steel: lighter and colder than Renzo's navy
                 propRight = "dagger",
                 clips = clips,
             }, "MixamoNinja", "Ch24_1001_Diffuse.png");
         }
 
-        /// <summary>Elite Warrior: the ronin body in dark bronze at captain's height, greataxe.</summary>
+        /// <summary>Elite Warrior: ornate gilded plate — the captain's kit, unique body.</summary>
         public static Spec EliteWarrior() => Mixamo(new Spec
         {
             name = "EliteWarriorModel",
-            height = 2.1f,
-            tint = new Color(0.60f, 0.50f, 0.40f),
+            height = 2.05f,
             trail = true,
-            slotTextures = KachujinSlots(),
             propRight = "axe_2handed",
-        }, "MixamoKachujin", "Kachujin_diffuse.png", propScale: 0.78f);
+        }, "MixamoUriel", "Uriel_diffuse.png", propScale: 0.78f);
 
         /// <summary>Shade: the hooded rogue as a ghost — unarmed, translucent, pale blue.</summary>
         public static Spec Shade()
@@ -557,6 +587,73 @@ namespace Emberline.EditorTools
                 clips = clips,
             }, "MixamoAkai", "akai_diffuse.png");
         }
+
+        // ------------------------------------------------------- named duel foes
+        //
+        // The seven named foes are copies of a base kind's def, so before this
+        // they also inherited its body — which put the Drowned Guardian and the
+        // Iron Guard, and the Convoy Captain and Commander Hoshu, in identical
+        // skins two rungs apart on the duel ladder. Each now declares its own
+        // visual. They are fought one at a time, so a body may repeat across the
+        // ladder provided the pair differs in colour, height and weapon.
+
+        /// <summary>Visual for a named foe, or null to inherit its base kind's body.</summary>
+        public static Spec NamedFoe(string defId) => defId switch
+        {
+            // Kagehira's shield: the Elite's gilded plate gone cold iron.
+            "ironguard" => Mixamo(new Spec
+            {
+                name = "IronGuardModel",
+                height = 2.10f,
+                tint = new Color(0.55f, 0.62f, 0.74f),
+                trail = true,
+                propRight = "axe_2handed",
+            }, "MixamoUriel", "Uriel_diffuse.png", propScale: 0.78f),
+
+            // Warden of a drowned road: an antlered marsh thing in hide and bone.
+            // It was Goro's body recoloured green, which read as the same man.
+            "drownedguardian" => Mixamo(new Spec
+            {
+                name = "DrownedGuardianModel",
+                height = 2.30f,
+                propRight = "axe_2handed",
+            }, "MixamoMaw", "MAW_diffuse.png", propScale: 0.85f),
+
+            // The inner gate: full dark plate and a great helm — the last door.
+            // It was Jin's armour in bronze, which read as Jin.
+            "finalcommander" => Mixamo(new Spec
+            {
+                name = "CommanderHoshuModel",
+                height = 1.98f,
+                trail = true,
+                propRight = "sword_2handed",
+            }, "MixamoPaladin", "Paladin_diffuse.png", propScale: 0.72f),
+
+            // What the village left: a scavenger in a rusted cloak.
+            "raiderleader" => Mixamo(new Spec
+            {
+                name = "ScavengerKingModel",
+                height = 1.95f,
+                tint = new Color(1.10f, 0.62f, 0.40f),
+                propRight = "axe_2handed",
+            }, "MixamoPirate", "void_diffuse.png", propScale: 0.78f),
+
+            // Sisters of the silent forest: the pale red-hooded wraith.
+            "threeblades" => Mixamo(new Spec
+            {
+                name = "ThreeBladesModel",
+                height = 1.74f,
+                slotTextures = VampireSlots(),
+                propRight = "dagger",
+                propLeft = "dagger",
+            }, "MixamoVampire", "Vampire_diffuse.png"),
+
+            _ => null,   // convoycaptain and paleshade read correctly as their kind
+        };
+
+        /// <summary>The named foes that declare a visual of their own.</summary>
+        public static readonly string[] NamedFoeIds =
+            { "ironguard", "drownedguardian", "finalcommander", "raiderleader", "threeblades" };
 
         /// <summary>Builds the character visual under `root`. False → FBX missing, use NinjaRig.</summary>
         public static bool Build(GameObject root, Spec spec)
@@ -668,6 +765,14 @@ namespace Emberline.EditorTools
             return true;
         }
 
+        /// <summary>FNV-1a over the slot name — stable across runs, unlike GetHashCode.</summary>
+        private static string StableTag(string s)
+        {
+            uint h = 2166136261;
+            foreach (var c in s) { h ^= c; h *= 16777619; }
+            return (h & 0xFFFF).ToString("x4");
+        }
+
         /// <summary>
         /// A game-shader material for one authored slot of a multi-part body. The
         /// slot's albedo comes from `spec.slotTextures` by prefix on the authored
@@ -677,9 +782,15 @@ namespace Emberline.EditorTools
         private static Material SlotMaterial(Spec spec, string slotName)
         {
             System.IO.Directory.CreateDirectory(OutDir);
+            // Two distinct slot names can sanitise to the same string — Kachujin's
+            // "kachujin_MAT" and "kachujin_MAT_" both lose their underscores — and
+            // the second would then overwrite the first's material asset, silently
+            // dropping one of the two textures. A deterministic tag keeps them
+            // apart; it must not be string.GetHashCode, which is randomised per
+            // process and would churn asset names on every regeneration.
             var safe = new string(slotName.Where(char.IsLetterOrDigit).ToArray());
             if (safe.Length == 0) safe = "slot";
-            var path = $"{OutDir}/Mat_{spec.name}_{safe}.mat";
+            var path = $"{OutDir}/Mat_{spec.name}_{safe}{StableTag(slotName)}.mat";
             var mat = AssetDatabase.LoadAssetAtPath<Material>(path);
             var shader = spec.ghost ? Shader.Find("Emberline/Ghost") : SurfaceKit.SurfaceShader;
             if (mat == null)
