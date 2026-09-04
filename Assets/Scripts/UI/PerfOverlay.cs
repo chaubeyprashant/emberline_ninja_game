@@ -31,11 +31,18 @@ namespace Emberline.UI
 
         public static bool Enabled
         {
-            // Also honours a flag file in the app's external data folder, so the
-            // overlay can be switched on from adb on a release build without a
-            // settings entry: `adb shell touch /sdcard/Android/data/<pkg>/files/perf_overlay`.
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+            // Development only. Also honours a flag file in the app's data folder
+            // so it can be switched on from adb without a settings entry:
+            //   adb shell touch /sdcard/Android/data/<pkg>/files/perf_overlay
             get => PlayerPrefs.GetInt("perf_overlay", 0) == 1
                    || System.IO.File.Exists(System.IO.Path.Combine(Application.persistentDataPath, "perf_overlay"));
+#else
+            // A frame-time HUD must never be reachable in a store build. It was:
+            // either half of the check above could switch it on in a shipping
+            // APK, which is how it ended up in a batch of marketing captures.
+            get => false;
+#endif
             set
             {
                 PlayerPrefs.SetInt("perf_overlay", value ? 1 : 0);
