@@ -51,6 +51,10 @@ namespace Emberline.EditorTools
                 EmberTerrain.HeightAt(boot.spawn.x, boot.spawn.z) + 0.2f, boot.spawn.z);
             EmberlineBootstrap.BuildCameraFor(player.transform);
 
+            // A stick and a way out. The zone has no GameManager, so the normal
+            // HUD would drag the whole mission stack into a test scene.
+            new GameObject("ZoneControls").AddComponent<Emberline.Core.ZoneControls>();
+
             Directory.CreateDirectory(Path.GetDirectoryName(ScenePath));
             EditorSceneManager.SaveScene(scene, ScenePath);
 
