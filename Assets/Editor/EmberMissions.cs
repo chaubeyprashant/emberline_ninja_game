@@ -666,8 +666,10 @@ namespace Emberline.EditorTools
 
             // Fit, on a word boundary.
             t = t.Trim().TrimEnd('.', ',', ';', ':');
+            var truncated = false;
             if (t.Length > max)
             {
+                truncated = true;
                 var sp = t.LastIndexOf(' ', max);
                 t = sp > 8 ? t.Substring(0, sp) : t.Substring(0, max);
             }
@@ -681,6 +683,13 @@ namespace Emberline.EditorTools
             var words = new List<string>(t.Split(' ', System.StringSplitOptions.RemoveEmptyEntries));
             while (words.Count > 2 && dangling.Contains(words[^1].ToLowerInvariant().Trim('\'', '\"')))
                 words.RemoveAt(words.Count - 1);
+            // A cut that stopped just after a conjunction lost the other half of
+            // the pair: "break through the gate" became "and break". Drop both.
+            if (truncated && words.Count > 3)
+            {
+                var join = words[^2].ToLowerInvariant();
+                if (join is "and" or "or" or "then" or "but") words.RemoveRange(words.Count - 2, 2);
+            }
             return string.Join(" ", words).Trim().TrimEnd(',', ';', ':', '\'', '\"');
         }
 
