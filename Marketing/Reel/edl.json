@@ -1,0 +1,227 @@
+{
+  "duration": 15.0,
+  "source": "Logs/reel",
+  "clips": [
+    {
+      "_note": "HOOK \u2014 burning village, Renzo trading with a brute. Opens on the clash.",
+      "shot": "01_hook",
+      "in": 0.0,
+      "out": 1.5,
+      "src": 255,
+      "grade": {
+        "b": 1.02,
+        "c": 1.09,
+        "s": 1.06
+      },
+      "accents": [
+        [
+          0.02,
+          "heavy",
+          1.0
+        ]
+      ]
+    },
+    {
+      "_note": "MASTER THE BLADE \u2014 the cold mountain deck, close sword work.",
+      "shot": "02_blade",
+      "in": 1.5,
+      "out": 2.75,
+      "src": 445,
+      "grade": {
+        "b": 1.1,
+        "c": 1.1,
+        "s": 1.06
+      }
+    },
+    {
+      "shot": "02_blade",
+      "in": 2.75,
+      "out": 4.0,
+      "src": 185,
+      "grade": {
+        "b": 1.1,
+        "c": 1.1,
+        "s": 1.06
+      }
+    },
+    {
+      "_note": "TIMING MATTERS \u2014 the marsh, one unbroken two-and-a-half seconds: a perfect dodge, the duel it buys, and the execution it ends in. The slow motion in it is the game's own, not the edit's.",
+      "shot": "03_timing",
+      "in": 4.0,
+      "out": 6.5,
+      "src": 96,
+      "grade": {
+        "b": 1.16,
+        "c": 1.1,
+        "s": 1.05
+      }
+    },
+    {
+      "_note": "EVERY ENEMY FIGHTS DIFFERENT \u2014 Goro in the fortress: the heaviest body in the cast, winding up.",
+      "shot": "05_finish_goro",
+      "in": 6.5,
+      "out": 8.0,
+      "src": 365,
+      "grade": {
+        "b": 1.2,
+        "c": 1.1,
+        "s": 1.06
+      }
+    },
+    {
+      "shot": "05_finish_goro",
+      "in": 8.0,
+      "out": 9.5,
+      "src": 235,
+      "grade": {
+        "b": 1.2,
+        "c": 1.1,
+        "s": 1.06
+      }
+    },
+    {
+      "_note": "THE FINISH \u2014 Jin Kurogane in the rain, and then his defeat, ramped down so the golden burst lands under the music.",
+      "shot": "04_boss_jin",
+      "in": 9.5,
+      "out": 11.0,
+      "src": 230,
+      "grade": {
+        "b": 1.26,
+        "c": 1.12,
+        "s": 1.1
+      }
+    },
+    {
+      "shot": "04_boss_jin",
+      "in": 11.0,
+      "out": 12.5,
+      "src": 462,
+      "ramps": [
+        [
+          0.0,
+          0.62
+        ],
+        [
+          1.0,
+          0.58
+        ],
+        [
+          1.5,
+          0.4
+        ]
+      ],
+      "grade": {
+        "b": 1.26,
+        "c": 1.12,
+        "s": 1.1
+      }
+    },
+    {
+      "_note": "END CARD \u2014 Renzo walking out under the banner, slowed and pushed in.",
+      "shot": "06_outro",
+      "in": 12.5,
+      "out": 15.0,
+      "src": 240,
+      "ramps": [
+        [
+          0.0,
+          0.75
+        ]
+      ],
+      "zoom": [
+        1.0,
+        1.06
+      ],
+      "grade": {
+        "b": 1.03,
+        "c": 1.08,
+        "s": 1.05
+      }
+    }
+  ],
+  "titles": [
+    {
+      "start": 0.06,
+      "end": 1.38,
+      "rise": 0.05,
+      "fall": 0.1,
+      "lines": [
+        {
+          "text": "THIS IS A 3D NINJA GAME.",
+          "size": 82,
+          "y": 0.2,
+          "tracking": 4
+        }
+      ]
+    },
+    {
+      "start": 1.62,
+      "end": 3.8,
+      "lines": [
+        {
+          "text": "MASTER THE BLADE.",
+          "size": 104,
+          "y": 0.2,
+          "tracking": 6
+        }
+      ]
+    },
+    {
+      "start": 4.1,
+      "end": 6.3,
+      "lines": [
+        {
+          "text": "TIMING MATTERS.",
+          "size": 104,
+          "y": 0.2,
+          "tracking": 6
+        }
+      ]
+    },
+    {
+      "start": 6.62,
+      "end": 9.3,
+      "lines": [
+        {
+          "text": "EVERY ENEMY",
+          "size": 90,
+          "y": 0.185,
+          "tracking": 5
+        },
+        {
+          "text": "FIGHTS DIFFERENT.",
+          "size": 90,
+          "y": 0.245,
+          "tracking": 5
+        }
+      ]
+    },
+    {
+      "start": 12.7,
+      "end": 15.0,
+      "rise": 0.2,
+      "fall": 0.01,
+      "lines": [
+        {
+          "text": "EMBERLINE",
+          "size": 124,
+          "y": 0.26,
+          "tracking": 8,
+          "font": "DISPLAY"
+        },
+        {
+          "text": "3D NINJA ACTION",
+          "size": 48,
+          "y": 0.335,
+          "tracking": 14
+        },
+        {
+          "text": "FOLLOW FOR MORE",
+          "size": 40,
+          "y": 0.4,
+          "tracking": 10
+        }
+      ]
+    }
+  ]
+}

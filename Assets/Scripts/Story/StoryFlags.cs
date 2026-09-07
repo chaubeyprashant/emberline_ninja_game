@@ -23,6 +23,15 @@ namespace Emberline.Story
         /// <summary>True before the opening has ever run — drives the fresh-install flow.</summary>
         public static bool IsFreshInstall => !Seen("opening");
 
+        /// <summary>Has the first-launch intro video played, or been skipped, once?</summary>
+        public static bool IntroVideoSeen => PlayerPrefs.GetInt("intro_video", 0) == 1;
+
+        public static void MarkIntroVideoSeen()
+        {
+            PlayerPrefs.SetInt("intro_video", 1);
+            PlayerPrefs.Save();
+        }
+
         /// <summary>Named story facts, for flashbacks and NPC lines that react.</summary>
         public static bool Flag(string id) => PlayerPrefs.GetInt("sf_" + id, 0) == 1;
 
@@ -37,6 +46,7 @@ namespace Emberline.Story
         {
             foreach (var id in new[] { "opening", "village", "aiko", "snow" })
                 PlayerPrefs.DeleteKey("beat_" + id);
+            PlayerPrefs.DeleteKey("intro_video");
             PlayerPrefs.Save();
         }
     }
