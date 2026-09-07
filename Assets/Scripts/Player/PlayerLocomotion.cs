@@ -223,7 +223,7 @@ namespace Emberline.Player
             // Hitting the deck after a fall carries further than any footstep.
             if (wasAirborne && _cc.isGrounded && _yVel < -6f)
                 Enemies.NoiseSystem.Emit(transform.position, landNoiseRadius);
-            ClampToPlayArea();
+            ApplyBoundary(velocity, dt);
         }
 
         // ------------------------------------------------------------ traversal
@@ -355,27 +355,47 @@ namespace Emberline.Player
         }
 
         /// <summary>
-        /// Jumping clears the parapets that used to fence the player in, so the
-        /// play area is enforced directly. XZ only — the height is the whole point.
+        /// Boundary enforcement. In Endless mode the Road North corridor is still a
+        /// hard clamp (that constraint is thematic, not a cage). In all other modes
+        /// the new MissionBounds system applies a soft push-back force so the player
+        /// feels wind resistance rather than hitting an invisible wall.
         /// </summary>
-        private void ClampToPlayArea()
+        private void ApplyBoundary(Vector3 velocity, float dt)
         {
-            var half = Core.SceneRefs.Game != null
-                ? Core.SceneRefs.Game.arenaHalfExtents : new Vector2(13f, 8f);
             var p = transform.position;
+
+            // Road North (Endless): preserve the intentional corridor.
             if (RoadNorth.Instance != null)
             {
+                var half = Core.SceneRefs.Game != null
+                    ? Core.SceneRefs.Game.arenaHalfExtents : new Vector2(13f, 8f);
                 var xLimit = RoadNorth.XLimitAt(p.z, half.x);
                 p.x = Mathf.Clamp(p.x, -xLimit, xLimit);
                 p.z = Mathf.Max(p.z, -half.y);
+                if (p.y < -3f) { p.y = 0.5f; _yVel = 0f; }
+                if (p != transform.position) transform.position = p;
+                return;
             }
-            else
+
+            // Soft containment: push the player back toward the play area.
+            var pushBack = Core.MissionBounds.ContainForce(p);
+            if (pushBack.sqrMagnitude > 0.01f)
+                _cc.Move(pushBack * dt);
+
+            // Safety net: teleport back if a physics glitch launched us way out.
+            p = transform.position;
+            var (safePos, teleported) = Core.MissionBounds.SafetyClamp(p);
+            if (teleported)
             {
-                p.x = Mathf.Clamp(p.x, -half.x, half.x);
-                p.z = Mathf.Clamp(p.z, -half.y, half.y);
+                _cc.enabled = false;
+                transform.position = safePos;
+                _cc.enabled = true;
+                _yVel = 0f;
+                return;
             }
-            if (p.y < -3f) { p.y = 0.5f; _yVel = 0f; } // safety net if we ever fall through
-            if (p != transform.position) transform.position = p;
+
+            // Fall-through-floor safety.
+            if (p.y < -3f) { p.y = 0.5f; _yVel = 0f; transform.position = p; }
         }
 
         /// <summary>Snap facing (and body) toward a direction — used by soft-lock.</summary>

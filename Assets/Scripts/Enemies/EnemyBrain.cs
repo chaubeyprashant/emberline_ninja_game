@@ -2056,9 +2056,7 @@ namespace Emberline.Enemies
             if (RoadNorth.Instance != null && _player != null)
                 return RoadNorth.Clamp(_player.position + new Vector3(
                     Random.Range(-4f, 4f), 0, Random.Range(2f, 7f)), arenaHalfExtents);
-            return new Vector3(
-                Random.Range(-arenaHalfExtents.x + 1f, arenaHalfExtents.x - 1f), 0,
-                Random.Range(-arenaHalfExtents.y + 1f, arenaHalfExtents.y - 1f));
+            return Core.MissionBounds.RandomInteriorPoint(0.1f, 0.15f);
         }
 
         private void Move(Vector3 dir)
@@ -2232,9 +2230,7 @@ namespace Emberline.Enemies
                 transform.position = p;
                 return;
             }
-            var q = transform.position;
-            q.x = Mathf.Clamp(q.x, -arenaHalfExtents.x, arenaHalfExtents.x);
-            q.z = Mathf.Clamp(q.z, -arenaHalfExtents.y, arenaHalfExtents.y);
+            var q = Core.MissionBounds.Clamp(transform.position);
             q.y = y;
             transform.position = q;
         }

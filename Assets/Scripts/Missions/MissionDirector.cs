@@ -93,9 +93,11 @@ namespace Emberline.Missions
             Villager.ResetCount();
             Prisoner.ResetCount();
             Visibility.ResetConditions();
+            // Configure mission bounds from the plan's authored radius.
+            MissionBounds.Configure(Vector3.zero, plan.missionRadius, plan.missionRadiusZ);
             ApplyPlanConditions(plan);
             d.Challenge = new ChallengeTracker(plan, gm);
-            MissionDressing.Build(plan, gm != null ? gm.arenaHalfExtents : new Vector2(13f, 8f));
+            MissionDressing.Build(plan, MissionBounds.LegacyHalfExtents);
             // Resume from the last checkpoint rather than the top of the mission.
             d.StageIndex = Checkpoints.Load(plan.id);
             d.EnterStage();
@@ -213,7 +215,7 @@ namespace Emberline.Missions
                     break;
 
                 case StageGoal.FreePrisoners:
-                    if (Prisoner.Total < s.count) MissionDressing.SpawnPen(_gm != null ? _gm.arenaHalfExtents : new Vector2(13f, 8f), s.count - Prisoner.Total);
+                    if (Prisoner.Total < s.count) MissionDressing.SpawnPen(MissionBounds.LegacyHalfExtents, s.count - Prisoner.Total);
                     break;
 
                 case StageGoal.Stealth:
@@ -229,7 +231,7 @@ namespace Emberline.Missions
                     // had already finished his journey before the stage that asks
                     // for him ever began.
                     if (EscortNpc.Active != null) break;
-                    var half = _gm != null ? _gm.arenaHalfExtents : new Vector2(13f, 8f);
+                    var half = MissionBounds.LegacyHalfExtents;
                     EscortNpc.Spawn(new Vector3(-half.x + 1.5f, 0f, -half.y + 2f),
                         new Vector3(half.x - 1.5f, 0f, half.y - 2f),
                         Mathf.Max(20f, s.duration > 0f ? s.duration : 62f), 130f);
@@ -665,26 +667,34 @@ namespace Emberline.Missions
         /// </summary>
         private Vector3 Walkable(Vector3 p)
         {
-            var half = _gm != null ? _gm.arenaHalfExtents : new Vector2(13f, 8f);
-            p.x = Mathf.Clamp(p.x, -half.x + 3f, half.x - 3f);
-            p.z = Mathf.Clamp(p.z, -half.y + 2f, half.y - 2f);
+            p = MissionBounds.Clamp(p);
+            // Pull a few metres inside so waypoints don't sit at the edge.
+            var nd = MissionBounds.NormalisedDist(p);
+            if (nd > 0.85f)
+            {
+                var toward = MissionBounds.Center - p;
+                toward.y = 0f;
+                if (toward.sqrMagnitude > 0.001f)
+                    p += toward.normalized * 3f;
+            }
             return ArenaMarkers.Resolve(new Vector3(p.x, 0f, p.z), 1.3f);
         }
 
         private void SpawnClues(int count)
         {
-            var half = _gm != null ? _gm.arenaHalfExtents : new Vector2(13f, 8f);
+            var rx = MissionBounds.RadiusX;
+            var rz = MissionBounds.RadiusZ;
             for (var i = 0; i < count; i++)
             {
-                // Well inside the arena. The old ring reached almost to the edge,
+                // Well inside the area. The old ring reached almost to the edge,
                 // where the scenery that fences the marsh in is not registered as
                 // an obstacle: a clue out there is behind something no navigation
                 // can see and the stage simply cannot be completed. It also reads
                 // better — searching the ground you fight on, not the map border.
                 var angle = (i + 0.35f) / Mathf.Max(1, count) * Mathf.PI * 2f;
                 var pos = new Vector3(
-                    Mathf.Cos(angle) * Random.Range(3.5f, Mathf.Min(7.5f, half.x - 5f)), 0.4f,
-                    Mathf.Sin(angle) * Random.Range(2f, Mathf.Min(4.5f, half.y - 3f)));
+                    Mathf.Cos(angle) * Random.Range(3.5f, Mathf.Min(7.5f, rx * 0.6f)), 0.4f,
+                    Mathf.Sin(angle) * Random.Range(2f, Mathf.Min(4.5f, rz * 0.6f)));
                 var flat = Walkable(pos);
                 pos = new Vector3(flat.x, 0.4f, flat.z);
                 var go = GameObject.CreatePrimitive(PrimitiveType.Cube);

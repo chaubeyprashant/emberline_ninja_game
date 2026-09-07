@@ -57,10 +57,15 @@ namespace Emberline.Core
             }
         }
 
+        private static bool MouseFallback(int button) =>
+            Input.GetMouseButtonDown(button) && Input.touchCount == 0 &&
+            (UnityEngine.EventSystems.EventSystem.current == null ||
+             !UnityEngine.EventSystems.EventSystem.current.IsPointerOverGameObject());
+
         public static bool ConsumeStrike() =>
-            Consume(ref _strike) || Input.GetMouseButtonDown(0);
+            Consume(ref _strike) || MouseFallback(0);
         public static bool ConsumeCleave() =>
-            Consume(ref _cleave) || Input.GetMouseButtonDown(1);
+            Consume(ref _cleave) || MouseFallback(1);
         // Space moved to Jump (the universal binding); Flicker took Left Shift.
         public static bool ConsumeFlicker() =>
             Consume(ref _flicker) || Input.GetKeyDown(KeyCode.LeftShift);

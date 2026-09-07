@@ -623,15 +623,15 @@ namespace Emberline.EditorTools
             var ground = GameObject.CreatePrimitive(PrimitiveType.Cube);
             ground.name = "Deck";
             ground.transform.position = new Vector3(0, -0.25f, 0);
-            ground.transform.localScale = new Vector3(27f, 0.5f, 17f);
+            ground.transform.localScale = new Vector3(130f, 0.5f, 130f);
             ground.GetComponent<Renderer>().sharedMaterial = Mat($"Deck{theme}", deckCol, night ? Surface.WetStone : Surface.Stone);
 
             foreach (var (pos, scale) in new[]
             {
-                (new Vector3(0, 0.4f, 8.6f), new Vector3(27f, 0.8f, 0.6f)),
-                (new Vector3(0, 0.4f, -8.6f), new Vector3(27f, 0.8f, 0.6f)),
-                (new Vector3(13.6f, 0.4f, 0), new Vector3(0.6f, 0.8f, 17f)),
-                (new Vector3(-13.6f, 0.4f, 0), new Vector3(0.6f, 0.8f, 17f)),
+                (new Vector3(0, 0.4f, 64.6f), new Vector3(130f, 0.8f, 0.6f)),
+                (new Vector3(0, 0.4f, -64.6f), new Vector3(130f, 0.8f, 0.6f)),
+                (new Vector3(64.6f, 0.4f, 0), new Vector3(0.6f, 0.8f, 130f)),
+                (new Vector3(-64.6f, 0.4f, 0), new Vector3(0.6f, 0.8f, 130f)),
             })
             {
                 var wall = GameObject.CreatePrimitive(PrimitiveType.Cube);

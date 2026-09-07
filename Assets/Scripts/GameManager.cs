@@ -232,6 +232,7 @@ namespace Emberline
             Enemies.NoiseSystem.Clear();
             Enemies.BodyWatch.Clear();
             Enemies.Visibility.ClearLights();
+            Core.MissionBounds.Reset();
         }
 
         private void Start()
@@ -378,8 +379,9 @@ namespace Emberline
         /// <summary>Escort levels: the bearer walks the long axis of the arena.</summary>
         private void SpawnEscort(LevelDef level)
         {
-            var start = new Vector3(-arenaHalfExtents.x + 1.5f, 0f, -arenaHalfExtents.y + 2f);
-            var goal = new Vector3(arenaHalfExtents.x - 1.5f, 0f, arenaHalfExtents.y - 2f);
+            var half = Core.MissionBounds.LegacyHalfExtents;
+            var start = new Vector3(-half.x + 1.5f, 0f, -half.y + 2f);
+            var goal = new Vector3(half.x - 1.5f, 0f, half.y - 2f);
             Missions.EscortNpc.Spawn(start, goal, level.escortSeconds, 130f);
         }
 
@@ -613,20 +615,12 @@ namespace Emberline
                 else if (kind == EnemyKind.Shade)
                 {
                     // Shades materialize out of the reeds when the arena has them.
-                    var edge = new Vector3(Random.Range(-arenaHalfExtents.x, arenaHalfExtents.x), 0,
-                        Random.value < 0.5f ? arenaHalfExtents.y - 0.5f : -arenaHalfExtents.y + 0.5f);
+                    var edge = Core.MissionBounds.RandomPerimeterPoint(0.5f);
                     p = ArenaMarkers.RandomShadeSpawn(edge);
                 }
                 else
                 {
-                    var edge = Random.Range(0, 4);
-                    p = edge switch
-                    {
-                        0 => new Vector3(Random.Range(-arenaHalfExtents.x, arenaHalfExtents.x), 0, arenaHalfExtents.y - 0.5f),
-                        1 => new Vector3(Random.Range(-arenaHalfExtents.x, arenaHalfExtents.x), 0, -arenaHalfExtents.y + 0.5f),
-                        2 => new Vector3(-arenaHalfExtents.x + 0.5f, 0, Random.Range(-arenaHalfExtents.y, arenaHalfExtents.y)),
-                        _ => new Vector3(arenaHalfExtents.x - 0.5f, 0, Random.Range(-arenaHalfExtents.y, arenaHalfExtents.y)),
-                    };
+                    p = Core.MissionBounds.RandomPerimeterPoint(0.5f);
                 }
                 var enemy = EnemyPool.Spawn(prefab, p, Quaternion.identity);
                 if (ModeNow == LaunchMode.Duel && CurrentDuel != null && !string.IsNullOrEmpty(CurrentDuel.defId))
@@ -852,14 +846,7 @@ namespace Emberline
                 ? enemyPrefabs[(int)kind] : null;
             if (prefab == null) return;
 
-            var edge = Random.Range(0, 4);
-            var p = edge switch
-            {
-                0 => new Vector3(Random.Range(-arenaHalfExtents.x, arenaHalfExtents.x), 0, arenaHalfExtents.y - 0.5f),
-                1 => new Vector3(Random.Range(-arenaHalfExtents.x, arenaHalfExtents.x), 0, -arenaHalfExtents.y + 0.5f),
-                2 => new Vector3(-arenaHalfExtents.x + 0.5f, 0, Random.Range(-arenaHalfExtents.y, arenaHalfExtents.y)),
-                _ => new Vector3(arenaHalfExtents.x - 0.5f, 0, Random.Range(-arenaHalfExtents.y, arenaHalfExtents.y)),
-            };
+            var p = Core.MissionBounds.RandomPerimeterPoint(0.5f);
             var go = EnemyPool.Spawn(prefab, p, Quaternion.Euler(0, 180f, 0));
             var brain = go != null ? go.GetComponent<EnemyBrain>() : null;
             if (brain == null) return;
@@ -876,14 +863,7 @@ namespace Emberline
         {
             var prefab = enemyPrefabs != null ? PrefabFor(kind, defId) : null;
             if (prefab == null) return null;
-            var edge = Random.Range(0, 4);
-            var p = edge switch
-            {
-                0 => new Vector3(Random.Range(-arenaHalfExtents.x * 0.6f, arenaHalfExtents.x * 0.6f), 0, arenaHalfExtents.y - 1f),
-                1 => new Vector3(Random.Range(-arenaHalfExtents.x * 0.6f, arenaHalfExtents.x * 0.6f), 0, -arenaHalfExtents.y + 1f),
-                2 => new Vector3(-arenaHalfExtents.x + 1f, 0, Random.Range(-arenaHalfExtents.y * 0.6f, arenaHalfExtents.y * 0.6f)),
-                _ => new Vector3(arenaHalfExtents.x - 1f, 0, Random.Range(-arenaHalfExtents.y * 0.6f, arenaHalfExtents.y * 0.6f)),
-            };
+            var p = Core.MissionBounds.RandomPerimeterPoint(1f);
             var go = EnemyPool.Spawn(prefab, p, Quaternion.Euler(0, 180f, 0));
             var brain = go != null ? go.GetComponent<EnemyBrain>() : null;
             if (brain == null) return null;
