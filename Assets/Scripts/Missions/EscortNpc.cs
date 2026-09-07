@@ -7,8 +7,9 @@ namespace Emberline.Missions
 {
     /// <summary>
     /// The lantern-bearer of the escort missions: walks a fixed line across the
-    /// arena while the player keeps the road clear. Built at runtime from
-    /// NinjaRig's primitives, so escort levels need no imported character.
+    /// arena while the player keeps the road clear. Built through CivilianRig,
+    /// which prefers the imported villager and falls back to primitives, so
+    /// escort levels still populate with no imported character present.
     ///
     /// Enemies never path to the bearer — they still hunt the player — but any
     /// enemy that ends up beside them chips their health, so letting the fight
@@ -36,17 +37,9 @@ namespace Emberline.Missions
 
         public static EscortNpc Spawn(Vector3 start, Vector3 goal, float seconds, float maxHp)
         {
-            var go = new GameObject("LanternBearer");
-            go.transform.position = start;
-
-            // Primitive rig: an unarmed civilian silhouette with a lantern scarf.
-            var rig = go.AddComponent<NinjaRig>();
-            rig.bodyColor = new Color(0.30f, 0.26f, 0.22f);
-            rig.accentColor = new Color(1f, 0.62f, 0.35f);
-            rig.hasSword = false;
-            rig.hasScarf = true;
-            rig.maskStripe = false;
-            rig.rigScale = 0.95f;
+            var rig = CivilianRig.Spawn("LanternBearer", start,
+                new Color(0.30f, 0.26f, 0.22f), new Color(1f, 0.62f, 0.35f), 0.95f, scarf: true);
+            var go = rig.gameObject;
 
             var npc = go.AddComponent<EscortNpc>();
             npc._start = start;

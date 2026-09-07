@@ -21,22 +21,15 @@ namespace Emberline.Missions
 
         private const float FreeRange = 2.0f;
 
-        private NinjaRig _rig;
+        private CharacterRig _rig;
         private bool _free;
         private Vector3 _runTo;
 
         public static Prisoner Spawn(Vector3 at)
         {
-            var go = new GameObject("Prisoner");
-            go.transform.position = at;
-
-            var rig = go.AddComponent<NinjaRig>();
-            rig.bodyColor = new Color(0.42f, 0.38f, 0.34f);
-            rig.accentColor = new Color(0.75f, 0.68f, 0.5f);
-            rig.hasSword = false;
-            rig.hasScarf = false;
-            rig.maskStripe = false;
-            rig.rigScale = 0.9f;
+            var rig = CivilianRig.Spawn("Prisoner", at,
+                new Color(0.42f, 0.38f, 0.34f), new Color(0.75f, 0.68f, 0.5f), 0.9f);
+            var go = rig.gameObject;
 
             var p = go.AddComponent<Prisoner>();
             p._rig = rig;

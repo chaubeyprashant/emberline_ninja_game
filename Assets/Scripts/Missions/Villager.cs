@@ -34,37 +34,9 @@ namespace Emberline.Missions
 
         public static Villager Spawn(Vector3 at, Color cloth)
         {
-            var prefab = Resources.Load<GameObject>("Prefabs/VillagerPrefab");
-            GameObject go;
-            if (prefab != null)
-            {
-                go = Object.Instantiate(prefab, at, Quaternion.identity);
-                go.name = "Villager";
-            }
-            else
-            {
-                go = new GameObject("Villager");
-                go.transform.position = at;
-            }
-
-            var rig = go.GetComponent<CharacterRig>();
-            if (rig == null)
-            {
-                var ninja = go.AddComponent<NinjaRig>();
-                ninja.bodyColor = cloth;
-                ninja.accentColor = new Color(0.62f, 0.55f, 0.44f);
-                ninja.hasSword = false;
-                ninja.hasScarf = false;
-                ninja.maskStripe = false;
-                ninja.rigScale = 0.92f;
-                rig = ninja;
-            }
-            else
-            {
-                // Note: SkeletalRig colors might need a different setup since it uses imported materials,
-                // but we attach it here.
-                go.transform.localScale = Vector3.one * 0.92f;
-            }
+            var rig = CivilianRig.Spawn("Villager", at,
+                cloth, new Color(0.62f, 0.55f, 0.44f), 0.92f);
+            var go = rig.gameObject;
 
             var v = go.AddComponent<Villager>();
             v._rig = rig;
