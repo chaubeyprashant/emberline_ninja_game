@@ -20,6 +20,9 @@ namespace Emberline.Story
         [Tooltip("Set dressing before the first shot runs.")]
         public SetState openingState = SetState.Peace;
 
+        [Tooltip("Play the first-launch intro video before the beat on a fresh install.")]
+        public bool introVideo = true;
+
         private void Start()
         {
             // Captured before the director runs, because finishing the beat marks
@@ -35,6 +38,19 @@ namespace Emberline.Story
             // enough — a returning player should not have to dismiss the opening
             // every single launch to reach their save.
             if (!_wasFirstRun) { Advance(); return; }
+
+            // The very first launch opens on the intro video, then the cinematic.
+            // The video keeps its own flag: a player who quit during the opening
+            // sees the opening again next launch, not the video again.
+            if (introVideo && !StoryFlags.IntroVideoSeen)
+                IntroVideo.Play(BeginBeat);
+            else
+                BeginBeat();
+        }
+
+        private void BeginBeat()
+        {
+            if (this == null) return; // scene torn down while the video ran
 
             var beat = Resources.Load<StoryBeat>("Story/" + beatId);
             if (beat == null)

@@ -53,3 +53,8 @@ signing.properties
 
 # Unity/mono crash dumps
 mono_crash.*.json
+
+# Rendered marketing videos are build outputs of Marketing/*/tools; keep the masters out of git
+/Marketing/Intro/*.mp4
+/Marketing/Reel/*.mp4
+__pycache__/

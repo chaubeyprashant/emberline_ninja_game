@@ -8,6 +8,55 @@ code, never hand-edited in the editor.
 
 ---
 
+## Unreleased
+
+### First-launch intro video
+
+- **A 25-second intro plays once, the first time the app is opened**, before
+  the opening cinematic (`Assets/Scripts/Story/IntroVideo.cs`, called from
+  `StoryRunner`). Tap to skip after the first second; Android back also skips.
+  It keeps its own PlayerPrefs flag (`intro_video`), separate from the
+  opening's, so quitting mid-cinematic replays the cinematic and not the video.
+  Every failure path — file missing, decoder error, prepare timing out — falls
+  through to the cinematic, so a broken file can never block a fresh install.
+- **The file** ships in `Assets/StreamingAssets/intro.mp4`: 1280×720, 30 fps,
+  H.264 Main + AAC, under 8 MB. The 1080p master and the whole edit live in
+  `Marketing/Intro/` (`edl.json`, `tools/build_intro.py`, `README.md`). It is
+  cut from the same captured gameplay as the Instagram reel, on the current
+  cast; nothing staged or generated.
+- **Check Story Framework** now also verifies the intro flag round-trips and
+  that the video ships under the size gate.
+
+---
+
+## 1.2.1 (version code 7) — released
+
+First release since 1.0.1 (code 6). The three versions below — 1.1.0, 1.2.0 and
+1.3.0 — were authored but never shipped, so they all reach players here, along
+with the combat, cast, camera and store work that landed after them. The
+version codes annotated on those older headings (7 and 8) were planning
+figures and are superseded by this one.
+
+Shipped in this build, on top of everything in 1.1.0–1.3.0:
+
+- **Combat 2.0** — enemies choose attacks by situation, with a personality per
+  archetype and phase changes on bosses.
+- **Difficulty 2.0** — Easy through Lethal change how enemies *think*, not how
+  much health they carry.
+- **The cast** — player and all thirteen enemy kinds rebuilt on thirteen
+  realistic bodies sharing one skeleton. No two duel opponents share a model.
+- **Close third-person camera** — 4.2 m behind Renzo at eye level, replacing
+  the 10.7 m / 50° arena framing. Proper collision; gyro no longer drifts the
+  tilt (it reports a rotation rate that was being integrated permanently).
+- **New app icon** — authored key art rather than the procedural placeholder.
+- **Fixed:** a frame-time debug overlay could switch itself on in a release
+  build; weapon trails only drove the first weapon; the hit flash was
+  invisible on an opaque character at its default tint.
+
+Full notes: `Marketing/PlayStore/docs/release_notes_1.2.1.md`.
+
+---
+
 ## 1.3.0 — unreleased
 
 ### The hundred-mission campaign

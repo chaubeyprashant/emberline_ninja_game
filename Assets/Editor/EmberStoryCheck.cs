@@ -50,6 +50,17 @@ namespace Emberline.EditorTools
             StoryFlags.ResetAll();
             Check(!StoryFlags.Seen("opening"), "reset clears it again");
 
+            // The first-launch intro video: its flag, and the file it plays.
+            Check(!StoryFlags.IntroVideoSeen, "a fresh install has not seen the intro video");
+            StoryFlags.MarkIntroVideoSeen();
+            Check(StoryFlags.IntroVideoSeen, "intro video seen persists");
+            StoryFlags.ResetAll();
+            Check(!StoryFlags.IntroVideoSeen, "reset clears the intro video flag");
+            var videoPath = System.IO.Path.Combine(Application.streamingAssetsPath, IntroVideo.FileName);
+            var videoBytes = System.IO.File.Exists(videoPath) ? new System.IO.FileInfo(videoPath).Length : 0L;
+            Check(videoBytes > 0, $"StreamingAssets/{IntroVideo.FileName} ships ({videoBytes / 1048576f:0.0} MB)");
+            Check(videoBytes < 8L * 1048576, "intro video stays under the 8 MB size gate");
+
             // Cast lookup.
             Cast.Clear();
             var go = new GameObject("RenStandIn");
