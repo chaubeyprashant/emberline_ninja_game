@@ -28,8 +28,24 @@ MonoBehaviour:
   nextReason: Goro has come himself. There is no road around him, only through.
   region: MOUNTAINS
   stages:
+  - goal: 13
+    objective: THE FRONT OR QUIET
+    banner: THE TOLL POST
+    count: 1
+    duration: 0
+    point: {x: 0, y: 0, z: 6.5}
+    spawn: 
+    pointB: {x: 10, y: 0, z: 0}
+    spawnB: 
+    foeDef: 
+    beatId: 
+    bossHealthGate: 0.6
+    onComplete: 0
+    optional: 0
+    bonusShards: 1
+    checkpoint: 1
   - goal: 0
-    objective: REACH THE NORTHERN CHECKPOINT
+    objective: REACH THE NORTHERN CHECKPOINT AND BREAK
     banner: THE BROKEN GATE
     count: 1
     duration: 0
@@ -68,7 +84,7 @@ MonoBehaviour:
     point: {x: 0, y: 0, z: 0}
     spawn: 0700000006000000
     pointB: {x: 0, y: 0, z: 0}
-    spawnB: 
+    spawnB: 0c000000
     foeDef: 
     beatId: 
     bossHealthGate: 0.6
@@ -92,6 +108,38 @@ MonoBehaviour:
     optional: 0
     bonusShards: 1
     checkpoint: 1
+  - goal: 8
+    objective: THE PASS ROTATION
+    banner: THE PASS ROTATION AT THE THIRD HOUR
+    count: 1
+    duration: 0
+    point: {x: 0, y: 0, z: 0}
+    spawn: 
+    pointB: {x: 0, y: 0, z: 0}
+    spawnB: 
+    foeDef: 
+    beatId: 
+    bossHealthGate: 0.6
+    onComplete: 0
+    optional: 1
+    bonusShards: 1
+    checkpoint: 0
+  - goal: 18
+    objective: THE PEN, IF YOU WANT IT
+    banner: 
+    count: 2
+    duration: 0
+    point: {x: 0, y: 0, z: 0}
+    spawn: 
+    pointB: {x: 0, y: 0, z: 0}
+    spawnB: 
+    foeDef: 
+    beatId: 
+    bossHealthGate: 0.6
+    onComplete: 0
+    optional: 1
+    bonusShards: 2
+    checkpoint: 0
   - goal: 1
     objective: THE REST OF THEM
     banner: AN ELITE GUARD HOLDS THE GATE
@@ -100,7 +148,7 @@ MonoBehaviour:
     point: {x: 0, y: 0, z: 0}
     spawn: 07000000060000000c0000000700000006000000
     pointB: {x: 0, y: 0, z: 0}
-    spawnB: 
+    spawnB: 060000000c0000000700000006000000
     foeDef: 
     beatId: 
     bossHealthGate: 0.6

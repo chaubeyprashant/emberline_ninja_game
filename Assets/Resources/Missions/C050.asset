@@ -28,8 +28,24 @@ MonoBehaviour:
     temple's upper halls.
   region: TEMPLES
   stages:
+  - goal: 13
+    objective: THE FRONT OR QUIET
+    banner: THE FIRST KEY
+    count: 1
+    duration: 0
+    point: {x: 0, y: 0, z: 6.5}
+    spawn: 
+    pointB: {x: 10, y: 0, z: 0}
+    spawnB: 
+    foeDef: 
+    beatId: 
+    bossHealthGate: 0.6
+    onComplete: 0
+    optional: 0
+    bonusShards: 1
+    checkpoint: 1
   - goal: 0
-    objective: ESCAPE THE CHAMBER
+    objective: ESCAPE THE CHAMBER WITH THE FIRST KEY
     banner: THE FIRST KEY
     count: 1
     duration: 0
@@ -45,7 +61,7 @@ MonoBehaviour:
     bonusShards: 1
     checkpoint: 1
   - goal: 8
-    objective: READ THE FIELD
+    objective: ESCAPE UNDER PURSUIT
     banner: ESCAPE UNDER PURSUIT
     count: 1
     duration: 0
@@ -61,14 +77,14 @@ MonoBehaviour:
     bonusShards: 1
     checkpoint: 0
   - goal: 1
-    objective: THE FIRST OF THEM
+    objective: THE CHAMBER STAIR
     banner: CONTACT
     count: 1
     duration: 0
     point: {x: 0, y: 0, z: 0}
     spawn: 0c0000000a000000
     pointB: {x: 0, y: 0, z: 0}
-    spawnB: 
+    spawnB: 0a000000
     foeDef: 
     beatId: 
     bossHealthGate: 0.6
@@ -100,7 +116,7 @@ MonoBehaviour:
     point: {x: 0, y: 0, z: 0}
     spawn: 0c0000000a00000009000000010000000c000000
     pointB: {x: 0, y: 0, z: 0}
-    spawnB: 
+    spawnB: 010000000c0000000a00000009000000
     foeDef: 
     beatId: 
     bossHealthGate: 0.6

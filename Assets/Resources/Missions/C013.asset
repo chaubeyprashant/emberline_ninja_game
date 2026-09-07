@@ -29,8 +29,24 @@ MonoBehaviour:
     still alive.
   region: VILLAGES
   stages:
+  - goal: 13
+    objective: THE FRONT OR QUIET
+    banner: THE BROKEN BANNER
+    count: 1
+    duration: 0
+    point: {x: 0, y: 0, z: 6.5}
+    spawn: 
+    pointB: {x: 10, y: 0, z: 0}
+    spawnB: 
+    foeDef: 
+    beatId: 
+    bossHealthGate: 0.6
+    onComplete: 0
+    optional: 0
+    bonusShards: 1
+    checkpoint: 1
   - goal: 8
-    objective: SEARCH THE DESTROYED
+    objective: SEARCH THE DESTROYED SETTLEMENT
     banner: THE BROKEN VILLAGE
     count: 3
     duration: 0
@@ -53,7 +69,7 @@ MonoBehaviour:
     point: {x: 0, y: 0, z: 0}
     spawn: 0000000006000000
     pointB: {x: 0, y: 0, z: 0}
-    spawnB: 
+    spawnB: 06000000
     foeDef: 
     beatId: 
     bossHealthGate: 0.6
@@ -77,6 +93,38 @@ MonoBehaviour:
     optional: 0
     bonusShards: 1
     checkpoint: 1
+  - goal: 8
+    objective: THE PATROL
+    banner: THE PATROL THAT WALKS THE RIDGE AND NOT THE ROAD
+    count: 1
+    duration: 0
+    point: {x: 0, y: 0, z: 0}
+    spawn: 
+    pointB: {x: 0, y: 0, z: 0}
+    spawnB: 
+    foeDef: 
+    beatId: 
+    bossHealthGate: 0.6
+    onComplete: 0
+    optional: 1
+    bonusShards: 1
+    checkpoint: 0
+  - goal: 18
+    objective: THE PEN, IF YOU WANT IT
+    banner: 
+    count: 2
+    duration: 0
+    point: {x: 0, y: 0, z: 0}
+    spawn: 
+    pointB: {x: 0, y: 0, z: 0}
+    spawnB: 
+    foeDef: 
+    beatId: 
+    bossHealthGate: 0.6
+    onComplete: 0
+    optional: 1
+    bonusShards: 2
+    checkpoint: 0
   - goal: 0
     objective: PUT IT TOGETHER
     banner: THE SCAVENGER KING

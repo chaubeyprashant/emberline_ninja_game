@@ -27,8 +27,24 @@ MonoBehaviour:
   nextReason: Someone survives in this marsh. They will know how to reach the temple.
   region: MARSH
   stages:
+  - goal: 13
+    objective: QUIET OR THE FRONT
+    banner: THE MISSING PATROL
+    count: 1
+    duration: 0
+    point: {x: -10, y: 0, z: 0}
+    spawn: 
+    pointB: {x: 10, y: 0, z: 0}
+    spawnB: 
+    foeDef: 
+    beatId: 
+    bossHealthGate: 0.6
+    onComplete: 0
+    optional: 0
+    bonusShards: 1
+    checkpoint: 1
   - goal: 0
-    objective: FIND THE ENEMY PATROL
+    objective: FIND THE ENEMY PATROL THAT DISAPPEARED
     banner: THE MISSING PATROL
     count: 1
     duration: 0
@@ -44,7 +60,7 @@ MonoBehaviour:
     bonusShards: 1
     checkpoint: 1
   - goal: 8
-    objective: READ THE GROUND
+    objective: THE CLUES ARE BODIES
     banner: THE CLUES ARE BODIES
     count: 2
     duration: 0
@@ -76,7 +92,7 @@ MonoBehaviour:
     bonusShards: 1
     checkpoint: 0
   - goal: 8
-    objective: WHAT IT MEANS
+    objective: EVEN THE ENEMY IS AFRAID OF THE MARSH
     banner: THE LAST PIECE
     count: 1
     duration: 0
@@ -99,7 +115,7 @@ MonoBehaviour:
     point: {x: 0, y: 0, z: 0}
     spawn: 030000000300000003000000
     pointB: {x: 0, y: 0, z: 0}
-    spawnB: 
+    spawnB: 03000000030000000300000003000000
     foeDef: 
     beatId: 
     bossHealthGate: 0.6

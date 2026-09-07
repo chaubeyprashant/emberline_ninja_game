@@ -27,6 +27,22 @@ MonoBehaviour:
   nextReason: The Drowned Guardian holds the way down. It was put there by his father.
   region: TEMPLES
   stages:
+  - goal: 13
+    objective: QUIET OR THE FRONT
+    banner: THE SECOND KEY
+    count: 1
+    duration: 0
+    point: {x: -10, y: 0, z: 0}
+    spawn: 
+    pointB: {x: 10, y: 0, z: 0}
+    spawnB: 
+    foeDef: 
+    beatId: 
+    bossHealthGate: 0.6
+    onComplete: 0
+    optional: 0
+    bonusShards: 1
+    checkpoint: 1
   - goal: 0
     objective: RECOVER THE SECOND SEAL KEY
     banner: THE SECOND KEY
@@ -60,14 +76,14 @@ MonoBehaviour:
     bonusShards: 1
     checkpoint: 0
   - goal: 1
-    objective: THE GUARD
+    objective: THE NAVE'S LAST GUARD
     banner: GUARDS
     count: 1
     duration: 0
     point: {x: 0, y: 0, z: 0}
     spawn: 030000000c000000
     pointB: {x: 0, y: 0, z: 0}
-    spawnB: 
+    spawnB: 0a000000030000000c000000
     foeDef: 
     beatId: 
     bossHealthGate: 0.6
@@ -99,7 +115,7 @@ MonoBehaviour:
     point: {x: 0, y: 0, z: 0}
     spawn: 0c0000000a00000003000000
     pointB: {x: 0, y: 0, z: 0}
-    spawnB: 
+    spawnB: 0c0000000a000000030000000c000000
     foeDef: 
     beatId: 
     bossHealthGate: 0.6

@@ -27,6 +27,22 @@ MonoBehaviour:
   nextReason: One commander remains between Renzo and the hall.
   region: FORTRESSES
   stages:
+  - goal: 13
+    objective: THE FRONT OR AMBUSH
+    banner: THE IRON FORTRESS
+    count: 1
+    duration: 0
+    point: {x: 0, y: 0, z: 6.5}
+    spawn: 
+    pointB: {x: 0, y: 0, z: -6.5}
+    spawnB: 
+    foeDef: 
+    beatId: 
+    bossHealthGate: 0.6
+    onComplete: 0
+    optional: 0
+    bonusShards: 1
+    checkpoint: 1
   - goal: 0
     objective: WALK OUT TO MEET THEM
     banner: THE IRON GUARD
@@ -44,7 +60,7 @@ MonoBehaviour:
     bonusShards: 1
     checkpoint: 1
   - goal: 8
-    objective: READ THE GROUND
+    objective: THE IRON GUARD WERE GORO'S MEN ONCE
     banner: THE IRON GUARD FIGHT AS A UNIT
     count: 1
     duration: 0
@@ -67,7 +83,7 @@ MonoBehaviour:
     point: {x: 0, y: 0, z: 0}
     spawn: 0c0000000a000000
     pointB: {x: 0, y: 0, z: 0}
-    spawnB: 
+    spawnB: 010000000c000000
     foeDef: 
     beatId: 
     bossHealthGate: 0.6
@@ -99,7 +115,7 @@ MonoBehaviour:
     point: {x: 0, y: 0, z: 0}
     spawn: 0a000000010000000c000000
     pointB: {x: 0, y: 0, z: 0}
-    spawnB: 
+    spawnB: 0a000000010000000c000000
     foeDef: 
     beatId: 
     bossHealthGate: 0.6
@@ -108,7 +124,7 @@ MonoBehaviour:
     bonusShards: 1
     checkpoint: 0
   - goal: 11
-    objective: FIGHT THROUGH KAGEHIRA'S ELITE
+    objective: FIGHT THROUGH KAGEHIRA'S ELITE GUARD
     banner: THE CAPTAIN OF THE GUARD
     count: 1
     duration: 0

@@ -28,8 +28,24 @@ MonoBehaviour:
   nextReason: An army needs a smith. Renzo finds where Goro's steel is made.
   region: MOUNTAINS
   stages:
+  - goal: 13
+    objective: THE FRONT OR AMBUSH
+    banner: GORO'S ARMY
+    count: 1
+    duration: 0
+    point: {x: 0, y: 0, z: 6.5}
+    spawn: 
+    pointB: {x: 0, y: 0, z: -6.5}
+    spawnB: 
+    foeDef: 
+    beatId: 
+    bossHealthGate: 0.6
+    onComplete: 0
+    optional: 0
+    bonusShards: 1
+    checkpoint: 1
   - goal: 0
-    objective: BREAK THE SQUAD GORO HAS SENT
+    objective: BREAK THE SQUAD GORO HAS SENT TO END THIS
     banner: GORO'S ARMY
     count: 1
     duration: 0
@@ -45,7 +61,7 @@ MonoBehaviour:
     bonusShards: 1
     checkpoint: 1
   - goal: 8
-    objective: READ THE FIELD
+    objective: A REAL FORMATION
     banner: A REAL FORMATION
     count: 1
     duration: 0
@@ -61,14 +77,14 @@ MonoBehaviour:
     bonusShards: 1
     checkpoint: 0
   - goal: 1
-    objective: THE FIRST OF THEM
+    objective: THE FIRST LARGE
     banner: CONTACT
     count: 1
     duration: 0
     point: {x: 0, y: 0, z: 0}
     spawn: 0700000001000000
     pointB: {x: 0, y: 0, z: 0}
-    spawnB: 
+    spawnB: 0a00000007000000
     foeDef: 
     beatId: 
     bossHealthGate: 0.6
@@ -100,7 +116,7 @@ MonoBehaviour:
     point: {x: 0, y: 0, z: 0}
     spawn: 010000000a00000007000000010000000a000000
     pointB: {x: 0, y: 0, z: 0}
-    spawnB: 
+    spawnB: 010000000a00000007000000010000000a000000
     foeDef: 
     beatId: 
     bossHealthGate: 0.6

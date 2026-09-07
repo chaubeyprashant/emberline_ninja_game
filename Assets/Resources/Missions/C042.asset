@@ -28,7 +28,7 @@ MonoBehaviour:
   region: MARSH
   stages:
   - goal: 8
-    objective: FIND THE SOURCE OF THE VOICES
+    objective: FIND THE SOURCE OF THE VOICES IN THE FOG
     banner: VOICES IN THE FOG
     count: 3
     duration: 0
@@ -75,6 +75,22 @@ MonoBehaviour:
     optional: 0
     bonusShards: 1
     checkpoint: 1
+  - goal: 8
+    objective: THE CAUSEWAY
+    banner: THE CAUSEWAY THAT FLOODS AT THE TURN
+    count: 1
+    duration: 0
+    point: {x: 0, y: 0, z: 0}
+    spawn: 
+    pointB: {x: 0, y: 0, z: 0}
+    spawnB: 
+    foeDef: 
+    beatId: 
+    bossHealthGate: 0.6
+    onComplete: 0
+    optional: 1
+    bonusShards: 1
+    checkpoint: 0
   - goal: 0
     objective: PUT IT TOGETHER
     banner: THE SHADES THAT HAVE BEEN

@@ -27,8 +27,24 @@ MonoBehaviour:
   nextReason: The explosion has loosened the slope above the road. Renzo has minutes.
   region: SNOW
   stages:
+  - goal: 13
+    objective: BURN IT OR QUIET
+    banner: THE FROZEN CAMP
+    count: 1
+    duration: 0
+    point: {x: 0, y: 0, z: 6.5}
+    spawn: 
+    pointB: {x: 10, y: 0, z: 0}
+    spawnB: 
+    foeDef: 
+    beatId: 
+    bossHealthGate: 0.6
+    onComplete: 0
+    optional: 0
+    bonusShards: 1
+    checkpoint: 1
   - goal: 0
-    objective: DESTROY THE ARTILLERY
+    objective: DESTROY THE ARTILLERY AND SUPPLY CAMP
     banner: THE FROZEN CAMP
     count: 1
     duration: 0
@@ -51,7 +67,7 @@ MonoBehaviour:
     point: {x: 0, y: 0, z: 0}
     spawn: 0800000007000000
     pointB: {x: 0, y: 0, z: 0}
-    spawnB: 
+    spawnB: 08000000
     foeDef: 
     beatId: 
     bossHealthGate: 0.6
@@ -83,7 +99,7 @@ MonoBehaviour:
     point: {x: 10, y: 0, z: 0}
     spawn: 070000000100000006000000
     pointB: {x: 0, y: 0, z: 0}
-    spawnB: 
+    spawnB: 0100000006000000
     foeDef: 
     beatId: 
     bossHealthGate: 0.6
@@ -99,7 +115,7 @@ MonoBehaviour:
     point: {x: 0, y: 0, z: -6.5}
     spawn: 0800000007000000
     pointB: {x: 0, y: 0, z: 0}
-    spawnB: 
+    spawnB: 06000000
     foeDef: 
     beatId: 
     bossHealthGate: 0.6

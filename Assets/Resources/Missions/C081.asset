@@ -46,7 +46,7 @@ MonoBehaviour:
     checkpoint: 1
   - goal: 17
     objective: LISTEN
-    banner: NO ENEMIES
+    banner: 
     count: 1
     duration: 0
     point: {x: 0, y: 0, z: 0}
@@ -56,30 +56,14 @@ MonoBehaviour:
     foeDef: 
     beatId: you_came
     bossHealthGate: 0.6
-    onComplete: 2
-    optional: 0
-    bonusShards: 1
-    checkpoint: 0
-  - goal: 0
-    objective: WALK
-    banner: AIKO HAS BEEN KAGEHIRA'S PRISONER
-    count: 1
-    duration: 0
-    point: {x: 10, y: 0, z: 0}
-    spawn: 
-    pointB: {x: 0, y: 0, z: 0}
-    spawnB: 
-    foeDef: 
-    beatId: 
-    bossHealthGate: 0.6
-    onComplete: 0
+    onComplete: 5
     optional: 0
     bonusShards: 1
     checkpoint: 0
   - goal: 8
-    objective: TAKE IT IN
-    banner: YOU CAME
-    count: 1
+    objective: AIKO HAS BEEN KAGEHIRA'S PRISONER
+    banner: 
+    count: 3
     duration: 0
     point: {x: 0, y: 0, z: 0}
     spawn: 
@@ -93,8 +77,40 @@ MonoBehaviour:
     bonusShards: 1
     checkpoint: 1
   - goal: 0
-    objective: GO
-    banner: ON
+    objective: WALK WITH THEM
+    banner: 
+    count: 1
+    duration: 0
+    point: {x: -10, y: 0, z: 0}
+    spawn: 
+    pointB: {x: 0, y: 0, z: 0}
+    spawnB: 
+    foeDef: 
+    beatId: 
+    bossHealthGate: 0.6
+    onComplete: 0
+    optional: 0
+    bonusShards: 1
+    checkpoint: 0
+  - goal: 8
+    objective: YOU CAME
+    banner: 
+    count: 1
+    duration: 0
+    point: {x: 0, y: 0, z: 0}
+    spawn: 
+    pointB: {x: 0, y: 0, z: 0}
+    spawnB: 
+    foeDef: 
+    beatId: 
+    bossHealthGate: 0.6
+    onComplete: 0
+    optional: 0
+    bonusShards: 1
+    checkpoint: 0
+  - goal: 0
+    objective: MORNING
+    banner: 
     count: 1
     duration: 0
     point: {x: 0, y: 0, z: -6.5}

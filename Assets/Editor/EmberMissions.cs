@@ -158,7 +158,7 @@ namespace Emberline.EditorTools
             var ranged = System.Array.Exists(roster, k => k == R);
             var foe = m.foe;
             var upperName = m.name;
-            var obj = Short(m.primaryObjective).ToUpperInvariant();
+            var obj = Short(m.primaryObjective, 44).ToUpperInvariant();
             var disc = Short(m.storyDiscovery, 40).ToUpperInvariant();
             var climax = Short(m.climax, 34).ToUpperInvariant();
             var unique = Short(m.uniqueEvent, 34).ToUpperInvariant();
@@ -365,6 +365,8 @@ namespace Emberline.EditorTools
                 && !st.Exists(x => x.goal == StageGoal.Cinematic))
                 st.Insert(Mathf.Max(1, st.Count - 2), St(StageGoal.Cinematic, "LISTEN", "", beatId: m.beat));
 
+            ApplyDesign(st, m, Pack, distinct.Count);
+
             plan.stages = st.ToArray();
             plan.challenge = ChallengeFor(m);
             plan.challengeSeconds = m.Has(GameplayType.Chase) || m.Has(GameplayType.Survival) ? 240f : 300f;
@@ -372,6 +374,205 @@ namespace Emberline.EditorTools
             plan.baseShards = m.IsMajorBoss ? 5 : m.id > 60 ? 4 : 3;
             plan.dressing = DressingFor(m);
         }
+
+        /// <summary>
+        /// The design layer, applied to a generated plan: the approach choice at
+        /// the door, the things in a camp that the player may choose to do, and
+        /// the missions that are deliberately not fights.
+        ///
+        /// The engine already carried all of this and the campaign never used
+        /// it. A ReachAny stage holds two entrances; the director remembers
+        /// which one was taken and every later stage in the plan then fields its
+        /// B roster instead of its A roster. Two missions in a hundred used that.
+        /// Every mission whose design offers a real choice uses it now.
+        /// </summary>
+        private static void ApplyDesign(List<MissionStage> st, CampaignMission m,
+            System.Func<int, int, EnemyKind[]> pack, int kinds)
+        {
+            var d = CampaignDesign.For(m.id);
+            if (d == null || st.Count == 0) return;
+
+            // --- Downtime: a mission with no fight in it at all. The brief asks
+            // for silence between the action and the game never had any.
+            if (d.role == MissionRole.Downtime)
+            {
+                st.Clear();
+                st.Add(St(StageGoal.Reach, Short(m.primaryObjective).ToUpperInvariant(), m.name,
+                    point: North, checkpoint: true));
+                if (!string.IsNullOrEmpty(m.beat))
+                    st.Add(St(StageGoal.Cinematic, "LISTEN", "", beatId: m.beat, onComplete: StageEvent.RainStarts));
+                else
+                    st.Add(St(StageGoal.Investigate, "SIT WITH IT", "", count: 1, onComplete: StageEvent.RainStarts));
+                st.Add(St(StageGoal.Investigate, Short(m.storyDiscovery, 40).ToUpperInvariant(),
+                    "", count: m.id % 2 == 0 ? 2 : 3, checkpoint: true));
+                st.Add(St(StageGoal.Reach, "WALK WITH THEM", "", point: m.id % 2 == 0 ? East : West));
+                st.Add(St(StageGoal.Investigate, Short(m.climax, 34).ToUpperInvariant(), "", count: 1));
+                st.Add(St(StageGoal.Reach, "MORNING", "", point: South));
+                return;
+            }
+
+            // --- The approach: two entrances, and the one you leave is still
+            // there. The split carries no guard of its own (the director does
+            // not spawn on a ReachAny stage); the difference is that every
+            // fight after it fields a different roster on the far route.
+            if (d.HasChoice && !st.Exists(x => x.goal == StageGoal.ReachAny))
+            {
+                var a = d.approaches[0];
+                var b = d.approaches[1];
+                var split = Split($"{Label(a)} OR {Label(b)}", CampaignDesign.Def(d.camp)?.name ?? m.name,
+                    a == Approach.Stealth ? West : North,
+                    b == Approach.Ambush || b == Approach.Sabotage ? South : East,
+                    System.Array.Empty<EnemyKind>(), System.Array.Empty<EnemyKind>());
+                st.Insert(0, split);
+
+                // The far route's rosters. Rotated, so route B is not route A
+                // with a different marker on it.
+                if (kinds > 0)
+                    for (var i = 1; i < st.Count; i++)
+                    {
+                        var s = st[i];
+                        if (s.spawn.Length == 0 || s.goal == StageGoal.ReachAny) continue;
+                        // The quiet way in is genuinely thinner and the loud way
+                        // in is genuinely thicker. A branch that fields the same
+                        // fight twice is a marker, not a decision.
+                        var n = b == Approach.Stealth ? Mathf.Max(1, s.spawn.Length - 1)
+                            : b is Approach.Allied or Approach.Assault ? s.spawn.Length + 1
+                            : s.spawn.Length;
+                        s.spawnB = pack(i + 2, n);
+                    }
+
+                // The opening stage the template wrote is now the second beat,
+                // and the mission must still not open on a fight.
+                if (Fights(st[1]) && st[1].spawn.Length > 0)
+                    st.Insert(1, St(StageGoal.Investigate, "COMMIT TO IT", "", count: 1));
+            }
+
+            // --- A camp is a place with things in it. They are optional, they
+            // are not fights, and each one is a reason to be somewhere the
+            // objective did not send you.
+            if (d.camp != CampId.None && d.role is MissionRole.Assault or MissionRole.Recon)
+            {
+                var camp = CampaignDesign.Def(d.camp);
+                var at = Mathf.Max(1, st.Count - 2);
+                if (camp != null && camp.marks.Length > 0)
+                {
+                    // The mark reads in full on the banner and as a noun phrase
+                    // on the live objective line, which is a HUD row, not prose.
+                    var mark = camp.marks[m.id % camp.marks.Length];
+                    st.Insert(at, St(StageGoal.Investigate, Noun(mark).ToUpperInvariant(),
+                        mark.ToUpperInvariant(), count: 1, optional: true, bonus: 1));
+                }
+                if (d.role == MissionRole.Assault && !st.Exists(x => x.goal == StageGoal.FreePrisoners))
+                    st.Insert(Mathf.Max(1, st.Count - 2),
+                        St(StageGoal.FreePrisoners, "THE PEN, IF YOU WANT IT", "", count: 2,
+                            optional: true, bonus: 2));
+            }
+
+            // --- The same six sentences, seventy times. The templates write
+            // boilerplate objective lines; a mission has four paragraphs of its
+            // own prose and should be using them.
+            Vary(st, m);
+
+            // --- Recon: being seen is the fail state. No boss, no last stand.
+            if (d.role == MissionRole.Recon)
+                for (var i = st.Count - 1; i >= 0; i--)
+                    if (st[i].goal is StageGoal.BossFight or StageGoal.Duel or StageGoal.BossPhase)
+                        st[i] = St(StageGoal.Investigate, "WATCH HIM LEAVE", "", count: 1, checkpoint: true);
+        }
+
+        private static readonly string[] Boilerplate =
+        {
+            "READ THE GROUND", "READ THE FIELD", "WHAT IT MEANS", "A BREATH",
+            "PUT IT TOGETHER", "PICK UP THE TRAIL", "SIT WITH IT", "WALK IT AGAIN",
+        };
+
+        /// <summary>The wave lines the templates reuse. The connective beats —
+        /// PRESS ON, CLEAR, GONE — are left alone on purpose: they are the
+        /// game's voice between beats, not a description of a fight.</summary>
+        private static readonly string[] WaveBoilerplate =
+        {
+            "THE FIRST OF THEM", "THE REST OF THEM", "THE GUARD", "ADDS",
+        };
+
+        /// <summary>
+        /// Replace a template's stock search line with something this mission
+        /// actually says. Each mission carries a story purpose, a unique event,
+        /// a discovery and a climax; a plan with three searches in it should be
+        /// asking for three different things.
+        /// </summary>
+        private static void Vary(List<MissionStage> st, CampaignMission m)
+        {
+            var used = new List<string>();
+            foreach (var s in st) if (!string.IsNullOrEmpty(s.objective)) used.Add(s.objective);
+
+            Rewrite(st, used, StageGoal.Investigate, Boilerplate,
+                new[] { m.uniqueEvent, m.storyDiscovery, m.storyPurpose, m.climax });
+            Rewrite(st, used, StageGoal.Wave, WaveBoilerplate,
+                new[] { m.climax, m.storyPurpose, m.uniqueEvent, m.primaryObjective });
+        }
+
+        private static void Rewrite(List<MissionStage> st, List<string> used, StageGoal goal,
+            string[] stock, string[] source)
+        {
+            var next = 0;
+            foreach (var s in st)
+            {
+                if (s.goal != goal || System.Array.IndexOf(stock, s.objective) < 0) continue;
+                for (var tries = 0; tries < source.Length; tries++)
+                {
+                    var src = source[(next + tries) % source.Length];
+                    var candidate = Short(src, 38).ToUpperInvariant();
+                    if (string.IsNullOrWhiteSpace(candidate) || used.Contains(candidate)) continue;
+                    // Only take a phrase that ends where its clause ends. A line
+                    // cut mid-clause ("SEARCH THE DESTROYED") is worse than the
+                    // stock line it would replace.
+                    if (candidate != Short(src, 200).ToUpperInvariant()) continue;
+                    used.Add(candidate);
+                    s.objective = candidate;
+                    next += tries + 1;
+                    break;
+                }
+            }
+        }
+
+        /// <summary>
+        /// The thing a phrase is about, as a HUD row. "the patrol that walks the
+        /// ridge and not the road" is a fine line on a banner and a terrible one
+        /// on an objective row; this returns "THE PATROL" and lets the banner
+        /// carry the rest.
+        /// </summary>
+        private static string Noun(string phrase)
+        {
+            var stop = new HashSet<string> { "that", "which", "who", "with", "and", "but", "if",
+                "where", "when", "from", "on", "in", "at", "above", "below", "is", "are", "was",
+                "a", "an", "the", "of", "for", "to", "nobody", "only", "still", "already" };
+            var comma = phrase.IndexOfAny(new[] { ',', ';', '.' });
+            var t = comma > 4 ? phrase.Substring(0, comma) : phrase;
+            var words = t.Split(' ', System.StringSplitOptions.RemoveEmptyEntries);
+            var kept = new List<string>();
+            foreach (var w in words)
+            {
+                if (kept.Count >= 2 && stop.Contains(w.ToLowerInvariant().Trim('\'', '"'))) break;
+                kept.Add(w);
+                if (kept.Count >= 5) break;
+            }
+            return string.Join(" ", kept);
+        }
+
+        private static string Label(Approach a) => a switch
+        {
+            Approach.Stealth => "QUIET",
+            Approach.Ambush => "AMBUSH",
+            Approach.Sabotage => "BURN IT",
+            Approach.Allied => "TOGETHER",
+            _ => "THE FRONT",
+        };
+
+        /// <summary>The validator's own definition of a fight, kept in step.</summary>
+        private static bool Fights(MissionStage s) => s.goal is StageGoal.Wave or StageGoal.BossFight
+            or StageGoal.Duel or StageGoal.Eliminate or StageGoal.Assassinate or StageGoal.BossPhase
+            or StageGoal.Stealth or StageGoal.Listen or StageGoal.Survive or StageGoal.Defend
+            or StageGoal.Chase;
 
         private static MissionStage FoeOrWave(CampaignMission m, string objective, string banner, EnemyKind[] pack) =>
             string.IsNullOrEmpty(m.foe)
@@ -473,7 +674,10 @@ namespace Emberline.EditorTools
 
             // Never end on a word that needs the next one.
             var dangling = new HashSet<string> { "a", "an", "the", "and", "or", "of", "to", "for", "in", "on", "at",
-                "with", "by", "from", "into", "that", "who", "as", "but", "his", "her", "its", "their", "is", "are", "was" };
+                "with", "by", "from", "into", "that", "who", "as", "but", "his", "her", "its", "their", "is", "are", "was",
+                // Words that always need the clause that follows them.
+                "what", "how", "why", "whose", "whom", "whether", "than", "while", "until", "unless",
+                "because", "since", "though", "although" };
             var words = new List<string>(t.Split(' ', System.StringSplitOptions.RemoveEmptyEntries));
             while (words.Count > 2 && dangling.Contains(words[^1].ToLowerInvariant().Trim('\'', '\"')))
                 words.RemoveAt(words.Count - 1);

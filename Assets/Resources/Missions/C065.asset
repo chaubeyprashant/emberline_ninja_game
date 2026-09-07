@@ -28,6 +28,22 @@ MonoBehaviour:
     to a duel with terms.
   region: VILLAGES
   stages:
+  - goal: 13
+    objective: THE FRONT OR AMBUSH
+    banner: THE GARRISON
+    count: 1
+    duration: 0
+    point: {x: 0, y: 0, z: 6.5}
+    spawn: 
+    pointB: {x: 0, y: 0, z: -6.5}
+    spawnB: 
+    foeDef: 
+    beatId: 
+    bossHealthGate: 0.6
+    onComplete: 0
+    optional: 0
+    bonusShards: 1
+    checkpoint: 1
   - goal: 0
     objective: FIGHT JIN'S PERSONAL UNIT
     banner: KUROGANE'S MEN
@@ -45,7 +61,7 @@ MonoBehaviour:
     bonusShards: 1
     checkpoint: 1
   - goal: 8
-    objective: READ THE FIELD
+    objective: JIN'S MEN WERE AT YORUNE
     banner: ELITE SOLDIERS WHO FIGHT LIKE JIN
     count: 1
     duration: 0
@@ -61,14 +77,14 @@ MonoBehaviour:
     bonusShards: 1
     checkpoint: 0
   - goal: 1
-    objective: THE FIRST OF THEM
+    objective: S CAPTAIN, WHO WAS JIN
     banner: CONTACT
     count: 1
     duration: 0
     point: {x: 0, y: 0, z: 0}
     spawn: 0a0000000c000000
     pointB: {x: 0, y: 0, z: 0}
-    spawnB: 
+    spawnB: 0c00000009000000
     foeDef: 
     beatId: 
     bossHealthGate: 0.6
@@ -92,15 +108,47 @@ MonoBehaviour:
     optional: 0
     bonusShards: 1
     checkpoint: 1
+  - goal: 8
+    objective: JIN'S MEN DRILL
+    banner: JIN'S MEN DRILL IN THE RAIN AND NOBODY MAKES THEM
+    count: 1
+    duration: 0
+    point: {x: 0, y: 0, z: 0}
+    spawn: 
+    pointB: {x: 0, y: 0, z: 0}
+    spawnB: 
+    foeDef: 
+    beatId: 
+    bossHealthGate: 0.6
+    onComplete: 0
+    optional: 1
+    bonusShards: 1
+    checkpoint: 0
+  - goal: 18
+    objective: THE PEN, IF YOU WANT IT
+    banner: 
+    count: 2
+    duration: 0
+    point: {x: 0, y: 0, z: 0}
+    spawn: 
+    pointB: {x: 0, y: 0, z: 0}
+    spawnB: 
+    foeDef: 
+    beatId: 
+    bossHealthGate: 0.6
+    onComplete: 0
+    optional: 1
+    bonusShards: 2
+    checkpoint: 0
   - goal: 1
-    objective: THE REST OF THEM
+    objective: JIN'S PERSONAL UNIT
     banner: S CAPTAIN, WHO WAS JIN
     count: 1
     duration: 0
     point: {x: 0, y: 0, z: 0}
     spawn: 0c00000009000000010000000a0000000c000000
     pointB: {x: 0, y: 0, z: 0}
-    spawnB: 
+    spawnB: 010000000a0000000c0000000900000001000000
     foeDef: 
     beatId: 
     bossHealthGate: 0.6

@@ -10,6 +10,69 @@ code, never hand-edited in the editor.
 
 ## Unreleased
 
+### The campaign becomes a journey
+
+A redesign of the hundred-mission campaign against a brief whose first line is
+that Renzo should stop receiving an objective and running to the marker. The
+reasoning is in `docs/CAMPAIGN_ARCHITECTURE.md`; what follows is what changed in
+the game.
+
+- **The audit that started it.** Fifty-nine of the hundred missions reduced to
+  one of two shapes: clear the arena (38) or walk a route and touch glowing
+  clues (21). The stage line "READ THE GROUND" appeared eighteen times across
+  the plans. The campaign had exactly one named ally, Aiko, absent as a present
+  character for 79 missions; every other named character was an enemy. Villagers
+  were alive, present and not cargo in two missions of a hundred. No villain's
+  defeat changed anything about the world. And `Campaign.cs` told the catalogue
+  every mission was a Clear regardless of what the table said it was.
+- **A design layer beside the story table.** `CampaignDesign.cs` and
+  `CampaignDesignTable.cs` carry, for each of the hundred: what the mission is
+  for, the approaches offered at the door, who may come, which camp or village
+  it belongs to, which facts it reads and writes, what visibly changes, and the
+  one thing the player wants when it ends. The story table stays the story.
+- **The engine's two-route branch, switched on.** A `ReachAny` stage holds two
+  entrances; the director remembers which was taken and every later stage then
+  fields its B roster instead of its A roster. This shipped, worked, and was
+  used by two missions out of a hundred. Forty-three generated plans use it now,
+  and 83 fight stages field a genuinely different fight depending on the way in
+  — thinner on the quiet route, thicker on the loud one.
+- **Six companions**, each a promotion of somebody the campaign already put on
+  screen once and dropped: SUZU the scout, FUMI the informant, TSURU the archer,
+  DAIGO the warrior, TOKU the blacksmith, NIRE the healer. Sixty-seven missions
+  have somebody in them other than Renzo. Renzo is still alone for missions 1 to
+  11 and alone again from 95, on purpose.
+- **Nine camps and five villages** that persist across several missions each,
+  with things in them to find that reconnaissance can turn up and the objective
+  never sends you to. Nineteen optional in-camp objectives are authored into the
+  generated plans.
+- **Seventy-nine facts the world remembers**, in a causal graph the validator
+  proves on every build: nothing is read before something can set it.
+  Preparation is never mandatory — the front door is always open and always the
+  hardest version. The graph is authored and checked; wiring it to PlayerPrefs
+  so a prepared mission is mechanically thinner is the next item and is not in
+  this change.
+- **Stage text now comes from each mission's own prose.** The templates used six
+  constants; "READ THE GROUND" alone appeared eighteen times. Each search stage
+  now takes a phrase from that mission's unique event, discovery, purpose or
+  climax, and no two stages in a plan repeat.
+- **Five missions with no combat in them at all**, including mission 27, which
+  is now the red thread, a wood, and nobody else in it.
+- **A third validator.** `Emberline/Check Campaign Design`, run with the other
+  two by `Emberline/Rebuild And Check Campaign` in one batch session. It fails
+  an Assault with no choice at the door, a companion appearing before they join,
+  a stealth approach with Daigo on it (Daigo cannot be quiet), a chapter that
+  never lets the player look before acting, a village never returned to, five
+  missions in a row with no choice and no companion, and a villain whose fall
+  changes nothing.
+- **Not built yet, and named as such** in the architecture document: persisting
+  recon results as camp intel, wiring the preparation flags so a prepared mission
+  is mechanically thinner, the briefing-screen approach selector, companions as
+  present speaking NPCs, the village trust economy, demoting objective markers
+  behind people and landmarks, and a friendly combat brain. Everything except the
+  last reuses machinery that already ships. The marker work must not land without
+  its accessibility toggle.
+
+
 ### First-launch intro video
 
 - **A 25-second intro plays once, the first time the app is opened**, before

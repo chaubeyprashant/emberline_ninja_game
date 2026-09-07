@@ -27,8 +27,24 @@ MonoBehaviour:
   nextReason: An empty cell has a record. The record will say where.
   region: FORTRESSES
   stages:
+  - goal: 13
+    objective: QUIET OR THE FRONT
+    banner: THE IRON FORTRESS
+    count: 1
+    duration: 0
+    point: {x: -10, y: 0, z: 0}
+    spawn: 
+    pointB: {x: 10, y: 0, z: 0}
+    spawnB: 
+    foeDef: 
+    beatId: 
+    bossHealthGate: 0.6
+    onComplete: 0
+    optional: 0
+    bonusShards: 1
+    checkpoint: 1
   - goal: 0
-    objective: SEARCH THE PRISON TOWER
+    objective: SEARCH THE PRISON TOWER FOR AIKO
     banner: THE PRISON TOWER
     count: 1
     duration: 0
@@ -60,14 +76,14 @@ MonoBehaviour:
     bonusShards: 1
     checkpoint: 0
   - goal: 1
-    objective: THE GUARD
+    objective: THE TOWER'S WARDENS
     banner: GUARDS
     count: 1
     duration: 0
     point: {x: 0, y: 0, z: 0}
     spawn: 0700000009000000
     pointB: {x: 0, y: 0, z: 0}
-    spawnB: 
+    spawnB: 010000000700000009000000
     foeDef: 
     beatId: 
     bossHealthGate: 0.6
@@ -99,7 +115,7 @@ MonoBehaviour:
     point: {x: 0, y: 0, z: 0}
     spawn: 090000000100000007000000
     pointB: {x: 0, y: 0, z: 0}
-    spawnB: 
+    spawnB: 09000000010000000700000009000000
     foeDef: 
     beatId: 
     bossHealthGate: 0.6

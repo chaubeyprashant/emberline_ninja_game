@@ -29,8 +29,24 @@ MonoBehaviour:
     say where he looked.
   region: VILLAGES
   stages:
+  - goal: 13
+    objective: QUIET OR THE FRONT
+    banner: DEAD LETTER
+    count: 1
+    duration: 0
+    point: {x: -10, y: 0, z: 0}
+    spawn: 
+    pointB: {x: 10, y: 0, z: 0}
+    spawnB: 
+    foeDef: 
+    beatId: 
+    bossHealthGate: 0.6
+    onComplete: 0
+    optional: 0
+    bonusShards: 1
+    checkpoint: 1
   - goal: 8
-    objective: GET INTO THE RELAY POST
+    objective: GET INTO THE RELAY POST AND DECODE
     banner: DEAD LETTER
     count: 3
     duration: 0
@@ -53,7 +69,7 @@ MonoBehaviour:
     point: {x: 0, y: 0, z: 0}
     spawn: 0900000001000000
     pointB: {x: 0, y: 0, z: 0}
-    spawnB: 
+    spawnB: 090000000100000009000000
     foeDef: 
     beatId: 
     bossHealthGate: 0.6

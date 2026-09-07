@@ -27,8 +27,24 @@ MonoBehaviour:
   nextReason: '''Execution ground'' is not a place Renzo can leave for tomorrow.'
   region: MOUNTAINS
   stages:
+  - goal: 13
+    objective: THE FRONT OR QUIET
+    banner: THE PENS
+    count: 1
+    duration: 0
+    point: {x: 0, y: 0, z: 6.5}
+    spawn: 
+    pointB: {x: 10, y: 0, z: 0}
+    spawnB: 
+    foeDef: 
+    beatId: 
+    bossHealthGate: 0.6
+    onComplete: 0
+    optional: 0
+    bonusShards: 1
+    checkpoint: 1
   - goal: 0
-    objective: FREE THE PRISONER CAMP
+    objective: FREE THE PRISONER CAMP AND BURN IT
     banner: BROKEN CHAINS
     count: 1
     duration: 0
@@ -51,7 +67,7 @@ MonoBehaviour:
     point: {x: 0, y: 0, z: 0}
     spawn: 0700000006000000
     pointB: {x: 0, y: 0, z: 0}
-    spawnB: 
+    spawnB: 07000000
     foeDef: 
     beatId: 
     bossHealthGate: 0.6
@@ -83,13 +99,45 @@ MonoBehaviour:
     point: {x: 10, y: 0, z: 0}
     spawn: 060000000100000000000000
     pointB: {x: 0, y: 0, z: 0}
-    spawnB: 
+    spawnB: 0100000000000000
     foeDef: 
     beatId: 
     bossHealthGate: 0.6
     onComplete: 2
     optional: 0
     bonusShards: 1
+    checkpoint: 0
+  - goal: 8
+    objective: A COLLARED PRISONER
+    banner: A COLLARED PRISONER THE SIZE OF A DOOR
+    count: 1
+    duration: 0
+    point: {x: 0, y: 0, z: 0}
+    spawn: 
+    pointB: {x: 0, y: 0, z: 0}
+    spawnB: 
+    foeDef: 
+    beatId: 
+    bossHealthGate: 0.6
+    onComplete: 0
+    optional: 1
+    bonusShards: 1
+    checkpoint: 0
+  - goal: 18
+    objective: THE PEN, IF YOU WANT IT
+    banner: 
+    count: 2
+    duration: 0
+    point: {x: 0, y: 0, z: 0}
+    spawn: 
+    pointB: {x: 0, y: 0, z: 0}
+    spawnB: 
+    foeDef: 
+    beatId: 
+    bossHealthGate: 0.6
+    onComplete: 0
+    optional: 1
+    bonusShards: 2
     checkpoint: 0
   - goal: 12
     objective: BEFORE IT GOES UP
@@ -99,7 +147,7 @@ MonoBehaviour:
     point: {x: 0, y: 0, z: -6.5}
     spawn: 0700000006000000
     pointB: {x: 0, y: 0, z: 0}
-    spawnB: 
+    spawnB: 00000000
     foeDef: 
     beatId: 
     bossHealthGate: 0.6

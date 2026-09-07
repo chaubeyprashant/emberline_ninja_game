@@ -27,8 +27,24 @@ MonoBehaviour:
   nextReason: The summit is where Kagehira is. Renzo climbs.
   region: SNOW
   stages:
+  - goal: 13
+    objective: TOGETHER OR THE FRONT
+    banner: THE LAST ARMY
+    count: 1
+    duration: 0
+    point: {x: 0, y: 0, z: 6.5}
+    spawn: 
+    pointB: {x: 10, y: 0, z: 0}
+    spawnB: 
+    foeDef: 
+    beatId: 
+    bossHealthGate: 0.6
+    onComplete: 0
+    optional: 0
+    bonusShards: 1
+    checkpoint: 1
   - goal: 0
-    objective: FIGHT THROUGH KAGEHIRA'S
+    objective: FIGHT THROUGH KAGEHIRA'S REMAINING ARMY
     banner: THE LAST ARMY
     count: 1
     duration: 0
@@ -44,7 +60,7 @@ MonoBehaviour:
     bonusShards: 1
     checkpoint: 1
   - goal: 8
-    objective: READ THE FIELD
+    objective: THE ARMY IS FIGHTING FOR PAY
     banner: THE LARGEST SUSTAINED FIGHT
     count: 1
     duration: 0
@@ -60,14 +76,14 @@ MonoBehaviour:
     bonusShards: 1
     checkpoint: 0
   - goal: 1
-    objective: THE FIRST OF THEM
+    objective: THE LAST OFFICER
     banner: CONTACT
     count: 1
     duration: 0
     point: {x: 0, y: 0, z: 0}
     spawn: 0700000001000000
     pointB: {x: 0, y: 0, z: 0}
-    spawnB: 
+    spawnB: 070000000100000006000000
     foeDef: 
     beatId: 
     bossHealthGate: 0.6
@@ -92,14 +108,14 @@ MonoBehaviour:
     bonusShards: 1
     checkpoint: 1
   - goal: 1
-    objective: THE REST OF THEM
+    objective: THE REMAINING FORCES
     banner: THE LAST OFFICER
     count: 1
     duration: 0
     point: {x: 0, y: 0, z: 0}
     spawn: 070000000100000006000000090000000c000000
     pointB: {x: 0, y: 0, z: 0}
-    spawnB: 
+    spawnB: 06000000090000000c000000070000000100000006000000
     foeDef: 
     beatId: 
     bossHealthGate: 0.6

@@ -27,8 +27,24 @@ MonoBehaviour:
   nextReason: The fortress is fighting itself. Renzo needs to know why.
   region: STRONGHOLD
   stages:
+  - goal: 13
+    objective: THE FRONT OR TOGETHER
+    banner: THE IRON FORTRESS
+    count: 1
+    duration: 0
+    point: {x: 0, y: 0, z: 6.5}
+    spawn: 
+    pointB: {x: 10, y: 0, z: 0}
+    spawnB: 
+    foeDef: 
+    beatId: 
+    bossHealthGate: 0.6
+    onComplete: 0
+    optional: 0
+    bonusShards: 1
+    checkpoint: 1
   - goal: 0
-    objective: ESCORT AIKO THROUGH
+    objective: ESCORT AIKO THROUGH THE FORTRESS
     banner: THE PRISONER
     count: 1
     duration: 0
@@ -67,7 +83,7 @@ MonoBehaviour:
     point: {x: 0, y: 0, z: 0}
     spawn: 0700000009000000
     pointB: {x: 0, y: 0, z: 0}
-    spawnB: 
+    spawnB: 0c0000000700000009000000
     foeDef: 
     beatId: 
     bossHealthGate: 0.6
@@ -99,7 +115,7 @@ MonoBehaviour:
     point: {x: 0, y: 0, z: 0}
     spawn: 090000000100000000000000
     pointB: {x: 0, y: 0, z: 0}
-    spawnB: 
+    spawnB: 09000000010000000000000006000000
     foeDef: 
     beatId: 
     bossHealthGate: 0.6

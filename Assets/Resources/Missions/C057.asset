@@ -27,6 +27,22 @@ MonoBehaviour:
   nextReason: The second key is under the temple's guardian. The wall says so.
   region: TEMPLES
   stages:
+  - goal: 13
+    objective: QUIET OR THE FRONT
+    banner: THE PRISONER
+    count: 1
+    duration: 0
+    point: {x: -10, y: 0, z: 0}
+    spawn: 
+    pointB: {x: 10, y: 0, z: 0}
+    spawnB: 
+    foeDef: 
+    beatId: 
+    bossHealthGate: 0.6
+    onComplete: 0
+    optional: 0
+    bonusShards: 1
+    checkpoint: 1
   - goal: 8
     objective: FIND THE CELL AIKO WAS HELD
     banner: THE PRISONER
@@ -51,7 +67,7 @@ MonoBehaviour:
     point: {x: 0, y: 0, z: 0}
     spawn: 0700000001000000
     pointB: {x: 0, y: 0, z: 0}
-    spawnB: 
+    spawnB: 010000000a00000007000000
     foeDef: 
     beatId: 
     bossHealthGate: 0.6

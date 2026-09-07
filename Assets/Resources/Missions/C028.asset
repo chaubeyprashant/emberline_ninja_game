@@ -27,8 +27,24 @@ MonoBehaviour:
   nextReason: Whoever laid the trap will lay another. Renzo turns the hunt around.
   region: FOREST
   stages:
+  - goal: 13
+    objective: QUIET OR THE FRONT
+    banner: THE SILENT CAMP
+    count: 1
+    duration: 0
+    point: {x: -10, y: 0, z: 0}
+    spawn: 
+    pointB: {x: 10, y: 0, z: 0}
+    spawnB: 
+    foeDef: 
+    beatId: 
+    bossHealthGate: 0.6
+    onComplete: 0
+    optional: 0
+    bonusShards: 1
+    checkpoint: 1
   - goal: 0
-    objective: REACH THE REPORTED LOCATION
+    objective: REACH THE REPORTED LOCATION AND RESCUE
     banner: THE DECOY
     count: 1
     duration: 0
@@ -60,14 +76,14 @@ MonoBehaviour:
     bonusShards: 1
     checkpoint: 0
   - goal: 1
-    objective: THE GUARD
+    objective: THE TRAP SPRINGS
     banner: GUARDS
     count: 1
     duration: 0
     point: {x: 0, y: 0, z: 0}
     spawn: 0900000001000000
     pointB: {x: 0, y: 0, z: 0}
-    spawnB: 
+    spawnB: 010000000b00000007000000
     foeDef: 
     beatId: 
     bossHealthGate: 0.6
@@ -91,6 +107,22 @@ MonoBehaviour:
     optional: 0
     bonusShards: 1
     checkpoint: 1
+  - goal: 8
+    objective: THE PATH
+    banner: THE PATH THE THREE BLADES USE AND NO ONE ELSE
+    count: 1
+    duration: 0
+    point: {x: 0, y: 0, z: 0}
+    spawn: 
+    pointB: {x: 0, y: 0, z: 0}
+    spawnB: 
+    foeDef: 
+    beatId: 
+    bossHealthGate: 0.6
+    onComplete: 0
+    optional: 1
+    bonusShards: 1
+    checkpoint: 0
   - goal: 1
     objective: THEY WANT THEM BACK
     banner: THE TRAP SPRINGS
@@ -99,7 +131,7 @@ MonoBehaviour:
     point: {x: 0, y: 0, z: 0}
     spawn: 010000000b00000007000000
     pointB: {x: 0, y: 0, z: 0}
-    spawnB: 
+    spawnB: 0700000009000000010000000b000000
     foeDef: 
     beatId: 
     bossHealthGate: 0.6

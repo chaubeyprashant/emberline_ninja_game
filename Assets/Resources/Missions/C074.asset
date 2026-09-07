@@ -28,8 +28,24 @@ MonoBehaviour:
     it.
   region: FORTRESSES
   stages:
+  - goal: 13
+    objective: THE FRONT OR AMBUSH
+    banner: THE IRON FORTRESS
+    count: 1
+    duration: 0
+    point: {x: 0, y: 0, z: 6.5}
+    spawn: 
+    pointB: {x: 0, y: 0, z: -6.5}
+    spawnB: 
+    foeDef: 
+    beatId: 
+    bossHealthGate: 0.6
+    onComplete: 0
+    optional: 0
+    bonusShards: 1
+    checkpoint: 1
   - goal: 0
-    objective: ASSAULT THE FORTRESS WALL
+    objective: ASSAULT THE FORTRESS WALL AND HOLD
     banner: THE OUTER WALL
     count: 1
     duration: 0
@@ -45,7 +61,7 @@ MonoBehaviour:
     bonusShards: 1
     checkpoint: 1
   - goal: 8
-    objective: READ THE FIELD
+    objective: THREE ROLES IN SEQUENCE
     banner: THREE ROLES IN SEQUENCE
     count: 1
     duration: 0
@@ -61,14 +77,14 @@ MonoBehaviour:
     bonusShards: 1
     checkpoint: 0
   - goal: 1
-    objective: THE FIRST OF THEM
+    objective: THE BREACH HELD
     banner: CONTACT
     count: 1
     duration: 0
     point: {x: 0, y: 0, z: 0}
     spawn: 0700000001000000
     pointB: {x: 0, y: 0, z: 0}
-    spawnB: 
+    spawnB: 0100000006000000
     foeDef: 
     beatId: 
     bossHealthGate: 0.6
@@ -100,13 +116,45 @@ MonoBehaviour:
     point: {x: 10, y: 0, z: 0}
     spawn: 01000000060000000c000000
     pointB: {x: 0, y: 0, z: 0}
-    spawnB: 
+    spawnB: 0c0000000700000001000000
     foeDef: 
     beatId: 
     bossHealthGate: 0.6
     onComplete: 0
     optional: 0
     bonusShards: 1
+    checkpoint: 0
+  - goal: 8
+    objective: THE PRISON TOWER
+    banner: THE PRISON TOWER, LIT AT THE TOP
+    count: 1
+    duration: 0
+    point: {x: 0, y: 0, z: 0}
+    spawn: 
+    pointB: {x: 0, y: 0, z: 0}
+    spawnB: 
+    foeDef: 
+    beatId: 
+    bossHealthGate: 0.6
+    onComplete: 0
+    optional: 1
+    bonusShards: 1
+    checkpoint: 0
+  - goal: 18
+    objective: THE PEN, IF YOU WANT IT
+    banner: 
+    count: 2
+    duration: 0
+    point: {x: 0, y: 0, z: 0}
+    spawn: 
+    pointB: {x: 0, y: 0, z: 0}
+    spawnB: 
+    foeDef: 
+    beatId: 
+    bossHealthGate: 0.6
+    onComplete: 0
+    optional: 1
+    bonusShards: 2
     checkpoint: 0
   - goal: 11
     objective: THE REST OF THEM
@@ -116,7 +164,7 @@ MonoBehaviour:
     point: {x: 0, y: 0, z: 0}
     spawn: 0700000001000000
     pointB: {x: 0, y: 0, z: 0}
-    spawnB: 
+    spawnB: 0700000001000000
     foeDef: ironguard
     beatId: 
     bossHealthGate: 0.6

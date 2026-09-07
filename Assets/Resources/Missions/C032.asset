@@ -27,8 +27,24 @@ MonoBehaviour:
   nextReason: There are camps. Renzo has the location of the nearest.
   region: MOUNTAINS
   stages:
+  - goal: 13
+    objective: AMBUSH OR THE FRONT
+    banner: THE PENS
+    count: 1
+    duration: 0
+    point: {x: 0, y: 0, z: 6.5}
+    spawn: 
+    pointB: {x: 10, y: 0, z: 0}
+    spawnB: 
+    foeDef: 
+    beatId: 
+    bossHealthGate: 0.6
+    onComplete: 0
+    optional: 0
+    bonusShards: 1
+    checkpoint: 1
   - goal: 0
-    objective: RESCUE THE VILLAGERS
+    objective: RESCUE THE VILLAGERS FROM THE WAGONS BEFORE
     banner: PRISONER WAGONS
     count: 1
     duration: 0
@@ -60,14 +76,14 @@ MonoBehaviour:
     bonusShards: 1
     checkpoint: 0
   - goal: 1
-    objective: THE GUARD
+    objective: THE LAST WAGON
     banner: GUARDS
     count: 1
     duration: 0
     point: {x: 0, y: 0, z: 0}
     spawn: 0000000007000000
     pointB: {x: 0, y: 0, z: 0}
-    spawnB: 
+    spawnB: 000000000700000001000000
     foeDef: 
     beatId: 
     bossHealthGate: 0.6
@@ -91,6 +107,22 @@ MonoBehaviour:
     optional: 0
     bonusShards: 1
     checkpoint: 1
+  - goal: 8
+    objective: GORO'S OFFICERS EAT APART
+    banner: GORO'S OFFICERS EAT APART FROM THE MEN
+    count: 1
+    duration: 0
+    point: {x: 0, y: 0, z: 0}
+    spawn: 
+    pointB: {x: 0, y: 0, z: 0}
+    spawnB: 
+    foeDef: 
+    beatId: 
+    bossHealthGate: 0.6
+    onComplete: 0
+    optional: 1
+    bonusShards: 1
+    checkpoint: 0
   - goal: 9
     objective: THE ONE WHO RUNS
     banner: THE LAST WAGON
@@ -99,7 +131,7 @@ MonoBehaviour:
     point: {x: 0, y: 0, z: 0}
     spawn: 01000000
     pointB: {x: 0, y: 0, z: 0}
-    spawnB: 
+    spawnB: 0100000006000000
     foeDef: 
     beatId: 
     bossHealthGate: 0.6

@@ -27,8 +27,24 @@ MonoBehaviour:
   nextReason: There is nothing between Renzo and Goro now.
   region: MOUNTAINS
   stages:
+  - goal: 13
+    objective: BURN IT OR THE FRONT
+    banner: THE MOUNTAIN GATE
+    count: 1
+    duration: 0
+    point: {x: 0, y: 0, z: 6.5}
+    spawn: 
+    pointB: {x: 10, y: 0, z: 0}
+    spawnB: 
+    foeDef: 
+    beatId: 
+    bossHealthGate: 0.6
+    onComplete: 0
+    optional: 0
+    bonusShards: 1
+    checkpoint: 1
   - goal: 0
-    objective: BREAK THROUGH THE MOUNTAIN
+    objective: BREAK THROUGH THE MOUNTAIN FORTRESS GATE
     banner: THE MOUNTAIN GATE
     count: 1
     duration: 0
@@ -44,7 +60,7 @@ MonoBehaviour:
     bonusShards: 1
     checkpoint: 1
   - goal: 8
-    objective: READ THE FIELD
+    objective: INSIDE THE GATEHOUSE
     banner: THE GATE HAS TO BE BURNED OPEN
     count: 1
     duration: 0
@@ -60,14 +76,14 @@ MonoBehaviour:
     bonusShards: 1
     checkpoint: 0
   - goal: 1
-    objective: THE FIRST OF THEM
+    objective: THE GATEHOUSE GARRISON
     banner: CONTACT
     count: 1
     duration: 0
     point: {x: 0, y: 0, z: 0}
     spawn: 0700000001000000
     pointB: {x: 0, y: 0, z: 0}
-    spawnB: 
+    spawnB: 01000000060000000c000000
     foeDef: 
     beatId: 
     bossHealthGate: 0.6
@@ -92,14 +108,14 @@ MonoBehaviour:
     bonusShards: 1
     checkpoint: 1
   - goal: 1
-    objective: THE REST OF THEM
+    objective: GORO'S LAST WALL
     banner: THE GATEHOUSE GARRISON
     count: 1
     duration: 0
     point: {x: 0, y: 0, z: 0}
     spawn: 01000000060000000c0000000700000001000000
     pointB: {x: 0, y: 0, z: 0}
-    spawnB: 
+    spawnB: 0c0000000700000001000000060000000c00000007000000
     foeDef: 
     beatId: 
     bossHealthGate: 0.6

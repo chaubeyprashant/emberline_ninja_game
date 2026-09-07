@@ -45,7 +45,7 @@ MonoBehaviour:
     checkpoint: 1
   - goal: 17
     objective: LISTEN
-    banner: NO COMBAT AT ALL
+    banner: 
     count: 1
     duration: 0
     point: {x: 0, y: 0, z: 0}
@@ -55,13 +55,29 @@ MonoBehaviour:
     foeDef: 
     beatId: emberline_dawn
     bossHealthGate: 0.6
-    onComplete: 2
+    onComplete: 5
     optional: 0
     bonusShards: 1
     checkpoint: 0
+  - goal: 8
+    objective: RENZO CHOSE NOT TO BECOME KAGEHIRA
+    banner: 
+    count: 2
+    duration: 0
+    point: {x: 0, y: 0, z: 0}
+    spawn: 
+    pointB: {x: 0, y: 0, z: 0}
+    spawnB: 
+    foeDef: 
+    beatId: 
+    bossHealthGate: 0.6
+    onComplete: 0
+    optional: 0
+    bonusShards: 1
+    checkpoint: 1
   - goal: 0
-    objective: WALK
-    banner: RENZO CHOSE NOT TO BECOME KAGEHIRA
+    objective: WALK WITH THEM
+    banner: 
     count: 1
     duration: 0
     point: {x: 10, y: 0, z: 0}
@@ -76,8 +92,8 @@ MonoBehaviour:
     bonusShards: 1
     checkpoint: 0
   - goal: 8
-    objective: THE THREAD ON HIS WRIST
-    banner: WHERE WILL YOU GO?
+    objective: WHERE WILL YOU GO?
+    banner: 
     count: 1
     duration: 0
     point: {x: 0, y: 0, z: 0}
@@ -90,10 +106,10 @@ MonoBehaviour:
     onComplete: 0
     optional: 0
     bonusShards: 1
-    checkpoint: 1
+    checkpoint: 0
   - goal: 0
-    objective: LEAVE THE FORTRESS
-    banner: SUNRISE
+    objective: MORNING
+    banner: 
     count: 1
     duration: 0
     point: {x: 0, y: 0, z: -6.5}

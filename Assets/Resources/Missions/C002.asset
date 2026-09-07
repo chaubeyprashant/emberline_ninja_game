@@ -30,8 +30,24 @@ MonoBehaviour:
     know why, and the camp the convoy came from will.
   region: RUINS
   stages:
+  - goal: 13
+    objective: THE FRONT OR AMBUSH
+    banner: THE LANTERN ROAD
+    count: 1
+    duration: 0
+    point: {x: 0, y: 0, z: 6.5}
+    spawn: 
+    pointB: {x: 0, y: 0, z: -6.5}
+    spawnB: 
+    foeDef: 
+    beatId: 
+    bossHealthGate: 0.6
+    onComplete: 0
+    optional: 0
+    bonusShards: 1
+    checkpoint: 1
   - goal: 0
-    objective: SHADOW THE CONVOY ALONG
+    objective: SHADOW THE CONVOY ALONG THE LANTERN ROAD
     banner: THE LANTERN ROAD
     count: 1
     duration: 0
@@ -63,14 +79,14 @@ MonoBehaviour:
     bonusShards: 1
     checkpoint: 0
   - goal: 1
-    objective: THE GUARD
+    objective: A MOVING PATROL
     banner: GUARDS
     count: 1
     duration: 0
     point: {x: 0, y: 0, z: 0}
     spawn: 0000000007000000
     pointB: {x: 0, y: 0, z: 0}
-    spawnB: 
+    spawnB: 0100000000000000
     foeDef: 
     beatId: 
     bossHealthGate: 0.6
@@ -102,7 +118,7 @@ MonoBehaviour:
     point: {x: 0, y: 0, z: 0}
     spawn: 01000000
     pointB: {x: 0, y: 0, z: 0}
-    spawnB: 
+    spawnB: 07000000
     foeDef: 
     beatId: 
     bossHealthGate: 0.6

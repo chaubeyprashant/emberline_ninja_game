@@ -18,6 +18,8 @@ namespace Emberline.EditorTools
     /// </summary>
     public static class EmberCampaignCheck
     {
+        public static int Failures;
+
         [MenuItem("Emberline/Check Campaign")]
         public static void Run()
         {
@@ -126,7 +128,8 @@ namespace Emberline.EditorTools
             Check(plansOk == 100, $"all hundred plans load and are named for their mission ({plansOk})");
 
             Debug.Log(fail == 0 ? "[CMP] ALL PASSED" : $"[CMP] {fail} FAILED");
-            if (Application.isBatchMode) EditorApplication.Exit(fail == 0 ? 0 : 1);
+            Failures = fail;
+            if (Application.isBatchMode && !EmberCampaignBatch.Chained) EditorApplication.Exit(fail == 0 ? 0 : 1);
         }
     }
 }

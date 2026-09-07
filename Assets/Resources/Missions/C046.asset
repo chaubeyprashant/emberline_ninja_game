@@ -27,8 +27,24 @@ MonoBehaviour:
   nextReason: The guide knows the way. The way is not safe, and she is not fast.
   region: MARSH
   stages:
+  - goal: 13
+    objective: TOGETHER OR THE FRONT
+    banner: THE REED VILLAGE
+    count: 1
+    duration: 0
+    point: {x: 0, y: 0, z: 6.5}
+    spawn: 
+    pointB: {x: 10, y: 0, z: 0}
+    spawnB: 
+    foeDef: 
+    beatId: 
+    bossHealthGate: 0.6
+    onComplete: 0
+    optional: 0
+    bonusShards: 1
+    checkpoint: 1
   - goal: 0
-    objective: REACH THE REED VILLAGE
+    objective: REACH THE REED VILLAGE AND EARN ITS TRUST
     banner: THE REED VILLAGE
     count: 1
     duration: 0
@@ -51,7 +67,7 @@ MonoBehaviour:
     point: {x: 0, y: 0, z: 6.5}
     spawn: 0300000009000000
     pointB: {x: 0, y: 0, z: 0}
-    spawnB: 
+    spawnB: 090000000100000003000000
     foeDef: 
     beatId: 
     bossHealthGate: 0.6
@@ -83,7 +99,7 @@ MonoBehaviour:
     point: {x: 0, y: 0, z: 6.5}
     spawn: 090000000100000003000000
     pointB: {x: 0, y: 0, z: 0}
-    spawnB: 
+    spawnB: 03000000090000000100000003000000
     foeDef: 
     beatId: 
     bossHealthGate: 0.6
@@ -99,7 +115,7 @@ MonoBehaviour:
     point: {x: 0, y: 0, z: 0}
     spawn: 0300000009000000010000000300000009000000
     pointB: {x: 0, y: 0, z: 0}
-    spawnB: 
+    spawnB: 090000000100000003000000090000000100000003000000
     foeDef: 
     beatId: 
     bossHealthGate: 0.6

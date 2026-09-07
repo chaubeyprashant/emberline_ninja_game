@@ -28,7 +28,7 @@ MonoBehaviour:
   region: MOUNTAINS
   stages:
   - goal: 0
-    objective: APPROACH GORO'S TERRITORY
+    objective: APPROACH GORO'S TERRITORY ALONG THE FORTRESS
     banner: THE FORTRESS ROAD
     count: 1
     duration: 0
@@ -44,7 +44,7 @@ MonoBehaviour:
     bonusShards: 1
     checkpoint: 1
   - goal: 8
-    objective: READ THE GROUND
+    objective: 'BANNERS: EVERY HUNDRED PACES'
     banner: 'BANNERS: EVERY HUNDRED PACES'
     count: 2
     duration: 0
@@ -76,7 +76,7 @@ MonoBehaviour:
     bonusShards: 1
     checkpoint: 0
   - goal: 8
-    objective: WHAT IT MEANS
+    objective: GORO HAS FORTIFIED THE WHOLE VALLEY
     banner: THE LAST PIECE
     count: 1
     duration: 0
@@ -91,6 +91,22 @@ MonoBehaviour:
     optional: 0
     bonusShards: 1
     checkpoint: 1
+  - goal: 8
+    objective: THE ALARM HORN
+    banner: THE ALARM HORN ON THE NORTH TOWER
+    count: 1
+    duration: 0
+    point: {x: 0, y: 0, z: 0}
+    spawn: 
+    pointB: {x: 0, y: 0, z: 0}
+    spawnB: 
+    foeDef: 
+    beatId: 
+    bossHealthGate: 0.6
+    onComplete: 0
+    optional: 1
+    bonusShards: 1
+    checkpoint: 0
   - goal: 1
     objective: THE ANSWER COMES ARMED
     banner: THE ROAD'S FIRST GARRISON
