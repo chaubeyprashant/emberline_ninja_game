@@ -28,7 +28,10 @@ namespace Emberline.EditorTools
         /// in the editor and silently missing from every APK.
         /// </summary>
         private static readonly string[] ShippedScenes =
-            { OpeningScene, RooftopScene, MarshScene };
+            { OpeningScene, RooftopScene, MarshScene, ZoneSceneRef };
+
+        /// <summary>The open mission zone, built by EmberZone.</summary>
+        private const string ZoneSceneRef = "Assets/Scenes/Zone.unity";
 
         private enum Theme { Rooftop, Marsh }
 
@@ -862,7 +865,7 @@ namespace Emberline.EditorTools
             }
         }
 
-        private static GameObject BuildPlayer()
+        internal static GameObject BuildPlayer()
         {
             var player = new GameObject("Renzo");
             player.transform.position = new Vector3(0, 0, -3f);
@@ -914,6 +917,9 @@ namespace Emberline.EditorTools
             player.AddComponent<Player.CombatController>();
             return player;
         }
+
+        /// <summary>Camera rig for scenes outside the two themed arenas.</summary>
+        internal static void BuildCameraFor(Transform target) => BuildCamera(target, Theme.Rooftop);
 
         private static void BuildCamera(Transform target, Theme theme)
         {

@@ -339,6 +339,18 @@ namespace Emberline.UI
             UiKit.MakeButton(_screenRoot, "ARMOURY", new Vector2(0, 0), new Vector2(488, 34),
                 new Vector2(168, 52), () => SetScreen(Screen.Weapons), 16);
 
+            // The open-zone test area: somewhere to walk the new environment and
+            // check movement, camera and framerate in it.
+            //
+            // Deliberately NOT gated on Debug.isDebugBuild — the shipped APK is a
+            // release build, so that flag is false and the entry never appeared.
+            // It is a visible button for now because the zone is under review.
+            // REMOVE THIS BUTTON before the next store upload: it is a test area,
+            // not a mode.
+            UiKit.MakeButton(_screenRoot, "ZONE", new Vector2(0, 0), new Vector2(672, 34),
+                new Vector2(120, 52),
+                () => UnityEngine.SceneManagement.SceneManager.LoadScene("Zone"), 16);
+
             // ---- right two thirds: the modes, as cards
             var items = new (string label, string sub, System.Action go)[]
             {
