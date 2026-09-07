@@ -28,7 +28,7 @@ MonoBehaviour:
   region: FOREST
   stages:
   - goal: 0
-    objective: FOLLOW THE HIDDEN ROAD WITHOUT
+    objective: FOLLOW THE HIDDEN ROAD WITHOUT BEING SEEN
     banner: HIDDEN ROAD
     count: 1
     duration: 0
@@ -89,6 +89,22 @@ MonoBehaviour:
     bossHealthGate: 0.6
     onComplete: 2
     optional: 0
+    bonusShards: 1
+    checkpoint: 0
+  - goal: 8
+    objective: THE SUPPLY WAREHOUSE
+    banner: THE SUPPLY WAREHOUSE
+    count: 1
+    duration: 0
+    point: {x: 0, y: 0, z: 0}
+    spawn: 
+    pointB: {x: 0, y: 0, z: 0}
+    spawnB: 
+    foeDef: 
+    beatId: 
+    bossHealthGate: 0.6
+    onComplete: 0
+    optional: 1
     bonusShards: 1
     checkpoint: 0
   - goal: 12

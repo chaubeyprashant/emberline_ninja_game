@@ -28,8 +28,24 @@ MonoBehaviour:
   nextReason: Jin and his father knew each other. Jin's men will know how.
   region: VILLAGES
   stages:
+  - goal: 13
+    objective: QUIET OR THE FRONT
+    banner: THE GARRISON
+    count: 1
+    duration: 0
+    point: {x: -10, y: 0, z: 0}
+    spawn: 
+    pointB: {x: 10, y: 0, z: 0}
+    spawnB: 
+    foeDef: 
+    beatId: 
+    bossHealthGate: 0.6
+    onComplete: 0
+    optional: 0
+    bonusShards: 1
+    checkpoint: 1
   - goal: 8
-    objective: INVESTIGATE JIN'S PAST
+    objective: INVESTIGATE JIN'S PAST IN THE GARRISON TOWN
     banner: THE FALLEN SOLDIER
     count: 3
     duration: 0
@@ -52,7 +68,7 @@ MonoBehaviour:
     point: {x: 0, y: 0, z: 0}
     spawn: 0900000007000000
     pointB: {x: 0, y: 0, z: 0}
-    spawnB: 
+    spawnB: 070000000100000009000000
     foeDef: 
     beatId: 
     bossHealthGate: 0.6

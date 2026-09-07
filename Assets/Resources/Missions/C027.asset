@@ -16,7 +16,8 @@ MonoBehaviour:
   missionName: THE RED THREAD
   missionType: INVESTIGATION
   briefing: Follow the red thread to its end.
-  debrief: Renzo ties the bead into his own wrist.
+  debrief: Renzo ties the bead into his own wrist. Suzu watches him do it and says
+    nothing, which is the most she has ever not said.
   marsh: 0
   nightOverride: 0
   rain: 0
@@ -27,9 +28,41 @@ MonoBehaviour:
   nextReason: Aiko was leaving a trail. Where it points next is where she was taken.
   region: FOREST
   stages:
-  - goal: 8
+  - goal: 0
     objective: FOLLOW THE RED THREAD
     banner: THE RED THREAD
+    count: 1
+    duration: 0
+    point: {x: 0, y: 0, z: 6.5}
+    spawn: 
+    pointB: {x: 0, y: 0, z: 0}
+    spawnB: 
+    foeDef: 
+    beatId: 
+    bossHealthGate: 0.6
+    onComplete: 0
+    optional: 0
+    bonusShards: 1
+    checkpoint: 1
+  - goal: 8
+    objective: SIT WITH IT
+    banner: 
+    count: 1
+    duration: 0
+    point: {x: 0, y: 0, z: 0}
+    spawn: 
+    pointB: {x: 0, y: 0, z: 0}
+    spawnB: 
+    foeDef: 
+    beatId: 
+    bossHealthGate: 0.6
+    onComplete: 5
+    optional: 0
+    bonusShards: 1
+    checkpoint: 0
+  - goal: 8
+    objective: THE THREAD ENDS AT A BEAD FROM AIKO'S
+    banner: 
     count: 3
     duration: 0
     point: {x: 0, y: 0, z: 0}
@@ -43,26 +76,26 @@ MonoBehaviour:
     optional: 0
     bonusShards: 1
     checkpoint: 1
-  - goal: 1
-    objective: SOMEONE OBJECTS
-    banner: YOU ARE NOT ALONE
+  - goal: 0
+    objective: WALK WITH THEM
+    banner: 
     count: 1
     duration: 0
-    point: {x: 0, y: 0, z: 0}
-    spawn: 0000000009000000
+    point: {x: -10, y: 0, z: 0}
+    spawn: 
     pointB: {x: 0, y: 0, z: 0}
     spawnB: 
     foeDef: 
     beatId: 
     bossHealthGate: 0.6
-    onComplete: 2
+    onComplete: 0
     optional: 0
     bonusShards: 1
     checkpoint: 0
   - goal: 8
-    objective: THE LAST PIECES
-    banner: THE THREAD ENDS AT A BEAD FROM AIKO'S
-    count: 2
+    objective: THE BEAD, IN HIS HAND, IN A WOOD
+    banner: 
+    count: 1
     duration: 0
     point: {x: 0, y: 0, z: 0}
     spawn: 
@@ -74,29 +107,13 @@ MonoBehaviour:
     onComplete: 0
     optional: 0
     bonusShards: 1
-    checkpoint: 1
-  - goal: 0
-    objective: PUT IT TOGETHER
-    banner: THE MEN WHO TOOK HER CAME BACK
-    count: 1
-    duration: 0
-    point: {x: 10, y: 0, z: 0}
-    spawn: 
-    pointB: {x: 0, y: 0, z: 0}
-    spawnB: 
-    foeDef: 
-    beatId: 
-    bossHealthGate: 0.6
-    onComplete: 0
-    optional: 0
-    bonusShards: 1
     checkpoint: 0
   - goal: 0
-    objective: TAKE IT BACK
-    banner: A QUIET MISSION ALMOST TO THE END
+    objective: MORNING
+    banner: 
     count: 1
     duration: 0
-    point: {x: -10, y: 0, z: 0}
+    point: {x: 0, y: 0, z: -6.5}
     spawn: 
     pointB: {x: 0, y: 0, z: 0}
     spawnB: 

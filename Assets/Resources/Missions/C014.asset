@@ -28,8 +28,24 @@ MonoBehaviour:
   nextReason: A hidden road is how the enemy moves unseen. Renzo takes it.
   region: VILLAGES
   stages:
+  - goal: 13
+    objective: THE FRONT OR TOGETHER
+    banner: THE SURVIVOR
+    count: 1
+    duration: 0
+    point: {x: 0, y: 0, z: 6.5}
+    spawn: 
+    pointB: {x: 10, y: 0, z: 0}
+    spawnB: 
+    foeDef: 
+    beatId: 
+    bossHealthGate: 0.6
+    onComplete: 0
+    optional: 0
+    bonusShards: 1
+    checkpoint: 1
   - goal: 0
-    objective: PROTECT THE LAST SURVIVOR
+    objective: PROTECT THE LAST SURVIVOR OF THE VILLAGE
     banner: THE SURVIVOR
     count: 1
     duration: 0
@@ -46,7 +62,7 @@ MonoBehaviour:
     checkpoint: 1
   - goal: 8
     objective: CLEAR THE ROAD AHEAD
-    banner: WAVES COME FROM EVERY SIDE WHILE
+    banner: WAVES COME FROM EVERY SIDE
     count: 1
     duration: 0
     point: {x: 0, y: 0, z: 0}
@@ -68,7 +84,7 @@ MonoBehaviour:
     point: {x: 0, y: 0, z: 0}
     spawn: 0000000007000000
     pointB: {x: 0, y: 0, z: 0}
-    spawnB: 
+    spawnB: 07000000010000000c000000
     foeDef: 
     beatId: 
     bossHealthGate: 0.6
@@ -100,7 +116,7 @@ MonoBehaviour:
     point: {x: 0, y: 0, z: 0}
     spawn: 07000000010000000c000000
     pointB: {x: 0, y: 0, z: 0}
-    spawnB: 
+    spawnB: 0c000000000000000700000001000000
     foeDef: 
     beatId: 
     bossHealthGate: 0.6

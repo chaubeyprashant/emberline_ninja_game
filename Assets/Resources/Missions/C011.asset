@@ -27,8 +27,24 @@ MonoBehaviour:
   nextReason: Running men go home. Renzo follows them to wherever that is.
   region: VILLAGES
   stages:
+  - goal: 13
+    objective: BURN IT OR QUIET
+    banner: THE BROKEN BANNER
+    count: 1
+    duration: 0
+    point: {x: 0, y: 0, z: 6.5}
+    spawn: 
+    pointB: {x: 10, y: 0, z: 0}
+    spawnB: 
+    foeDef: 
+    beatId: 
+    bossHealthGate: 0.6
+    onComplete: 0
+    optional: 0
+    bonusShards: 1
+    checkpoint: 1
   - goal: 0
-    objective: TRACK THE ENEMY SUPPLY ROUTE
+    objective: TRACK THE ENEMY SUPPLY ROUTE AND BURN
     banner: THE SUPPLY ROUTE
     count: 1
     duration: 0
@@ -51,7 +67,7 @@ MonoBehaviour:
     point: {x: 0, y: 0, z: 0}
     spawn: 0000000001000000
     pointB: {x: 0, y: 0, z: 0}
-    spawnB: 
+    spawnB: 01000000
     foeDef: 
     beatId: 
     bossHealthGate: 0.6
@@ -83,7 +99,7 @@ MonoBehaviour:
     point: {x: 10, y: 0, z: 0}
     spawn: 010000000700000000000000
     pointB: {x: 0, y: 0, z: 0}
-    spawnB: 
+    spawnB: 0000000001000000
     foeDef: 
     beatId: 
     bossHealthGate: 0.6
@@ -99,7 +115,7 @@ MonoBehaviour:
     point: {x: 0, y: 0, z: -6.5}
     spawn: 0000000001000000
     pointB: {x: 0, y: 0, z: 0}
-    spawnB: 
+    spawnB: 01000000
     foeDef: 
     beatId: 
     bossHealthGate: 0.6

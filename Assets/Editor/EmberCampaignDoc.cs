@@ -95,6 +95,34 @@ namespace Emberline.EditorTools
                 sb.AppendLine($"| {g.Min(x => x.id)}–{g.Max(x => x.id)} | {g.Key.renzo} | {g.Key.seal} |");
             sb.AppendLine();
 
+            sb.AppendLine("## The companions");
+            sb.AppendLine();
+            sb.AppendLine("Renzo is alone for missions 1 to 11, and alone again from 95. Between those he is not, and who he brings changes what the mission can be. Two may be taken at once.");
+            sb.AppendLine();
+            sb.AppendLine("| Companion | Role | Joins | Fights | Specialty | Weakness |");
+            sb.AppendLine("|---|---|---|---|---|---|");
+            foreach (var c in CampaignDesign.Companions)
+                sb.AppendLine($"| **{c.name}** | {c.role} | {c.joinMission} | {(c.fights ? "yes" : "no")} | {c.specialty} | {c.weakness} |");
+            sb.AppendLine();
+
+            sb.AppendLine("## The camps");
+            sb.AppendLine();
+            sb.AppendLine("A camp is a place with a garrison, not a level. Each is watched, prepared for, taken and then lived with across several missions of its chapter. The marks are what reconnaissance can find; the player is not shown all of them and the ones missed are the ones that surprise.");
+            sb.AppendLine();
+            sb.AppendLine("| Camp | Garrison | Missions | What can be found in it |");
+            sb.AppendLine("|---|---|---|---|");
+            foreach (var c in CampaignDesign.Camps)
+                sb.AppendLine($"| **{c.name}** | {c.garrison} | {string.Join(", ", c.missions)} | {string.Join("; ", c.marks)} |");
+            sb.AppendLine();
+
+            sb.AppendLine("## The villages");
+            sb.AppendLine();
+            sb.AppendLine("| Village | From | What trust buys |");
+            sb.AppendLine("|---|---|---|");
+            foreach (var v in CampaignDesign.Villages)
+                sb.AppendLine($"| **{v.name}** | {v.firstMission} | {v.gives} |");
+            sb.AppendLine();
+
             sb.AppendLine("## The missions");
             sb.AppendLine();
             foreach (var c in Campaign.Campaign.Chapters)
@@ -118,6 +146,25 @@ namespace Emberline.EditorTools
                     var roster = m.enemies.Length == 0 ? "none" : string.Join(", ", m.enemies);
                     var extras = (m.boss.HasValue ? $" · boss {m.boss}" : "") + (m.foe != "" ? $" · named foe `{m.foe}`" : "") + (m.beat != "" ? $" · beat `{m.beat}`" : "") + (m.plan != "" ? $" · bespoke plan `{m.plan}`" : "");
                     sb.AppendLine($"- *Staging:* {m.region}, {(m.marsh ? "marsh" : "rooftop")} arena, {m.theme}{(m.night ? ", night" : "")}{(m.rain ? ", rain" : "")}{(m.snow ? ", snow" : "")}{(m.fog ? ", fog" : "")} · enemies: {roster}{extras}");
+                    var d = CampaignDesign.For(m.id);
+                    if (d != null)
+                    {
+                        sb.AppendLine($"- **Role:** {d.role}" +
+                            (d.camp != CampId.None ? $" · camp: {CampaignDesign.Def(d.camp)?.name}" : "") +
+                            (d.village != VillageId.None ? $" · village: {CampaignDesign.Def(d.village)?.name}" : ""));
+                        sb.AppendLine(d.HasChoice
+                            ? $"- **Approach:** {string.Join(" / ", d.approaches)}" +
+                              (d.approachFlag != "" ? $" — everything past the first opens with `{d.approachFlag}`" : " — open from the start")
+                            : "- **Approach:** the mission has one shape.");
+                        if (d.companions.Length > 0)
+                            sb.AppendLine($"- **Companions:** {string.Join(", ", d.companions.Select(c => CampaignDesign.Def(c)?.name))}");
+                        if (d.reads.Length > 0)
+                            sb.AppendLine($"- **Preparation it reads:** `{string.Join("`, `", d.reads)}`");
+                        if (d.sets.Length > 0)
+                            sb.AppendLine($"- **What it remembers:** `{string.Join("`, `", d.sets)}`");
+                        if (d.consequence != "") sb.AppendLine($"- **Consequence:** {d.consequence}");
+                        sb.AppendLine($"- **Ends on:** \"{d.want}\"");
+                    }
                     sb.AppendLine();
                 }
             }

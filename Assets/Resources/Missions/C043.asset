@@ -28,8 +28,24 @@ MonoBehaviour:
     and it want Renzo.
   region: MARSH
   stages:
+  - goal: 13
+    objective: THE FRONT OR AMBUSH
+    banner: THE SUNKEN CAMP
+    count: 1
+    duration: 0
+    point: {x: 0, y: 0, z: 6.5}
+    spawn: 
+    pointB: {x: 0, y: 0, z: -6.5}
+    spawnB: 
+    foeDef: 
+    beatId: 
+    bossHealthGate: 0.6
+    onComplete: 0
+    optional: 0
+    bonusShards: 1
+    checkpoint: 1
   - goal: 8
-    objective: SEARCH THE SUBMERGED ENEMY
+    objective: SEARCH THE SUBMERGED ENEMY CAMP
     banner: THE SUNKEN CAMP
     count: 3
     duration: 0
@@ -52,7 +68,7 @@ MonoBehaviour:
     point: {x: 0, y: 0, z: 0}
     spawn: 0300000008000000
     pointB: {x: 0, y: 0, z: 0}
-    spawnB: 
+    spawnB: 0800000009000000
     foeDef: 
     beatId: 
     bossHealthGate: 0.6
@@ -84,7 +100,7 @@ MonoBehaviour:
     point: {x: 0, y: 0, z: 0}
     spawn: 080000000900000003000000
     pointB: {x: 0, y: 0, z: 0}
-    spawnB: 
+    spawnB: 030000000800000009000000
     foeDef: 
     beatId: 
     bossHealthGate: 0.6

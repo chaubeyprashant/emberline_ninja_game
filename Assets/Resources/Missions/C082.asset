@@ -28,8 +28,24 @@ MonoBehaviour:
     there. First, Aiko has to survive the fortress.
   region: STRONGHOLD
   stages:
+  - goal: 13
+    objective: THE FRONT OR TOGETHER
+    banner: THE LONG NIGHT
+    count: 1
+    duration: 0
+    point: {x: 0, y: 0, z: 6.5}
+    spawn: 
+    pointB: {x: 10, y: 0, z: 0}
+    spawnB: 
+    foeDef: 
+    beatId: 
+    bossHealthGate: 0.6
+    onComplete: 0
+    optional: 0
+    bonusShards: 1
+    checkpoint: 1
   - goal: 0
-    objective: HOLD THE HALL WHILE AIKO TELLS
+    objective: HOLD THE HALL WHILE AIKO TELLS IT
     banner: THE LONG NIGHT
     count: 1
     duration: 0
@@ -52,7 +68,7 @@ MonoBehaviour:
     point: {x: 0, y: 0, z: 6.5}
     spawn: 0700000001000000
     pointB: {x: 0, y: 0, z: 0}
-    spawnB: 
+    spawnB: 070000000100000009000000
     foeDef: 
     beatId: 
     bossHealthGate: 0.6
@@ -84,7 +100,7 @@ MonoBehaviour:
     point: {x: 0, y: 0, z: 6.5}
     spawn: 01000000090000000c000000
     pointB: {x: 0, y: 0, z: 0}
-    spawnB: 
+    spawnB: 090000000c0000000700000001000000
     foeDef: 
     beatId: 
     bossHealthGate: 0.6
@@ -116,7 +132,7 @@ MonoBehaviour:
     point: {x: 0, y: 0, z: 0}
     spawn: 0700000001000000090000000c00000007000000
     pointB: {x: 0, y: 0, z: 0}
-    spawnB: 
+    spawnB: 0700000001000000090000000c0000000700000001000000
     foeDef: 
     beatId: 
     bossHealthGate: 0.6

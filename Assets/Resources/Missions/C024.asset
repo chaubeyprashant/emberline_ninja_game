@@ -28,6 +28,22 @@ MonoBehaviour:
   nextReason: The camp that sent them is the camp that has the rest of the orders.
   region: FOREST
   stages:
+  - goal: 13
+    objective: THE FRONT OR AMBUSH
+    banner: THE SILENT CAMP
+    count: 1
+    duration: 0
+    point: {x: 0, y: 0, z: 6.5}
+    spawn: 
+    pointB: {x: 0, y: 0, z: -6.5}
+    spawnB: 
+    foeDef: 
+    beatId: 
+    bossHealthGate: 0.6
+    onComplete: 0
+    optional: 0
+    bonusShards: 1
+    checkpoint: 1
   - goal: 0
     objective: WALK OUT TO MEET THEM
     banner: THE THREE BLADES
@@ -45,7 +61,7 @@ MonoBehaviour:
     bonusShards: 1
     checkpoint: 1
   - goal: 8
-    objective: READ THE GROUND
+    objective: A TRIPLE DUEL
     banner: A TRIPLE DUEL
     count: 1
     duration: 0
@@ -68,7 +84,7 @@ MonoBehaviour:
     point: {x: 0, y: 0, z: 0}
     spawn: 090000000b000000
     pointB: {x: 0, y: 0, z: 0}
-    spawnB: 
+    spawnB: 0b00000009000000
     foeDef: 
     beatId: 
     bossHealthGate: 0.6
@@ -100,7 +116,7 @@ MonoBehaviour:
     point: {x: 0, y: 0, z: 0}
     spawn: 0b000000090000000b000000
     pointB: {x: 0, y: 0, z: 0}
-    spawnB: 
+    spawnB: 0b000000090000000b000000
     foeDef: 
     beatId: 
     bossHealthGate: 0.6

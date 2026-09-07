@@ -124,10 +124,13 @@ namespace Emberline.EditorTools
             Done(fail);
         }
 
+        public static int Failures;
+
         private static void Done(int fail)
         {
+            Failures = fail;
             Debug.Log(fail == 0 ? "[MSN] ALL PASSED" : $"[MSN] {fail} FAILED");
-            if (Application.isBatchMode) EditorApplication.Exit(fail == 0 ? 0 : 1);
+            if (Application.isBatchMode && !EmberCampaignBatch.Chained) EditorApplication.Exit(fail == 0 ? 0 : 1);
         }
     }
 }

@@ -28,6 +28,22 @@ MonoBehaviour:
   nextReason: Kagehira is coming to the chamber himself, and he is not coming alone.
   region: SEAL
   stages:
+  - goal: 13
+    objective: THE FRONT OR QUIET
+    banner: THE MEANING OF THE SEAL
+    count: 1
+    duration: 0
+    point: {x: 0, y: 0, z: 6.5}
+    spawn: 
+    pointB: {x: 10, y: 0, z: 0}
+    spawnB: 
+    foeDef: 
+    beatId: 
+    bossHealthGate: 0.6
+    onComplete: 0
+    optional: 0
+    bonusShards: 1
+    checkpoint: 1
   - goal: 8
     objective: ASSEMBLE THE TRUTH OF THE SEAL
     banner: THE MEANING OF THE SEAL
@@ -52,7 +68,7 @@ MonoBehaviour:
     point: {x: 0, y: 0, z: 0}
     spawn: 0c00000009000000
     pointB: {x: 0, y: 0, z: 0}
-    spawnB: 
+    spawnB: 0c000000
     foeDef: 
     beatId: 
     bossHealthGate: 0.6

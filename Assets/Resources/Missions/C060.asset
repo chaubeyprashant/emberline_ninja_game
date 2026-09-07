@@ -46,7 +46,7 @@ MonoBehaviour:
     checkpoint: 1
   - goal: 17
     objective: LISTEN
-    banner: NO FIGHT. THE MISSION IS THE WALK
+    banner: 
     count: 1
     duration: 0
     point: {x: 0, y: 0, z: 0}
@@ -56,13 +56,29 @@ MonoBehaviour:
     foeDef: 
     beatId: father_message
     bossHealthGate: 0.6
-    onComplete: 2
+    onComplete: 5
     optional: 0
     bonusShards: 1
     checkpoint: 0
+  - goal: 8
+    objective: KAGEHIRA DID NOT BURN YORUNE FOR REVENGE
+    banner: 
+    count: 2
+    duration: 0
+    point: {x: 0, y: 0, z: 0}
+    spawn: 
+    pointB: {x: 0, y: 0, z: 0}
+    spawnB: 
+    foeDef: 
+    beatId: 
+    bossHealthGate: 0.6
+    onComplete: 0
+    optional: 0
+    bonusShards: 1
+    checkpoint: 1
   - goal: 0
-    objective: WALK
-    banner: KAGEHIRA DID NOT BURN YORUNE FOR REVENGE
+    objective: WALK WITH THEM
+    banner: 
     count: 1
     duration: 0
     point: {x: 10, y: 0, z: 0}
@@ -77,8 +93,8 @@ MonoBehaviour:
     bonusShards: 1
     checkpoint: 0
   - goal: 8
-    objective: TAKE IT IN
-    banner: THE MESSAGE ENDS WITH A NAME
+    objective: THE MESSAGE ENDS WITH A NAME
+    banner: 
     count: 1
     duration: 0
     point: {x: 0, y: 0, z: 0}
@@ -91,10 +107,10 @@ MonoBehaviour:
     onComplete: 0
     optional: 0
     bonusShards: 1
-    checkpoint: 1
+    checkpoint: 0
   - goal: 0
-    objective: GO
-    banner: ON
+    objective: MORNING
+    banner: 
     count: 1
     duration: 0
     point: {x: 0, y: 0, z: -6.5}

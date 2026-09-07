@@ -27,8 +27,24 @@ MonoBehaviour:
   nextReason: Goro has stopped sending men. He is coming himself.
   region: VILLAGES
   stages:
+  - goal: 13
+    objective: TOGETHER OR THE FRONT
+    banner: THE SIEGE
+    count: 1
+    duration: 0
+    point: {x: 0, y: 0, z: 6.5}
+    spawn: 
+    pointB: {x: 10, y: 0, z: 0}
+    spawnB: 
+    foeDef: 
+    beatId: 
+    bossHealthGate: 0.6
+    onComplete: 0
+    optional: 0
+    bonusShards: 1
+    checkpoint: 1
   - goal: 0
-    objective: DEFEND THE VILLAGE FROM GORO'S
+    objective: DEFEND THE VILLAGE FROM GORO'S FORCES
     banner: THE SIEGE
     count: 1
     duration: 0
@@ -51,7 +67,7 @@ MonoBehaviour:
     point: {x: 0, y: 0, z: 6.5}
     spawn: 0000000007000000
     pointB: {x: 0, y: 0, z: 0}
-    spawnB: 
+    spawnB: 090000000c00000000000000
     foeDef: 
     beatId: 
     bossHealthGate: 0.6
@@ -83,7 +99,7 @@ MonoBehaviour:
     point: {x: 0, y: 0, z: 6.5}
     spawn: 070000000100000006000000
     pointB: {x: 0, y: 0, z: 0}
-    spawnB: 
+    spawnB: 00000000070000000100000006000000
     foeDef: 
     beatId: 
     bossHealthGate: 0.6
@@ -99,7 +115,7 @@ MonoBehaviour:
     point: {x: 0, y: 0, z: 0}
     spawn: 070000000100000006000000090000000c000000
     pointB: {x: 0, y: 0, z: 0}
-    spawnB: 
+    spawnB: 070000000100000006000000090000000c00000000000000
     foeDef: 
     beatId: 
     bossHealthGate: 0.6

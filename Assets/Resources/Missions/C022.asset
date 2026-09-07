@@ -29,7 +29,7 @@ MonoBehaviour:
   region: FOREST
   stages:
   - goal: 0
-    objective: INFILTRATE THE FOREST CAMP
+    objective: INFILTRATE THE FOREST CAMP AND LEAVE WITHOUT
     banner: NO FOOTPRINTS
     count: 1
     duration: 0
@@ -90,6 +90,22 @@ MonoBehaviour:
     bossHealthGate: 0.6
     onComplete: 2
     optional: 0
+    bonusShards: 1
+    checkpoint: 0
+  - goal: 8
+    objective: THE PATH
+    banner: THE PATH THE THREE BLADES USE AND NO ONE ELSE
+    count: 1
+    duration: 0
+    point: {x: 0, y: 0, z: 0}
+    spawn: 
+    pointB: {x: 0, y: 0, z: 0}
+    spawnB: 
+    foeDef: 
+    beatId: 
+    bossHealthGate: 0.6
+    onComplete: 0
+    optional: 1
     bonusShards: 1
     checkpoint: 0
   - goal: 12

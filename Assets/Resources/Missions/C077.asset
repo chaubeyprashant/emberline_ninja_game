@@ -28,6 +28,22 @@ MonoBehaviour:
     hall.
   region: FORTRESSES
   stages:
+  - goal: 13
+    objective: THE FRONT OR QUIET
+    banner: THE IRON FORTRESS
+    count: 1
+    duration: 0
+    point: {x: 0, y: 0, z: 6.5}
+    spawn: 
+    pointB: {x: 10, y: 0, z: 0}
+    spawnB: 
+    foeDef: 
+    beatId: 
+    bossHealthGate: 0.6
+    onComplete: 0
+    optional: 0
+    bonusShards: 1
+    checkpoint: 1
   - goal: 8
     objective: FIND WHERE AIKO WAS TAKEN
     banner: THE EMPTY CELL
@@ -52,7 +68,7 @@ MonoBehaviour:
     point: {x: 0, y: 0, z: 0}
     spawn: 0900000007000000
     pointB: {x: 0, y: 0, z: 0}
-    spawnB: 
+    spawnB: 09000000
     foeDef: 
     beatId: 
     bossHealthGate: 0.6

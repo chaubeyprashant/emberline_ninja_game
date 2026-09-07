@@ -46,7 +46,7 @@ MonoBehaviour:
     checkpoint: 1
   - goal: 17
     objective: LISTEN
-    banner: THE FIGHT IS OPTIONAL AND SHORT
+    banner: 
     count: 1
     duration: 0
     point: {x: 0, y: 0, z: 0}
@@ -56,14 +56,14 @@ MonoBehaviour:
     foeDef: 
     beatId: jin_confession
     bossHealthGate: 0.6
-    onComplete: 2
+    onComplete: 5
     optional: 0
     bonusShards: 1
     checkpoint: 0
   - goal: 8
-    objective: A BREATH
-    banner: JIN WITNESSED YORUNE'S DESTRUCTION
-    count: 1
+    objective: JIN WITNESSED YORUNE'S DESTRUCTION
+    banner: 
+    count: 2
     duration: 0
     point: {x: 0, y: 0, z: 0}
     spawn: 
@@ -76,13 +76,29 @@ MonoBehaviour:
     optional: 0
     bonusShards: 1
     checkpoint: 1
-  - goal: 1
-    objective: THEY INTERRUPT
-    banner: KAGEHIRA'S ASSASSINS INTERRUPT
+  - goal: 0
+    objective: WALK WITH THEM
+    banner: 
+    count: 1
+    duration: 0
+    point: {x: 10, y: 0, z: 0}
+    spawn: 
+    pointB: {x: 0, y: 0, z: 0}
+    spawnB: 
+    foeDef: 
+    beatId: 
+    bossHealthGate: 0.6
+    onComplete: 0
+    optional: 0
+    bonusShards: 1
+    checkpoint: 0
+  - goal: 8
+    objective: KAGEHIRA'S ASSASSINS INTERRUPT
+    banner: 
     count: 1
     duration: 0
     point: {x: 0, y: 0, z: 0}
-    spawn: 0900000001000000
+    spawn: 
     pointB: {x: 0, y: 0, z: 0}
     spawnB: 
     foeDef: 
@@ -93,8 +109,8 @@ MonoBehaviour:
     bonusShards: 1
     checkpoint: 0
   - goal: 0
-    objective: GO
-    banner: ON
+    objective: MORNING
+    banner: 
     count: 1
     duration: 0
     point: {x: 0, y: 0, z: -6.5}
