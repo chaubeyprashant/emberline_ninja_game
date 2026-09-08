@@ -495,10 +495,12 @@ namespace Emberline.EditorTools
                 height = 1.95f,
                 tint = new Color(0.40f, 0.66f, 1.30f),   // cold garrison steel against the Samurai's red
                 slotTextures = KachujinSlots(),
-                propRight = "sword_2handed",
+                propRight = "yari",                          // a real spear, via its wrapper
                 clips = clips,
             }, "MixamoKachujin", "Kachujin_diffuse.png");
-            s.propScale = new Vector3(0.36f, 1.35f, 0.36f);   // sword → spear shaft
+            // Was sword_2handed stretched (0.36, 1.35, 0.36) into a shaft. The
+            // wrapper carries its own proportions now, so the prop scale is uniform.
+            s.propScale = Vector3.one * 0.7f;
             return s;
         }
 

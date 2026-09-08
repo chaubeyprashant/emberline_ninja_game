@@ -1,0 +1,43 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 783636f97e47f4076a403c6b1165c8c6, type: 3}
+  m_Name: AshigaruYari
+  m_EditorClassIdentifier: Assembly-CSharp::Emberline.Core.WeaponDef
+  id: yari
+  displayName: ASHIGARU YARI
+  blurb: Reach. Thrusts land first; the sweep clears a line.
+  unlockLevel: 10
+  archetype: 0
+  propRight: yari
+  propLeft: 
+  strikeChainLength: 3
+  strikeDamage:
+  - 11
+  - 11
+  - 20
+  strikeRange: 3.8
+  strikeArcDeg: 70
+  chainWindow: 0.7
+  strikeAnimTime: 0.32
+  lungeSpeed: 5
+  cleaveStyle: 0
+  cleaveDamage: 24
+  cleaveRange: 4
+  cleaveArcDeg: 150
+  cleaveWindup: 0.34
+  cleaveCooldown: 1.7
+  parryOnPerfectDodge: 0
+  pullOnThirdHit: 0
+  poisonCleave: 0
+  replacesKunaiWithThrown: 0
+  thrownId: 
+  trailColor: {r: 0.8, g: 0.86, b: 0.95, a: 1}

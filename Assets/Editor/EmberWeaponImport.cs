@@ -30,7 +30,7 @@ namespace Emberline.EditorTools
             var sb = new StringBuilder();
             sb.AppendLine($"{"mesh",-34} {"size x y z",-24} {"min y",7} {"max y",7} {"centre",-24} {"tris",6}  long-axis");
 
-            var paths = Directory.GetFiles(WeaponRoot, "*.fbx", SearchOption.AllDirectories)
+            var paths = Directory.GetFiles(WeaponRoot, "*.*", SearchOption.AllDirectories).Where(f => f.EndsWith(".fbx") || f.EndsWith(".obj"))
                 .Concat(Directory.GetFiles("Assets/Art/Characters/Props", "*.fbx"))
                 .OrderBy(p => p);
 
@@ -93,7 +93,7 @@ namespace Emberline.EditorTools
             light.transform.rotation = Quaternion.Euler(40f, 30f, 0f);
             RenderSettings.ambientLight = new Color(0.5f, 0.5f, 0.55f);
 
-            foreach (var path in Directory.GetFiles(WeaponRoot, "*.fbx", SearchOption.AllDirectories)
+            foreach (var path in Directory.GetFiles(WeaponRoot, "*.*", SearchOption.AllDirectories).Where(f => f.EndsWith(".fbx") || f.EndsWith(".obj"))
                          .Concat(Directory.GetFiles("Assets/Art/Characters/Props", "*.fbx")).OrderBy(p => p))
             {
                 var go = AssetDatabase.LoadAssetAtPath<GameObject>(path);
@@ -130,9 +130,13 @@ namespace Emberline.EditorTools
                 cam.orthographicSize = ext * 0.6f;
                 cam.clearFlags = CameraClearFlags.SolidColor;
                 cam.backgroundColor = new Color(0.12f, 0.12f, 0.14f);
-                // Look along -X so the YZ plane is the image: Z horizontal, Y vertical.
-                cam.transform.position = b.center + Vector3.right * (ext * 3f);
-                cam.transform.LookAt(b.center);
+                // Look across the long axis, never along it: a spear authored on X
+                // seen from +X is a dot. X-long meshes are viewed from +Z (XY plane);
+                // everything else from +X (ZY plane).
+                var s = b.size;
+                var xLong = s.x >= s.y && s.x >= s.z;
+                cam.transform.position = b.center + (xLong ? Vector3.forward : Vector3.right) * (ext * 3f);
+                cam.transform.LookAt(b.center, Vector3.up);
 
                 var rt = new RenderTexture(1600, 800, 24);
                 cam.targetTexture = rt; cam.Render();
@@ -194,6 +198,17 @@ namespace Emberline.EditorTools
                 scale = 1.9f / 58.097f, rotEuler = new Vector3(-90f, 0f, 0f),
                 grip = new Vector3(0f, 0f, -24f), guard = new Vector3(0f, 0f, -19f),
                 tip = new Vector3(0f, 0f, 22.5f),
+            },
+            // SublimeHurdle yari: authored along X with the origin mid-shaft, tip at
+            // x=-7.83, butt at x=+8.80, head collar near x=-3.5. Held a third of
+            // the way from the butt. 3.43 prop units = 2.4 m on the Pike Guard at
+            // his 0.70 prop scale, 2.1 m on Renzo — a real ashigaru spear.
+            new WrapSpec
+            {
+                name = "yari", fbx = "Assets/Art/Weapons/Yari_SublimeHurdle/yari_sublimehurdle.obj",
+                scale = 3.43f / 16.63f, rotEuler = new Vector3(0f, 0f, -90f),
+                grip = new Vector3(3.0f, 0f, 0f), guard = new Vector3(-3.5f, 0f, 0f),
+                tip = new Vector3(-7.83f, 0f, 0f),
             },
             // Yanez Designs kama: butt cap at the origin, handle along +Z to 7.27,
             // sickle blade at the far end sticking out in +X — the same
