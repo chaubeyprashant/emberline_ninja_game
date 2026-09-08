@@ -1192,6 +1192,34 @@ namespace Emberline.EditorTools
             nagi.trailColor = new Color(0.82f, 0.88f, 0.96f);
             EditorUtility.SetDirty(nagi);
 
+            // Heavy Axe: weight. Two hits in the chain, both slow, both crushing;
+            // the cleave is a ground-shaking overhead. The KayKit two-handed axe
+            // has always been in the project, and now that the Marsh Hook is a
+            // kama it is free to be what it looks like.
+            var axe = W("HeavyAxe");
+            axe.id = "axe";
+            axe.displayName = "HEAVY AXE";
+            axe.blurb = "Weight. Every hit is a commitment, and every hit is felt.";
+            axe.unlockLevel = 12;
+            axe.archetype = WeaponArchetype.Blade;
+            axe.propRight = "axe_2handed";
+            axe.propLeft = "";
+            axe.strikeChainLength = 2;
+            axe.strikeDamage = new[] { 16f, 26f };
+            axe.strikeRange = 3.0f;
+            axe.strikeArcDeg = 140f;
+            axe.chainWindow = 0.6f;
+            axe.strikeAnimTime = 0.42f;
+            axe.lungeSpeed = 4.0f;
+            axe.cleaveStyle = CleaveStyle.Ground;
+            axe.cleaveDamage = 36f;
+            axe.cleaveRange = 3.4f;
+            axe.cleaveArcDeg = 360f;
+            axe.cleaveWindup = 0.42f;
+            axe.cleaveCooldown = 2.2f;
+            axe.trailColor = new Color(0.9f, 0.75f, 0.55f);
+            EditorUtility.SetDirty(axe);
+
             // Hand Crossbow: a ranged option that still has to survive up close.
             // Quiver on the off hand so the silhouette reads as a shooter.
             var bow = W("HandCrossbow");
