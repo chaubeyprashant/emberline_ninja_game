@@ -17,7 +17,8 @@ MonoBehaviour:
   - id: bolt
     displayName: BOLT
     context: 16
-    startup: 0.05
+    startup: 0
+    active: 0
     animTime: 0.3
     recovery: 0
     cooldown: 0
@@ -37,7 +38,8 @@ MonoBehaviour:
   - id: bolt_2
     displayName: BOLT 2
     context: 15
-    startup: 0.05
+    startup: 0
+    active: 0
     animTime: 0.3
     recovery: 0
     cooldown: 0
@@ -57,7 +59,8 @@ MonoBehaviour:
   - id: heavy_bolt
     displayName: HEAVY BOLT
     context: 14
-    startup: 0.05
+    startup: 0
+    active: 0
     animTime: 0.34
     recovery: 0.25
     cooldown: 0
@@ -77,7 +80,8 @@ MonoBehaviour:
   - id: volley
     displayName: VOLLEY
     context: 13
-    startup: 0.05
+    startup: 0
+    active: 0
     animTime: 0.28
     recovery: 0.3
     cooldown: 0
@@ -97,7 +101,8 @@ MonoBehaviour:
   - id: stock_strike
     displayName: STOCK STRIKE
     context: 5
-    startup: 0.05
+    startup: 0
+    active: 0
     animTime: 0.28
     recovery: 0.22
     cooldown: 0
@@ -117,7 +122,8 @@ MonoBehaviour:
   - id: point_blank
     displayName: POINT BLANK
     context: 2
-    startup: 0.05
+    startup: 0
+    active: 0
     animTime: 0.28
     recovery: 0
     cooldown: 0
@@ -137,7 +143,8 @@ MonoBehaviour:
   - id: snap_shot
     displayName: SNAP SHOT
     context: 3
-    startup: 0.05
+    startup: 0
+    active: 0
     animTime: 0.28
     recovery: 0
     cooldown: 0
@@ -157,7 +164,8 @@ MonoBehaviour:
   - id: finish
     displayName: FINISH
     context: 1
-    startup: 0.05
+    startup: 0
+    active: 0
     animTime: 0.28
     recovery: 0
     cooldown: 0
@@ -177,7 +185,8 @@ MonoBehaviour:
   - id: silent_end
     displayName: SILENT END
     context: 0
-    startup: 0.05
+    startup: 0
+    active: 0
     animTime: 0.28
     recovery: 0
     cooldown: 0
@@ -197,7 +206,8 @@ MonoBehaviour:
   - id: back_shot
     displayName: BACK SHOT
     context: 4
-    startup: 0.05
+    startup: 0
+    active: 0
     animTime: 0.28
     recovery: 0
     cooldown: 0

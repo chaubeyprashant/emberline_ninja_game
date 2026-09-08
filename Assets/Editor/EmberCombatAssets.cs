@@ -47,12 +47,14 @@ namespace Emberline.EditorTools
         private static PlayerAttackDefinition P(AttackContext ctx, string id, RigPose pose,
             float dmg = 1f, float range = 1f, float arc = 130f, float lunge = 5.5f,
             float anim = 0.28f, float recovery = 0f, float cooldown = 0f, float posture = 1f,
+            float startup = 0f, float active = 0f,
             bool crush = false, bool launch = false, bool execute = false, bool heavy = false,
             float cam = 0f, float hitStop = 0.04f, int stage = 0) => new()
         {
             context = ctx, id = id, displayName = id.ToUpperInvariant().Replace('_', ' '),
             pose = pose, damageMultiplier = dmg, rangeMultiplier = range, arcDeg = arc,
             lunge = lunge, animTime = anim, recovery = recovery, cooldown = cooldown,
+            startup = startup, active = active,
             postureMultiplier = posture, crush = crush, launch = launch, execute = execute,
             heavyWhoosh = heavy, cameraImpact = cam, hitStop = hitStop, chainStage = stage,
         };

@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using UnityEngine;
+using Emberline.Combat;
 using Emberline.Core;
 using Emberline.Enemies;
 using Emberline.UI;
@@ -192,6 +193,13 @@ namespace Emberline.Player
 
         private void Start()
         {
+            // Weapon tracing reads the blade off the animated skeleton, so the
+            // player's bones must update even on a frame the renderer is culled.
+            // Every rig defaults to CullUpdateTransforms, which is right for a
+            // crowd and wrong for the one character whose edge decides hits.
+            var anim = GetComponentInChildren<Animator>(true);
+            if (anim != null) anim.cullingMode = AnimatorCullingMode.AlwaysAnimate;
+
             _rig = FindFirstObjectByType<CameraRig>();
             ApplyWeapon(Loadout.Current);
         }
@@ -273,6 +281,7 @@ namespace Emberline.Player
             UpdateBreathing();
             _lockT = Mathf.Max(0, _lockT - Time.deltaTime);
             UpdateState(Time.deltaTime);
+            UpdateSwing(Time.deltaTime);
             UpdateGuard();
             Memory.Tick(Time.deltaTime);
             _afterHeavyT = Mathf.Max(0f, _afterHeavyT - Time.deltaTime);
@@ -508,13 +517,14 @@ namespace Emberline.Player
                 return;
             }
             var dmg = cleaveDamage * def.damageMultiplier / 2.6f; // katana cleave = 2.6× a base cut
-            StrikeArc(cleaveRange * def.rangeMultiplier, def.arcDeg, dmg, crush: def.crush,
-                launch: def.launch, postureMul: def.postureMultiplier);
-            if (def.cameraImpact > 0f) { _rig?.Shake(def.cameraImpact * 6f, 0.22f); _rig?.RequestCameraImpact(def.cameraImpact * 0.7f, 0.3f); }
+            // A heavy swings after its wind-up, so its active window is the swing
+            // itself: longer and slower than a light's, and it commits.
+            BeginSwing(def, dmg, cleaveRange * def.rangeMultiplier, def.arcDeg,
+                def.crush, def.launch, def.postureMultiplier,
+                def.animTime > 0f ? def.animTime : 0.42f);
             if (_weapon != null && _weapon.poisonCleave)
                 PoisonPuddle.Spawn(transform.position + _motor.Facing * 1.6f);
             _afterHeavyT = 0.5f;
-            if (def.recovery > 0f) Enter(CombatState.Recover, def.recovery);
         }
 
         /// <summary>Which thrown model this weapon uses; plain kunai unless it says otherwise.</summary>
@@ -720,6 +730,13 @@ namespace Emberline.Player
         private bool Perform(PlayerAttackDefinition def, AttackContext ctx, EnemyBrain target, bool heavyPressed)
         {
             if (def.cooldown > 0f && _contextCd > 0f && LastAttack == def) return false;
+            // One swing at a time. Before the blade had a startup this did not
+            // matter — the hit resolved on the press — so mashing was free damage.
+            // Now a press during a swing that has not finished its active window
+            // would cancel it before it could land, and mashing would deal none at
+            // all. The press is refused here and the input buffer retries it a
+            // frame later, which is what commitment is supposed to feel like.
+            if (_swinging) return false;
             var heavy = heavyPressed || def.heavyWhoosh;
             var animTime = def.animTime > 0f ? def.animTime
                 : _weapon != null ? _weapon.strikeAnimTime : 0.28f;
@@ -792,16 +809,14 @@ namespace Emberline.Player
                 return true;
             }
 
-            StrikeArc(strikeRange * def.rangeMultiplier, def.arcDeg, dmg, crush: def.crush,
-                launch: def.launch, postureMul: def.postureMultiplier);
-            if (def.cameraImpact > 0f) { _rig?.Shake(def.cameraImpact * 6f, 0.2f); _rig?.RequestCameraImpact(def.cameraImpact * 0.7f, 0.3f); }
+            // The swing is a shape now, not an instant. The state, the lunge, the
+            // sound and the animation all happen on this frame — the input stays
+            // as responsive as it ever was — but the edge only threatens anyone
+            // once it is actually travelling.
+            BeginSwing(def, dmg, strikeRange * def.rangeMultiplier, def.arcDeg,
+                def.crush, def.launch, def.postureMultiplier, animTime);
             if (_weapon != null && _weapon.archetype == WeaponArchetype.Daggers)
                 FxPools.QuickSlash(transform.position + Vector3.up * 1.1f + _motor.Facing * 1.2f, _motor.Facing);
-
-            // Commitment: a finisher, a counter or a whiff costs a recovery the
-            // player cannot cancel out of. This is what makes timing beat mashing.
-            if (def.recovery > 0f) { Enter(CombatState.Recover, def.recovery); }
-            else if (_whiffT > 0f) { Enter(CombatState.Recover, 0.22f); }
             return true;
         }
 
@@ -915,6 +930,203 @@ namespace Emberline.Player
             }
         }
 
+        // ------------------------------------------------------- the live swing
+
+        /// <summary>
+        /// A swing in flight. The button press no longer *is* the hit: it starts
+        /// a shape — startup, active, follow-through — and the blade only
+        /// threatens anyone while it is genuinely moving through them.
+        /// </summary>
+        private struct Swing
+        {
+            public PlayerAttackDefinition def;
+            public AttackWindow window;
+            public float elapsed;
+            public float damage, range, arcDeg, postureMul;
+            public bool crush, launch;
+            public bool tracing;   // a blade was found; the trace is authoritative
+            public bool opened;    // the active window has been entered
+        }
+
+        private readonly BladePoints _blade = new();
+        private readonly WeaponTrace _trace = new();
+        private Swing _swing;
+        private bool _swinging;
+
+        /// <summary>Phase of the swing in flight — read by the AI and the HUD.</summary>
+        public AttackPhase SwingPhase => _swinging
+            ? _swing.window.PhaseAt(_swing.elapsed) : AttackPhase.Done;
+
+        /// <summary>True while the blade is actually dangerous.</summary>
+        public bool BladeActive => _swinging && SwingPhase == AttackPhase.Active;
+
+        /// <summary>Direction of the last blow that connected.</summary>
+        public AttackDirection LastSwingDirection { get; private set; } = AttackDirection.Forward;
+
+        private void BeginSwing(PlayerAttackDefinition def, float damage, float range,
+            float arcDeg, bool crush, bool launch, float postureMul, float animTime)
+        {
+            _swing = new Swing
+            {
+                def = def,
+                window = new AttackWindow(animTime, def != null ? def.startup : 0f,
+                    def != null ? def.active : 0f, 0f),
+                elapsed = 0f,
+                damage = damage,
+                range = range,
+                arcDeg = arcDeg,
+                postureMul = postureMul,
+                crush = crush,
+                launch = launch,
+            };
+            _swinging = true;
+        }
+
+        /// <summary>
+        /// Drive the swing's phases. The trace opens when the active window does
+        /// and is stepped every frame after, so the blade's path between frames is
+        /// what gets tested — not its position at one instant.
+        /// </summary>
+        private void UpdateSwing(float dt)
+        {
+            if (!_swinging) return;
+            // A dodge, a stagger or an execution takes the character away from the
+            // swing; the blade stops threatening anyone the moment that happens.
+            if (State is CombatState.Dodge or CombatState.Staggered or CombatState.Execute)
+            {
+                _trace.End();
+                _swinging = false;
+                return;
+            }
+
+            _swing.elapsed += dt;
+
+            // Thresholds, not phase equality. A frame long enough to step over the
+            // whole active window — entirely possible on a mid-range phone — must
+            // still open the window, trace once and resolve, or the swing would
+            // silently do nothing.
+            if (_swing.elapsed >= _swing.window.StartupEnd)
+            {
+                if (!_swing.opened)
+                {
+                    _swing.opened = true;
+                    _swing.tracing = _blade.Resolve(gameObject);
+                    TraceTelemetry.Swings++;
+                    if (_swing.tracing) { _trace.Begin(_blade); TraceTelemetry.Traced++; }
+                    if (_swing.def != null && _swing.def.cameraImpact > 0f)
+                    {
+                        _rig?.Shake(_swing.def.cameraImpact * 6f, 0.2f);
+                        _rig?.RequestCameraImpact(_swing.def.cameraImpact * 0.7f, 0.3f);
+                    }
+                }
+                else if (_swing.tracing) _trace.Step(_blade);
+                if (_swing.tracing) TraceSwingHits();
+            }
+
+            if (_swing.elapsed >= _swing.window.ActiveEnd) FinishSwing();
+        }
+
+        /// <summary>Everything the edge passed through since the last frame.</summary>
+        private void TraceSwingHits()
+        {
+            // Broad phase by distance only — the trace itself decides the shape,
+            // so a facing cone here would just re-introduce the old test.
+            CollectWithin(_scan, _swing.range + 1.4f, 360f);
+            for (var i = 0; i < _scan.Count; i++)
+            {
+                var brain = _scan[i];
+                if (brain == null || brain.Dead) continue;
+                if (_trace.AlreadyHit(brain)) continue;
+
+                var scale = Mathf.Max(0.3f, brain.transform.lossyScale.y);
+                if (!_trace.Sweep(brain.transform.position, BodyHeight * scale, BodyRadius * scale))
+                    continue;
+
+                _trace.MarkHit(brain);
+                TraceTelemetry.TraceHits++;
+                LastSwingDirection = AttackDirections.FromSwing(_trace.LastSwingDir, transform);
+                ApplyHitTo(brain, _swing.damage, _swing.crush, _swing.launch,
+                    _swing.postureMul, _trace.LastContact);
+            }
+        }
+
+        /// <summary>
+        /// The active window has closed. Anything the blade could not resolve
+        /// itself falls back to the arc test, so a character with no weapon in
+        /// hand — or a rig whose transforms are culled — fights exactly as it did
+        /// before tracing existed.
+        /// </summary>
+        private void FinishSwing()
+        {
+            var hitAny = false;
+            if (_trace.Frozen) TraceTelemetry.FrozenBlades++;
+            if (!_swing.tracing || _trace.Frozen && _trace.HitCount == 0)
+            {
+                TraceTelemetry.FallbackArcs++;
+                CollectWithin(_scan, _swing.range, _swing.arcDeg);
+                foreach (var brain in _scan)
+                {
+                    var contact = Vector3.Lerp(transform.position,
+                        brain.transform.position, 0.72f) + Vector3.up * 1.15f;
+                    ApplyHitTo(brain, _swing.damage, _swing.crush, _swing.launch,
+                        _swing.postureMul, contact);
+                    hitAny = true;
+                }
+            }
+            else hitAny = _trace.HitCount > 0;
+
+            _trace.End();
+            hitAny |= SwingEnvironment(_swing.range, _swing.arcDeg, _swing.damage);
+            SwingFeedback(hitAny, _swing.crush);
+
+            // Commitment is paid at the end of the swing, not at its start: a
+            // finisher, a counter or a whiff costs a recovery the player cannot
+            // cancel out of. This is what makes timing beat mashing.
+            var recovery = _swing.def != null ? _swing.def.recovery : 0f;
+            if (recovery > 0f) Enter(CombatState.Recover, recovery);
+            else if (!hitAny) Enter(CombatState.Recover, 0.22f);
+            _swinging = false;
+        }
+
+        /// <summary>Capsule a character is treated as, for tracing. Matches the controller.</summary>
+        private const float BodyHeight = 1.8f;
+        private const float BodyRadius = 0.44f;
+
+        /// <summary>
+        /// One target, one hit. Extracted from <see cref="StrikeArc"/> so the arc
+        /// test and the swept blade trace resolve a landed blow identically — the
+        /// only difference between them is how the target was found.
+        /// </summary>
+        private void ApplyHitTo(EnemyBrain brain, float damage, bool crush, bool launch,
+            float postureMul, Vector3 contact)
+        {
+            // A reeling, nearly-dead mook is finished outright instead.
+            if (brain.CanExecute) { Execute(brain); return; }
+
+            var dealt = brain.TakeHit(damage, transform.position, crush, postureMul);
+            if (launch && !brain.Dead) brain.Launch(launchSpeed);
+            ShowDamage(brain, dealt, ember: crush);
+            // Impact at the contact point, not the body centre: a short spark
+            // burst for steel, a little dark mist for flesh, and dust kicked
+            // off the deck on a heavy. Deliberately small — the hit-stop and
+            // the reaction carry the weight, not the particles.
+            FxPools.Sparks(contact, new Color(0.86f, 0.88f, 0.92f), crush ? 7 : 4);
+            FxPools.Puff(contact, new Color(0.24f, 0.06f, 0.05f, 0.85f), crush ? 5 : 3);
+            if (crush)
+                FxPools.Puff(brain.transform.position + Vector3.up * 0.15f,
+                    new Color(0.30f, 0.27f, 0.24f, 0.7f), 6);
+            FxPools.Slash(contact, _motor.Facing, crush);
+            // Marsh Hook: the third hit drags enemies toward Renzo.
+            if (crush && _weapon != null && _weapon.pullOnThirdHit && !brain.Dead)
+            {
+                var to = transform.position - brain.transform.position;
+                var d = to.magnitude;
+                if (d > 1.6f)
+                    brain.transform.position += to.normalized * Mathf.Min(1.3f, d - 1.5f);
+            }
+            OnHitLanded();
+        }
+
         private void StrikeArc(float range, float arcDeg, float damage, bool crush,
             bool launch = false, float postureMul = 1f)
         {
@@ -922,46 +1134,26 @@ namespace Emberline.Player
             CollectWithin(_scan, range, arcDeg);
             foreach (var brain in _scan)
             {
-                // A reeling, nearly-dead mook is finished outright instead.
-                if (brain.CanExecute)
-                {
-                    Execute(brain);
-                    hitAny = true;
-                    continue;
-                }
-                var dealt = brain.TakeHit(damage, transform.position, crush, postureMul);
-                if (launch && !brain.Dead) brain.Launch(launchSpeed);
-                ShowDamage(brain, dealt, ember: crush);
-                // Impact at the contact point, not the body centre: a short spark
-                // burst for steel, a little dark mist for flesh, and dust kicked
-                // off the deck on a heavy. Deliberately small — the hit-stop and
-                // the reaction carry the weight, not the particles.
                 var contact = Vector3.Lerp(transform.position,
                     brain.transform.position, 0.72f) + Vector3.up * 1.15f;
-                FxPools.Sparks(contact, new Color(0.86f, 0.88f, 0.92f), crush ? 7 : 4);
-                FxPools.Puff(contact, new Color(0.24f, 0.06f, 0.05f, 0.85f), crush ? 5 : 3);
-                if (crush)
-                    FxPools.Puff(brain.transform.position + Vector3.up * 0.15f,
-                        new Color(0.30f, 0.27f, 0.24f, 0.7f), 6);
-                FxPools.Slash(contact, _motor.Facing, crush);
-                // Marsh Hook: the third hit drags enemies toward Renzo.
-                if (crush && _weapon != null && _weapon.pullOnThirdHit && !brain.Dead)
-                {
-                    var to = transform.position - brain.transform.position;
-                    var d = to.magnitude;
-                    if (d > 1.6f)
-                        brain.transform.position += to.normalized * Mathf.Min(1.3f, d - 1.5f);
-                }
-                OnHitLanded();
+                ApplyHitTo(brain, damage, crush, launch, postureMul, contact);
                 hitAny = true;
             }
-            // Villagers are in the arc too. They are not targets and never draw
-            // the soft-lock, but a careless swing at someone fleeing past you
-            // will kill them — which is the only reason the "no civilian deaths"
-            // objective means anything.
+            hitAny |= SwingEnvironment(range, arcDeg, damage);
+            SwingFeedback(hitAny, crush);
+        }
+
+        /// <summary>
+        /// Everything in the swing's path that is not an enemy: villagers, who are
+        /// never targets but can still be cut down by a careless arc, and the
+        /// arena lantern posts. Both stay on the arc test — a villager has no
+        /// combat capsule and a lantern post is scenery.
+        /// </summary>
+        private bool SwingEnvironment(float range, float arcDeg, float damage)
+        {
             Missions.Villager.SweepDamage(transform.position, _motor.Facing, range, arcDeg, damage);
 
-            // Strikes also crack arena lantern posts (break → health pickup).
+            var hit = false;
             foreach (var post in LanternPost.Active)
             {
                 if (post.Broken) continue;
@@ -969,18 +1161,20 @@ namespace Emberline.Player
                 to.y = 0;
                 if (to.magnitude > range || Vector3.Angle(_motor.Facing, to) > arcDeg * 0.5f) continue;
                 post.Damage(damage, GetComponent<Health>());
-                hitAny = true;
+                hit = true;
             }
+            return hit;
+        }
 
-            if (!hitAny) { _whiffT = 0.55f; Memory.OnWhiff(); }
-            if (hitAny)
-            {
-                Sfx3D.ImpactAt(transform.position + _motor.Facing * 1.4f + Vector3.up,
-                    crush ? Sfx3D.ImpactKind.Heavy : Sfx3D.ImpactKind.Blade, crush ? 1.3f : 1f);
-                _rig?.Shake(crush ? 5f : 2.5f, 0.18f);
-                _rig?.ImpactZoom(crush ? 0.8f : 0.4f);
-                RunHitStop(crush ? 0.06f : 0.04f);
-            }
+        /// <summary>The impact of a swing that connected, or the cost of one that did not.</summary>
+        private void SwingFeedback(bool hitAny, bool crush)
+        {
+            if (!hitAny) { _whiffT = 0.55f; Memory.OnWhiff(); return; }
+            Sfx3D.ImpactAt(transform.position + _motor.Facing * 1.4f + Vector3.up,
+                crush ? Sfx3D.ImpactKind.Heavy : Sfx3D.ImpactKind.Blade, crush ? 1.3f : 1f);
+            _rig?.Shake(crush ? 5f : 2.5f, 0.18f);
+            _rig?.ImpactZoom(crush ? 0.8f : 0.4f);
+            RunHitStop(crush ? 0.06f : 0.04f);
         }
 
         /// <summary>
@@ -1286,6 +1480,11 @@ namespace Emberline.Player
         /// <summary>Never leave time dilated behind us.</summary>
         private void OnDisable()
         {
+            if (TraceTelemetry.Swings > 0)
+            {
+                Debug.Log("[Trace] " + TraceTelemetry.Summary);
+                TraceTelemetry.Reset();
+            }
             TimeFrozen = false; // a scene load must never leave time owned
             if (_dipT <= 0f) return;
             _dipT = 0f;
