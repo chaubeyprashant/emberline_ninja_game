@@ -1040,7 +1040,7 @@ namespace Emberline.EditorTools
 
             var tanto = W("StormTanto");
             tanto.archetype = WeaponArchetype.Blade;
-            tanto.propRight = "dagger";
+            tanto.propRight = "tanto";         // Lowes tanto via its wrapper prefab
             tanto.propLeft = "";
             tanto.strikeChainLength = 3;
             tanto.cleaveStyle = CleaveStyle.Slash;
@@ -1170,7 +1170,7 @@ namespace Emberline.EditorTools
 
         /// <summary>Every hand prop any weapon can ask for, so runtime swaps have targets.</summary>
         private static readonly string[] WeaponPropsRight =
-            { "sword_1handed", "dagger", "axe_2handed", "smokebomb", "crossbow_1handed", "katana" };
+            { "sword_1handed", "dagger", "axe_2handed", "smokebomb", "crossbow_1handed", "katana", "tanto" };
 
         private static readonly string[] WeaponPropsLeft = { "dagger", "quiver" };
 

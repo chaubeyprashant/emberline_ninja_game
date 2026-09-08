@@ -186,6 +186,17 @@ namespace Emberline.EditorTools
                 grip = new Vector3(0f, 0f, -24f), guard = new Vector3(0f, 0f, -19f),
                 tip = new Vector3(0f, 0f, 22.5f),
             },
+            // Elliott Lowes tanto: already along Y but blade DOWN, origin at the
+            // blade/handle junction, handle 0.103 up, blade 0.182 down. Flipped
+            // 180 about Z, gripped at mid-handle. 0.85 prop units = 0.53 m on
+            // Renzo: less than half the katana, so the silhouette says "short".
+            new WrapSpec
+            {
+                name = "tanto", fbx = "Assets/Art/Weapons/Tanto_Lowes/tanto_lowes.fbx",
+                scale = 0.85f / 0.285f, rotEuler = new Vector3(0f, 0f, 180f),
+                grip = new Vector3(0f, 0.05f, 0f), guard = Vector3.zero,
+                tip = new Vector3(0f, -0.182f, 0f),
+            },
         };
 
         /// <summary>
