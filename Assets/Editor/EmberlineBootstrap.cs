@@ -1220,6 +1220,35 @@ namespace Emberline.EditorTools
             axe.trailColor = new Color(0.9f, 0.75f, 0.55f);
             EditorUtility.SetDirty(axe);
 
+            // Bow: the off-hand weapon. Nothing in the right hand, the bow in the
+            // left, and the throw button looses an arrow. The cleave is a three-
+            // arrow fan, like the crossbow's, but with more reach and less melee.
+            var bow0 = W("Yumi");
+            bow0.id = "yumi";
+            bow0.displayName = "YUMI";
+            bow0.blurb = "Distance. Nothing for a close fight, and no fight gets close.";
+            bow0.unlockLevel = 16;
+            bow0.archetype = WeaponArchetype.Ranged;
+            bow0.propRight = "";
+            bow0.propLeft = "yumi";
+            bow0.strikeChainLength = 2;
+            bow0.strikeDamage = new[] { 5f, 7f };
+            bow0.strikeRange = 1.8f;
+            bow0.strikeArcDeg = 90f;
+            bow0.chainWindow = 0.6f;
+            bow0.strikeAnimTime = 0.28f;
+            bow0.lungeSpeed = 3.4f;
+            bow0.cleaveStyle = CleaveStyle.FanShot;
+            bow0.cleaveDamage = 16f;      // per arrow
+            bow0.cleaveRange = 3f;
+            bow0.cleaveArcDeg = 50f;
+            bow0.cleaveWindup = 0.26f;
+            bow0.cleaveCooldown = 1.5f;
+            bow0.replacesKunaiWithThrown = true;
+            bow0.thrownId = "Bolt";
+            bow0.trailColor = new Color(0.85f, 0.8f, 0.6f);
+            EditorUtility.SetDirty(bow0);
+
             // Hand Crossbow: a ranged option that still has to survive up close.
             // Quiver on the off hand so the silhouette reads as a shooter.
             var bow = W("HandCrossbow");
@@ -1253,7 +1282,7 @@ namespace Emberline.EditorTools
         private static readonly string[] WeaponPropsRight =
             { "sword_1handed", "dagger", "axe_2handed", "smokebomb", "crossbow_1handed", "katana", "tanto", "twindagger", "kama", "yari", "naginata" };
 
-        private static readonly string[] WeaponPropsLeft = { "dagger", "quiver", "twindagger" };
+        private static readonly string[] WeaponPropsLeft = { "dagger", "quiver", "twindagger", "yumi" };
 
         // ----------------------------------------------------- prefabs / data
 

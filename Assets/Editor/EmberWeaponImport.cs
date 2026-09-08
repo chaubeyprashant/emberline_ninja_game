@@ -130,13 +130,17 @@ namespace Emberline.EditorTools
                 cam.orthographicSize = ext * 0.6f;
                 cam.clearFlags = CameraClearFlags.SolidColor;
                 cam.backgroundColor = new Color(0.12f, 0.12f, 0.14f);
-                // Look across the long axis, never along it: a spear authored on X
-                // seen from +X is a dot. X-long meshes are viewed from +Z (XY plane);
-                // everything else from +X (ZY plane).
+                // Look along the THINNEST axis, so the two big dimensions fill the
+                // image. A spear on X seen from +X is a dot; a bow whose curve lies
+                // in XY seen from +X is a stick. The thin axis is the one that is
+                // always safe to look down.
                 var s = b.size;
-                var xLong = s.x >= s.y && s.x >= s.z;
-                cam.transform.position = b.center + (xLong ? Vector3.forward : Vector3.right) * (ext * 3f);
-                cam.transform.LookAt(b.center, Vector3.up);
+                Vector3 dir;
+                if (s.z <= s.x && s.z <= s.y) dir = Vector3.forward;
+                else if (s.x <= s.y) dir = Vector3.right;
+                else dir = Vector3.up;
+                cam.transform.position = b.center + dir * (ext * 3f);
+                cam.transform.LookAt(b.center, dir == Vector3.up ? Vector3.forward : Vector3.up);
 
                 var rt = new RenderTexture(1600, 800, 24);
                 cam.targetTexture = rt; cam.Render();
@@ -180,6 +184,13 @@ namespace Emberline.EditorTools
             public float targetLength; // prop units the whole weapon should span
             public float gripFrac;     // 0 = pommel end, 1 = tip
             public float guardFrac;
+
+            /// <summary>
+            /// Child objects to disable, matched case-insensitively by name
+            /// substring. A "bow and arrow" model ships its arrows lying beside
+            /// the bow; the hand wants the bow.
+            /// </summary>
+            public string[] hideChildren;
         }
 
         /// <summary>
@@ -198,6 +209,19 @@ namespace Emberline.EditorTools
                 scale = 1.9f / 58.097f, rotEuler = new Vector3(-90f, 0f, 0f),
                 grip = new Vector3(0f, 0f, -24f), guard = new Vector3(0f, 0f, -19f),
                 tip = new Vector3(0f, 0f, 22.5f),
+            },
+            // twistedc3 bow: stave vertical along Y, 5.1 tall, curving toward -X
+            // with the belly at x=-2.28 at mid-height; three arrows lie on the +X
+            // side and are hidden. Gripped on the belly at mid-height. 2.7 prop
+            // units = 1.67 m on Renzo, a tall bow but not a yumi's 2.2 m — the
+            // limbs would leave the screen.
+            new WrapSpec
+            {
+                name = "yumi", fbx = "Assets/Art/Weapons/Bow_twistedc3/bow_twistedc3.fbx",
+                scale = 2.7f / 5.096f, rotEuler = Vector3.zero,
+                grip = new Vector3(-2.2f, 0f, 0f), guard = new Vector3(-2.2f, 0f, 0f),
+                tip = new Vector3(-1.4f, 2.55f, 0f),
+                hideChildren = new[] { "arrow" },
             },
             // Yavuz Temel naginata: 358 triangles, along Z with the origin mid-shaft,
             // butt at z=-0.29, collar at +0.21, tip at +0.35. Lead hand a third from
@@ -288,6 +312,11 @@ namespace Emberline.EditorTools
                 mesh.transform.SetParent(root.transform, false);
                 mesh.transform.localRotation = rot;
                 foreach (var c in mesh.GetComponentsInChildren<Collider>(true)) Object.DestroyImmediate(c);
+                if (w.hideChildren != null)
+                    foreach (var t in mesh.GetComponentsInChildren<Transform>(true))
+                        foreach (var key in w.hideChildren)
+                            if (t != mesh.transform && t.name.ToLowerInvariant().Contains(key.ToLowerInvariant()))
+                                t.gameObject.SetActive(false);
 
                 Vector3 gripP, guardP, tipP;
                 if (w.targetLength > 0f)
@@ -364,17 +393,21 @@ namespace Emberline.EditorTools
             foreach (var w in Resources.LoadAll<Core.WeaponDef>("Weapons"))
             {
                 swap.Invoke(combat, new object[] { w });
+                // Frame whichever hand holds the weapon. A bow lives in the left.
+                var leftOnly = string.IsNullOrEmpty(w.propRight) && !string.IsNullOrEmpty(w.propLeft);
+                var anchorName = leftOnly ? "GripAnchor_l" : "GripAnchor_r";
+                var sx = leftOnly ? -1f : 1f;
                 Transform hand = null;
                 foreach (var t in renzo.GetComponentsInChildren<Transform>(true))
-                    if (t.name == "GripAnchor_r") { hand = t; break; }
+                    if (t.name == anchorName) { hand = t; break; }
                 if (hand == null) continue;
 
-                // Side view of the right hand: camera out along +X, looking at the
-                // hand, far enough to frame a 1.2 m blade plus the forearm.
+                // Side view of the hand: camera out along the arm's side, far enough
+                // to frame a 1.2 m blade plus the forearm.
                 var look = hand.position;
-                Shot(look + new Vector3(2.2f, 0.15f, 0f), look, $"Logs/inhand_{w.id}_side.png", 1200, 700, 1.1f);
+                Shot(look + new Vector3(2.2f * sx, 0.15f, 0f), look, $"Logs/inhand_{w.id}_side.png", 1200, 700, 1.1f);
                 // Front-quarter, to check the grip sits in the palm and not the wrist.
-                Shot(look + new Vector3(0.9f, 0.5f, 1.3f), look, $"Logs/inhand_{w.id}_quarter.png", 900, 700, 0.55f);
+                Shot(look + new Vector3(0.9f * sx, 0.5f, 1.3f), look, $"Logs/inhand_{w.id}_quarter.png", 900, 700, 0.55f);
             }
             Debug.Log("[Weapons] in-hand snapshots written");
             if (Application.isBatchMode) EditorApplication.Exit(0);
