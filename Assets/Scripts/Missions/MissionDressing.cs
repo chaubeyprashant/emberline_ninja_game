@@ -55,10 +55,11 @@ namespace Emberline.Missions
                 // Spread the clusters around the perimeter rather than clumping:
                 // the player should meet the story on the way to things.
                 var angle = (i + 0.5f) / n * Mathf.PI * 2f + 0.6f;
+                // Place at 70% of radius so props sit well inside boundaries.
                 var at = new Vector3(
-                    Mathf.Cos(angle) * (halfExtents.x - 2.2f),
+                    Mathf.Cos(angle) * halfExtents.x * 0.7f,
                     0f,
-                    Mathf.Sin(angle) * (halfExtents.y - 1.8f));
+                    Mathf.Sin(angle) * halfExtents.y * 0.7f);
                 Place(plan.dressing[i], at, angle * Mathf.Rad2Deg);
             }
 
@@ -124,8 +125,8 @@ namespace Emberline.Missions
         public static void SpawnPen(Vector2 halfExtents, int count)
         {
             if (_root == null) _root = new GameObject("MissionDressing");
-            var at = new Vector3(Random.Range(-halfExtents.x * 0.45f, halfExtents.x * 0.45f), 0f,
-                Random.Range(-halfExtents.y * 0.45f, halfExtents.y * 0.45f));
+            var at = new Vector3(Random.Range(-halfExtents.x * 0.35f, halfExtents.x * 0.35f), 0f,
+                Random.Range(-halfExtents.y * 0.35f, halfExtents.y * 0.35f));
             for (var i = 0; i < 6; i++)
             {
                 var a = i / 6f * Mathf.PI * 2f;

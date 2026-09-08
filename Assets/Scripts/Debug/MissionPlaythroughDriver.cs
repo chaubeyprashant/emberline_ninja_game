@@ -214,10 +214,20 @@ namespace Emberline.DebugTools
             var dMark = marker != null ? Vector3.Distance(p, marker.Value) : -1f;
             var moved = Vector3.Distance(p, _lastTracePos);
             _lastTracePos = p;
+            // Terrain diagnostics: the arenas used to be flat at y = 0, so if the
+            // ground service is off or an enemy is sitting at the wrong height,
+            // that is the first thing to rule out when a stage will not finish.
+            var foe = NearestEnemy(out var foeDist);
+            var foeInfo = foe != null
+                ? $"foeY={foe.transform.position.y:0.00} foeDist={foeDist:0.0} " +
+                  $"foeGround={Core.Ground.HeightAt(foe.transform.position):0.00}"
+                : "foe=none";
             Debug.Log($"[PLAY]   {tag} {Session.Story[_level].name} stage {dir?.StageIndex} " +
                       $"{s?.goal} player=({p.x:0.0},{p.z:0.0}) point=({s?.point.x:0.0},{s?.point.z:0.0}) " +
                       $"dist={toPoint:0.0} moved={moved:0.0} dClue={dClue:0.0} dMarker={dMark:0.0} " +
                       $"markers={markers} clues={clues} alive={alive} " +
+                      $"zone={Core.Ground.ZoneActive} playerY={p.y:0.00} " +
+                      $"groundHere={Core.Ground.HeightAt(p):0.00} {foeInfo} " +
                       $"phase={_gm.State} escort={(EscortNpc.Active != null)} " +
                       $"cine={GameManager.CinematicActive} frozen={Player.CombatController.TimeFrozen} " +
                       $"ts={Time.timeScale:0.00} move={EmberInput.Scripted} " +

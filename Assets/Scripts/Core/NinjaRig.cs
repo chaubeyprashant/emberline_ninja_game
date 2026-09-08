@@ -60,6 +60,10 @@ namespace Emberline.Core
         private RigPose _forcedPose;
         private float _forcedPhase;
 
+        private float _swordLag;
+        private float _swordLagVel;
+        private float _lastArmX;
+
         private bool _oneActive;
         private RigPose _onePose;
         private float _oneT, _oneDur;
@@ -438,6 +442,27 @@ namespace Emberline.Core
                 var flutter = Mathf.Sin(Time.time * 8f) * 8f + move01 * 25f;
                 _scarf.localRotation = Quaternion.Slerp(_scarf.localRotation,
                     Quaternion.Euler(-flutter, 0, Mathf.Sin(Time.time * 5f) * 6f), s);
+            }
+
+            if (_swordJoint != null && dt > 0.001f)
+            {
+                float currentArmX = _armR.localEulerAngles.x + _foreR.localEulerAngles.x;
+                float deltaX = Mathf.DeltaAngle(_lastArmX, currentArmX);
+                _lastArmX = currentArmX;
+
+                // Inject inertia: when arm rotates fast, sword lags behind
+                _swordLag -= deltaX * 0.85f;
+
+                // Hooke's law spring physics with damping
+                float freq = 18f;
+                float damp = 0.45f; // Slight underdamping for follow-through bounce
+                _swordLagVel += (-freq * freq * _swordLag - 2f * damp * freq * _swordLagVel) * dt;
+                _swordLag += _swordLagVel * dt;
+
+                // Clamp to prevent wrist breaking
+                _swordLag = Mathf.Clamp(_swordLag, -90f, 90f);
+
+                _swordJoint.localRotation = Quaternion.Euler(-15f + _swordLag, 0, 0);
             }
         }
 

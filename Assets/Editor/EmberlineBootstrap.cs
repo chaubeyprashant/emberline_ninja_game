@@ -28,7 +28,10 @@ namespace Emberline.EditorTools
         /// in the editor and silently missing from every APK.
         /// </summary>
         private static readonly string[] ShippedScenes =
-            { OpeningScene, RooftopScene, MarshScene };
+            { OpeningScene, RooftopScene, MarshScene, ZoneSceneRef };
+
+        /// <summary>The open mission zone, built by EmberZone.</summary>
+        private const string ZoneSceneRef = "Assets/Scenes/Zone.unity";
 
         private enum Theme { Rooftop, Marsh }
 
@@ -153,8 +156,19 @@ namespace Emberline.EditorTools
             var env = EnvThemes.Get(themeId);
 
             BuildLighting(theme, env);
-            BuildArena(theme);
+
+            // The valley, not a deck. BuildArena's 130 m cube and its four cube
+            // parapets were the cage the player could see and feel; missions are
+            // fought in the real place now, and the two themes differ by light and
+            // weather rather than by being two identical boxes.
+            var worldRoot = new GameObject("Zone").transform;
+            EmberZone.BuildWorld(worldRoot, $"Assets/Art/Environments/Zone/Meshes",
+                withMarkers: true);
+
             var player = BuildPlayer();
+            // BuildPlayer stands Renzo at y = 0, which is under the meadow.
+            player.transform.position = Emberline.Core.Ground.Snap(
+                new Vector3(0f, 0f, -3f)) + Vector3.up * 0.2f;
             BuildCamera(player.transform, theme);
 
             var atmoGo = new GameObject("AtmosphereSpawner");
@@ -623,15 +637,15 @@ namespace Emberline.EditorTools
             var ground = GameObject.CreatePrimitive(PrimitiveType.Cube);
             ground.name = "Deck";
             ground.transform.position = new Vector3(0, -0.25f, 0);
-            ground.transform.localScale = new Vector3(27f, 0.5f, 17f);
+            ground.transform.localScale = new Vector3(130f, 0.5f, 130f);
             ground.GetComponent<Renderer>().sharedMaterial = Mat($"Deck{theme}", deckCol, night ? Surface.WetStone : Surface.Stone);
 
             foreach (var (pos, scale) in new[]
             {
-                (new Vector3(0, 0.4f, 8.6f), new Vector3(27f, 0.8f, 0.6f)),
-                (new Vector3(0, 0.4f, -8.6f), new Vector3(27f, 0.8f, 0.6f)),
-                (new Vector3(13.6f, 0.4f, 0), new Vector3(0.6f, 0.8f, 17f)),
-                (new Vector3(-13.6f, 0.4f, 0), new Vector3(0.6f, 0.8f, 17f)),
+                (new Vector3(0, 0.4f, 64.6f), new Vector3(130f, 0.8f, 0.6f)),
+                (new Vector3(0, 0.4f, -64.6f), new Vector3(130f, 0.8f, 0.6f)),
+                (new Vector3(64.6f, 0.4f, 0), new Vector3(0.6f, 0.8f, 130f)),
+                (new Vector3(-64.6f, 0.4f, 0), new Vector3(0.6f, 0.8f, 130f)),
             })
             {
                 var wall = GameObject.CreatePrimitive(PrimitiveType.Cube);
@@ -862,7 +876,7 @@ namespace Emberline.EditorTools
             }
         }
 
-        private static GameObject BuildPlayer()
+        internal static GameObject BuildPlayer()
         {
             var player = new GameObject("Renzo");
             player.transform.position = new Vector3(0, 0, -3f);
@@ -914,6 +928,9 @@ namespace Emberline.EditorTools
             player.AddComponent<Player.CombatController>();
             return player;
         }
+
+        /// <summary>Camera rig for scenes outside the two themed arenas.</summary>
+        internal static void BuildCameraFor(Transform target) => BuildCamera(target, Theme.Rooftop);
 
         private static void BuildCamera(Transform target, Theme theme)
         {

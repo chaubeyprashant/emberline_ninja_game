@@ -106,7 +106,14 @@ namespace Emberline.Enemies
         public bool GuardBroken => _guardBreakT > 0f;
 
         /// <summary>Airborne from a strike-3 launcher; juggled and unable to act.</summary>
-        public bool Launched => _vertVel != 0f || transform.position.y > 0.02f;
+        public bool Launched => _vertVel != 0f || transform.position.y > GroundY + 0.02f;
+
+        /// <summary>
+        /// The floor under this enemy. Flat arenas were y = 0 and every check
+        /// below assumed it; in the valley the floor is a function of position, so
+        /// "on the ground" and "in the air" both have to be measured against this.
+        /// </summary>
+        private float GroundY => Core.Ground.HeightAt(transform.position.x, transform.position.z);
 
         /// <summary>
         /// A reeling, nearly-dead mook can be finished outright — as can one that
@@ -1046,7 +1053,7 @@ namespace Emberline.Enemies
                     clone.GetComponent<CharacterRig>()?.MakeGhost(0.45f);
                 }
                 FxPools.Embers(transform.position + Vector3.up, 16);
-                transform.position = RandomSpot();
+                transform.position = Core.Ground.Snap(RandomSpot());
             }
         }
 
@@ -1443,9 +1450,10 @@ namespace Emberline.Enemies
             _vertVel += -22f * dt;
             var p = transform.position;
             p.y += _vertVel * dt;
-            if (p.y <= 0f)
+            var floor = Core.Ground.HeightAt(p.x, p.z);
+            if (p.y <= floor)
             {
-                p.y = 0f;
+                p.y = floor;
                 _vertVel = 0f;
                 _t = Mathf.Max(_t, 0.25f); // brief flatten on landing
             }
@@ -1659,8 +1667,7 @@ namespace Emberline.Enemies
                 _t = 0.7f;
                 // Drop a juggled body to the deck rather than dying mid-air.
                 _vertVel = 0f;
-                var landed = transform.position;
-                landed.y = 0f;
+                var landed = Core.Ground.Snap(transform.position);
                 transform.position = landed;
                 SetRing(false);
                 Sfx3D.Death();
@@ -2056,9 +2063,7 @@ namespace Emberline.Enemies
             if (RoadNorth.Instance != null && _player != null)
                 return RoadNorth.Clamp(_player.position + new Vector3(
                     Random.Range(-4f, 4f), 0, Random.Range(2f, 7f)), arenaHalfExtents);
-            return new Vector3(
-                Random.Range(-arenaHalfExtents.x + 1f, arenaHalfExtents.x - 1f), 0,
-                Random.Range(-arenaHalfExtents.y + 1f, arenaHalfExtents.y - 1f));
+            return Core.MissionBounds.RandomInteriorPoint(0.1f, 0.15f);
         }
 
         private void Move(Vector3 dir)
@@ -2232,11 +2237,33 @@ namespace Emberline.Enemies
                 transform.position = p;
                 return;
             }
-            var q = transform.position;
-            q.x = Mathf.Clamp(q.x, -arenaHalfExtents.x, arenaHalfExtents.x);
-            q.z = Mathf.Clamp(q.z, -arenaHalfExtents.y, arenaHalfExtents.y);
+            var q = Core.MissionBounds.Clamp(transform.position);
             q.y = y;
             transform.position = q;
+            StickToGround();
+        }
+
+        /// <summary>
+        /// Keeps a walking enemy on the surface. Enemies are transform-driven with
+        /// no collider against the terrain — they never needed one on a flat deck —
+        /// so without this they walk at their spawn height and sink into hills or
+        /// stride through the air over dips.
+        ///
+        /// <para>A launched enemy owns its own y until UpdateLaunch lands it; this
+        /// only catches one that has fallen below the surface.</para>
+        /// </summary>
+        private void StickToGround()
+        {
+            if (!Core.Ground.ZoneActive) return;
+            var p = transform.position;
+            var floor = Core.Ground.HeightAt(p.x, p.z);
+            if (_vertVel != 0f)
+            {
+                if (p.y >= floor) return;
+                _vertVel = 0f;
+            }
+            p.y = floor;
+            transform.position = p;
         }
 
         private void BuildTelegraphRing()

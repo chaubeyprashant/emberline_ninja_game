@@ -26,7 +26,7 @@ namespace Emberline.Missions
         private const float PanicRange = 7f;
         private const float FleeSpeed = 3.4f;
 
-        private NinjaRig _rig;
+        private CharacterRig _rig;
         private Health _health;
         private Vector3 _home;
         private Vector3 _fleeTo;
@@ -34,16 +34,9 @@ namespace Emberline.Missions
 
         public static Villager Spawn(Vector3 at, Color cloth)
         {
-            var go = new GameObject("Villager");
-            go.transform.position = at;
-
-            var rig = go.AddComponent<NinjaRig>();
-            rig.bodyColor = cloth;
-            rig.accentColor = new Color(0.62f, 0.55f, 0.44f);
-            rig.hasSword = false;
-            rig.hasScarf = false;
-            rig.maskStripe = false;
-            rig.rigScale = 0.92f;
+            var rig = CivilianRig.Spawn("Villager", at,
+                cloth, new Color(0.62f, 0.55f, 0.44f), 0.92f);
+            var go = rig.gameObject;
 
             var v = go.AddComponent<Villager>();
             v._rig = rig;

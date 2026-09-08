@@ -1,0 +1,30 @@
+# Model and media files must never be line-ending normalised.
+#
+# There is a real trap here: Kenney ships ASCII FBX with CRLF terminators, so
+# Git's auto-detection classifies them as text and offers to rewrite every line.
+# KayKit ships binary FBX. Marking the whole family binary keeps both intact and
+# keeps diffs out of the log.
+*.fbx   binary
+*.FBX   binary
+*.obj   binary
+*.blend binary
+*.dae   binary
+*.glb   binary
+*.gltf  binary
+*.stl   binary
+
+*.png   binary
+*.jpg   binary
+*.jpeg  binary
+*.tga   binary
+*.psd   binary
+*.exr   binary
+*.hdr   binary
+
+*.ogg   binary
+*.wav   binary
+*.mp3   binary
+*.mp4   binary
+
+*.ttf   binary
+*.otf   binary

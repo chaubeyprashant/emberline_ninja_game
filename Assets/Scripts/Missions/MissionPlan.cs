@@ -30,6 +30,13 @@ namespace Emberline.Missions
         public bool applyTheme;
         public Core.EnvThemeId theme = Core.EnvThemeId.Village;
 
+        [Header("Mission Area")]
+        [Tooltip("Radius of the playable area in metres. 0 = use the default (60m).")]
+        public float missionRadius;
+
+        [Tooltip("If > 0, the area is an ellipse with this Z radius. 0 = same as missionRadius.")]
+        public float missionRadiusZ;
+
         [Tooltip("Shown on the results screen: why the next mission follows this one.")]
         [TextArea] public string nextReason = "";
 
