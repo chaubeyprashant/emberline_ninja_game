@@ -167,6 +167,15 @@ namespace Emberline.EditorTools
             public Vector3 grip;       // where the hand closes; becomes the origin
             public Vector3 guard;      // BladeRoot: where blade leaves the hilt
             public Vector3 tip;        // HitPoint
+
+            // Fraction mode, for meshes too small or too oddly scaled to type
+            // points for by hand: the builder measures the mesh along the blade
+            // axis after rotation and places everything as a fraction of that
+            // length from the pommel end. When targetLength > 0 this mode is used
+            // and scale/grip/guard/tip above are ignored.
+            public float targetLength; // prop units the whole weapon should span
+            public float gripFrac;     // 0 = pommel end, 1 = tip
+            public float guardFrac;
         }
 
         /// <summary>
@@ -185,6 +194,15 @@ namespace Emberline.EditorTools
                 scale = 1.9f / 58.097f, rotEuler = new Vector3(-90f, 0f, 0f),
                 grip = new Vector3(0f, 0f, -24f), guard = new Vector3(0f, 0f, -19f),
                 tip = new Vector3(0f, 0f, 22.5f),
+            },
+            // cs3dviz dagger: authored at 7 mm tall, blade down, origin at the
+            // guard. Fraction mode: 0.75 prop units (0.47 m on Renzo), a shade
+            // under the tanto, handle is the top 29% of the length.
+            new WrapSpec
+            {
+                name = "twindagger", fbx = "Assets/Art/Weapons/Dagger_cs3dviz/dagger_cs3dviz.fbx",
+                rotEuler = new Vector3(0f, 0f, 180f),
+                targetLength = 0.75f, gripFrac = 0.14f, guardFrac = 0.29f,
             },
             // Elliott Lowes tanto: already along Y but blade DOWN, origin at the
             // blade/handle junction, handle 0.103 up, blade 0.182 down. Flipped
@@ -223,7 +241,6 @@ namespace Emberline.EditorTools
                 if (src == null) { Debug.LogWarning($"[Weapons] missing {w.fbx}"); continue; }
 
                 var rot = Quaternion.Euler(w.rotEuler);
-                Vector3 P(Vector3 meshPoint) => rot * ((meshPoint - w.grip) * w.scale);
 
                 var root = new GameObject(w.name);
                 var mesh = (GameObject)PrefabUtility.InstantiatePrefab(src);
@@ -232,21 +249,51 @@ namespace Emberline.EditorTools
                 mesh.name = "Mesh";
                 mesh.transform.SetParent(root.transform, false);
                 mesh.transform.localRotation = rot;
-                mesh.transform.localScale = Vector3.one * w.scale;
-                mesh.transform.localPosition = P(Vector3.zero);
                 foreach (var c in mesh.GetComponentsInChildren<Collider>(true)) Object.DestroyImmediate(c);
 
-                Mark(root.transform, "PrimaryGrip", Vector3.zero);
-                Mark(root.transform, "BladeRoot", P(w.guard));
-                Mark(root.transform, "TrailOrigin", P(Vector3.Lerp(w.guard, w.tip, 0.5f)));
-                Mark(root.transform, "HitPoint", P(w.tip));
+                Vector3 gripP, guardP, tipP;
+                if (w.targetLength > 0f)
+                {
+                    // Measure along +Y after rotation at unit scale, then size it.
+                    mesh.transform.localScale = Vector3.one;
+                    mesh.transform.localPosition = Vector3.zero;
+                    var any = false; var b = new Bounds();
+                    foreach (var r in mesh.GetComponentsInChildren<MeshRenderer>(true))
+                    {
+                        if (!any) { b = r.bounds; any = true; } else b.Encapsulate(r.bounds);
+                    }
+                    var extent = Mathf.Max(b.size.y, 1e-6f);
+                    var scale = w.targetLength / extent;
+                    // Points along the blade in wrapper space, before the shift.
+                    var pommelY = b.min.y * scale;
+                    var len = w.targetLength;
+                    var gripY = pommelY + w.gripFrac * len;
+                    gripP = new Vector3(b.center.x * scale, gripY, b.center.z * scale);
+                    guardP = new Vector3(gripP.x, pommelY + w.guardFrac * len, gripP.z);
+                    tipP = new Vector3(gripP.x, pommelY + len, gripP.z);
+
+                    mesh.transform.localScale = Vector3.one * scale;
+                    mesh.transform.localPosition = -gripP;
+                    guardP -= gripP; tipP -= gripP; gripP = Vector3.zero;
+                }
+                else
+                {
+                    Vector3 P(Vector3 meshPoint) => rot * ((meshPoint - w.grip) * w.scale);
+                    mesh.transform.localScale = Vector3.one * w.scale;
+                    mesh.transform.localPosition = P(Vector3.zero);
+                    gripP = Vector3.zero; guardP = P(w.guard); tipP = P(w.tip);
+                }
+
+                Mark(root.transform, "PrimaryGrip", gripP);
+                Mark(root.transform, "BladeRoot", guardP);
+                Mark(root.transform, "TrailOrigin", Vector3.Lerp(guardP, tipP, 0.5f));
+                Mark(root.transform, "HitPoint", tipP);
 
                 var path = $"{PrefabDir}/{w.name}.prefab";
                 PrefabUtility.SaveAsPrefabAsset(root, path);
                 Object.DestroyImmediate(root);
                 made++;
-                Debug.Log($"[Weapons] wrapper {w.name}: tip at y={P(w.tip).y:F2}, pommel side at " +
-                          $"y={(rot * ((new Vector3(0, 0, -35.6f) - w.grip) * w.scale)).y:F2}");
+                Debug.Log($"[Weapons] wrapper {w.name}: guard y={guardP.y:F2}, tip y={tipP.y:F2}");
             }
             AssetDatabase.SaveAssets();
             Debug.Log($"[Weapons] {made} wrappers in {PrefabDir}");

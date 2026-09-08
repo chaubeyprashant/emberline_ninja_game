@@ -1093,8 +1093,8 @@ namespace Emberline.EditorTools
             daggers.blurb = "Five-hit chain, no reach. Spin cleave hits everything around you.";
             daggers.unlockLevel = 2;
             daggers.archetype = WeaponArchetype.Daggers;
-            daggers.propRight = "dagger";
-            daggers.propLeft = "dagger";
+            daggers.propRight = "twindagger";   // cs3dviz dagger via its wrapper
+            daggers.propLeft = "twindagger";
             daggers.strikeChainLength = 5;
             daggers.strikeDamage = new[] { 6f, 6f, 8f, 8f, 14f };
             daggers.strikeRange = 2.0f;
@@ -1170,9 +1170,9 @@ namespace Emberline.EditorTools
 
         /// <summary>Every hand prop any weapon can ask for, so runtime swaps have targets.</summary>
         private static readonly string[] WeaponPropsRight =
-            { "sword_1handed", "dagger", "axe_2handed", "smokebomb", "crossbow_1handed", "katana", "tanto" };
+            { "sword_1handed", "dagger", "axe_2handed", "smokebomb", "crossbow_1handed", "katana", "tanto", "twindagger" };
 
-        private static readonly string[] WeaponPropsLeft = { "dagger", "quiver" };
+        private static readonly string[] WeaponPropsLeft = { "dagger", "quiver", "twindagger" };
 
         // ----------------------------------------------------- prefabs / data
 
