@@ -218,38 +218,4 @@ namespace Emberline.Core
             return p;
         }
     }
-
-    /// <summary>
-    /// Keeps a transform-driven mover sitting on the ground.
-    ///
-    /// <para>
-    /// Villagers, prisoners and lantern bearers all walk by writing XZ straight to
-    /// their transform, which was correct when the floor was a plane at y = 0.
-    /// One component in LateUpdate is cheaper and far less error-prone than
-    /// finding every position write in three movers.
-    /// </para>
-    /// </summary>
-    public class GroundHug : MonoBehaviour
-    {
-        [Tooltip("Metres above the surface to sit. Negative sinks the model in.")]
-        public float offset;
-
-        private void LateUpdate()
-        {
-            if (!Ground.ZoneActive) return;
-            var p = transform.position;
-            p.y = Ground.HeightAt(p.x, p.z) + offset;
-            transform.position = p;
-        }
-    }
-
-    /// <summary>
-    /// Marks a scene as carrying the valley. Placed by the scene builder; its only
-    /// job is to turn <see cref="Ground"/> on for the lifetime of that scene.
-    /// </summary>
-    public class ZoneWorld : MonoBehaviour
-    {
-        private void Awake() => Ground.ZoneActive = true;
-        private void OnDestroy() => Ground.ZoneActive = false;
-    }
 }
