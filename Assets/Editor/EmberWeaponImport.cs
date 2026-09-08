@@ -195,6 +195,19 @@ namespace Emberline.EditorTools
                 grip = new Vector3(0f, 0f, -24f), guard = new Vector3(0f, 0f, -19f),
                 tip = new Vector3(0f, 0f, 22.5f),
             },
+            // Yanez Designs kama: butt cap at the origin, handle along +Z to 7.27,
+            // sickle blade at the far end sticking out in +X — the same
+            // head-sideways layout as the KayKit axe it replaces. Held 30% up the
+            // handle. 1.35 prop units = 0.84 m on Renzo: larger than a field kama,
+            // because this is the Marsh Hook and it has to read as a weapon that
+            // drags a man off his feet.
+            new WrapSpec
+            {
+                name = "kama", fbx = "Assets/Art/Weapons/Kama_Yanez/kama_yanez.fbx",
+                scale = 1.35f / 7.275f, rotEuler = new Vector3(-90f, 0f, 0f),
+                grip = new Vector3(0f, 0f, 2.2f), guard = new Vector3(0f, 0f, 6.3f),
+                tip = new Vector3(1.62f, 0f, 6.5f),
+            },
             // cs3dviz dagger: authored at 7 mm tall, blade down, origin at the
             // guard. Fraction mode: 0.75 prop units (0.47 m on Renzo), a shade
             // under the tanto, handle is the top 29% of the length.

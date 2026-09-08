@@ -1062,7 +1062,7 @@ namespace Emberline.EditorTools
 
             var hook = W("MarshHook");
             hook.archetype = WeaponArchetype.Blade;
-            hook.propRight = "axe_2handed";
+            hook.propRight = "kama";           // Yanez kama via its wrapper prefab
             hook.propLeft = "";
             hook.strikeChainLength = 3;
             hook.cleaveStyle = CleaveStyle.Slash;
@@ -1170,7 +1170,7 @@ namespace Emberline.EditorTools
 
         /// <summary>Every hand prop any weapon can ask for, so runtime swaps have targets.</summary>
         private static readonly string[] WeaponPropsRight =
-            { "sword_1handed", "dagger", "axe_2handed", "smokebomb", "crossbow_1handed", "katana", "tanto", "twindagger" };
+            { "sword_1handed", "dagger", "axe_2handed", "smokebomb", "crossbow_1handed", "katana", "tanto", "twindagger", "kama" };
 
         private static readonly string[] WeaponPropsLeft = { "dagger", "quiver", "twindagger" };
 
