@@ -240,7 +240,7 @@ namespace Emberline.EditorTools
             height = 1.8f,
             lantern = true,
             trail = true,
-            propRight = "sword_1handed",
+            propRight = "katana",            // Renzo spawns holding his own blade
             // Render through the game's own surface shader, not Unity's Standard,
             // so the character takes the same lighting as everything else in the
             // scene. On Standard it read washed out against the night arenas.
@@ -967,7 +967,13 @@ namespace Emberline.EditorTools
                 return null;
             }
 
-            var propAsset = AssetDatabase.LoadAssetAtPath<GameObject>($"{PropDir}/{propName}.fbx");
+            // A wrapper prefab wins over a raw FBX. Marketplace weapons arrive
+            // with their own pivot and axis; the wrapper (EmberWeaponImport)
+            // has already rotated and shifted them onto the KayKit convention —
+            // grip at origin, blade along +Y — so this code needs no cases.
+            var propAsset = AssetDatabase.LoadAssetAtPath<GameObject>(
+                                $"{EmberWeaponImport.PrefabDir}/{propName}.prefab")
+                            ?? AssetDatabase.LoadAssetAtPath<GameObject>($"{PropDir}/{propName}.fbx");
             if (propAsset == null) return null;
             var prop = (GameObject)PrefabUtility.InstantiatePrefab(propAsset);
             prop.name = $"Prop_{propName}_{side}";
@@ -980,7 +986,11 @@ namespace Emberline.EditorTools
             if (!trail || side != "r") return prop;
             var trailGo = new GameObject("Trail");
             trailGo.transform.SetParent(prop.transform, false);
-            trailGo.transform.localPosition = new Vector3(0, 0.55f, 0);
+            // A wrapper declares where its blade is; a KayKit prop is close enough
+            // to the old fixed height.
+            var trailOrigin = prop.transform.Find("TrailOrigin");
+            trailGo.transform.localPosition = trailOrigin != null
+                ? trailOrigin.localPosition : new Vector3(0, 0.55f, 0);
             var trailR = trailGo.AddComponent<TrailRenderer>();
             trailR.time = 0.14f;
             trailR.startWidth = 0.34f;

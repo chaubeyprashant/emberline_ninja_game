@@ -1021,7 +1021,7 @@ namespace Emberline.EditorTools
 
             var katana = W("EmberKatana");
             katana.archetype = WeaponArchetype.Blade;
-            katana.propRight = "sword_1handed";
+            katana.propRight = "katana";        // Dokazvo katana via its wrapper prefab
             katana.propLeft = "";
             katana.strikeChainLength = 3;
             katana.cleaveStyle = CleaveStyle.Slash;
@@ -1170,7 +1170,7 @@ namespace Emberline.EditorTools
 
         /// <summary>Every hand prop any weapon can ask for, so runtime swaps have targets.</summary>
         private static readonly string[] WeaponPropsRight =
-            { "sword_1handed", "dagger", "axe_2handed", "smokebomb", "crossbow_1handed" };
+            { "sword_1handed", "dagger", "axe_2handed", "smokebomb", "crossbow_1handed", "katana" };
 
         private static readonly string[] WeaponPropsLeft = { "dagger", "quiver" };
 
