@@ -168,23 +168,60 @@ namespace Emberline.EditorTools
 
                 case Body.Solid:
                 {
-                    // Fit a box to the renderers so a hut is not a 1 m cube.
-                    var bounds = new Bounds();
-                    var any = false;
-                    foreach (var r in go.GetComponentsInChildren<Renderer>(true))
-                    {
-                        if (!any) { bounds = r.bounds; any = true; }
-                        else bounds.Encapsulate(r.bounds);
-                    }
                     var box = go.AddComponent<BoxCollider>();
-                    if (any && scale > 0.0001f)
+                    if (LocalBounds(go, out var b))
                     {
-                        box.center = go.transform.InverseTransformPoint(bounds.center);
-                        box.size = bounds.size / scale;
+                        box.center = b.center;
+                        box.size = b.size;
                     }
                     return;
                 }
             }
+        }
+
+        /// <summary>
+        /// Bounds of a prop's meshes in the prop's own local space.
+        ///
+        /// <para>
+        /// The obvious version — encapsulate <c>Renderer.bounds</c> and divide by
+        /// scale — is wrong the moment the prop is rotated, because
+        /// <c>Renderer.bounds</c> is a world-space axis-aligned box. For a fence
+        /// turned 40 degrees that AABB is far larger than the fence, so the
+        /// collider ends up oversized and skewed. Overlapping oversized boxes are
+        /// how a CharacterController gets squeezed downward and drops through the
+        /// floor, which is exactly what happened in the village.
+        /// </para>
+        ///
+        /// <para>Mesh bounds are local by definition, so they are used instead and
+        /// transformed only by each child's offset from the root.</para>
+        /// </summary>
+        private static bool LocalBounds(GameObject root, out Bounds bounds)
+        {
+            bounds = default;
+            var any = false;
+            var toRoot = root.transform.worldToLocalMatrix;
+
+            foreach (var mf in root.GetComponentsInChildren<MeshFilter>(true))
+            {
+                var mesh = mf.sharedMesh;
+                if (mesh == null) continue;
+
+                var m = toRoot * mf.transform.localToWorldMatrix;
+                var mb = mesh.bounds;
+
+                // All eight corners, so rotation of a child is accounted for.
+                for (var i = 0; i < 8; i++)
+                {
+                    var corner = mb.center + Vector3.Scale(mb.extents, new Vector3(
+                        (i & 1) == 0 ? -1f : 1f,
+                        (i & 2) == 0 ? -1f : 1f,
+                        (i & 4) == 0 ? -1f : 1f));
+                    var p = m.MultiplyPoint3x4(corner);
+                    if (!any) { bounds = new Bounds(p, Vector3.zero); any = true; }
+                    else bounds.Encapsulate(p);
+                }
+            }
+            return any;
         }
 
         // ------------------------------------------------------------ masks
@@ -196,6 +233,7 @@ namespace Emberline.EditorTools
         public static float Clearances(float x, float z)
         {
             if (EmberTerrain.RoadDistance(x, z) < 5.5f) return 0f;
+
             if (EmberTerrain.RiverDistance(x, z) < 11f) return 0f;
 
             var vil = Vector2.Distance(new Vector2(x, z),
@@ -210,6 +248,15 @@ namespace Emberline.EditorTools
         }
 
         /// <summary>
+        /// 0 inside the mission arena, 1 outside. Applied to anything with a
+        /// collider — trees, rocks — but deliberately NOT to grass and flowers,
+        /// which cost nothing to walk through and are what stop the clearing
+        /// looking like a bald patch.
+        /// </summary>
+        public static float ArenaClear(float x, float z)
+            => new Vector2(x, z).magnitude < 36f ? 0f : 1f;
+
+        /// <summary>
         /// Forest density: two bands, north and south, fading at their edges so the
         /// treeline is ragged rather than a drawn circle. Steep ground and the
         /// mountain tops stay bare.
@@ -218,11 +265,15 @@ namespace Emberline.EditorTools
         {
             var clear = Clearances(x, z);
             if (clear <= 0f) return 0f;
+            if (ArenaClear(x, z) <= 0f) return 0f;
             if (h > 15f) return 0f;                       // above the treeline
 
-            // Bands: north of +26, south of -22.
-            var band = z > 26f ? Mathf.InverseLerp(26f, 40f, z)
-                     : z < -22f ? Mathf.InverseLerp(-22f, -36f, z)
+            // Bands: north of +40, south of -36. They used to start at +26/-22,
+            // which put trunks inside the mission play area — a fight in a
+            // thicket, and a player wedged between two capsule colliders. The
+            // clearing has to be genuinely clear.
+            var band = z > 40f ? Mathf.InverseLerp(40f, 54f, z)
+                     : z < -36f ? Mathf.InverseLerp(-36f, -50f, z)
                      : 0f;
             if (band <= 0f) return 0f;
 

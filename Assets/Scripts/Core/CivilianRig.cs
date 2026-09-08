@@ -52,6 +52,11 @@ namespace Emberline.Core
                 go.transform.localScale = Vector3.one * scale;
             }
 
+            // On terrain these movers would walk at their spawn height: they
+            // drive their transform directly and have no collider against the
+            // ground. One hugger keeps all three on the surface.
+            go.AddComponent<GroundHug>();
+
             return rig;
         }
     }

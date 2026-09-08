@@ -610,17 +610,17 @@ namespace Emberline
                 Vector3 p;
                 if (ModeNow == LaunchMode.Duel)
                 {
-                    p = new Vector3(0, 0, 5f); // duelists enter face to face
+                    p = Core.Ground.Snap(new Vector3(0, 0, 5f)); // duelists enter face to face
                 }
                 else if (kind == EnemyKind.Shade)
                 {
                     // Shades materialize out of the reeds when the arena has them.
-                    var edge = Core.MissionBounds.RandomPerimeterPoint(0.5f);
+                    var edge = Core.Ground.Snap(Core.MissionBounds.RandomPerimeterPoint(0.5f));
                     p = ArenaMarkers.RandomShadeSpawn(edge);
                 }
                 else
                 {
-                    p = Core.MissionBounds.RandomPerimeterPoint(0.5f);
+                    p = Core.Ground.Snap(Core.MissionBounds.RandomPerimeterPoint(0.5f));
                 }
                 var enemy = EnemyPool.Spawn(prefab, p, Quaternion.identity);
                 if (ModeNow == LaunchMode.Duel && CurrentDuel != null && !string.IsNullOrEmpty(CurrentDuel.defId))
@@ -846,7 +846,7 @@ namespace Emberline
                 ? enemyPrefabs[(int)kind] : null;
             if (prefab == null) return;
 
-            var p = Core.MissionBounds.RandomPerimeterPoint(0.5f);
+            var p = Core.Ground.Snap(Core.MissionBounds.RandomPerimeterPoint(0.5f));
             var go = EnemyPool.Spawn(prefab, p, Quaternion.Euler(0, 180f, 0));
             var brain = go != null ? go.GetComponent<EnemyBrain>() : null;
             if (brain == null) return;
@@ -863,7 +863,7 @@ namespace Emberline
         {
             var prefab = enemyPrefabs != null ? PrefabFor(kind, defId) : null;
             if (prefab == null) return null;
-            var p = Core.MissionBounds.RandomPerimeterPoint(1f);
+            var p = Core.Ground.Snap(Core.MissionBounds.RandomPerimeterPoint(1f));
             var go = EnemyPool.Spawn(prefab, p, Quaternion.Euler(0, 180f, 0));
             var brain = go != null ? go.GetComponent<EnemyBrain>() : null;
             if (brain == null) return null;

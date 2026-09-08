@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.IO;
 using UnityEditor;
 using UnityEngine;
+using ZT = Emberline.Core.ZoneTerrain;
 
 namespace Emberline.EditorTools
 {
@@ -35,9 +36,22 @@ namespace Emberline.EditorTools
     public static class EmberTerrain
     {
         // ------------------------------------------------------------ shape
+        //
+        // The height field itself lives in Emberline.Core.ZoneTerrain, in runtime
+        // code, because enemies and villagers have to ask for the ground every
+        // frame and the mesh they walk on has to agree with that answer exactly.
+        // Everything here forwards to it so there is one definition, not two that
+        // drift.
 
-        /// <summary>Half-width of the whole generated zone, in metres.</summary>
-        public const float Half = 100f;
+        public const float Half = ZT.Half;
+        public const float WaterLevel = ZT.WaterLevel;
+
+        public const float VillageRadius = ZT.VillageRadius;
+        public const float CampRadius = ZT.CampRadius;
+        public const float RiverCentreX = ZT.RiverCentreX;
+
+        public static Vector3 VillageCentre => ZT.VillageCentre;
+        public static Vector3 CampCentre => ZT.CampCentre;
 
         /// <summary>Edge length of one terrain quad.</summary>
         private const float Quad = 2.5f;
@@ -45,159 +59,18 @@ namespace Emberline.EditorTools
         /// <summary>Quads per chunk edge. 80 quads / 10 = an 8x8 chunk grid.</summary>
         private const int ChunkQuads = 10;
 
-        /// <summary>Where the mountain ring starts and where it tops out.</summary>
-        private const float RingInner = 78f, RingOuter = 100f, RingHeight = 30f;
-
-        /// <summary>
-        /// The meadow floor sits well above the water line. Without this the base
-        /// noise swings either side of zero and every dip below the river surface
-        /// becomes an accidental pond — which is exactly what the first build did:
-        /// it flooded the whole valley.
-        /// </summary>
-        private const float MeadowBase = 3.4f;
-
-        // Landmarks. These are the contract between the terrain and everything
-        // placed on it, so the zone builder reads them from here rather than
-        // duplicating magic numbers.
-        public static readonly Vector3 VillageCentre = new(0f, 0f, 0f);
-        public const float VillageRadius = 26f;
-
-        public static readonly Vector3 CampCentre = new(46f, 0f, -54f);
-        public const float CampRadius = 20f;
-        private const float CampLift = 9.5f;
-
-        /// <summary>The river runs north-south down the west side.</summary>
-        private const float RiverX = -52f, RiverWidth = 9f, RiverDepth = 3.2f;
-
-        /// <summary>Mean X of the meander, so the water quad can be sized to it.</summary>
-        public const float RiverCentreX = RiverX;
-
         /// <summary>Palette cells, as (column,row) in the 4x4 atlas.</summary>
         private enum Ground { Grass = 0, Grass2 = 1, Grass3 = 2, Dirt = 3, Road = 4, Rock = 5, Scree = 6, Sand = 7, Riverbed = 8 }
 
-        // ------------------------------------------------------------ height
+        public static float HeightAt(float x, float z) => ZT.HeightAt(x, z);
+        public static float SlopeAt(float x, float z) => ZT.SlopeAt(x, z);
+        public static float RoadDistance(float x, float z) => ZT.RoadDistance(x, z);
+        public static float RiverDistance(float x, float z) => ZT.RiverDistance(x, z);
+        public static float Smooth01(float e0, float e1, float x) => ZT.Smooth01(e0, e1, x);
+        public static float Noise(float x, float y) => ZT.Noise(x, y);
 
-        /// <summary>
-        /// Height of the ground at a world XZ. Public because enemies, props and
-        /// the zone builder all need to sit things exactly on the surface.
-        /// </summary>
-        public static float HeightAt(float x, float z)
-        {
-            // Rolling base. Three octaves of cheap value noise; deterministic so
-            // a rebuild puts every tree back where it was.
-            var h = MeadowBase
-                  + Noise(x * 0.011f, z * 0.011f) * 3.0f
-                  + Noise(x * 0.028f, z * 0.028f) * 1.2f
-                  + Noise(x * 0.070f, z * 0.070f) * 0.4f;
+        private const float RiverWidth = 9f;
 
-            // Mountain ring: the natural boundary. Rises from RingInner outward,
-            // so the playable bowl is ringed by climbable-looking rock the player
-            // reads as "the edge of the valley" rather than an invisible wall.
-            var r = Mathf.Sqrt(x * x + z * z);
-            if (r > RingInner)
-            {
-                var t = Mathf.InverseLerp(RingInner, RingOuter, r);
-                // Smoothstep in, then a ridge wobble so the skyline is not a bowl rim.
-                var ridge = 1f + Noise(x * 0.05f, z * 0.05f) * 0.45f;
-                h += Smooth01(0f, 1f, t) * RingHeight * ridge;
-            }
-
-            // Camp plateau: high ground the player has to climb or flank.
-            var camp = Mathf.Sqrt(Sq(x - CampCentre.x) + Sq(z - CampCentre.z));
-            if (camp < CampRadius + 10f)
-            {
-                var t = 1f - Smooth01(CampRadius - 4f, CampRadius + 10f, camp);
-                h = Mathf.Lerp(h, CampLift + Noise(x * 0.05f, z * 0.05f) * 0.6f, t);
-            }
-
-            // Village bowl: flattened so buildings sit level and fights are readable.
-            var vil = Mathf.Sqrt(Sq(x - VillageCentre.x) + Sq(z - VillageCentre.z));
-            if (vil < VillageRadius + 12f)
-            {
-                var t = 1f - Smooth01(VillageRadius - 2f, VillageRadius + 12f, vil);
-                h = Mathf.Lerp(h, MeadowBase - 1.0f, t * 0.92f);
-            }
-
-            // The road is graded: it cuts gently through whatever it crosses.
-            var road = RoadDistance(x, z);
-            if (road < 7f)
-            {
-                var t = 1f - Smooth01(3.2f, 7f, road);
-                h = Mathf.Lerp(h, RoadHeight(x, z), t * 0.85f);
-            }
-
-            // Nothing but the river may sit below the water line. Clamping here,
-            // before the channel is cut, is what keeps the valley dry.
-            h = Mathf.Max(h, WaterLevel + 1.1f);
-
-            // River channel, carved last so it wins over everything but the ring.
-            var rv = RiverDistance(x, z);
-            if (rv < RiverWidth + 6f)
-            {
-                var t = 1f - Smooth01(RiverWidth * 0.5f, RiverWidth + 6f, rv);
-                h = Mathf.Lerp(h, -RiverDepth, t);
-            }
-
-            return h;
-        }
-
-        /// <summary>
-        /// Approximate ground steepness at a point, 0 flat to 1 vertical. Sampled
-        /// from the height field rather than the mesh, so scatter code can ask
-        /// before a prop exists. Flat-bottomed props sink into a slope on one side
-        /// and hang in the air on the other, so anything placed by hand needs this.
-        /// </summary>
-        public static float SlopeAt(float x, float z)
-        {
-            const float d = 1.5f;
-            var hx = HeightAt(x + d, z) - HeightAt(x - d, z);
-            var hz = HeightAt(x, z + d) - HeightAt(x, z - d);
-            var grad = Mathf.Sqrt(hx * hx + hz * hz) / (2f * d);
-            return Mathf.Clamp01(grad);
-        }
-
-        /// <summary>Water surface height for the river.</summary>
-        public const float WaterLevel = -1.5f;
-
-        /// <summary>
-        /// The road: north gate → village → camp approach. Returned as distance
-        /// so both the mesh and the prop scatter can ask "am I on the road".
-        /// </summary>
-        public static float RoadDistance(float x, float z)
-        {
-            var d = float.MaxValue;
-            for (var i = 0; i < RoadPts.Length - 1; i++)
-                d = Mathf.Min(d, SegDist(x, z, RoadPts[i], RoadPts[i + 1]));
-            return d;
-        }
-
-        private static float RoadHeight(float x, float z)
-        {
-            // Follow the terrain's broad shape but ignore its noise, so the road
-            // grades smoothly instead of rippling.
-            var camp = Mathf.Sqrt(Sq(x - CampCentre.x) + Sq(z - CampCentre.z));
-            if (camp < CampRadius + 10f)
-            {
-                var t = 1f - Smooth01(CampRadius - 4f, CampRadius + 10f, camp);
-                return Mathf.Lerp(MeadowBase - 0.8f, CampLift, t);
-            }
-            return MeadowBase - 0.9f;
-        }
-
-        private static readonly Vector2[] RoadPts =
-        {
-            new(4f, 92f), new(2f, 70f), new(-6f, 52f), new(-4f, 30f),
-            new(0f, 8f),                                   // through the village
-            new(6f, -14f), new(20f, -30f), new(36f, -44f),
-            new(CampCentre.x, CampCentre.z),               // up to the camp gate
-        };
-
-        public static float RiverDistance(float x, float z)
-        {
-            // A lazy meander rather than a straight ditch.
-            var cx = RiverX + Mathf.Sin(z * 0.032f) * 9f + Mathf.Sin(z * 0.011f) * 5f;
-            return Mathf.Abs(x - cx);
-        }
 
         // ------------------------------------------------------------ colour
 
@@ -414,67 +287,5 @@ namespace Emberline.EditorTools
         // ------------------------------------------------------------ helpers
 
         private static float Sq(float v) => v * v;
-
-        /// <summary>
-        /// GLSL-style smoothstep: 0 below <paramref name="edge0"/>, 1 above
-        /// <paramref name="edge1"/>, smoothly interpolated between.
-        ///
-        /// <para>
-        /// This exists because <c>Mathf.SmoothStep(a, b, t)</c> is NOT this
-        /// function. Unity's version is a smoothed <c>Lerp</c>: it clamps t to
-        /// 0..1 and returns a value between a and b. Feeding it a world distance
-        /// as t therefore returns the edge value itself — <c>SmoothStep(66, 84, 50)</c>
-        /// is 84, not 0 — and the first version of this terrain used it that way
-        /// throughout. Every carve silently became <c>Lerp(h, target, negative)</c>,
-        /// which Mathf.Lerp clamps to zero, so the village never flattened, the
-        /// road never graded and the river never cut. It looked plausible only
-        /// because the colouring is computed separately from the height.
-        /// </para>
-        /// </summary>
-        public static float Smooth01(float edge0, float edge1, float x)
-        {
-            if (Mathf.Approximately(edge0, edge1)) return x < edge0 ? 0f : 1f;
-            var t = Mathf.Clamp01((x - edge0) / (edge1 - edge0));
-            return t * t * (3f - 2f * t);
-        }
-
-        /// <summary>
-        /// Deterministic value noise in [-1,1]. Sine hashing rather than Perlin
-        /// so the terrain is identical on every machine and every rebuild without
-        /// shipping a permutation table.
-        /// </summary>
-        public static float Noise(float x, float y)
-        {
-            var xi = Mathf.Floor(x);
-            var yi = Mathf.Floor(y);
-            var xf = x - xi;
-            var yf = y - yi;
-            // Smoothstep the cell interpolation, or the terrain shows a grid.
-            var u = xf * xf * (3f - 2f * xf);
-            var v = yf * yf * (3f - 2f * yf);
-
-            var a = Hash(xi, yi);
-            var b = Hash(xi + 1f, yi);
-            var c = Hash(xi, yi + 1f);
-            var d = Hash(xi + 1f, yi + 1f);
-
-            return Mathf.Lerp(Mathf.Lerp(a, b, u), Mathf.Lerp(c, d, u), v);
-        }
-
-        private static float Hash(float x, float y)
-        {
-            var h = Mathf.Sin(x * 127.1f + y * 311.7f) * 43758.5453f;
-            return (h - Mathf.Floor(h)) * 2f - 1f;
-        }
-
-        private static float SegDist(float px, float pz, Vector2 a, Vector2 b)
-        {
-            var abx = b.x - a.x; var abz = b.y - a.y;
-            var apx = px - a.x; var apz = pz - a.y;
-            var len = abx * abx + abz * abz;
-            var t = len < 0.0001f ? 0f : Mathf.Clamp01((apx * abx + apz * abz) / len);
-            var dx = apx - abx * t; var dz = apz - abz * t;
-            return Mathf.Sqrt(dx * dx + dz * dz);
-        }
     }
 }

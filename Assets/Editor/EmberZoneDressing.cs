@@ -38,6 +38,20 @@ namespace Emberline.EditorTools
         /// <summary>Metres per modular grid cell.</summary>
         private const float Cell = 3.0f;
 
+        /// <summary>
+        /// Radius of open ground at the origin — the village green.
+        ///
+        /// <para>
+        /// Every mission centres on the origin: the player spawns there, and
+        /// objectives, clues and markers appear around it. So it has to be a
+        /// fighting floor, not furniture. Buildings ring it from 22 m out, which
+        /// gives cover at the edges of a fight without putting a cart in the
+        /// middle of one. Earlier passes at 11 m were not enough: the bot spent
+        /// whole stages wedged between the tavern and a hand cart.
+        /// </para>
+        /// </summary>
+        public const float PlazaRadius = 20f;
+
         private static GameObject L(string n)
         {
             var go = Resources.Load<GameObject>(Dir + n);
@@ -173,6 +187,7 @@ namespace Emberline.EditorTools
                 (x, z, h) =>
                 {
                     if (Clearances(x, z) <= 0f) return 0f;
+                    if (ArenaClear(x, z) <= 0f) return 0f;   // keep the arena walkable
                     // Not on the steep faces. A flat-bottomed rock on a 45-degree
                     // slope buries one edge and leaves the other hanging, which is
                     // what made the first pass look like rubble floating on the
@@ -281,18 +296,15 @@ namespace Emberline.EditorTools
             if (rng.Next(2) == 0)
                 Piece(root, L("town_chimney"), (halfX - 0.5f) * Cell, roofY + Cell * 0.4f, 0f, 0f);
 
-            // One box collider for the whole building beats one per panel.
-            var b = new Bounds(); var any = false;
-            foreach (var r in root.GetComponentsInChildren<Renderer>(true))
-            {
-                if (!any) { b = r.bounds; any = true; } else b.Encapsulate(r.bounds);
-            }
-            if (any)
-            {
-                var box = root.gameObject.AddComponent<BoxCollider>();
-                box.center = root.InverseTransformPoint(b.center);
-                box.size = b.size;
-            }
+            // One box collider for the whole building beats one per panel. Built
+            // from the footprint rather than from world-space renderer bounds,
+            // which for a rotated house is a much larger skewed box.
+            var box = root.gameObject.AddComponent<BoxCollider>();
+            var w = cellsX * Cell;
+            var d = cellsZ * Cell;
+            var hgt = storeys * Cell + Cell * 0.7f;   // walls plus the roof
+            box.center = new Vector3(0f, hgt * 0.5f, 0f);
+            box.size = new Vector3(w, hgt, d);
 
             GameObject Pick(int storey, int ix, int iz, int dc, int face)
             {
@@ -327,30 +339,35 @@ namespace Emberline.EditorTools
         {
             // Homes around the square, each a different size and material so the
             // village reads as having been built over time.
-            House(parent, -14f, 11f, 128f, 2, 2, 1, wood: true);
-            House(parent, -6f, 18f, 168f, 3, 2, 2, wood: false);
-            House(parent, 10f, 16f, 205f, 2, 2, 1, wood: true);
-            House(parent, 18f, 4f, 254f, 3, 2, 1, wood: false);
-            House(parent, 14f, -12f, 300f, 2, 2, 2, wood: true);
-            House(parent, -3f, -18f, 355f, 3, 2, 1, wood: true);
-            House(parent, -17f, -8f, 60f, 2, 2, 1, wood: false);
+            // A ring of homes facing the green, all beyond PlazaRadius.
+            House(parent, -20f, 16f, 128f, 2, 2, 1, wood: true);
+            House(parent, -8f, 26f, 168f, 3, 2, 2, wood: false);
+            House(parent, 14f, 22f, 205f, 2, 2, 1, wood: true);
+            House(parent, 26f, 7f, 254f, 3, 2, 1, wood: false);
+            House(parent, 22f, -17f, 300f, 2, 2, 2, wood: true);
+            House(parent, -4f, -26f, 355f, 3, 2, 1, wood: true);
+            House(parent, -24f, -12f, 60f, 2, 2, 1, wood: false);
             // The blacksmith: bigger, stone, and the reason to come back here.
-            House(parent, -22f, 2f, 78f, 4, 2, 1, wood: false);
+            House(parent, -29f, 3f, 78f, 4, 2, 1, wood: false);
 
-            // The well is the centre of the square.
-            EmberScatter.PlaceOnGround(parent, L("building_well"), 2f, 2f, 20f, 7f);
+            // Nothing solid stands within PlazaRadius of the origin. Missions are
+            // centred there — the player spawns on it and objectives and clues
+            // appear around it — so it has to be open ground. The first pass put
+            // the well two metres off origin and the bot spent a whole stage
+            // pressed against it, unable to reach a clue three metres away.
+            EmberScatter.PlaceOnGround(parent, L("building_well"), -15f, 15f, 20f, 7f);
 
-            // Market stalls on the road side, where rumours are heard.
+            // Market stalls off the square, on the road side, where rumours are heard.
             foreach (var (x, z, yaw, p) in new (float, float, float, string)[]
-                     { (7f, -4f, 200f, "town_stall"), (10f, -6f, 200f, "town_stall-green"),
-                       (4f, -7f, 190f, "town_stall-red") })
+                     { (17f, -13f, 200f, "town_stall"), (21f, -15f, 200f, "town_stall-green"),
+                       (13f, -18f, 190f, "town_stall-red") })
                 EmberScatter.PlaceOnGround(parent, L(p), x, z, yaw, Cell);
-            EmberScatter.PlaceOnGround(parent, L("town_stall-bench"), 6f, -9f, 20f, Cell);
-            EmberScatter.PlaceOnGround(parent, L("town_cart"), -9f, -12f, 40f, Cell);
+            EmberScatter.PlaceOnGround(parent, L("town_stall-bench"), 16f, -19f, 20f, Cell);
+            EmberScatter.PlaceOnGround(parent, L("town_cart"), -16f, -19f, 40f, Cell);
 
             // The blacksmith's tools, outside the forge.
-            EmberScatter.PlaceOnGround(parent, L("survival_workbench-anvil"), -19f, 4f, 100f, Cell);
-            EmberScatter.PlaceOnGround(parent, L("survival_workbench"), -19f, 1f, 100f, Cell);
+            EmberScatter.PlaceOnGround(parent, L("survival_workbench-anvil"), -26f, 5f, 100f, Cell);
+            EmberScatter.PlaceOnGround(parent, L("survival_workbench"), -26f, 2f, 100f, Cell);
 
             // Mills: one on the river, one on the rise.
             EmberScatter.PlaceOnGround(parent, L("town_watermill"), -38f, 13f, 96f, Cell);
@@ -358,8 +375,9 @@ namespace Emberline.EditorTools
 
             // Lantern posts: the warm accent the whole palette is built around, and
             // the only saturated colour in the valley.
-            foreach (var (x, z) in new[] { (3f, 6f), (-6f, 2f), (8f, 1f), (-2f, -9f),
-                                           (12f, 9f), (-13f, -3f) })
+            // Lanterns ring the plaza rather than standing in it.
+            foreach (var (x, z) in new[] { (21f, 8f), (-21f, 6f), (9f, -22f), (-11f, -22f),
+                                           (22f, 19f), (-23f, -9f) })
                 EmberScatter.PlaceOnGround(parent, L("town_lantern"), x, z, 0f, 2.2f);
 
             // Farm plots south of the square.
@@ -383,8 +401,9 @@ namespace Emberline.EditorTools
             Scatter(parent, clutter, 240, 313,
                 (x, z, h) =>
                 {
-                    if (Vector2.Distance(new Vector2(x, z), Vector2.zero) > EmberTerrain.VillageRadius - 3f)
-                        return 0f;
+                    var d = Vector2.Distance(new Vector2(x, z), Vector2.zero);
+                    if (d > EmberTerrain.VillageRadius - 3f) return 0f;
+                    if (d < PlazaRadius) return 0f;              // the fighting floor
                     if (EmberTerrain.RoadDistance(x, z) < 3.6f) return 0f;
                     return 0.6f;
                 }, minSpacing: 2.4f);

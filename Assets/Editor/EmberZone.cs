@@ -1,4 +1,6 @@
+using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using Emberline.Core;
 using UnityEditor;
 using UnityEditor.SceneManagement;
@@ -38,9 +40,7 @@ namespace Emberline.EditorTools
 
             var root = new GameObject("Zone").transform;
 
-            EmberTerrain.Build(root, MeshDir);
-            BuildWater(root);
-            EmberZoneDressing.BuildAll(root);
+            BuildWorld(root, MeshDir, withMarkers: false);
             BuildLighting();
 
             // The same Renzo and the same camera rig the arenas use, so what is
@@ -64,6 +64,89 @@ namespace Emberline.EditorTools
 
             Debug.Log($"[Zone] built {ScenePath} — {tris} triangles");
             if (Application.isBatchMode) EditorApplication.Exit(0);
+        }
+
+        /// <summary>
+        /// Builds the valley itself — terrain, river and everything standing on
+        /// it — under <paramref name="root"/>.
+        ///
+        /// <para>
+        /// Shared with the mission scenes, which is the point: a mission fought in
+        /// the village should be fought in <em>the</em> village, not in a copy of
+        /// it that drifts. The scene builder calls this in place of the old
+        /// BuildArena, whose deck and four parapets were the cage.
+        /// </para>
+        /// </summary>
+        /// <param name="withMarkers">
+        /// Populate <c>ArenaMarkers</c> from the placed geometry. Missions need it
+        /// for archer line-of-sight and enemy avoidance; the walk-around test
+        /// scene does not.
+        /// </param>
+        public static void BuildWorld(Transform root, string meshDir, bool withMarkers)
+        {
+            EmberTerrain.Build(root, meshDir);
+            BuildWater(root);
+            EmberZoneDressing.BuildAll(root);
+
+            // Tells the runtime that the floor is a height field, not y = 0.
+            root.gameObject.AddComponent<Emberline.Core.ZoneWorld>();
+
+            if (withMarkers) BuildArenaMarkers(root);
+        }
+
+        /// <summary>
+        /// Registers the cover that combat actually needs to know about.
+        ///
+        /// <para>
+        /// ArenaMarkers is a flat list scanned per archer per line-of-sight check,
+        /// so it must not contain 368 trees and 1,197 grass tufts. Only substantial
+        /// standing geometry near the play area is registered, largest first and
+        /// capped, which is both cheaper and truer: a house blocks an arrow, a
+        /// flower does not.
+        /// </para>
+        /// </summary>
+        private static void BuildArenaMarkers(Transform root)
+        {
+            var go = new GameObject("ArenaMarkers");
+            var markers = go.AddComponent<ArenaMarkers>();
+
+            var found = new List<(float radius, Vector4 circle)>();
+            foreach (var col in root.GetComponentsInChildren<Collider>(true))
+            {
+                var b = col.bounds;
+                // Cover has to be wide enough to hide behind and tall enough to
+                // stop an arrow.
+                var radius = Mathf.Max(b.extents.x, b.extents.z);
+                if (radius < 1.6f || b.size.y < 1.6f) continue;
+
+                var c = b.center;
+                if (new Vector2(c.x, c.z).magnitude > 62f) continue;   // near the play area
+
+                found.Add((radius, new Vector4(c.x, 0f, c.z, radius * 0.85f)));
+            }
+
+            found.Sort((a, b) => b.radius.CompareTo(a.radius));
+            foreach (var (_, circle) in found.Take(40)) markers.obstacles.Add(circle);
+
+            // The river, as a chain of circles along its meander. InWater only
+            // slows movement, so a coarse approximation is the right cost.
+            for (var z = -60f; z <= 60f; z += 10f)
+            {
+                var x = EmberTerrain.RiverCentreX + Mathf.Sin(z * 0.032f) * 9f
+                        + Mathf.Sin(z * 0.011f) * 5f;
+                markers.waters.Add(new Vector4(x, 0f, z, 6f));
+            }
+
+            // Shades rise out of the treeline rather than the open meadow.
+            for (var i = 0; i < 8; i++)
+            {
+                var a = i / 8f * Mathf.PI * 2f;
+                var p = new Vector3(Mathf.Sin(a) * 38f, 0f, Mathf.Cos(a) * 38f);
+                markers.shadeSpawns.Add(Emberline.Core.Ground.Snap(p));
+            }
+
+            Debug.Log($"[Zone] arena markers: {markers.obstacles.Count} obstacles, " +
+                      $"{markers.waters.Count} water, {markers.shadeSpawns.Count} shade spawns");
         }
 
         // ------------------------------------------------------------- water

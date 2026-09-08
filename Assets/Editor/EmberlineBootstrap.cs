@@ -156,8 +156,19 @@ namespace Emberline.EditorTools
             var env = EnvThemes.Get(themeId);
 
             BuildLighting(theme, env);
-            BuildArena(theme);
+
+            // The valley, not a deck. BuildArena's 130 m cube and its four cube
+            // parapets were the cage the player could see and feel; missions are
+            // fought in the real place now, and the two themes differ by light and
+            // weather rather than by being two identical boxes.
+            var worldRoot = new GameObject("Zone").transform;
+            EmberZone.BuildWorld(worldRoot, $"Assets/Art/Environments/Zone/Meshes",
+                withMarkers: true);
+
             var player = BuildPlayer();
+            // BuildPlayer stands Renzo at y = 0, which is under the meadow.
+            player.transform.position = Emberline.Core.Ground.Snap(
+                new Vector3(0f, 0f, -3f)) + Vector3.up * 0.2f;
             BuildCamera(player.transform, theme);
 
             var atmoGo = new GameObject("AtmosphereSpawner");

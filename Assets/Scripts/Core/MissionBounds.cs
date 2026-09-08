@@ -8,7 +8,7 @@ namespace Emberline.Core
     /// at the edges rather than an invisible wall.
     ///
     /// <para>
-    /// <b>Default</b>: 60 m radius circle centered at the origin.
+    /// <b>Default</b>: 34 m radius circle centered at the origin.
     /// <b>Per-mission</b>: MissionPlan can set radius, ellipse, and center.
     /// <b>Endless mode</b>: defers to RoadNorth's corridor — callers check
     /// <c>RoadNorth.Instance</c> first, exactly as they did before.
@@ -57,7 +57,12 @@ namespace Emberline.Core
         public static void Configure(Vector3 center, float radiusX, float radiusZ)
         {
             _center = center;
-            _radiusX = radiusX > 0f ? radiusX : 60f;
+            // 34 m, not the old 60. On the flat deck a 60 m circle cost nothing:
+            // it was empty in every direction. In the valley a 60 m circle reaches
+            // deep into the treeline, so enemies spawned among the trunks and a
+            // fight became a scramble through a thicket. The clearing around the
+            // village is the arena; the forest is the wall around it.
+            _radiusX = radiusX > 0f ? radiusX : 34f;
             _radiusZ = radiusZ > 0f ? radiusZ : _radiusX;
             Configured = true;
         }
@@ -148,7 +153,9 @@ namespace Emberline.Core
             var toward = _center - clamped;
             toward.y = 0f;
             if (toward.sqrMagnitude > 0.001f) clamped += toward.normalized * 2f;
-            clamped.y = Mathf.Max(clamped.y, 0.5f);
+            // Not Max(y, 0.5): on a height field the floor is wherever the ground
+            // is, and 0.5 can be several metres underneath it.
+            clamped.y = Mathf.Max(clamped.y, Ground.HeightAt(clamped.x, clamped.z) + 0.5f);
             return (clamped, true);
         }
 

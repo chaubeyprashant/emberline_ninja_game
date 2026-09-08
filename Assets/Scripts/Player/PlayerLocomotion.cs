@@ -372,7 +372,7 @@ namespace Emberline.Player
                 var xLimit = RoadNorth.XLimitAt(p.z, half.x);
                 p.x = Mathf.Clamp(p.x, -xLimit, xLimit);
                 p.z = Mathf.Max(p.z, -half.y);
-                if (p.y < -3f) { p.y = 0.5f; _yVel = 0f; }
+                if (p.y < -3f) { p.y = 0.5f; _yVel = 0f; }   // flat corridor
                 if (p != transform.position) transform.position = p;
                 return;
             }
@@ -395,7 +395,18 @@ namespace Emberline.Player
             }
 
             // Fall-through-floor safety.
-            if (p.y < -3f) { p.y = 0.5f; _yVel = 0f; transform.position = p; }
+            // Fell through the world. On the flat deck the floor was y = 0, so
+            // dropping the player at 0.5 put them just above it. In the valley the
+            // meadow is above 2 m, so 0.5 is *under* the ground: the player fell,
+            // got reset below the surface, and fell again forever. Recover onto the
+            // actual floor, well clear of it.
+            var floor = Core.Ground.HeightAt(p.x, p.z);
+            if (p.y < floor - 3f)
+            {
+                p.y = floor + 0.5f;
+                _yVel = 0f;
+                transform.position = p;
+            }
         }
 
         /// <summary>Snap facing (and body) toward a direction — used by soft-lock.</summary>
