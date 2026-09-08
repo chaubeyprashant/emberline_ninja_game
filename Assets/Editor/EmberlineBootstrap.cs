@@ -957,7 +957,9 @@ namespace Emberline.EditorTools
         {
             // Every thrown type is the same recipe: a KayKit prop, normalised to a
             // sane length and pointed along +Z (its flight axis).
-            ThrownPrefab("Kunai", "dagger", 0.55f, new Color(0.62f, 0.68f, 0.78f));
+            // The kunai is psicodelik's real kunai via its weapon wrapper; the
+            // bolt keeps the KayKit dagger until an arrow model is sourced.
+            ThrownPrefab("Kunai", "kunai", 0.55f, new Color(0.62f, 0.68f, 0.78f));
             ThrownPrefab("Bolt", "dagger", 0.38f, new Color(0.85f, 0.72f, 0.38f));
             ThrownPrefab("Bomb", "smokebomb", 0.34f, new Color(0.42f, 0.44f, 0.48f));
         }
@@ -965,11 +967,15 @@ namespace Emberline.EditorTools
         private static void ThrownPrefab(string assetName, string propName, float length, Color tint)
         {
             Directory.CreateDirectory("Assets/Resources/Props");
+            // Same rule as AttachProp: a weapon wrapper (blade along +Y, grip at
+            // the origin) wins over a raw KayKit FBX of the same name.
             var source = AssetDatabase.LoadAssetAtPath<GameObject>(
-                $"Assets/Art/Characters/Props/{propName}.fbx");
+                            $"{EmberWeaponImport.PrefabDir}/{propName}.prefab")
+                         ?? AssetDatabase.LoadAssetAtPath<GameObject>(
+                            $"Assets/Art/Characters/Props/{propName}.fbx");
             if (source == null)
             {
-                Debug.LogWarning($"[Emberline] {propName}.fbx missing — {assetName} keeps primitive look");
+                Debug.LogWarning($"[Emberline] {propName} missing — {assetName} keeps primitive look");
                 return;
             }
             var root = new GameObject(assetName);
@@ -978,8 +984,8 @@ namespace Emberline.EditorTools
             model.transform.SetParent(root.transform, false);
             model.transform.localRotation = Quaternion.Euler(90f, 0, 0); // +Y blade → +Z
 
-            // KayKit props are sized for scaled hand slots — normalize to a real
-            // kunai (~0.55m along the flight axis) and center it on the root.
+            // Props are sized for hand slots — normalize to a real kunai (~0.55m
+            // along the flight axis) and center it on the root.
             Bounds B()
             {
                 var b = new Bounds(root.transform.position, Vector3.zero);
@@ -995,7 +1001,10 @@ namespace Emberline.EditorTools
             var mat = Mat($"Thrown{assetName}", tint, Surface.Steel);
             foreach (var r in root.GetComponentsInChildren<Renderer>(true))
             {
-                r.sharedMaterial = mat;
+                // Every slot, not just the first — the kunai mesh carries three.
+                var slots = r.sharedMaterials;
+                for (var i = 0; i < slots.Length; i++) slots[i] = mat;
+                r.sharedMaterials = slots;
                 r.shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.Off;
             }
             PrefabUtility.SaveAsPrefabAsset(root, $"Assets/Resources/Props/{assetName}.prefab");

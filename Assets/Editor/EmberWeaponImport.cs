@@ -223,6 +223,18 @@ namespace Emberline.EditorTools
                 tip = new Vector3(-1.4f, 2.55f, 0f),
                 hideChildren = new[] { "arrow" },
             },
+            // psicodelik kunai: 2.3k triangles, along Z with the origin on the
+            // handle just above the ring, ring at z=-0.03, blade base at +0.032,
+            // tip at +0.0965. Gripped mid-handle. 0.5 prop units = 0.31 m on
+            // Renzo, a real kunai. Feeds the thrown-kunai pool via ThrownPrefab,
+            // which re-centres and points it down +Z itself.
+            new WrapSpec
+            {
+                name = "kunai", fbx = "Assets/Art/Weapons/Kunai_psicodelik/kunai_psicodelik.fbx",
+                scale = 0.5f / 0.129f, rotEuler = new Vector3(-90f, 0f, 0f),
+                grip = new Vector3(0f, 0f, 0.01f), guard = new Vector3(0f, 0f, 0.032f),
+                tip = new Vector3(0f, 0f, 0.0965f),
+            },
             // Yavuz Temel naginata: 358 triangles, along Z with the origin mid-shaft,
             // butt at z=-0.29, collar at +0.21, tip at +0.35. Lead hand a third from
             // the butt. 3.4 prop units = 2.1 m on Renzo.
