@@ -74,6 +74,75 @@ namespace Emberline.EditorTools
             if (Application.isBatchMode) EditorApplication.Exit(0);
         }
 
+        /// <summary>
+        /// One framed three-quarter render per member of the cast, so the weapon
+        /// in each pair of hands can actually be read. The lineup fits fourteen
+        /// bodies into 2400px, which is enough to check silhouette and colour and
+        /// nowhere near enough to check what anyone is holding.
+        /// </summary>
+        [MenuItem("Emberline/Snapshot Cast")]
+        public static void RenderCast()
+        {
+            EditorSceneManager.NewScene(NewSceneSetup.EmptyScene, NewSceneMode.Single);
+            RenderSettings.ambientMode = UnityEngine.Rendering.AmbientMode.Flat;
+            RenderSettings.ambientLight = new Color(0.52f, 0.55f, 0.62f);
+            var sun = new GameObject("Sun").AddComponent<Light>();
+            sun.type = LightType.Directional;
+            sun.intensity = 1.7f;
+            sun.transform.rotation = Quaternion.Euler(50f, -140f, 0);
+
+            // Idle, not a strike: a swing points the blade down the view axis and
+            // all the camera sees is a pommel.
+            var entries = new (EmberCharacterFactory.Spec spec, RigPose pose, float t)[]
+            {
+                (EmberCharacterFactory.PlayerSpec(), RigPose.Idle, 0.3f),
+                (EmberCharacterFactory.Bandit(), RigPose.Idle, 0.3f),
+                (EmberCharacterFactory.Goro(), RigPose.Idle, 0.3f),
+                (EmberCharacterFactory.Kagachi(), RigPose.Idle, 0.3f),
+                (EmberCharacterFactory.Jin(), RigPose.Idle, 0.3f),
+                (EmberCharacterFactory.Archer(), RigPose.Idle, 0.3f),
+                (EmberCharacterFactory.RaiderAxe(), RigPose.Idle, 0.3f),
+                (EmberCharacterFactory.PikeGuard(), RigPose.Idle, 0.3f),
+                (EmberCharacterFactory.Bomber(), RigPose.Idle, 0.3f),
+                (EmberCharacterFactory.Assassin(), RigPose.Idle, 0.3f),
+                (EmberCharacterFactory.Samurai(), RigPose.Idle, 0.3f),
+                (EmberCharacterFactory.RogueNinja(), RigPose.Idle, 0.3f),
+                (EmberCharacterFactory.EliteWarrior(), RigPose.Idle, 0.3f),
+            };
+
+            foreach (var (spec, pose, t) in entries) Cast(spec, pose, t);
+            foreach (var id in EmberCharacterFactory.NamedFoeIds)
+            {
+                var spec = EmberCharacterFactory.NamedFoe(id);
+                if (spec != null) Cast(spec, RigPose.Idle, 0.3f);
+            }
+
+            Debug.Log("[Emberline] cast sheet written to Logs/cast_*.png");
+            if (Application.isBatchMode) EditorApplication.Exit(0);
+        }
+
+        private static void Cast(EmberCharacterFactory.Spec spec, RigPose pose, float t)
+        {
+            var root = new GameObject(spec.name);
+            root.transform.rotation = Quaternion.Euler(0, 215f, 0); // three-quarter: both hands in frame
+            if (EmberCharacterFactory.Build(root, spec))
+            {
+                var model = Core.VisualRoot.Of(root)?.gameObject;
+                var clip = EmberCharacterFactory.ResolveClip(spec, pose);
+                if (model != null && clip != null) clip.SampleAnimation(model, clip.length * t);
+            }
+
+            // Frame whatever the character plus its props actually occupy — a
+            // naginata reaches well outside the body, and a fixed box would crop it.
+            var b = new Bounds(root.transform.position + Vector3.up, Vector3.one * 0.5f);
+            foreach (var r in root.GetComponentsInChildren<Renderer>(true)) b.Encapsulate(r.bounds);
+            var reach = Mathf.Max(b.size.x, Mathf.Max(b.size.y, b.size.z));
+            var eye = b.center + new Vector3(0f, 0.15f * reach, -1.45f * reach);
+            Shoot(eye, Quaternion.LookRotation(b.center - eye),
+                $"Logs/cast_{spec.name.Replace("Model", "")}.png", 520, 700);
+            Object.DestroyImmediate(root);
+        }
+
         /// <summary>The hierarchy sheet: Renzo, Goro, Pale Shade, Jin, Kagehira, Elite — large and posed.</summary>
         [MenuItem("Emberline/Snapshot Bosses")]
         public static void RenderBosses()

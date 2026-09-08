@@ -422,8 +422,8 @@ namespace Emberline.EditorTools
             name = "BanditModel",
             height = 1.72f,
             tint = new Color(1.05f, 0.72f, 0.45f),   // warm tanned leather
-            propRight = "dagger",
-            propLeft = "dagger",
+            propRight = "twindagger",
+            propLeft = "twindagger",
         }, "MixamoAkai", "akai_diffuse.png");
 
         /// <summary>Goro: the toll-captain — the biggest body on the roof, bare-chested, greataxe.</summary>
@@ -443,7 +443,8 @@ namespace Emberline.EditorTools
             name = "KagachiModel",
             height = 2.1f,
             trail = true,
-            propRight = "sword_1handed",
+            propRight = "naginata",   // the warlord's glaive — reach the player has to respect
+
         }, "MixamoGanfaul", "Ganfaul_diffuse.png");
 
         /// <summary>Jin Kurogane: the storm blade — horned ornate armour, greatsword, unique body.</summary>
@@ -467,7 +468,7 @@ namespace Emberline.EditorTools
                 name = "ArcherModel",
                 height = 1.68f,
                 slotTextures = ErikaSlots(),
-                propRight = "crossbow_1handed",
+                propLeft = "yumi",    // bow hand; the draw hand stays empty
                 clips = clips,
             }, "MixamoErika", "Erika_Archer_Clothes_diffuse.png");
         }
@@ -532,8 +533,8 @@ namespace Emberline.EditorTools
                 height = 1.76f,
                 // The model carries its own blades; the prop system supplies ours.
                 hideRenderers = new[] { "Weapons_Geo" },
-                propRight = "dagger",
-                propLeft = "dagger",
+                propRight = "tanto",        // a mismatched pair — a cutthroat, not a soldier
+                propLeft = "twindagger",
                 clips = clips,
             }, "MixamoArissa", "Arissa_DIFF_diffuse.png");
         }
@@ -545,7 +546,7 @@ namespace Emberline.EditorTools
             height = 1.88f,
             trail = true,
             slotTextures = KachujinSlots(),
-            propRight = "sword_2handed",
+            propRight = "katana",
         }, "MixamoKachujin", "Kachujin_diffuse.png", propScale: 0.7f);
 
         /// <summary>Rogue Ninja: Renzo's body gone cold — the mirror, deliberately.</summary>
@@ -558,7 +559,7 @@ namespace Emberline.EditorTools
                 name = "RogueNinjaModel",
                 height = 1.78f,
                 tint = new Color(0.70f, 0.88f, 1.25f),   // moonlit steel: lighter and colder than Renzo's navy
-                propRight = "dagger",
+                propRight = "kunai",
                 clips = clips,
             }, "MixamoNinja", "Ch24_1001_Diffuse.png");
         }
@@ -618,7 +619,8 @@ namespace Emberline.EditorTools
             {
                 name = "DrownedGuardianModel",
                 height = 2.30f,
-                propRight = "axe_2handed",
+                propRight = "kama",   // the hook that drags men into the water
+
             }, "MixamoMaw", "MAW_diffuse.png", propScale: 0.85f),
 
             // The inner gate: full dark plate and a great helm — the last door.
@@ -646,8 +648,8 @@ namespace Emberline.EditorTools
                 name = "ThreeBladesModel",
                 height = 1.74f,
                 slotTextures = VampireSlots(),
-                propRight = "dagger",
-                propLeft = "dagger",
+                propRight = "twindagger",
+                propLeft = "twindagger",
             }, "MixamoVampire", "Vampire_diffuse.png"),
 
             _ => null,   // convoycaptain and paleshade read correctly as their kind
