@@ -199,6 +199,16 @@ namespace Emberline.EditorTools
                 grip = new Vector3(0f, 0f, -24f), guard = new Vector3(0f, 0f, -19f),
                 tip = new Vector3(0f, 0f, 22.5f),
             },
+            // Yavuz Temel naginata: 358 triangles, along Z with the origin mid-shaft,
+            // butt at z=-0.29, collar at +0.21, tip at +0.35. Lead hand a third from
+            // the butt. 3.4 prop units = 2.1 m on Renzo.
+            new WrapSpec
+            {
+                name = "naginata", fbx = "Assets/Art/Weapons/Naginata_Temel/naginata_temel.fbx",
+                scale = 3.4f / 0.638f, rotEuler = new Vector3(-90f, 0f, 0f),
+                grip = new Vector3(0f, 0f, -0.08f), guard = new Vector3(0f, 0f, 0.21f),
+                tip = new Vector3(0f, 0f, 0.35f),
+            },
             // SublimeHurdle yari: authored along X with the origin mid-shaft, tip at
             // x=-7.83, butt at x=+8.80, head collar near x=-3.5. Held a third of
             // the way from the butt. 3.43 prop units = 2.4 m on the Pike Guard at

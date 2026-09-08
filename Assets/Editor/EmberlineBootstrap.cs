@@ -1166,6 +1166,32 @@ namespace Emberline.EditorTools
             yari.trailColor = new Color(0.8f, 0.86f, 0.95f);
             EditorUtility.SetDirty(yari);
 
+            // Naginata: the sweep. Slower than the yari, wider than anything, and
+            // its cleave is a 200-degree arc that turns a crowd into a line.
+            var nagi = W("Naginata");
+            nagi.id = "naginata";
+            nagi.displayName = "NAGINATA";
+            nagi.blurb = "The sweep. Slow to start, and nothing stands beside you when it lands.";
+            nagi.unlockLevel = 14;
+            nagi.archetype = WeaponArchetype.Blade;
+            nagi.propRight = "naginata";
+            nagi.propLeft = "";
+            nagi.strikeChainLength = 3;
+            nagi.strikeDamage = new[] { 12f, 12f, 21f };
+            nagi.strikeRange = 3.5f;
+            nagi.strikeArcDeg = 150f;
+            nagi.chainWindow = 0.68f;
+            nagi.strikeAnimTime = 0.34f;
+            nagi.lungeSpeed = 4.6f;
+            nagi.cleaveStyle = CleaveStyle.Slash;
+            nagi.cleaveDamage = 28f;
+            nagi.cleaveRange = 3.8f;
+            nagi.cleaveArcDeg = 200f;
+            nagi.cleaveWindup = 0.36f;
+            nagi.cleaveCooldown = 1.8f;
+            nagi.trailColor = new Color(0.82f, 0.88f, 0.96f);
+            EditorUtility.SetDirty(nagi);
+
             // Hand Crossbow: a ranged option that still has to survive up close.
             // Quiver on the off hand so the silhouette reads as a shooter.
             var bow = W("HandCrossbow");
@@ -1197,7 +1223,7 @@ namespace Emberline.EditorTools
 
         /// <summary>Every hand prop any weapon can ask for, so runtime swaps have targets.</summary>
         private static readonly string[] WeaponPropsRight =
-            { "sword_1handed", "dagger", "axe_2handed", "smokebomb", "crossbow_1handed", "katana", "tanto", "twindagger", "kama", "yari" };
+            { "sword_1handed", "dagger", "axe_2handed", "smokebomb", "crossbow_1handed", "katana", "tanto", "twindagger", "kama", "yari", "naginata" };
 
         private static readonly string[] WeaponPropsLeft = { "dagger", "quiver", "twindagger" };
 
