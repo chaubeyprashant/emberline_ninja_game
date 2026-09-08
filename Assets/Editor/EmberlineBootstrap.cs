@@ -957,7 +957,9 @@ namespace Emberline.EditorTools
         {
             // Every thrown type is the same recipe: a KayKit prop, normalised to a
             // sane length and pointed along +Z (its flight axis).
-            ThrownPrefab("Kunai", "dagger", 0.55f, new Color(0.62f, 0.68f, 0.78f));
+            // The kunai is psicodelik's real kunai via its weapon wrapper; the
+            // bolt keeps the KayKit dagger until an arrow model is sourced.
+            ThrownPrefab("Kunai", "kunai", 0.55f, new Color(0.62f, 0.68f, 0.78f));
             ThrownPrefab("Bolt", "dagger", 0.38f, new Color(0.85f, 0.72f, 0.38f));
             ThrownPrefab("Bomb", "smokebomb", 0.34f, new Color(0.42f, 0.44f, 0.48f));
         }
@@ -965,11 +967,15 @@ namespace Emberline.EditorTools
         private static void ThrownPrefab(string assetName, string propName, float length, Color tint)
         {
             Directory.CreateDirectory("Assets/Resources/Props");
+            // Same rule as AttachProp: a weapon wrapper (blade along +Y, grip at
+            // the origin) wins over a raw KayKit FBX of the same name.
             var source = AssetDatabase.LoadAssetAtPath<GameObject>(
-                $"Assets/Art/Characters/Props/{propName}.fbx");
+                            $"{EmberWeaponImport.PrefabDir}/{propName}.prefab")
+                         ?? AssetDatabase.LoadAssetAtPath<GameObject>(
+                            $"Assets/Art/Characters/Props/{propName}.fbx");
             if (source == null)
             {
-                Debug.LogWarning($"[Emberline] {propName}.fbx missing — {assetName} keeps primitive look");
+                Debug.LogWarning($"[Emberline] {propName} missing — {assetName} keeps primitive look");
                 return;
             }
             var root = new GameObject(assetName);
@@ -978,8 +984,8 @@ namespace Emberline.EditorTools
             model.transform.SetParent(root.transform, false);
             model.transform.localRotation = Quaternion.Euler(90f, 0, 0); // +Y blade → +Z
 
-            // KayKit props are sized for scaled hand slots — normalize to a real
-            // kunai (~0.55m along the flight axis) and center it on the root.
+            // Props are sized for hand slots — normalize to a real kunai (~0.55m
+            // along the flight axis) and center it on the root.
             Bounds B()
             {
                 var b = new Bounds(root.transform.position, Vector3.zero);
@@ -995,7 +1001,10 @@ namespace Emberline.EditorTools
             var mat = Mat($"Thrown{assetName}", tint, Surface.Steel);
             foreach (var r in root.GetComponentsInChildren<Renderer>(true))
             {
-                r.sharedMaterial = mat;
+                // Every slot, not just the first — the kunai mesh carries three.
+                var slots = r.sharedMaterials;
+                for (var i = 0; i < slots.Length; i++) slots[i] = mat;
+                r.sharedMaterials = slots;
                 r.shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.Off;
             }
             PrefabUtility.SaveAsPrefabAsset(root, $"Assets/Resources/Props/{assetName}.prefab");
@@ -1021,7 +1030,7 @@ namespace Emberline.EditorTools
 
             var katana = W("EmberKatana");
             katana.archetype = WeaponArchetype.Blade;
-            katana.propRight = "sword_1handed";
+            katana.propRight = "katana";        // Dokazvo katana via its wrapper prefab
             katana.propLeft = "";
             katana.strikeChainLength = 3;
             katana.cleaveStyle = CleaveStyle.Slash;
@@ -1040,7 +1049,7 @@ namespace Emberline.EditorTools
 
             var tanto = W("StormTanto");
             tanto.archetype = WeaponArchetype.Blade;
-            tanto.propRight = "dagger";
+            tanto.propRight = "tanto";         // Lowes tanto via its wrapper prefab
             tanto.propLeft = "";
             tanto.strikeChainLength = 3;
             tanto.cleaveStyle = CleaveStyle.Slash;
@@ -1062,7 +1071,7 @@ namespace Emberline.EditorTools
 
             var hook = W("MarshHook");
             hook.archetype = WeaponArchetype.Blade;
-            hook.propRight = "axe_2handed";
+            hook.propRight = "kama";           // Yanez kama via its wrapper prefab
             hook.propLeft = "";
             hook.strikeChainLength = 3;
             hook.cleaveStyle = CleaveStyle.Slash;
@@ -1093,8 +1102,8 @@ namespace Emberline.EditorTools
             daggers.blurb = "Five-hit chain, no reach. Spin cleave hits everything around you.";
             daggers.unlockLevel = 2;
             daggers.archetype = WeaponArchetype.Daggers;
-            daggers.propRight = "dagger";
-            daggers.propLeft = "dagger";
+            daggers.propRight = "twindagger";   // cs3dviz dagger via its wrapper
+            daggers.propLeft = "twindagger";
             daggers.strikeChainLength = 5;
             daggers.strikeDamage = new[] { 6f, 6f, 8f, 8f, 14f };
             daggers.strikeRange = 2.0f;
@@ -1139,6 +1148,116 @@ namespace Emberline.EditorTools
             bomb.trailColor = new Color(0.6f, 0.62f, 0.66f);
             EditorUtility.SetDirty(bomb);
 
+            // Ashigaru Yari: reach. A narrow, slow thrust chain that outranges
+            // every blade, and a sweeping cleave that pays for it with wind-up.
+            // The spear the Pike Guard carries is the same model.
+            var yari = W("AshigaruYari");
+            yari.id = "yari";
+            yari.displayName = "ASHIGARU YARI";
+            yari.blurb = "Reach. Thrusts land first; the sweep clears a line.";
+            yari.unlockLevel = 10;
+            yari.archetype = WeaponArchetype.Blade;
+            yari.propRight = "yari";
+            yari.propLeft = "";
+            yari.strikeChainLength = 3;
+            yari.strikeDamage = new[] { 11f, 11f, 20f };
+            yari.strikeRange = 3.8f;
+            yari.strikeArcDeg = 70f;
+            yari.chainWindow = 0.7f;
+            yari.strikeAnimTime = 0.32f;
+            yari.lungeSpeed = 5.0f;
+            yari.cleaveStyle = CleaveStyle.Slash;
+            yari.cleaveDamage = 24f;
+            yari.cleaveRange = 4.0f;
+            yari.cleaveArcDeg = 150f;
+            yari.cleaveWindup = 0.34f;
+            yari.cleaveCooldown = 1.7f;
+            yari.trailColor = new Color(0.8f, 0.86f, 0.95f);
+            EditorUtility.SetDirty(yari);
+
+            // Naginata: the sweep. Slower than the yari, wider than anything, and
+            // its cleave is a 200-degree arc that turns a crowd into a line.
+            var nagi = W("Naginata");
+            nagi.id = "naginata";
+            nagi.displayName = "NAGINATA";
+            nagi.blurb = "The sweep. Slow to start, and nothing stands beside you when it lands.";
+            nagi.unlockLevel = 14;
+            nagi.archetype = WeaponArchetype.Blade;
+            nagi.propRight = "naginata";
+            nagi.propLeft = "";
+            nagi.strikeChainLength = 3;
+            nagi.strikeDamage = new[] { 12f, 12f, 21f };
+            nagi.strikeRange = 3.5f;
+            nagi.strikeArcDeg = 150f;
+            nagi.chainWindow = 0.68f;
+            nagi.strikeAnimTime = 0.34f;
+            nagi.lungeSpeed = 4.6f;
+            nagi.cleaveStyle = CleaveStyle.Slash;
+            nagi.cleaveDamage = 28f;
+            nagi.cleaveRange = 3.8f;
+            nagi.cleaveArcDeg = 200f;
+            nagi.cleaveWindup = 0.36f;
+            nagi.cleaveCooldown = 1.8f;
+            nagi.trailColor = new Color(0.82f, 0.88f, 0.96f);
+            EditorUtility.SetDirty(nagi);
+
+            // Heavy Axe: weight. Two hits in the chain, both slow, both crushing;
+            // the cleave is a ground-shaking overhead. The KayKit two-handed axe
+            // has always been in the project, and now that the Marsh Hook is a
+            // kama it is free to be what it looks like.
+            var axe = W("HeavyAxe");
+            axe.id = "axe";
+            axe.displayName = "HEAVY AXE";
+            axe.blurb = "Weight. Every hit is a commitment, and every hit is felt.";
+            axe.unlockLevel = 12;
+            axe.archetype = WeaponArchetype.Blade;
+            axe.propRight = "axe_2handed";
+            axe.propLeft = "";
+            axe.strikeChainLength = 2;
+            axe.strikeDamage = new[] { 16f, 26f };
+            axe.strikeRange = 3.0f;
+            axe.strikeArcDeg = 140f;
+            axe.chainWindow = 0.6f;
+            axe.strikeAnimTime = 0.42f;
+            axe.lungeSpeed = 4.0f;
+            axe.cleaveStyle = CleaveStyle.Ground;
+            axe.cleaveDamage = 36f;
+            axe.cleaveRange = 3.4f;
+            axe.cleaveArcDeg = 360f;
+            axe.cleaveWindup = 0.42f;
+            axe.cleaveCooldown = 2.2f;
+            axe.trailColor = new Color(0.9f, 0.75f, 0.55f);
+            EditorUtility.SetDirty(axe);
+
+            // Bow: the off-hand weapon. Nothing in the right hand, the bow in the
+            // left, and the throw button looses an arrow. The cleave is a three-
+            // arrow fan, like the crossbow's, but with more reach and less melee.
+            var bow0 = W("Yumi");
+            bow0.id = "yumi";
+            bow0.displayName = "YUMI";
+            bow0.blurb = "Distance. Nothing for a close fight, and no fight gets close.";
+            bow0.unlockLevel = 16;
+            bow0.archetype = WeaponArchetype.Ranged;
+            bow0.propRight = "";
+            bow0.propLeft = "yumi";
+            bow0.strikeChainLength = 2;
+            bow0.strikeDamage = new[] { 5f, 7f };
+            bow0.strikeRange = 1.8f;
+            bow0.strikeArcDeg = 90f;
+            bow0.chainWindow = 0.6f;
+            bow0.strikeAnimTime = 0.28f;
+            bow0.lungeSpeed = 3.4f;
+            bow0.cleaveStyle = CleaveStyle.FanShot;
+            bow0.cleaveDamage = 16f;      // per arrow
+            bow0.cleaveRange = 3f;
+            bow0.cleaveArcDeg = 50f;
+            bow0.cleaveWindup = 0.26f;
+            bow0.cleaveCooldown = 1.5f;
+            bow0.replacesKunaiWithThrown = true;
+            bow0.thrownId = "Bolt";
+            bow0.trailColor = new Color(0.85f, 0.8f, 0.6f);
+            EditorUtility.SetDirty(bow0);
+
             // Hand Crossbow: a ranged option that still has to survive up close.
             // Quiver on the off hand so the silhouette reads as a shooter.
             var bow = W("HandCrossbow");
@@ -1170,9 +1289,9 @@ namespace Emberline.EditorTools
 
         /// <summary>Every hand prop any weapon can ask for, so runtime swaps have targets.</summary>
         private static readonly string[] WeaponPropsRight =
-            { "sword_1handed", "dagger", "axe_2handed", "smokebomb", "crossbow_1handed" };
+            { "sword_1handed", "dagger", "axe_2handed", "smokebomb", "crossbow_1handed", "katana", "tanto", "twindagger", "kama", "yari", "naginata" };
 
-        private static readonly string[] WeaponPropsLeft = { "dagger", "quiver" };
+        private static readonly string[] WeaponPropsLeft = { "dagger", "quiver", "twindagger", "yumi" };
 
         // ----------------------------------------------------- prefabs / data
 

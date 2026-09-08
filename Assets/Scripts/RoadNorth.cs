@@ -32,7 +32,8 @@ namespace Emberline
         private float _builtToZ = MouthZ;
         private int _segIndex;
         private readonly List<Segment> _segments = new();
-        private GameObject _barrier;
+        private GameObject _barrier, _staging;
+        private ZoneWorld _valley;
         private Material _barrierMat;
         private Material _deckMat, _trimMat, _ridgeMat, _chimneyMat, _skylineMat, _flameMat;
         private readonly System.Random _rng = new(1234);
@@ -48,17 +49,67 @@ namespace Emberline
         {
             var road = new GameObject("RoadNorth").AddComponent<RoadNorth>();
             road._player = player;
-            road.StartZ = player.position.z;
             Instance = road;
             road.BuildMaterials();
+            road.StandDownValley();
+
+            // The valley put the player on the meadow; the road's floor is y = 0.
+            var p = player.position;
+            p.y = 0f;
+            player.position = p;
+            road.StartZ = p.z;
+
             road.OpenArenaMouth();
-            road.StreamTo(player.position.z + BuildAhead);
+            road.BuildStaging();
+            road.StreamTo(p.z + BuildAhead);
             return road;
         }
 
         private void OnDestroy()
         {
             if (Instance == this) Instance = null;
+            RaiseValley();
+            Kill(_staging);
+        }
+
+        // -------------------------------------------------------------- valley
+
+        /// <summary>
+        /// The valley and the road cannot both be the floor.
+        ///
+        /// <para>
+        /// The march is an endless corridor at y = 0. The valley is a fixed 200 m
+        /// bowl whose meadow sits 3.4 m above that and whose ring of hills reaches
+        /// +30 m, so a road streamed through it runs under the ground the player
+        /// is standing on and is buried outright past the treeline. When the
+        /// corridor was written the arenas were flat and this could not happen;
+        /// the missions have since moved into the valley, and the march shares
+        /// their scene.
+        /// </para>
+        ///
+        /// <para>
+        /// So the march stands the valley down for its own length and puts it back
+        /// afterwards. Deactivating never runs <c>OnDestroy</c> and re-activating
+        /// never re-runs <c>Awake</c>, so <see cref="Ground.ZoneActive"/> is ours
+        /// to move in both directions.
+        /// </para>
+        /// </summary>
+        private void StandDownValley()
+        {
+            _valley = FindFirstObjectByType<ZoneWorld>();
+            if (_valley == null) return;
+            _valley.gameObject.SetActive(false);
+            Ground.ZoneActive = false;
+        }
+
+        private void RaiseValley()
+        {
+            // Null once the scene itself is unloading — then the next ZoneWorld
+            // to load turns the flag back on, which is what we want anyway.
+            if (_valley == null) return;
+            _valley.gameObject.SetActive(true);
+            Ground.ZoneActive = true;
+            _valley = null;
         }
 
         /// <summary>Destroy that also works in edit mode (snapshot verification).</summary>
@@ -179,6 +230,46 @@ namespace Emberline
                 stub.transform.localScale = new Vector3(6.6f, 0.8f, 0.6f);
                 stub.GetComponent<Renderer>().sharedMaterial = _trimMat;
             }
+        }
+
+        /// <summary>
+        /// The floor the march starts on. The corridor used to grow out of the
+        /// arena's 130 m deck; that deck left with the missions when they moved
+        /// into the valley, so the road brings its own — sized to the same play
+        /// area the enemy clamp already uses, and butted against the mouth.
+        /// </summary>
+        private void BuildStaging()
+        {
+            var half = SceneRefs.Game != null
+                ? SceneRefs.Game.arenaHalfExtents : new Vector2(13f, 8f);
+            _staging = new GameObject("RoadStaging");
+
+            GameObject Cube(string name, Vector3 pos, Vector3 scale, Material mat)
+            {
+                var c = GameObject.CreatePrimitive(PrimitiveType.Cube);
+                c.name = name;
+                c.transform.SetParent(_staging.transform, false);
+                c.transform.position = pos;
+                c.transform.localScale = scale;
+                c.GetComponent<Renderer>().sharedMaterial = mat;
+                return c;
+            }
+
+            var depth = MouthZ + half.y + 2f;          // south edge up to the mouth
+            var width = half.x * 2f + 3f;
+            var mid = MouthZ - depth * 0.5f;
+            Cube("StagingDeck", new Vector3(0f, -0.25f, mid),
+                new Vector3(width, 0.5f, depth), _deckMat);
+
+            // Three walls, open to the north: the same trim as the road, so the
+            // mouth reads as a way out of somewhere rather than a seam.
+            Cube("StagingParapet", new Vector3(0f, 0.4f, mid - depth * 0.5f),
+                new Vector3(width, 0.8f, 0.6f), _trimMat);
+            foreach (var side in new[] { -1f, 1f })
+                Cube("StagingParapet", new Vector3(side * width * 0.5f, 0.4f, mid),
+                    new Vector3(0.6f, 0.8f, depth), _trimMat);
+
+            StaticBatchingUtility.Combine(_staging);
         }
 
         private void StreamTo(float z)

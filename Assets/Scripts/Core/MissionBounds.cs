@@ -169,6 +169,13 @@ namespace Emberline.Core
         {
             var angle = Random.value * Mathf.PI * 2f;
             var r = 1f - inset / Mathf.Max(_radiusX, _radiusZ);
+            // Never on the boundary itself. A metre of inset off a 60 m arena left
+            // spawns at 98% of the radius, which is deep inside the soft push-back
+            // band: anything standing there is somewhere the player is being shoved
+            // away from, so reaching it means fighting the boundary. It went
+            // unnoticed while arenas were 60 m and enemies walked in on their own;
+            // at 34 m the player meets the band almost immediately.
+            r = Mathf.Min(r, SoftStart - 0.03f);
             return new Vector3(
                 _center.x + Mathf.Cos(angle) * _radiusX * r,
                 0f,

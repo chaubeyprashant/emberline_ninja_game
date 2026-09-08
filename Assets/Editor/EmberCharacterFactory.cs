@@ -240,7 +240,7 @@ namespace Emberline.EditorTools
             height = 1.8f,
             lantern = true,
             trail = true,
-            propRight = "sword_1handed",
+            propRight = "katana",            // Renzo spawns holding his own blade
             // Render through the game's own surface shader, not Unity's Standard,
             // so the character takes the same lighting as everything else in the
             // scene. On Standard it read washed out against the night arenas.
@@ -422,8 +422,8 @@ namespace Emberline.EditorTools
             name = "BanditModel",
             height = 1.72f,
             tint = new Color(1.05f, 0.72f, 0.45f),   // warm tanned leather
-            propRight = "dagger",
-            propLeft = "dagger",
+            propRight = "twindagger",
+            propLeft = "twindagger",
         }, "MixamoAkai", "akai_diffuse.png");
 
         /// <summary>Goro: the toll-captain — the biggest body on the roof, bare-chested, greataxe.</summary>
@@ -443,7 +443,8 @@ namespace Emberline.EditorTools
             name = "KagachiModel",
             height = 2.1f,
             trail = true,
-            propRight = "sword_1handed",
+            propRight = "naginata",   // the warlord's glaive — reach the player has to respect
+
         }, "MixamoGanfaul", "Ganfaul_diffuse.png");
 
         /// <summary>Jin Kurogane: the storm blade — horned ornate armour, greatsword, unique body.</summary>
@@ -467,7 +468,7 @@ namespace Emberline.EditorTools
                 name = "ArcherModel",
                 height = 1.68f,
                 slotTextures = ErikaSlots(),
-                propRight = "crossbow_1handed",
+                propLeft = "yumi",    // bow hand; the draw hand stays empty
                 clips = clips,
             }, "MixamoErika", "Erika_Archer_Clothes_diffuse.png");
         }
@@ -495,10 +496,12 @@ namespace Emberline.EditorTools
                 height = 1.95f,
                 tint = new Color(0.40f, 0.66f, 1.30f),   // cold garrison steel against the Samurai's red
                 slotTextures = KachujinSlots(),
-                propRight = "sword_2handed",
+                propRight = "yari",                          // a real spear, via its wrapper
                 clips = clips,
             }, "MixamoKachujin", "Kachujin_diffuse.png");
-            s.propScale = new Vector3(0.36f, 1.35f, 0.36f);   // sword → spear shaft
+            // Was sword_2handed stretched (0.36, 1.35, 0.36) into a shaft. The
+            // wrapper carries its own proportions now, so the prop scale is uniform.
+            s.propScale = Vector3.one * 0.7f;
             return s;
         }
 
@@ -530,8 +533,8 @@ namespace Emberline.EditorTools
                 height = 1.76f,
                 // The model carries its own blades; the prop system supplies ours.
                 hideRenderers = new[] { "Weapons_Geo" },
-                propRight = "dagger",
-                propLeft = "dagger",
+                propRight = "tanto",        // a mismatched pair — a cutthroat, not a soldier
+                propLeft = "twindagger",
                 clips = clips,
             }, "MixamoArissa", "Arissa_DIFF_diffuse.png");
         }
@@ -543,7 +546,7 @@ namespace Emberline.EditorTools
             height = 1.88f,
             trail = true,
             slotTextures = KachujinSlots(),
-            propRight = "sword_2handed",
+            propRight = "katana",
         }, "MixamoKachujin", "Kachujin_diffuse.png", propScale: 0.7f);
 
         /// <summary>Rogue Ninja: Renzo's body gone cold — the mirror, deliberately.</summary>
@@ -556,7 +559,7 @@ namespace Emberline.EditorTools
                 name = "RogueNinjaModel",
                 height = 1.78f,
                 tint = new Color(0.70f, 0.88f, 1.25f),   // moonlit steel: lighter and colder than Renzo's navy
-                propRight = "dagger",
+                propRight = "kunai",
                 clips = clips,
             }, "MixamoNinja", "Ch24_1001_Diffuse.png");
         }
@@ -616,7 +619,8 @@ namespace Emberline.EditorTools
             {
                 name = "DrownedGuardianModel",
                 height = 2.30f,
-                propRight = "axe_2handed",
+                propRight = "kama",   // the hook that drags men into the water
+
             }, "MixamoMaw", "MAW_diffuse.png", propScale: 0.85f),
 
             // The inner gate: full dark plate and a great helm — the last door.
@@ -644,8 +648,8 @@ namespace Emberline.EditorTools
                 name = "ThreeBladesModel",
                 height = 1.74f,
                 slotTextures = VampireSlots(),
-                propRight = "dagger",
-                propLeft = "dagger",
+                propRight = "twindagger",
+                propLeft = "twindagger",
             }, "MixamoVampire", "Vampire_diffuse.png"),
 
             _ => null,   // convoycaptain and paleshade read correctly as their kind
@@ -967,7 +971,13 @@ namespace Emberline.EditorTools
                 return null;
             }
 
-            var propAsset = AssetDatabase.LoadAssetAtPath<GameObject>($"{PropDir}/{propName}.fbx");
+            // A wrapper prefab wins over a raw FBX. Marketplace weapons arrive
+            // with their own pivot and axis; the wrapper (EmberWeaponImport)
+            // has already rotated and shifted them onto the KayKit convention —
+            // grip at origin, blade along +Y — so this code needs no cases.
+            var propAsset = AssetDatabase.LoadAssetAtPath<GameObject>(
+                                $"{EmberWeaponImport.PrefabDir}/{propName}.prefab")
+                            ?? AssetDatabase.LoadAssetAtPath<GameObject>($"{PropDir}/{propName}.fbx");
             if (propAsset == null) return null;
             var prop = (GameObject)PrefabUtility.InstantiatePrefab(propAsset);
             prop.name = $"Prop_{propName}_{side}";
@@ -980,7 +990,11 @@ namespace Emberline.EditorTools
             if (!trail || side != "r") return prop;
             var trailGo = new GameObject("Trail");
             trailGo.transform.SetParent(prop.transform, false);
-            trailGo.transform.localPosition = new Vector3(0, 0.55f, 0);
+            // A wrapper declares where its blade is; a KayKit prop is close enough
+            // to the old fixed height.
+            var trailOrigin = prop.transform.Find("TrailOrigin");
+            trailGo.transform.localPosition = trailOrigin != null
+                ? trailOrigin.localPosition : new Vector3(0, 0.55f, 0);
             var trailR = trailGo.AddComponent<TrailRenderer>();
             trailR.time = 0.14f;
             trailR.startWidth = 0.34f;
