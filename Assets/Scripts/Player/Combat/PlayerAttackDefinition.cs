@@ -42,8 +42,12 @@ namespace Emberline.Player
         public AttackContext context = AttackContext.Chain1;
 
         [Header("Timing")]
-        [Tooltip("Committed state length. The swing resolves at startup's end.")]
-        public float startup = 0.05f;
+        [Tooltip("Seconds before the edge goes live. 0 derives it from animTime, " +
+                 "which is the honest default: the animation already says how long " +
+                 "the swing takes, so the contact point is a fraction of it.")]
+        public float startup;
+        [Tooltip("Seconds the edge stays live. 0 derives it from animTime.")]
+        public float active;
         public float animTime = 0.28f;
         [Tooltip("Recover state after the swing; 0 = none (chains stay fluid).")]
         public float recovery;

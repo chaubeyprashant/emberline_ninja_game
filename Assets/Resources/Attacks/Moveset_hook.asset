@@ -17,7 +17,8 @@ MonoBehaviour:
   - id: hook_swing
     displayName: HOOK SWING
     context: 16
-    startup: 0.05
+    startup: 0
+    active: 0
     animTime: 0.36
     recovery: 0
     cooldown: 0
@@ -37,7 +38,8 @@ MonoBehaviour:
   - id: hook_return
     displayName: HOOK RETURN
     context: 15
-    startup: 0.05
+    startup: 0
+    active: 0
     animTime: 0.36
     recovery: 0
     cooldown: 0
@@ -57,7 +59,8 @@ MonoBehaviour:
   - id: hook_drag
     displayName: HOOK DRAG
     context: 14
-    startup: 0.05
+    startup: 0
+    active: 0
     animTime: 0.4
     recovery: 0.32
     cooldown: 0
@@ -77,7 +80,8 @@ MonoBehaviour:
   - id: hook_cleave
     displayName: HOOK CLEAVE
     context: 13
-    startup: 0.05
+    startup: 0
+    active: 0
     animTime: 0.28
     recovery: 0.42
     cooldown: 0
@@ -97,7 +101,8 @@ MonoBehaviour:
   - id: long_reach
     displayName: LONG REACH
     context: 11
-    startup: 0.05
+    startup: 0
+    active: 0
     animTime: 0.28
     recovery: 0.4
     cooldown: 0
@@ -117,7 +122,8 @@ MonoBehaviour:
   - id: reaper
     displayName: REAPER
     context: 10
-    startup: 0.05
+    startup: 0
+    active: 0
     animTime: 0.28
     recovery: 0.5
     cooldown: 0
@@ -137,7 +143,8 @@ MonoBehaviour:
   - id: short_hook
     displayName: SHORT HOOK
     context: 12
-    startup: 0.05
+    startup: 0
+    active: 0
     animTime: 0.3
     recovery: 0
     cooldown: 0
@@ -157,7 +164,8 @@ MonoBehaviour:
   - id: hook_pull
     displayName: HOOK PULL
     context: 5
-    startup: 0.05
+    startup: 0
+    active: 0
     animTime: 0.28
     recovery: 0.35
     cooldown: 0
@@ -177,7 +185,8 @@ MonoBehaviour:
   - id: hooked_riposte
     displayName: HOOKED RIPOSTE
     context: 2
-    startup: 0.05
+    startup: 0
+    active: 0
     animTime: 0.28
     recovery: 0
     cooldown: 0
@@ -197,7 +206,8 @@ MonoBehaviour:
   - id: catch
     displayName: CATCH
     context: 3
-    startup: 0.05
+    startup: 0
+    active: 0
     animTime: 0.28
     recovery: 0
     cooldown: 0
@@ -217,7 +227,8 @@ MonoBehaviour:
   - id: spine_hook
     displayName: SPINE HOOK
     context: 4
-    startup: 0.05
+    startup: 0
+    active: 0
     animTime: 0.28
     recovery: 0
     cooldown: 0
@@ -237,7 +248,8 @@ MonoBehaviour:
   - id: dragged_down
     displayName: DRAGGED DOWN
     context: 1
-    startup: 0.05
+    startup: 0
+    active: 0
     animTime: 0.28
     recovery: 0
     cooldown: 0
@@ -257,7 +269,8 @@ MonoBehaviour:
   - id: silent_hook
     displayName: SILENT HOOK
     context: 0
-    startup: 0.05
+    startup: 0
+    active: 0
     animTime: 0.28
     recovery: 0
     cooldown: 0
@@ -277,7 +290,8 @@ MonoBehaviour:
   - id: cast
     displayName: CAST
     context: 6
-    startup: 0.05
+    startup: 0
+    active: 0
     animTime: 0.34
     recovery: 0
     cooldown: 0
@@ -297,7 +311,8 @@ MonoBehaviour:
   - id: running_hook
     displayName: RUNNING HOOK
     context: 9
-    startup: 0.05
+    startup: 0
+    active: 0
     animTime: 0.34
     recovery: 0
     cooldown: 0
@@ -317,7 +332,8 @@ MonoBehaviour:
   - id: falling_hook
     displayName: FALLING HOOK
     context: 7
-    startup: 0.05
+    startup: 0
+    active: 0
     animTime: 0.28
     recovery: 0.36
     cooldown: 0
@@ -337,7 +353,8 @@ MonoBehaviour:
   - id: wall_hook
     displayName: WALL HOOK
     context: 8
-    startup: 0.05
+    startup: 0
+    active: 0
     animTime: 0.28
     recovery: 0.36
     cooldown: 0
