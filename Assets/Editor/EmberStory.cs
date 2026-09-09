@@ -171,6 +171,68 @@ namespace Emberline.EditorTools
                 S("KAGACHI", ShotCamera.Handheld, 3f, "KAGACHI", "…Weak."),
                 S("", ShotCamera.Hold, 1f));
 
+            // ---- MISSION 8 — FATHER'S MARK -----------------------------------
+            // The name lands here, and only the name. The Black Seal exists, it
+            // takes three keys, the Kurogawa were one of the three hands — and
+            // the mission ends on two questions it refuses to answer: where the
+            // third key is, and why they would need Renzo's blood.
+
+            Make("mark_open", "THREE PIECES",
+                S("RENZO", ShotCamera.PushIn, 4f, audio: ShotAudio.Wind,
+                    theme: EnvThemeId.Mountain),
+                S("RENZO", ShotCamera.Hold, 3f, "RENZO", "Three grooves."),
+                S("RENZO", ShotCamera.Hold, 3.2f, "RENZO", "Three pieces."),
+                S("", ShotCamera.Wide, 4.5f, audio: ShotAudio.Silence),
+                S("RENZO", ShotCamera.Hold, 4f, "RENZO", "What were you trying to open?"),
+                S("", ShotCamera.Hold, 1f, fadeAfter: true, blackAfter: 0.6f));
+
+            // Why the marks are hidden, in his father's own words, and the only
+            // thing he ever said about what is at the end of them.
+            Make("mark_father", "SOME PATHS SHOULD ONLY BE FOUND",
+                S("RENZO", ShotCamera.Hold, 2.6f, audio: ShotAudio.Silence, blackAfter: 0.8f),
+                S("FATHER", ShotCamera.SlowDolly, 3.6f, audio: ShotAudio.Wind,
+                    theme: EnvThemeId.VillageDawn),
+                S("", ShotCamera.Hold, 2.6f, "REN", "Why hide the signs?"),
+                S("FATHER", ShotCamera.Hold, 4f, "FATHER", "Because some paths should only be found by those who know where to look."),
+                S("", ShotCamera.Hold, 2.8f, "REN", "What if someone else finds them?"),
+                S("FATHER", ShotCamera.Hold, 3.6f, "FATHER", "Then you make sure they never reach the end."),
+                S("", ShotCamera.Hold, 2.4f, "REN", "What's at the end?"),
+                S("FATHER", ShotCamera.PushIn, 4.2f, "FATHER", "Something that should never belong to one man."),
+                S("", ShotCamera.Hold, 1.4f, fadeAfter: true, blackAfter: 1.2f),
+                S("RENZO", ShotCamera.Hold, 4f, "RENZO", "You knew this would happen.",
+                    audio: ShotAudio.Silence));
+
+            // The reveal. A name and a rule, nothing about what it does.
+            Make("mark_seal", "THE BLACK SEAL",
+                S("RENZO", ShotCamera.PushIn, 3.4f, audio: ShotAudio.Silence),
+                S("", ShotCamera.Hold, 3.2f, "FATHER", "The Black Seal must remain closed."),
+                S("", ShotCamera.Hold, 3.4f, "FATHER", "Three keys were entrusted to three hands."),
+                S("", ShotCamera.Hold, 3.4f, "FATHER", "The mountain must never be opened by force."),
+                S("", ShotCamera.Hold, 3.6f, "FATHER", "If the keys are brought together—"),
+                S("RENZO", ShotCamera.Hold, 3.5f, "RENZO", "Black Seal.", audio: ShotAudio.Sting),
+                S("RENZO", ShotCamera.PushIn, 4f, "RENZO", "That's what you were protecting."),
+                S("", ShotCamera.Hold, 1.5f, fadeAfter: true, blackAfter: 1f));
+
+            Make("mark_search", "THE FAMILY MARK AND THE KEY",
+                S("", ShotCamera.Hold, 2.4f, "SOLDIER", "The trail ends here.", audio: ShotAudio.Silence),
+                S("", ShotCamera.Hold, 2.4f, "SOLDIER", "Search the mountain."),
+                S("", ShotCamera.Hold, 2.8f, "SOLDIER", "We're looking for the family mark."),
+                S("", ShotCamera.Hold, 2.4f, "SOLDIER", "And the key."),
+                S("", ShotCamera.PushIn, 3.2f, "SOLDIER", "If you find either, report immediately."),
+                S("RENZO", ShotCamera.Hold, 2.6f, fadeAfter: true, blackAfter: 0.6f));
+
+            Make("mark_end", "I'LL FIND THE THIRD",
+                S("RENZO", ShotCamera.OverShoulder, 4f, audio: ShotAudio.Wind),
+                S("", ShotCamera.Wide, 5f, audio: ShotAudio.Silence),
+                S("RENZO", ShotCamera.Hold, 3.4f, "RENZO", "Father knew they would come."),
+                S("RENZO", ShotCamera.Hold, 3.2f, "RENZO", "He hid the path."),
+                S("RENZO", ShotCamera.Hold, 3.2f, "RENZO", "He hid the keys."),
+                S("", ShotCamera.SlowDolly, 4.5f, audio: ShotAudio.MusicDark),
+                S("RENZO", ShotCamera.Hold, 3.6f, "RENZO", "But he couldn't hide everything."),
+                S("RENZO", ShotCamera.PushIn, 3.4f, "RENZO", "I'll find the third."),
+                S("", ShotCamera.Hold, 2.5f, fadeAfter: true, blackAfter: 2f,
+                    card: "FATHER'S MARK"));
+
             // ---- MISSION 7 — THE BROKEN HOUSE --------------------------------
             // Renzo searches his own home. Two memories, both short, both of a
             // life rather than of the fire. The escalation is the letter: three

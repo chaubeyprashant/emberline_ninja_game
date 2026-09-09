@@ -20,6 +20,8 @@ namespace Emberline.Missions
         Homestead,     // what is left of a house: beams, a doorway, household things
         Cache,         // a stone nobody would move, and what is under it
         KeyPiece,      // small, worked metal: three grooves and a missing section
+        StoneMarker,   // a weathered post with a partial mark cut into it
+        Passage,       // a stone panel that is not quite part of the wall
     }
 
     /// <summary>
@@ -188,6 +190,23 @@ namespace Emberline.Missions
                     Bar(new Vector3(0f, 0.24f, 0.18f), new Vector3(0.1f, 0.05f, 0.1f),
                         new Color(0.5f, 0.47f, 0.4f));
                     Glow(new Vector3(0f, 0.45f, 0f), new Color(0.92f, 0.86f, 0.62f), 0.24f);
+                    break;
+
+                case StoryPropShape.StoneMarker:
+                    // Old, deliberate, and half swallowed by the hill.
+                    Dress("column", Vector3.zero, 0f, 0.62f);
+                    Bar(new Vector3(0f, 0.9f, 0.22f), new Vector3(0.34f, 0.34f, 0.06f),
+                        new Color(0.38f, 0.36f, 0.33f));
+                    Glow(new Vector3(0f, 1.15f, 0f), new Color(0.86f, 0.9f, 1f), 0.2f);
+                    break;
+
+                case StoryPropShape.Passage:
+                    // A slab that does not match the courses around it.
+                    Bar(new Vector3(0f, 1.05f, 0f), new Vector3(1.7f, 2.1f, 0.35f),
+                        new Color(0.26f, 0.25f, 0.24f));
+                    Dress("rubble_half", new Vector3(-1.5f, 0f, 0.4f), 30f, 0.9f);
+                    Dress("torch_lit", new Vector3(1.4f, 0f, 0.3f), 0f, 1f, doused: true);
+                    Glow(new Vector3(0f, 1.3f, 0.3f), new Color(0.9f, 0.84f, 0.66f), 0.26f);
                     break;
 
                 case StoryPropShape.Tracks:

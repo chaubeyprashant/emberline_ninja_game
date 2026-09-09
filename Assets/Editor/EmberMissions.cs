@@ -1012,6 +1012,183 @@ namespace Emberline.EditorTools
             // objects his father left as a mark, and a letter that escalates the
             // whole campaign in three sentences. The words Black Seal are not
             // spoken here; mission 8 owns that.
+            // ---------------------------------------------------------------
+            // 8 — FATHER'S MARK. The mountain, and the name. The "puzzle" is
+            // three marked stones read in turn — a thing to notice rather than a
+            // thing to solve, because the discovery is narrative and a lock the
+            // player can fail would only get in its way.
+            var m8m = P_("S08_FathersMark");
+            m8m.id = 8; m8m.missionName = "FATHER'S MARK"; m8m.missionType = "EXPLORATION";
+            m8m.marsh = false; m8m.baseShards = 4;
+            m8m.applyTheme = true; m8m.theme = Core.EnvThemeId.Mountain;
+            m8m.fog = true;
+            m8m.briefing = "The road on the family map goes up, and it was cut by people who did not want it followed.";
+            m8m.debrief = "The Black Seal takes three keys and was entrusted to three hands. Renzo's family held one. He is carrying two pieces and does not know where the third is — or why the page mentions Kurogawa blood.";
+            m8m.dressing = new[] { DressingKind.AbandonedWeapons, DressingKind.MissingNotice,
+                DressingKind.EmptyHome };
+            m8m.challenge = MissionChallenge.NoAlarm; m8m.challengeShards = 3;
+            m8m.stages = new[]
+            {
+                St(StageGoal.Cinematic, "", "", beatId: "mark_open"),
+
+                // The climb. Three short reads, none of them stopping the player.
+                new MissionStage
+                {
+                    goal = StageGoal.Examine,
+                    objective = "FOLLOW THE OLD MOUNTAIN PATH",
+                    banner = "THE OLD ROAD UP",
+                    checkpoint = true,
+                    props = new[]
+                    {
+                        new StoryPropSpec
+                        {
+                            id = "marker8", label = "A BROKEN MARKER",
+                            point = new Vector3(-7f, 0f, 12f), shape = StoryPropShape.StoneMarker,
+                            speaker = "RENZO", line = "Faded, but it's ours. Father came this way.",
+                        },
+                        new StoryPropSpec
+                        {
+                            id = "drag8", label = "DRAG MARKS",
+                            point = new Vector3(1f, 0f, 16f), shape = StoryPropShape.Tracks,
+                            speaker = "RENZO", line = "Someone else found the path.",
+                        },
+                        new StoryPropSpec
+                        {
+                            id = "moved8", label = "A MOVED STONE",
+                            point = new Vector3(9f, 0f, 14f), shape = StoryPropShape.StoneMarker,
+                            speaker = "RENZO", line = "And they're still looking.",
+                        },
+                    },
+                },
+
+                // The mark that is not a crest.
+                new MissionStage
+                {
+                    goal = StageGoal.Examine,
+                    objective = "INVESTIGATE THE KUROGAWA MARK",
+                    banner = "ON THE OLD WALL",
+                    props = new[]
+                    {
+                        new StoryPropSpec
+                        {
+                            id = "wallmark8", label = "A KUROGAWA MARK",
+                            point = new Vector3(14f, 0f, 9f), shape = StoryPropShape.Shrine,
+                            speaker = "RENZO",
+                            line = "Not a family crest. A direction. He cut it for someone who could read it.",
+                        },
+                    },
+                },
+
+                // The mechanism: three stones, each with part of the mark, read
+                // in any order. Notice, not solve — it cannot be failed.
+                new MissionStage
+                {
+                    goal = StageGoal.Examine,
+                    objective = "FOLLOW YOUR FATHER'S MARK",
+                    banner = "THREE STONES",
+                    checkpoint = true,
+                    props = new[]
+                    {
+                        new StoryPropSpec
+                        {
+                            id = "stoneA", label = "THE FIRST STONE",
+                            point = new Vector3(16f, 0f, 2f), shape = StoryPropShape.StoneMarker,
+                            speaker = "RENZO", line = "Part of a mark. A third of one.",
+                        },
+                        new StoryPropSpec
+                        {
+                            id = "stoneB", label = "THE SECOND STONE",
+                            point = new Vector3(13f, 0f, -5f), shape = StoryPropShape.StoneMarker,
+                            speaker = "RENZO", line = "Another third. They line up with the grooves.",
+                        },
+                        new StoryPropSpec
+                        {
+                            id = "stoneC", label = "THE THIRD STONE",
+                            point = new Vector3(7f, 0f, -9f), shape = StoryPropShape.StoneMarker,
+                            speaker = "RENZO", line = "Three stones, three grooves. That's the whole lock.",
+                        },
+                    },
+                },
+
+                // The way in, and the memory of being taught to find it.
+                new MissionStage
+                {
+                    goal = StageGoal.Examine,
+                    objective = "FIND THE HIDDEN PASSAGE",
+                    banner = "THE WALL IS WRONG HERE",
+                    checkpoint = true,
+                    props = new[]
+                    {
+                        new StoryPropSpec
+                        {
+                            id = "panel", label = "A SLAB THAT DOES NOT MATCH",
+                            point = new Vector3(2f, 0f, -12f), shape = StoryPropShape.Passage,
+                            beatId = "mark_father", radius = 2.8f,
+                        },
+                    },
+                },
+
+                // The chamber: the second piece, and the page with the name on it.
+                new MissionStage
+                {
+                    goal = StageGoal.Examine,
+                    objective = "SEARCH THE HIDDEN CHAMBER",
+                    banner = "HIS FAMILY KEPT THIS PLACE",
+                    checkpoint = true,
+                    props = new[]
+                    {
+                        new StoryPropSpec
+                        {
+                            id = "piece2", label = "A SECOND FITTING",
+                            point = new Vector3(-4f, 0f, -14f), shape = StoryPropShape.KeyPiece,
+                            speaker = "RENZO",
+                            line = "It sits against the first. Two. Father said three.",
+                        },
+                        new StoryPropSpec
+                        {
+                            id = "sealdoc", label = "A DAMAGED RECORD",
+                            point = new Vector3(-9f, 0f, -11f), shape = StoryPropShape.CommandPost,
+                            beatId = "mark_seal", radius = 2.6f,
+                        },
+                    },
+                },
+
+                St(StageGoal.Cinematic, "", "", beatId: "mark_search"),
+
+                // Avoidable. The mission is not asking for a fight here.
+                St(StageGoal.Stealth, "GET PAST THE SEARCH PARTY", "THEY ARE ON THE PATH",
+                    spawn: new[] { N, N, A, B }, checkpoint: true),
+
+                // The two questions it refuses to answer.
+                new MissionStage
+                {
+                    goal = StageGoal.Examine,
+                    objective = "TAKE WHAT IS LEFT",
+                    banner = "ONE LAST PAGE",
+                    checkpoint = true,
+                    props = new[]
+                    {
+                        new StoryPropSpec
+                        {
+                            id = "bloodpage", label = "A BURNED PAGE",
+                            point = new Vector3(-11f, 0f, -6f), shape = StoryPropShape.Supply,
+                            speaker = "RENZO",
+                            line = "\"If they obtain the third key… Kurogawa blood… must never open it.\" Why would they need me?",
+                        },
+                        new StoryPropSpec
+                        {
+                            id = "routemap", label = "A ROUTE MAP",
+                            point = new Vector3(-6f, 0f, -3f), shape = StoryPropShape.Marker,
+                            speaker = "RENZO",
+                            line = "Another path, deeper in, and marked sealed. Two pieces in my hand. So where is the third?",
+                        },
+                    },
+                },
+
+                St(StageGoal.Cinematic, "", "", beatId: "mark_end"),
+            };
+            EditorUtility.SetDirty(m8m);
+
             var m7b = P_("S07_BrokenHouse");
             m7b.id = 7; m7b.missionName = "THE BROKEN HOUSE"; m7b.missionType = "INVESTIGATION";
             m7b.marsh = false; m7b.baseShards = 4;
