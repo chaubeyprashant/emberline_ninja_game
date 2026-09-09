@@ -1,0 +1,233 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 814b8fc7fb4eb427480893eff898b203, type: 3}
+  m_Name: S03_Lanterns
+  m_EditorClassIdentifier: Assembly-CSharp::Emberline.Missions.MissionPlan
+  id: 3
+  missionName: THE LANTERNS
+  missionType: STEALTH
+  briefing: The lights answer each other along the ridge. Follow them back to whoever
+    is lighting the first one.
+  debrief: 'Written orders: priority Kurogawa, report the moment he appears, signed
+    with a mark nobody in Yorune has seen.'
+  marsh: 0
+  nightOverride: 1
+  rain: 1
+  snow: 0
+  fog: 0
+  applyTheme: 1
+  theme: 0
+  missionRadius: 0
+  missionRadiusZ: 0
+  nextReason: Somebody above these men gave that order. Renzo goes looking for whoever
+    they report to.
+  region: RUINS
+  stages:
+  - goal: 17
+    objective: 
+    banner: 
+    count: 1
+    duration: 0
+    point: {x: 0, y: 0, z: 0}
+    spawn: 
+    pointB: {x: 0, y: 0, z: 0}
+    spawnB: 
+    foeDef: 
+    beatId: lanterns_open
+    props: []
+    bossHealthGate: 0.6
+    onComplete: 0
+    optional: 0
+    bonusShards: 1
+    checkpoint: 0
+  - goal: 19
+    objective: FOLLOW THE LANTERNS
+    banner: THE FIRST LIGHT
+    count: 1
+    duration: 0
+    point: {x: 0, y: 0, z: 0}
+    spawn: 
+    pointB: {x: 0, y: 0, z: 0}
+    spawnB: 
+    foeDef: 
+    beatId: 
+    props:
+    - id: lanternA
+      label: THE FIRST LANTERN
+      point: {x: -9, y: 0, z: 13}
+      shape: 8
+      speaker: 
+      line: 
+      beatId: lanterns_signal
+      radius: 2.8
+      lanternLine:
+      - {x: 2, y: 0, z: 17}
+      - {x: 14, y: 0, z: 12}
+      - {x: 19, y: 0, z: 2}
+    bossHealthGate: 0.6
+    onComplete: 0
+    optional: 0
+    bonusShards: 1
+    checkpoint: 1
+  - goal: 7
+    objective: REACH THE SECOND LANTERN
+    banner: TWO ON THE PATH
+    count: 1
+    duration: 0
+    point: {x: 0, y: 0, z: 0}
+    spawn: 0100000000000000
+    pointB: {x: 0, y: 0, z: 0}
+    spawnB: 
+    foeDef: 
+    beatId: 
+    props: []
+    bossHealthGate: 0.6
+    onComplete: 0
+    optional: 0
+    bonusShards: 1
+    checkpoint: 1
+  - goal: 19
+    objective: GET CLOSE ENOUGH TO HEAR THEM
+    banner: TWO OF THEM, TALKING
+    count: 1
+    duration: 0
+    point: {x: 0, y: 0, z: 0}
+    spawn: 
+    pointB: {x: 0, y: 0, z: 0}
+    spawnB: 
+    foeDef: 
+    beatId: 
+    props:
+    - id: lanternB
+      label: WITHIN EARSHOT
+      point: {x: 13, y: 0, z: 11}
+      shape: 0
+      speaker: 
+      line: 
+      beatId: lanterns_overheard
+      radius: 3
+      lanternLine: []
+    bossHealthGate: 0.6
+    onComplete: 0
+    optional: 0
+    bonusShards: 1
+    checkpoint: 0
+  - goal: 19
+    objective: WATCH THE COMMAND POST
+    banner: SOMEONE IS GIVING ORDERS
+    count: 1
+    duration: 0
+    point: {x: 0, y: 0, z: 0}
+    spawn: 
+    pointB: {x: 0, y: 0, z: 0}
+    spawnB: 
+    foeDef: 
+    beatId: 
+    props:
+    - id: watch
+      label: COVER, ABOVE THE POST
+      point: {x: 17, y: 0, z: -3}
+      shape: 8
+      speaker: 
+      line: 
+      beatId: lanterns_officer
+      radius: 3
+      lanternLine: []
+    bossHealthGate: 0.6
+    onComplete: 0
+    optional: 0
+    bonusShards: 1
+    checkpoint: 1
+  - goal: 7
+    objective: GET INSIDE THE COMMAND POST
+    banner: THREE ON THE POST
+    count: 1
+    duration: 0
+    point: {x: 0, y: 0, z: 0}
+    spawn: 010000000000000007000000
+    pointB: {x: 0, y: 0, z: 0}
+    spawnB: 
+    foeDef: 
+    beatId: 
+    props: []
+    bossHealthGate: 0.6
+    onComplete: 0
+    optional: 0
+    bonusShards: 1
+    checkpoint: 1
+  - goal: 19
+    objective: TAKE THEIR ORDERS
+    banner: THE TABLE
+    count: 1
+    duration: 0
+    point: {x: 0, y: 0, z: 0}
+    spawn: 
+    pointB: {x: 0, y: 0, z: 0}
+    spawnB: 
+    foeDef: 
+    beatId: 
+    props:
+    - id: orders
+      label: WRITTEN ORDERS
+      point: {x: 9, y: 0, z: -12}
+      shape: 9
+      speaker: RENZO
+      line: '"Priority: Kurogawa. Report immediately if he appears." Signed with
+        a mark I don''t know.'
+      beatId: 
+      radius: 2.2
+      lanternLine: []
+    bossHealthGate: 0.6
+    onComplete: 1
+    optional: 0
+    bonusShards: 1
+    checkpoint: 0
+  - goal: 12
+    objective: GET OUT
+    banner: THEY KNOW YOU ARE HERE
+    count: 1
+    duration: 55
+    point: {x: -14, y: 0, z: -8}
+    spawn: 
+    pointB: {x: 0, y: 0, z: 0}
+    spawnB: 
+    foeDef: 
+    beatId: 
+    props: []
+    bossHealthGate: 0.6
+    onComplete: 0
+    optional: 0
+    bonusShards: 1
+    checkpoint: 0
+  - goal: 17
+    objective: 
+    banner: 
+    count: 1
+    duration: 0
+    point: {x: 0, y: 0, z: 0}
+    spawn: 
+    pointB: {x: 0, y: 0, z: 0}
+    spawnB: 
+    foeDef: 
+    beatId: lanterns_document
+    props: []
+    bossHealthGate: 0.6
+    onComplete: 0
+    optional: 0
+    bonusShards: 1
+    checkpoint: 0
+  dressing: 090000000200000004000000
+  ruinedVillage: 0
+  challenge: 1
+  challengeSeconds: 240
+  challengeShards: 3
+  baseShards: 4

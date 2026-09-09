@@ -980,23 +980,114 @@ namespace Emberline.EditorTools
             // ---------------------------------------------------------------
             // 3 — EYES IN THE DARK. The mission you lose by being seen. Short
             // sight, loud rain, and everything that can hurt you is at range.
-            var m3 = P_("S03_EyesInTheDark");
-            m3.id = 3; m3.missionName = "EYES IN THE DARK"; m3.missionType = "STEALTH";
+            // ---------------------------------------------------------------
+            // 3 — THE LANTERNS. Mission 2 found the signal line; this follows it
+            // up the chain of command. The question it asks — who is leading them
+            // — is deliberately not answered: the officer is masked, unnamed, and
+            // the mark on his orders is one nobody in Yorune has seen. What the
+            // player leaves with is that these men were told to expect him.
+            var m3 = P_("S03_Lanterns");
+            m3.id = 3; m3.missionName = "THE LANTERNS"; m3.missionType = "INFILTRATION";
             m3.marsh = false; m3.nightOverride = true; m3.rain = true; m3.baseShards = 4;
-            m3.briefing = "Something is watching the terraces from the chimneys, and it has not seen you yet. Keep it that way.";
-            m3.debrief = "The banner on the last roof is a serpent eating a lantern. Nobody in Yorune has seen that mark before.";
+            m3.briefing = "The lights answer each other along the ridge. Follow them back to whoever is lighting the first one.";
+            m3.debrief = "The orders are signed with a serpent eating a lantern. Nobody in Yorune has ever seen that mark — and they are written to men who were told to expect a Kurogawa.";
             m3.dressing = new[] { DressingKind.KagehiraBanners, DressingKind.EmptyHome,
-                DressingKind.BloodTrail };
+                DressingKind.AbandonedWeapons };
             m3.challenge = MissionChallenge.NoAlarm; m3.challengeShards = 3;
             m3.stages = new[]
             {
-                St(StageGoal.Reach, "GET UP TO THE ROOFLINE", "STAY LOW", point: northWest, checkpoint: true),
-                St(StageGoal.Stealth, "THE WATCHERS, UNSEEN", "TWO ON THE CHIMNEYS", spawn: new[] { R, R },
-                    onComplete: StageEvent.LightsOut),
-                St(StageGoal.Investigate, "WHAT ARE THEY WATCHING?", "THE LANTERNS ARE OUT", count: 3),
-                St(StageGoal.Stealth, "AND THE REST OF THEM", "MORE ON THE NORTH ROOF", spawn: new[] { R, P }),
-                St(StageGoal.Assassinate, "THE ONE GIVING ORDERS", "THE SPOTTER", spawn: new[] { N }),
-                St(StageGoal.Reach, "DOWN AND OUT", "NOBODY SAW YOU", point: south, checkpoint: true),
+                St(StageGoal.Cinematic, "", "", beatId: "lanterns_open"),
+
+                // A — the first light, and the patrol below turning when it lights.
+                new MissionStage
+                {
+                    goal = StageGoal.Examine,
+                    objective = "FOLLOW THE LANTERNS",
+                    banner = "THE FIRST LIGHT",
+                    checkpoint = true,
+                    props = new[]
+                    {
+                        new StoryPropSpec
+                        {
+                            id = "lanternA", label = "THE FIRST LANTERN",
+                            point = new Vector3(-9f, 0f, 13f), shape = StoryPropShape.Lookout,
+                            beatId = "lanterns_signal", radius = 2.8f,
+                            lanternLine = new[]
+                            {
+                                new Vector3(2f, 0f, 17f),
+                                new Vector3(14f, 0f, 12f),
+                                new Vector3(19f, 0f, 2f),
+                            },
+                        },
+                    },
+                },
+
+                // B — two between here and the next light. Avoidable.
+                St(StageGoal.Stealth, "REACH THE SECOND LANTERN", "TWO ON THE PATH",
+                    spawn: new[] { R, B }, checkpoint: true),
+
+                new MissionStage
+                {
+                    goal = StageGoal.Examine,
+                    objective = "GET CLOSE ENOUGH TO HEAR THEM",
+                    banner = "TWO OF THEM, TALKING",
+                    props = new[]
+                    {
+                        new StoryPropSpec
+                        {
+                            id = "lanternB", label = "WITHIN EARSHOT",
+                            point = new Vector3(13f, 0f, 11f), shape = StoryPropShape.Marker,
+                            beatId = "lanterns_overheard", radius = 3f,
+                        },
+                    },
+                },
+
+                // C — the officer, watched from cover. No fight here on purpose.
+                new MissionStage
+                {
+                    goal = StageGoal.Examine,
+                    objective = "WATCH THE COMMAND POST",
+                    banner = "SOMEONE IS GIVING ORDERS",
+                    checkpoint = true,
+                    props = new[]
+                    {
+                        new StoryPropSpec
+                        {
+                            id = "watch", label = "COVER, ABOVE THE POST",
+                            point = new Vector3(17f, 0f, -3f), shape = StoryPropShape.Lookout,
+                            beatId = "lanterns_officer", radius = 3f,
+                        },
+                    },
+                },
+
+                // The largest stealth section so far — three, and they are awake
+                // to noise. Still avoidable; the challenge pays for going unseen.
+                St(StageGoal.Stealth, "GET INSIDE THE COMMAND POST", "THREE ON THE POST",
+                    spawn: new[] { R, B, P }, checkpoint: true),
+
+                new MissionStage
+                {
+                    goal = StageGoal.Examine,
+                    objective = "TAKE THEIR ORDERS",
+                    banner = "THE TABLE",
+                    onComplete = StageEvent.AlarmTriggered,
+                    props = new[]
+                    {
+                        new StoryPropSpec
+                        {
+                            id = "orders", label = "WRITTEN ORDERS",
+                            point = new Vector3(9f, 0f, -12f), shape = StoryPropShape.CommandPost,
+                            speaker = "RENZO",
+                            line = "\"Priority: Kurogawa. Report immediately if he appears.\" Signed with a mark I don't know.",
+                        },
+                    },
+                },
+
+                // Out, with the valley awake. Short and timed rather than a fight.
+                St(StageGoal.Escape, "GET OUT", "THEY KNOW YOU ARE HERE",
+                    duration: 55f, point: new Vector3(-14f, 0f, -8f)),
+
+                St(StageGoal.Cinematic, "", "", beatId: "lanterns_document"),
             };
             EditorUtility.SetDirty(m3);
 

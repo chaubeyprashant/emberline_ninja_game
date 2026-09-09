@@ -171,6 +171,55 @@ namespace Emberline.EditorTools
                 S("KAGACHI", ShotCamera.Handheld, 3f, "KAGACHI", "…Weak."),
                 S("", ShotCamera.Hold, 1f));
 
+            // ---- MISSION 3 — THE LANTERNS -----------------------------------
+            // One question: who is leading them. It is not answered — the officer
+            // is masked and unnamed, and the signature on his orders is a mark
+            // nobody in Yorune has seen. What the player gets instead is worse:
+            // these men were told to expect a Kurogawa.
+
+            Make("lanterns_open", "THEY ARE WATCHING EACH OTHER",
+                S("RENZO", ShotCamera.Hold, 3.5f, audio: ShotAudio.Wind),
+                S("", ShotCamera.SlowDolly, 4f, audio: ShotAudio.Silence),
+                S("RENZO", ShotCamera.Hold, 3.5f, "RENZO", "They're not watching the village."),
+                S("RENZO", ShotCamera.PushIn, 4f, "RENZO", "They're watching each other."),
+                S("", ShotCamera.Hold, 1f, fadeAfter: true, blackAfter: 0.6f));
+
+            // The network's purpose, shown: a light goes up and men below change
+            // where they are walking.
+            Make("lanterns_signal", "THE SIGNAL MOVES THEM",
+                S("", ShotCamera.Wide, 4.5f, audio: ShotAudio.Silence),
+                S("", ShotCamera.SlowDolly, 4.5f, audio: ShotAudio.MusicSoft),
+                S("RENZO", ShotCamera.Hold, 4f, "RENZO", "One light, and they all turn."),
+                S("RENZO", ShotCamera.PushIn, 3.5f, "RENZO", "It tells them where to be."),
+                S("", ShotCamera.Hold, 1f, fadeAfter: true, blackAfter: 0.6f));
+
+            Make("lanterns_overheard", "COMMAND POST",
+                S("", ShotCamera.Hold, 2.5f, "GUARD", "Signal came from the north.", audio: ShotAudio.Silence),
+                S("", ShotCamera.Hold, 2.2f, "PATROL", "Then move."),
+                S("", ShotCamera.Hold, 2.2f, "GUARD", "Where?"),
+                S("", ShotCamera.PushIn, 3f, "PATROL", "Command post."),
+                S("RENZO", ShotCamera.Hold, 3.5f, fadeAfter: true, blackAfter: 0.8f));
+
+            // The turn of the mission. The officer is a shape and a voice: no
+            // name, no face, and nothing above him named either.
+            Make("lanterns_officer", "THEY WERE WAITING",
+                S("", ShotCamera.Wide, 4f, audio: ShotAudio.MusicOff),
+                S("", ShotCamera.Hold, 3f, "OFFICER", "Nothing in the ruins."),
+                S("", ShotCamera.Hold, 2.8f, "SOLDIER", "And the Kurogawa?"),
+                S("", ShotCamera.Hold, 2.8f, "OFFICER", "Keep searching."),
+                S("", ShotCamera.Hold, 2.8f, "SOLDIER", "If he returns?"),
+                S("", ShotCamera.PushIn, 4f, "OFFICER", "Then we'll know.", audio: ShotAudio.Sting),
+                S("RENZO", ShotCamera.PushIn, 4.5f, "RENZO", "They were waiting for me."),
+                S("RENZO", ShotCamera.Hold, 2.5f, fadeAfter: true, blackAfter: 1f));
+
+            Make("lanterns_document", "SO WHO ARE YOU",
+                S("RENZO", ShotCamera.Hold, 3.5f, audio: ShotAudio.Silence),
+                S("RENZO", ShotCamera.PushIn, 4f, "RENZO", "They know my name."),
+                S("RENZO", ShotCamera.Hold, 4f, "RENZO", "They knew I'd come back."),
+                S("", ShotCamera.SlowDolly, 4.5f, audio: ShotAudio.MusicDark),
+                S("RENZO", ShotCamera.Hold, 4f, "RENZO", "So who are you?"),
+                S("", ShotCamera.Hold, 2.5f, fadeAfter: true, blackAfter: 2f, card: "THE LANTERNS"));
+
             // ---- MISSION 2 — RED THREAD -------------------------------------
             // One question: who are they. It is answered — an organised force,
             // searching for something, that knows the Kurogawa name — and it

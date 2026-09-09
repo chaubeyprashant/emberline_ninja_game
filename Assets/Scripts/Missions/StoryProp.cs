@@ -16,6 +16,7 @@ namespace Emberline.Missions
         Camp,          // a fire ring, bedding and the things people leave out
         Supply,        // stacked crates, kegs, and a lantern to work by
         Lookout,       // the high post: a ladder, a rail, a signal lantern
+        CommandPost,   // a table someone works at: orders, a banner, lamplight
     }
 
     /// <summary>
@@ -143,6 +144,18 @@ namespace Emberline.Missions
                     Bar(new Vector3(0f, 2.5f, 0f), new Vector3(1.6f, 0.12f, 0.12f),
                         new Color(0.22f, 0.19f, 0.16f));
                     Glow(new Vector3(0f, 2.75f, 0f), new Color(1f, 0.62f, 0.3f), 0.3f);
+                    break;
+
+                case StoryPropShape.CommandPost:
+                    // Not a camp. Somebody works here: a table, light to read by,
+                    // and a banner hung where the men can see whose orders these are.
+                    Dress("table_small", Vector3.zero, 12f, 1.15f);
+                    Dress("torch_lit", new Vector3(-1.5f, 0f, 0.6f), 0f);
+                    Dress("torch_lit", new Vector3(1.6f, 0f, 0.5f), 0f);
+                    Dress("banner_red", new Vector3(0f, 1.55f, -2.2f), 180f, 1.2f);
+                    Dress("chest", new Vector3(2.2f, 0f, -1.2f), -40f);
+                    Dress("crates_stacked", new Vector3(-2.6f, 0f, -1.4f), 25f, 0.95f);
+                    Glow(new Vector3(0f, 1.05f, 0f), new Color(0.95f, 0.88f, 0.6f), 0.24f);
                     break;
 
                 case StoryPropShape.Tracks:
