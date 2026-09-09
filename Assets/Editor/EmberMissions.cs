@@ -1000,6 +1000,140 @@ namespace Emberline.EditorTools
             // He gives up exactly two things: that the orders were not his, and
             // a direction. He dies without finishing the sentence about the
             // father, which is mission 6's problem.
+            // ---------------------------------------------------------------
+            // 6 — THE HOUSE OF KAWAI. The mission after the boss fight, and
+            // deliberately slow: no boss, one avoidable search party, and five
+            // things to find. Renzo has spent five missions treating his father
+            // as the man who failed to save Yorune. He leaves this one knowing
+            // his father spent the last year of his life trying to empty it.
+            var m6k = P_("S06_HouseOfKawai");
+            m6k.id = 6; m6k.missionName = "THE HOUSE OF KAWAI"; m6k.missionType = "INVESTIGATION";
+            m6k.marsh = false; m6k.baseShards = 3;
+            m6k.applyTheme = true; m6k.theme = Core.EnvThemeId.VillageDawn;
+            m6k.briefing = "The old road out of the valley passes a house the Kurogawa name still means something in. Somebody has already been through it.";
+            m6k.debrief = "His father kept a list of every family he moved south, a store of medicine and children's clothes for people who were not his, and a letter that stops mid-sentence.";
+            m6k.dressing = new[] { DressingKind.BurnedHome, DressingKind.EmptyHome,
+                DressingKind.DestroyedCart, DressingKind.MissingNotice };
+            m6k.challenge = MissionChallenge.NoAlarm; m6k.challengeShards = 2;
+            m6k.stages = new[]
+            {
+                St(StageGoal.Cinematic, "", "", beatId: "kawai_open"),
+
+                // The house. Three things, and none of them are about the enemy.
+                new MissionStage
+                {
+                    goal = StageGoal.Examine,
+                    objective = "SEARCH THE HOUSE OF KAWAI",
+                    banner = "NOBODY HAS LIVED HERE IN YEARS",
+                    checkpoint = true,
+                    props = new[]
+                    {
+                        new StoryPropSpec
+                        {
+                            id = "ledger6", label = "AN OLD LEDGER",
+                            point = new Vector3(-8f, 0f, 11f), shape = StoryPropShape.Homestead,
+                            speaker = "RENZO",
+                            line = "Names. Forty of them, and where each family was sent. He was keeping track of everyone.",
+                        },
+                        new StoryPropSpec
+                        {
+                            id = "storebox", label = "A STORAGE BOX",
+                            point = new Vector3(-2f, 0f, 15f), shape = StoryPropShape.Supply,
+                            speaker = "RENZO",
+                            line = "Medicine. Bandages. Children's clothes, sized for people who aren't his. He was preparing for something.",
+                        },
+                        new StoryPropSpec
+                        {
+                            id = "wallmark", label = "A MARK ON THE POST",
+                            point = new Vector3(5f, 0f, 13f), shape = StoryPropShape.Shrine,
+                            speaker = "RENZO",
+                            line = "Our crest. And cut beside it, one I don't know — but I know what it means. Shelter.",
+                        },
+                    },
+                },
+
+                // The letter he hid rather than sent, and the memory under it.
+                new MissionStage
+                {
+                    goal = StageGoal.Examine,
+                    objective = "FIND WHERE HE HID THINGS",
+                    banner = "HE HID THINGS WELL",
+                    props = new[]
+                    {
+                        new StoryPropSpec
+                        {
+                            id = "hidden", label = "A FOLDED LETTER",
+                            point = new Vector3(9f, 0f, 9f), shape = StoryPropShape.CommandPost,
+                            beatId = "kawai_father", radius = 2.6f,
+                            speaker = "RENZO",
+                            line = "\"If they come, take the families south. Do not let them reach the mountain.\"",
+                        },
+                    },
+                },
+
+                // Somebody has been through here, and not ten years ago.
+                new MissionStage
+                {
+                    goal = StageGoal.Examine,
+                    objective = "SOMEBODY SEARCHED THIS PLACE",
+                    banner = "FRESH BOOTPRINTS",
+                    props = new[]
+                    {
+                        new StoryPropSpec
+                        {
+                            id = "searched", label = "A BROKEN LOCK",
+                            point = new Vector3(13f, 0f, 4f), shape = StoryPropShape.Tracks,
+                            speaker = "RENZO", line = "Lock's been forced. This week. They were here.",
+                        },
+                    },
+                },
+
+                // What they did not find.
+                new MissionStage
+                {
+                    goal = StageGoal.Examine,
+                    objective = "FIND WHAT THEY WERE LOOKING FOR",
+                    banner = "THEY MISSED SOMETHING",
+                    checkpoint = true,
+                    props = new[]
+                    {
+                        new StoryPropSpec
+                        {
+                            id = "cache", label = "UNDER THE STONE",
+                            point = new Vector3(6f, 0f, -6f), shape = StoryPropShape.Cache,
+                            beatId = "kawai_thread", radius = 2.6f,
+                        },
+                    },
+                },
+
+                St(StageGoal.Cinematic, "", "", beatId: "kawai_letter"),
+
+                // One search party, avoidable. They are looking for records, not
+                // for him — which is its own piece of information.
+                St(StageGoal.Stealth, "THE SEARCH PARTY", "THEY CAME BACK",
+                    spawn: new[] { N, N, A, B }, checkpoint: true),
+
+                new MissionStage
+                {
+                    goal = StageGoal.Examine,
+                    objective = "READ HIS MAP",
+                    banner = "THE CACHE, AGAIN",
+                    props = new[]
+                    {
+                        new StoryPropSpec
+                        {
+                            id = "oldmap", label = "AN OLD MAP",
+                            point = new Vector3(6f, 0f, -6f), shape = StoryPropShape.Marker,
+                            speaker = "RENZO",
+                            line = "Yorune, the mountain, and one place marked that he never told anyone about. I've seen this. It's the old family road.",
+                        },
+                    },
+                },
+
+                St(StageGoal.Cinematic, "", "", beatId: "kawai_end"),
+            };
+            EditorUtility.SetDirty(m6k);
+
             var m5t = P_("S05_TollCaptain");
             m5t.id = 5; m5t.missionName = "THE TOLL-CAPTAIN"; m5t.missionType = "BOSS";
             m5t.marsh = false; m5t.nightOverride = true; m5t.baseShards = 5;

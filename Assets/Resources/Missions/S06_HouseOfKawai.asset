@@ -1,0 +1,260 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 814b8fc7fb4eb427480893eff898b203, type: 3}
+  m_Name: S06_HouseOfKawai
+  m_EditorClassIdentifier: Assembly-CSharp::Emberline.Missions.MissionPlan
+  id: 6
+  missionName: THE HOUSE OF KAWAI
+  missionType: INVESTIGATION
+  briefing: The old road out of the valley passes a house the Kurogawa name still
+    means something in. Somebody has already been through it.
+  debrief: A letter in his father's hand that stops mid-sentence, and a map marking
+    a place on the old family road.
+  marsh: 0
+  nightOverride: 0
+  rain: 0
+  snow: 0
+  fog: 0
+  applyTheme: 1
+  theme: 10
+  missionRadius: 0
+  missionRadiusZ: 0
+  nextReason: The map points back toward the ruins. Whatever his father left, it
+    is on that road.
+  region: FOREST
+  stages:
+  - goal: 17
+    objective: 
+    banner: 
+    count: 1
+    duration: 0
+    point: {x: 0, y: 0, z: 0}
+    spawn: 
+    pointB: {x: 0, y: 0, z: 0}
+    spawnB: 
+    foeDef: 
+    beatId: kawai_open
+    props: []
+    bossHealthGate: 0.6
+    onComplete: 0
+    optional: 0
+    bonusShards: 1
+    checkpoint: 0
+  - goal: 19
+    objective: SEARCH THE HOUSE OF KAWAI
+    banner: NOBODY HAS LIVED HERE IN YEARS
+    count: 1
+    duration: 0
+    point: {x: 0, y: 0, z: 0}
+    spawn: 
+    pointB: {x: 0, y: 0, z: 0}
+    spawnB: 
+    foeDef: 
+    beatId: 
+    props:
+    - id: ledger6
+      label: AN OLD LEDGER
+      point: {x: -8, y: 0, z: 11}
+      shape: 10
+      speaker: RENZO
+      line: Names. Forty of them, and where each family was sent. He was keeping
+        track of everyone.
+      beatId: 
+      radius: 2.2
+      lanternLine: []
+    - id: storebox
+      label: A STORAGE BOX
+      point: {x: -2, y: 0, z: 15}
+      shape: 7
+      speaker: RENZO
+      line: Medicine. Bandages. Children's clothes, sized for people who aren't his.
+        He was preparing for something.
+      beatId: 
+      radius: 2.2
+      lanternLine: []
+    - id: wallmark
+      label: A MARK ON THE POST
+      point: {x: 5, y: 0, z: 13}
+      shape: 1
+      speaker: RENZO
+      line: "Our crest. And cut beside it, one I don't know \u2014 but I know what
+        it means. Shelter."
+      beatId: 
+      radius: 2.2
+      lanternLine: []
+    bossHealthGate: 0.6
+    onComplete: 0
+    optional: 0
+    bonusShards: 1
+    checkpoint: 1
+  - goal: 19
+    objective: FIND WHERE HE HID THINGS
+    banner: HE HID THINGS WELL
+    count: 1
+    duration: 0
+    point: {x: 0, y: 0, z: 0}
+    spawn: 
+    pointB: {x: 0, y: 0, z: 0}
+    spawnB: 
+    foeDef: 
+    beatId: 
+    props:
+    - id: hidden
+      label: A FOLDED LETTER
+      point: {x: 9, y: 0, z: 9}
+      shape: 9
+      speaker: RENZO
+      line: '"If they come, take the families south. Do not let them reach the mountain."'
+      beatId: kawai_father
+      radius: 2.6
+      lanternLine: []
+    bossHealthGate: 0.6
+    onComplete: 0
+    optional: 0
+    bonusShards: 1
+    checkpoint: 0
+  - goal: 19
+    objective: SOMEBODY SEARCHED THIS PLACE
+    banner: FRESH BOOTPRINTS
+    count: 1
+    duration: 0
+    point: {x: 0, y: 0, z: 0}
+    spawn: 
+    pointB: {x: 0, y: 0, z: 0}
+    spawnB: 
+    foeDef: 
+    beatId: 
+    props:
+    - id: searched
+      label: A BROKEN LOCK
+      point: {x: 13, y: 0, z: 4}
+      shape: 5
+      speaker: RENZO
+      line: Lock's been forced. This week. They were here.
+      beatId: 
+      radius: 2.2
+      lanternLine: []
+    bossHealthGate: 0.6
+    onComplete: 0
+    optional: 0
+    bonusShards: 1
+    checkpoint: 0
+  - goal: 19
+    objective: FIND WHAT THEY WERE LOOKING FOR
+    banner: THEY MISSED SOMETHING
+    count: 1
+    duration: 0
+    point: {x: 0, y: 0, z: 0}
+    spawn: 
+    pointB: {x: 0, y: 0, z: 0}
+    spawnB: 
+    foeDef: 
+    beatId: 
+    props:
+    - id: cache
+      label: UNDER THE STONE
+      point: {x: 6, y: 0, z: -6}
+      shape: 11
+      speaker: 
+      line: 
+      beatId: kawai_thread
+      radius: 2.6
+      lanternLine: []
+    bossHealthGate: 0.6
+    onComplete: 0
+    optional: 0
+    bonusShards: 1
+    checkpoint: 1
+  - goal: 17
+    objective: 
+    banner: 
+    count: 1
+    duration: 0
+    point: {x: 0, y: 0, z: 0}
+    spawn: 
+    pointB: {x: 0, y: 0, z: 0}
+    spawnB: 
+    foeDef: 
+    beatId: kawai_letter
+    props: []
+    bossHealthGate: 0.6
+    onComplete: 0
+    optional: 0
+    bonusShards: 1
+    checkpoint: 0
+  - goal: 7
+    objective: THE SEARCH PARTY
+    banner: THEY CAME BACK
+    count: 1
+    duration: 0
+    point: {x: 0, y: 0, z: 0}
+    spawn: 0b0000000b0000000900000000000000
+    pointB: {x: 0, y: 0, z: 0}
+    spawnB: 
+    foeDef: 
+    beatId: 
+    props: []
+    bossHealthGate: 0.6
+    onComplete: 0
+    optional: 0
+    bonusShards: 1
+    checkpoint: 1
+  - goal: 19
+    objective: READ HIS MAP
+    banner: THE CACHE, AGAIN
+    count: 1
+    duration: 0
+    point: {x: 0, y: 0, z: 0}
+    spawn: 
+    pointB: {x: 0, y: 0, z: 0}
+    spawnB: 
+    foeDef: 
+    beatId: 
+    props:
+    - id: oldmap
+      label: AN OLD MAP
+      point: {x: 6, y: 0, z: -6}
+      shape: 0
+      speaker: RENZO
+      line: Yorune, the mountain, and one place marked that he never told anyone
+        about. I've seen this. It's the old family road.
+      beatId: 
+      radius: 2.2
+      lanternLine: []
+    bossHealthGate: 0.6
+    onComplete: 0
+    optional: 0
+    bonusShards: 1
+    checkpoint: 0
+  - goal: 17
+    objective: 
+    banner: 
+    count: 1
+    duration: 0
+    point: {x: 0, y: 0, z: 0}
+    spawn: 
+    pointB: {x: 0, y: 0, z: 0}
+    spawnB: 
+    foeDef: 
+    beatId: kawai_end
+    props: []
+    bossHealthGate: 0.6
+    onComplete: 0
+    optional: 0
+    bonusShards: 1
+    checkpoint: 0
+  dressing: 01000000020000000300000006000000
+  ruinedVillage: 0
+  challenge: 1
+  challengeSeconds: 240
+  challengeShards: 2
+  baseShards: 3

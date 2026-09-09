@@ -17,6 +17,8 @@ namespace Emberline.Missions
         Supply,        // stacked crates, kegs, and a lantern to work by
         Lookout,       // the high post: a ladder, a rail, a signal lantern
         CommandPost,   // a table someone works at: orders, a banner, lamplight
+        Homestead,     // what is left of a house: beams, a doorway, household things
+        Cache,         // a stone nobody would move, and what is under it
     }
 
     /// <summary>
@@ -156,6 +158,26 @@ namespace Emberline.Missions
                     Dress("chest", new Vector3(2.2f, 0f, -1.2f), -40f);
                     Dress("crates_stacked", new Vector3(-2.6f, 0f, -1.4f), 25f, 0.95f);
                     Glow(new Vector3(0f, 1.05f, 0f), new Color(0.95f, 0.88f, 0.6f), 0.24f);
+                    break;
+
+                case StoryPropShape.Homestead:
+                    // A home, not a ruin in general: the things people owned are
+                    // still lying where the roof came down on them.
+                    Dress("rubble_large", new Vector3(-1.6f, 0f, 0.9f), 25f, 1.1f);
+                    Dress("column", new Vector3(1.8f, 0f, 1.2f), 0f, 0.8f);
+                    Dress("table_small", new Vector3(0.2f, 0f, -0.9f), 40f);
+                    Dress("chest", new Vector3(-2.2f, 0f, -1.3f), -20f);
+                    Dress("barrel_small", new Vector3(2.4f, 0f, -1.6f), 60f);
+                    Patch(new Vector3(0f, 0.03f, 0f), 2.4f, new Color(0.10f, 0.09f, 0.08f));
+                    Glow(new Vector3(0f, 1f, 0f), new Color(0.9f, 0.86f, 0.72f), 0.22f);
+                    break;
+
+                case StoryPropShape.Cache:
+                    // A stone nobody would think to move, and a box under it.
+                    Bar(new Vector3(0f, 0.14f, 0f), new Vector3(1.5f, 0.28f, 1.1f),
+                        new Color(0.29f, 0.28f, 0.26f));
+                    Dress("box_small", new Vector3(0.7f, 0f, -0.9f), 30f, 0.9f);
+                    Glow(new Vector3(0f, 0.5f, 0f), new Color(0.95f, 0.45f, 0.38f), 0.26f);
                     break;
 
                 case StoryPropShape.Tracks:

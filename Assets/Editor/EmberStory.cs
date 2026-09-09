@@ -171,6 +171,73 @@ namespace Emberline.EditorTools
                 S("KAGACHI", ShotCamera.Handheld, 3f, "KAGACHI", "…Weak."),
                 S("", ShotCamera.Hold, 1f));
 
+            // ---- MISSION 6 — THE HOUSE OF KAWAI ------------------------------
+            // The mission after the boss fight, and deliberately quiet. Renzo has
+            // spent five missions thinking of his father as the man who failed to
+            // save Yorune; he leaves this one knowing his father spent the last
+            // year of his life trying to get everyone out. Nothing is explained:
+            // the man he refuses is never shown, the sentence about the mountain
+            // never finishes, and the red thread is a thing he lost, not a lead.
+
+            Make("kawai_open", "FATHER CAME THIS WAY",
+                S("RENZO", ShotCamera.OverShoulder, 4f, audio: ShotAudio.Wind,
+                    theme: EnvThemeId.VillageDawn),
+                S("", ShotCamera.SlowDolly, 4f, audio: ShotAudio.Birds),
+                S("RENZO", ShotCamera.PushIn, 4f, "RENZO", "Father came this way."),
+                S("", ShotCamera.Hold, 1f, fadeAfter: true, blackAfter: 0.6f));
+
+            // The refusal, from the outside. Whoever he is talking to is never in
+            // frame and is never named — the scene exists to make the player ask.
+            Make("kawai_father", "THEY ALREADY WILL",
+                S("", ShotCamera.Hold, 2.5f, audio: ShotAudio.Silence, blackAfter: 0.8f),
+                S("FATHER", ShotCamera.Handheld, 4f, audio: ShotAudio.Village,
+                    theme: EnvThemeId.VillageDawn),
+                S("", ShotCamera.Hold, 3f, "VISITOR", "You know what happens if you refuse."),
+                S("FATHER", ShotCamera.Hold, 2.6f, "FATHER", "I know."),
+                S("", ShotCamera.Hold, 2.6f, "VISITOR", "Then open it."),
+                S("FATHER", ShotCamera.PushIn, 3f, "FATHER", "No."),
+                S("", ShotCamera.Hold, 2.8f, "VISITOR", "People will die."),
+                S("FATHER", ShotCamera.Hold, 3.6f, "FATHER", "They already will if I do."),
+                S("", ShotCamera.Hold, 1.5f, fadeAfter: true, blackAfter: 1.2f),
+                S("RENZO", ShotCamera.Hold, 3.8f, "RENZO", "Who were you talking to?",
+                    audio: ShotAudio.Wind));
+
+            // The thread. A promise he did not keep, and nothing more than that —
+            // no suggestion she lived, because mission 9 needs that to be new.
+            Make("kawai_thread", "TWO THINGS",
+                S("RENZO", ShotCamera.PushIn, 3.5f, audio: ShotAudio.Silence),
+                S("", ShotCamera.Hold, 2.2f, blackAfter: 0.6f),
+                S("AIKO", ShotCamera.Handheld, 3f, "AIKO", "When you come back, will you bring me something?",
+                    audio: ShotAudio.Birds, theme: EnvThemeId.VillageDawn),
+                S("", ShotCamera.Hold, 2.2f, "RENZO", "What?"),
+                S("AIKO", ShotCamera.Hold, 2.6f, "AIKO", "Something from outside."),
+                S("", ShotCamera.Hold, 2.6f, "RENZO", "I'll bring you two things."),
+                S("AIKO", ShotCamera.Hold, 2.4f, "AIKO", "Promise?"),
+                S("", ShotCamera.Hold, 2.6f, "RENZO", "Promise."),
+                S("", ShotCamera.Hold, 1.5f, fadeAfter: true, blackAfter: 1.5f),
+                S("RENZO", ShotCamera.Hold, 4.5f, audio: ShotAudio.Silence));
+
+            // His father's hand, and it stops mid-sentence.
+            Make("kawai_letter", "DO NOT FOLLOW THE PATH THEY OFFER",
+                S("RENZO", ShotCamera.PushIn, 3.5f, audio: ShotAudio.Silence),
+                S("", ShotCamera.Hold, 3.4f, "FATHER", "Renzo. If you ever find this, then I failed to keep you away."),
+                S("", ShotCamera.Hold, 3.4f, "FATHER", "There are things a son should never have to carry."),
+                S("", ShotCamera.Hold, 3.2f, "FATHER", "I chose to protect this village."),
+                S("", ShotCamera.Hold, 3.6f, "FATHER", "Whatever happens, do not follow the path they offer you."),
+                S("", ShotCamera.Hold, 3.2f, "FATHER", "The mountain must remain—"),
+                S("RENZO", ShotCamera.PushIn, 4f, "RENZO", "Remain what?", audio: ShotAudio.Sting),
+                S("", ShotCamera.Hold, 1.5f, fadeAfter: true, blackAfter: 1f));
+
+            Make("kawai_end", "WHAT DID YOU LEAVE BEHIND",
+                S("RENZO", ShotCamera.Hold, 3.5f, audio: ShotAudio.Wind,
+                    theme: EnvThemeId.VillageDawn),
+                S("RENZO", ShotCamera.PushIn, 3.8f, "RENZO", "You were protecting them."),
+                S("RENZO", ShotCamera.Hold, 3.5f, "RENZO", "But from what?"),
+                S("", ShotCamera.Wide, 4.5f, audio: ShotAudio.MusicSoft),
+                S("RENZO", ShotCamera.Hold, 4f, "RENZO", "What did you leave behind?"),
+                S("", ShotCamera.Hold, 2.5f, fadeAfter: true, blackAfter: 2f,
+                    card: "THE HOUSE OF KAWAI"));
+
             // ---- MISSION 5 — THE TOLL-CAPTAIN --------------------------------
             // The first real answer, and it is a small one: Renzo's father knew
             // what was coming and refused something. Goro will not say what, and
