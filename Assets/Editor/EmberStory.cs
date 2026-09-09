@@ -171,6 +171,65 @@ namespace Emberline.EditorTools
                 S("KAGACHI", ShotCamera.Handheld, 3f, "KAGACHI", "…Weak."),
                 S("", ShotCamera.Hold, 1f));
 
+            // ---- MISSION 4 — THE SILENT FOREST ------------------------------
+            // The investigation acquires consequences. Renzo stops being someone
+            // watching them and becomes someone they are looking for, and the
+            // chain of command finally has a face on it. Goro names Renzo's
+            // family and refuses to explain it — "ask your father" is the whole
+            // payload, and it is mission 5's problem.
+
+            Make("forest_open", "THE LIGHTS GO OUT",
+                S("RENZO", ShotCamera.OverShoulder, 4f, audio: ShotAudio.Wind),
+                S("", ShotCamera.SlowDolly, 4.5f, audio: ShotAudio.Silence),
+                S("RENZO", ShotCamera.Hold, 4f, "RENZO", "The line is going dark behind me."),
+                S("RENZO", ShotCamera.PushIn, 4f, "RENZO", "They know someone was here."),
+                S("", ShotCamera.Hold, 1f, fadeAfter: true, blackAfter: 0.6f));
+
+            // The runner. Short, ugly and not a set piece: he is a frightened man
+            // who gives up a name and then makes the wrong choice.
+            Make("forest_runner", "THE TOLL-CAPTAIN",
+                S("RENZO", ShotCamera.Handheld, 3f, audio: ShotAudio.Silence),
+                S("", ShotCamera.Hold, 3f, "RENZO", "Who gives the orders?"),
+                S("", ShotCamera.Hold, 3.2f, "RUNNER", "You don't know what you're walking into."),
+                S("", ShotCamera.Hold, 2.5f, "RENZO", "Then tell me."),
+                S("", ShotCamera.PushIn, 3f, "RUNNER", "The Toll-Captain."),
+                S("RENZO", ShotCamera.Hold, 3f, "RENZO", "Goro.", audio: ShotAudio.Sting),
+                S("", ShotCamera.Hold, 2.8f, "RUNNER", "You've heard of him?"),
+                S("RENZO", ShotCamera.Hold, 3.2f, "RENZO", "Not enough."),
+                S("", ShotCamera.Hold, 1.5f, fadeAfter: true, blackAfter: 0.8f));
+
+            // Goro, at distance and then close. He is controlled, faintly amused,
+            // and he stops his own soldier from saying the name out loud.
+            Make("forest_goro", "ASK YOUR FATHER",
+                S("", ShotCamera.Wide, 4f, audio: ShotAudio.MusicOff),
+                S("", ShotCamera.Hold, 2.8f, "GORO", "You searched the village?"),
+                S("", ShotCamera.Hold, 2.4f, "SOLDIER", "Every house."),
+                S("", ShotCamera.Hold, 2.2f, "GORO", "And?"),
+                S("", ShotCamera.Hold, 2.2f, "SOLDIER", "Nothing."),
+                S("", ShotCamera.Hold, 2.6f, "GORO", "Then search again."),
+                S("", ShotCamera.Hold, 2.4f, "SOLDIER", "The Kurogawa—"),
+                S("", ShotCamera.PushIn, 3.2f, "GORO", "Don't say that name here."),
+                S("", ShotCamera.Hold, 3.4f, "GORO", "If the boy is here, he'll come looking."),
+                // The turn: he sees him. Cut Renzo, cut Goro, hold the silence.
+                S("GORO", ShotCamera.SlowDolly, 4f, audio: ShotAudio.Silence),
+                S("GORO", ShotCamera.Hold, 3.2f, "GORO", "Kurogawa."),
+                S("RENZO", ShotCamera.Hold, 3f, "RENZO", "You know me."),
+                S("GORO", ShotCamera.Hold, 3.2f, "GORO", "I know your family."),
+                S("RENZO", ShotCamera.Hold, 3f, "RENZO", "Then tell me what happened."),
+                S("GORO", ShotCamera.Hold, 3.2f, "GORO", "You should have stayed away."),
+                S("RENZO", ShotCamera.Hold, 2.8f, "RENZO", "Who sent you?"),
+                S("GORO", ShotCamera.PushIn, 4.5f, "GORO", "Ask your father.", audio: ShotAudio.Sting),
+                S("", ShotCamera.Hold, 1.5f, fadeAfter: true, blackAfter: 0.8f));
+
+            Make("forest_end", "FIND THE TOLL-CAPTAIN",
+                S("RENZO", ShotCamera.Hold, 3.5f, audio: ShotAudio.Wind),
+                S("", ShotCamera.Wide, 4.5f, audio: ShotAudio.Silence),
+                S("RENZO", ShotCamera.PushIn, 3.5f, "RENZO", "Goro."),
+                S("RENZO", ShotCamera.Hold, 3.8f, "RENZO", "He knows my father."),
+                S("RENZO", ShotCamera.Hold, 3.5f, "RENZO", "And he knows me."),
+                S("RENZO", ShotCamera.Hold, 3.8f, "RENZO", "Then I'll find him.", audio: ShotAudio.MusicDark),
+                S("", ShotCamera.Hold, 2.5f, fadeAfter: true, blackAfter: 2f, card: "THE SILENT FOREST"));
+
             // ---- MISSION 3 — THE LANTERNS -----------------------------------
             // One question: who is leading them. It is not answered — the officer
             // is masked and unnamed, and the signature on his orders is a mark

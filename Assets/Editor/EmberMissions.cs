@@ -986,6 +986,128 @@ namespace Emberline.EditorTools
             // — is deliberately not answered: the officer is masked, unnamed, and
             // the mark on his orders is one nobody in Yorune has seen. What the
             // player leaves with is that these men were told to expect him.
+            // ---------------------------------------------------------------
+            // 4 — THE SILENT FOREST. The investigation acquires consequences.
+            // Renzo has been watching them for three missions; here they start
+            // looking for him, and the chain of command gets a face. Goro is
+            // fought but not beaten: Endure ends on its clock, not on a corpse.
+            var m4f = P_("S04_SilentForest");
+            m4f.id = 4; m4f.missionName = "THE SILENT FOREST"; m4f.missionType = "HUNT";
+            m4f.marsh = false; m4f.nightOverride = true; m4f.baseShards = 4;
+            m4f.applyTheme = true; m4f.theme = Core.EnvThemeId.Forest;
+            m4f.briefing = "The lantern line went dark behind you on the way out. Someone counted the lights and found one missing.";
+            m4f.debrief = "A stamped token off a dead runner: the toll-captain's mark. Goro is the one they report to — and he knew the Kurogawa name before Renzo said a word.";
+            m4f.dressing = new[] { DressingKind.AbandonedWeapons, DressingKind.BloodTrail,
+                DressingKind.EmptyHome, DressingKind.KagehiraBanners };
+            m4f.challenge = MissionChallenge.UnderTime; m4f.challengeShards = 3;
+            m4f.stages = new[]
+            {
+                St(StageGoal.Cinematic, "", "", beatId: "forest_open"),
+
+                // Tracking, the same verb mission 2 taught, now in the trees.
+                new MissionStage
+                {
+                    goal = StageGoal.Examine,
+                    objective = "FOLLOW THE TRAIL",
+                    banner = "INTO THE TREES",
+                    checkpoint = true,
+                    props = new[]
+                    {
+                        new StoryPropSpec
+                        {
+                            id = "prints", label = "FOOTPRINTS, LEAVING",
+                            point = new Vector3(-7f, 0f, 12f), shape = StoryPropShape.Tracks,
+                            speaker = "RENZO", line = "Going out. In a hurry.",
+                        },
+                        new StoryPropSpec
+                        {
+                            id = "blood", label = "BLOOD ON THE LEAVES",
+                            point = new Vector3(2f, 0f, 16f), shape = StoryPropShape.Tracks,
+                            speaker = "RENZO", line = "One of them is hurt.",
+                        },
+                    },
+                },
+
+                // The staging point: left in a hurry, and the map on the crate
+                // says they are moving people along one route in particular.
+                new MissionStage
+                {
+                    goal = StageGoal.Examine,
+                    objective = "SEARCH THE STAGING POINT",
+                    banner = "RECENTLY ABANDONED",
+                    checkpoint = true,
+                    props = new[]
+                    {
+                        new StoryPropSpec
+                        {
+                            id = "fire2", label = "A DEAD FIRE",
+                            point = new Vector3(12f, 0f, 14f), shape = StoryPropShape.Camp,
+                            speaker = "RENZO", line = "Doused, not burned out. They left fast.",
+                        },
+                        new StoryPropSpec
+                        {
+                            id = "patrolmap", label = "A PATROL MAP",
+                            point = new Vector3(16f, 0f, 8f), shape = StoryPropShape.Supply,
+                            speaker = "RENZO", line = "Routes all round Yorune — and one of them marked differently. They're moving people through here.",
+                        },
+                    },
+                },
+
+                // The transition out of investigation. Four, and they found him.
+                St(StageGoal.Wave, "THEY FOUND YOU", "BRANCHES, BEHIND YOU",
+                    spawn: new[] { N, N, A, B }),
+
+                // One breaks. Catching him is the mission's only lead.
+                St(StageGoal.Chase, "STOP THE RUNNER", "ONE OF THEM RAN",
+                    duration: 45f, spawn: new[] { B }),
+
+                St(StageGoal.Cinematic, "", "", beatId: "forest_runner"),
+
+                // The token: the first physical link between scattered patrols
+                // and one man.
+                new MissionStage
+                {
+                    goal = StageGoal.Examine,
+                    objective = "SEARCH THE RUNNER",
+                    props = new[]
+                    {
+                        new StoryPropSpec
+                        {
+                            id = "token", label = "A STAMPED TOKEN",
+                            point = Vector3.zero, shape = StoryPropShape.Body,
+                            speaker = "RENZO", line = "Toll-captain's mark. So you're the one they're reporting to.",
+                        },
+                    },
+                },
+
+                // The crossing: they hold this route. Stealth, or fight it.
+                St(StageGoal.Stealth, "CROSS THE GUARDED FORD", "THEY HOLD THE CROSSING",
+                    spawn: new[] { R, P, B }, checkpoint: true),
+
+                St(StageGoal.Cinematic, "", "", beatId: "forest_goro"),
+
+                // Goro. Endure, not a boss fight: the clock ends it, and he walks
+                // away on his own terms with his men covering him.
+                new MissionStage
+                {
+                    goal = StageGoal.Endure,
+                    objective = "SURVIVE HIM",
+                    banner = "GORO, THE TOLL-CAPTAIN",
+                    duration = 26f,
+                    foeDef = "goro",
+                    spawn = new[] { EnemyKind.Chief },
+                    onComplete = StageEvent.FoeWithdraws,
+                    checkpoint = true,
+                },
+
+                // Discovered, and hunted out of the forest.
+                St(StageGoal.Escape, "ESCAPE THE FOREST", "THEY ARE COMING",
+                    duration: 70f, point: new Vector3(-15f, 0f, -10f), spawn: new[] { N, A, P }),
+
+                St(StageGoal.Cinematic, "", "", beatId: "forest_end"),
+            };
+            EditorUtility.SetDirty(m4f);
+
             var m3 = P_("S03_Lanterns");
             m3.id = 3; m3.missionName = "THE LANTERNS"; m3.missionType = "INFILTRATION";
             m3.marsh = false; m3.nightOverride = true; m3.rain = true; m3.baseShards = 4;
