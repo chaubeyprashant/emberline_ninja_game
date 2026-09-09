@@ -171,6 +171,45 @@ namespace Emberline.EditorTools
                 S("KAGACHI", ShotCamera.Handheld, 3f, "KAGACHI", "…Weak."),
                 S("", ShotCamera.Hold, 1f));
 
+            // ---- MISSION 1 — ASHES ------------------------------------------
+            // Renzo comes home. The mission asks one question, WHO IS STILL HERE,
+            // and answers none. Aiko is a loss here, not a lead: nothing in these
+            // three beats suggests she lived, because mission 9 needs that to land.
+
+            Make("ashes_return", "ASHES",
+                // Black, and wind, before anything is shown. The ear settles first.
+                S("", ShotCamera.Hold, 4f, audio: ShotAudio.Wind, blackAfter: 1f),
+                // The only wide shot in the mission. Destruction is established
+                // once and never sold again.
+                S("", ShotCamera.Wide, 5.5f, audio: ShotAudio.Wind,
+                    theme: EnvThemeId.BurningVillage),
+                S("RENZO", ShotCamera.OverShoulder, 4f, audio: ShotAudio.Silence),
+                // Stops before it arrives: the shot wants to be closer and cannot.
+                S("RENZO", ShotCamera.PushIn, 5f, "RENZO", "This was my home."),
+                S("", ShotCamera.Hold, 4.5f, audio: ShotAudio.Wind, fadeAfter: true,
+                    blackAfter: 1f, card: "TEN YEARS LATER"));
+
+            // The emotional centre. Aiko is never on camera — a primitive stand-in
+            // in close-up would undercut the one scene that has to work, and a
+            // voice in an empty frame is the better shot anyway.
+            Make("ashes_bracelet", "WHAT THE ASH KEPT",
+                S("RENZO", ShotCamera.Hold, 3.5f, audio: ShotAudio.Silence),
+                S("", ShotCamera.Hold, 2f, "AIKO", "Renzo!", audio: ShotAudio.Birds),
+                S("RENZO", ShotCamera.PushIn, 4.5f, audio: ShotAudio.Silence),
+                S("RENZO", ShotCamera.Hold, 5f, "RENZO", "…She never took it off."),
+                S("RENZO", ShotCamera.PullOut, 4f, audio: ShotAudio.MusicSoft,
+                    fadeAfter: true, blackAfter: 1.5f));
+
+            Make("ashes_map", "SOMEBODY CAME BACK",
+                S("RENZO", ShotCamera.Hold, 3.5f, audio: ShotAudio.Silence),
+                S("RENZO", ShotCamera.PushIn, 4f, "RENZO", "Ten years."),
+                S("RENZO", ShotCamera.Hold, 4.5f, "RENZO", "Why come back now?"),
+                // Holds two beats past comfortable on the empty valley. Whoever
+                // is out there is not shown; the player supplies them.
+                S("", ShotCamera.PullOut, 6f, audio: ShotAudio.MusicDark),
+                S("", ShotCamera.Hold, 2.5f, fadeAfter: true, blackAfter: 2f,
+                    card: "ASHES"));
+
             Make("emberline_dawn", "EMBERLINE",
                 S("", ShotCamera.Wide, 5f, audio: ShotAudio.Wind, theme: EnvThemeId.VillageDawn),
                 S("AIKO", ShotCamera.SlowDolly, 5f, audio: ShotAudio.Birds),
@@ -208,8 +247,11 @@ namespace Emberline.EditorTools
             shots.Add(Set(SetState.Attack, ShotCamera.Wide, 4.5f,
                 audio: ShotAudio.Bells));
             shots.Add(S("MOTHER", ShotCamera.Handheld, 3.5f, audio: ShotAudio.Fire));
+            // Named nothing. The player is a child in this memory and hears a
+            // threat, not a proper noun — the name arrives in mission 8 with the
+            // letter, which is where it can mean something.
             shots.Add(S("FATHER", ShotCamera.Hold, 4f, "KAGEHIRA",
-                "The Black Seal. Say where it is, and this stops."));
+                "You know what I came for. Say where it is, and this stops."));
             shots.Add(S("FATHER", ShotCamera.PushIn, 4.5f, "FATHER",
                 "You will burn it all either way."));
             shots.Add(S("", ShotCamera.Hold, 2.5f, fadeAfter: true, blackAfter: 2.5f));

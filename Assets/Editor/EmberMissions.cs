@@ -706,22 +706,107 @@ namespace Emberline.EditorTools
             // ---------------------------------------------------------------
             // 1 — FIRST BLOOD. The lesson: one enemy who has not seen you, and
             // the game says so out loud. Then it takes the option away.
-            var m1 = P_("S01_FirstBlood");
-            m1.id = 1; m1.missionName = "FIRST BLOOD"; m1.missionType = "ASSASSINATION";
+            // ---------------------------------------------------------------
+            // 1 — ASHES. Renzo comes home. The mission asks one question and
+            // answers none of it: WHO IS STILL HERE. No stealth verb is taught
+            // here — mission 2 owns stealth, and teaching a verb this mission
+            // does not use was the old opening's mistake.
+            var m1 = P_("S01_Ashes");
+            m1.id = 1; m1.missionName = "ASHES"; m1.missionType = "RETURN";
             m1.marsh = false; m1.baseShards = 3;
-            m1.briefing = "Raiders on the east terraces. One of them is watching the lantern line and has not looked behind him once.";
-            m1.debrief = "They carried nothing away. Whatever they came for, they did not find it. The notice on the post is three weeks old.";
-            m1.dressing = new[] { DressingKind.BurnedHome, DressingKind.MissingNotice,
-                DressingKind.HidingVillagers };
-            m1.challenge = MissionChallenge.SilentKill; m1.challengeShards = 2;
+            m1.briefing = "Yorune burned ten years ago. Nobody has lived in it since.";
+            m1.debrief = "The map in the assassin's coat was drawn this season. Whoever came back to Yorune is still using the road north.";
+            m1.dressing = new[] { DressingKind.BurnedHome, DressingKind.AbandonedWeapons,
+                DressingKind.DestroyedCart, DressingKind.MissingNotice };
+            m1.challenge = MissionChallenge.None;
             m1.stages = new[]
             {
-                St(StageGoal.Reach, "GET ABOVE HIS POST", "THE EAST TERRACE", point: east, checkpoint: true),
-                St(StageGoal.Stealth, "TAKE HIM UNSEEN", "HE HAS NOT SEEN YOU", spawn: new[] { B },
-                    onComplete: StageEvent.AlarmTriggered),
-                St(StageGoal.Investigate, "WHAT WERE THEY SEARCHING FOR?", "THE HOUSE IS EMPTY", count: 2),
-                St(StageGoal.Wave, "CUT YOUR WAY OUT", "THEY KNOW", spawn: new[] { B, B, R }),
-                St(StageGoal.Reach, "OFF THE ROOF", "GO HOME", point: south, checkpoint: true),
+                // The opening plays in place. The mission holds for it.
+                St(StageGoal.Cinematic, "", "", beatId: "ashes_return"),
+
+                St(StageGoal.Reach, "WALK INTO YORUNE", "TEN YEARS LATER",
+                    point: north, checkpoint: true),
+
+                // The emotional centre, authored rather than scattered: a shrine
+                // the fire missed, his father's post, and the one red thing left.
+                new MissionStage
+                {
+                    goal = StageGoal.Examine,
+                    objective = "SEARCH WHAT IS LEFT OF YOUR HOUSE",
+                    banner = "THE KUROGAWA HOUSE",
+                    checkpoint = true,
+                    props = new[]
+                    {
+                        new StoryPropSpec
+                        {
+                            id = "shrine", label = "THE FAMILY SHRINE",
+                            point = new Vector3(-7.5f, 0f, 7f),
+                            shape = StoryPropShape.Shrine,
+                            speaker = "RENZO",
+                            line = "The shrine is still standing. Of course it is.",
+                        },
+                        new StoryPropSpec
+                        {
+                            id = "post", label = "HIS FATHER'S TRAINING POST",
+                            point = new Vector3(-3f, 0f, 10.5f),
+                            shape = StoryPropShape.TrainingPost,
+                            speaker = "RENZO",
+                            line = "He'd have had me on this at dawn. Every dawn.",
+                        },
+                        new StoryPropSpec
+                        {
+                            id = "bracelet", label = "RED THREAD",
+                            point = new Vector3(2.5f, 0f, 12f),
+                            shape = StoryPropShape.Keepsake,
+                            beatId = "ashes_bracelet",
+                        },
+                    },
+                },
+
+                // The turn: from loss to something being wrong.
+                new MissionStage
+                {
+                    goal = StageGoal.Examine,
+                    objective = "FOLLOW THE TRACKS",
+                    banner = "THESE ARE FRESH",
+                    checkpoint = true,
+                    // No Ambush event: it adds an assassin and a bandit behind the
+                    // player, and the first fight of the game is one enemy. The
+                    // surprise is carried by the Wave's banner instead.
+                    props = new[]
+                    {
+                        new StoryPropSpec
+                        {
+                            id = "tracks", label = "DISTURBED ASH",
+                            point = new Vector3(9f, 0f, 8f),
+                            shape = StoryPropShape.Tracks,
+                            speaker = "RENZO",
+                            line = "Days old. Not years.",
+                            radius = 2.6f,
+                        },
+                    },
+                },
+
+                // One enemy. It is the combat tutorial, and it is enough.
+                St(StageGoal.Wave, "SURVIVE", "HE WAS WAITING", spawn: new[] { A }),
+
+                new MissionStage
+                {
+                    goal = StageGoal.Examine,
+                    objective = "SEARCH THE BODY",
+                    props = new[]
+                    {
+                        new StoryPropSpec
+                        {
+                            id = "map", label = "A MAP, RECENTLY DRAWN",
+                            point = Vector3.zero,   // resolved to the body at runtime
+                            shape = StoryPropShape.Body,
+                            speaker = "RENZO",
+                            line = "One road, marked in red. Drawn this season.",
+                            beatId = "ashes_map",
+                        },
+                    },
+                },
             };
             EditorUtility.SetDirty(m1);
 

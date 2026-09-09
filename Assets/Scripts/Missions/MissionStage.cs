@@ -31,6 +31,7 @@ namespace Emberline.Missions
         Endure,      // survive a foe you cannot beat yet; the clock ends it, not a corpse
         Cinematic,   // play a story beat in place; the mission waits for it
         FreePrisoners, // cut a number of prisoners loose
+        Examine,     // find authored story objects, each in its own place
     }
 
     /// <summary>
@@ -92,6 +93,11 @@ namespace Emberline.Missions
 
         [Tooltip("Cinematic: the StoryBeat id under Resources/Story to play.")]
         public string beatId = "";
+
+        [Tooltip("Examine: the authored discoveries, each with its own place, " +
+                 "line and optional beat. Unlike Investigate's procedural clues " +
+                 "these are specific objects — a shrine, a post, a keepsake.")]
+        public StoryPropSpec[] props = System.Array.Empty<StoryPropSpec>();
 
         [Tooltip("BossPhase: end the stage when the boss drops below this " +
                  "fraction of its health. The boss survives; the mission moves on.")]

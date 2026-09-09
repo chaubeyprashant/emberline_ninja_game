@@ -50,6 +50,21 @@ namespace Emberline.UI
         private float _vignetteT;
         private int _waveStamp = -1;
         private TMP_Text _hpLabel, _bossLabel, _waveLabel, _comboText, _objectiveText, _bannerText, _hintText;
+
+        /// <summary>
+        /// The live HUD, so a mission can put one line on screen without owning a
+        /// canvas of its own. There is exactly one HUD; a second dialogue system
+        /// would be the wrong answer to a one-line problem.
+        /// </summary>
+        public static EmberHud Live { get; private set; }
+
+        /// <summary>Speak one line in the player's own voice, mid-mission.</summary>
+        public void SayLine(string speaker, string text)
+        {
+            if (_screenRoot == null || string.IsNullOrEmpty(text)) return;
+            var line = string.IsNullOrEmpty(speaker) ? text : speaker + "|" + text;
+            DialogueBox.Show(_screenRoot, new[] { line });
+        }
         private Image _surgeGlow;
         private CanvasGroup _bannerGroup, _comboGroup;
         private readonly List<Image> _gateIcons = new();
@@ -132,6 +147,9 @@ namespace Emberline.UI
         }
 
         // ------------------------------------------------------------ lifetime
+
+        private void OnEnable() => Live = this;
+        private void OnDisable() { if (Live == this) Live = null; }
 
         private void Start()
         {

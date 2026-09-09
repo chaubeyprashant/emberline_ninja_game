@@ -56,17 +56,16 @@ namespace Emberline.Campaign
             // ACT I — THE RETURN
             // CHAPTER 1 — ASHES OF YORUNE
             // =============================================================
-            M(1, "FIRST BLOOD", T(Stealth, Exploration), Region.Ruins, Burning,
-                "Renzo comes home to a village that no longer exists, and learns the people who burned it never left.",
-                "Search the ruins of Yorune for any sign of who is still here.",
-                "The first enemy has not noticed you: the game teaches the silent kill by giving you one for free, then takes the option away.",
-                "Kagehira's forces are still operating around Yorune. This was not a raid that ended.",
-                "A masked assassin drops from the burned watchtower and attacks Renzo in the open.",
-                "In the assassin's coat: a map with one road marked in red. LANTERN ROAD.",
-                "The map is the only lead there is. Renzo follows it before whoever drew it comes looking.",
-                K(B, B, A), plan: "S01_FirstBlood",
-                dialogue: L("RENZO|Ten years. They kept the fires going ten years.",
-                            "RENZO|Somebody is still here. Somebody is still looking for something.")),
+            M(1, "ASHES", T(Exploration, Combat), Region.Ruins, Burning,
+                "Renzo comes home. Yorune is ash, his sister died in it, and someone has been here since.",
+                "Walk into Yorune and find what is left of your house.",
+                "The village is the tutorial: no enemy at all until the ash itself says somebody has been walking on it.",
+                "The tracks in the ash are days old, not years. Somebody came back to a village with nothing left to take.",
+                "A masked assassin, waiting where the tracks end.",
+                "In the assassin's coat: a map, drawn this season, with one road inked red.",
+                "The map is the only thing in Yorune that was made recently. Renzo follows the road before whoever drew it comes back.",
+                K(A), plan: "S01_Ashes",
+                dialogue: L("RENZO|Ten years.")),
 
             M(2, "THE LANTERN ROAD", T(Rescue, Stealth, Chase), Region.Ruins, Village,
                 "The road on the map carries an enemy convoy, and the convoy carries people.",

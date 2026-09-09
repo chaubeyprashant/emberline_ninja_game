@@ -259,6 +259,12 @@ namespace Emberline.DebugTools
                     if (!WalkTo(NearestClue())) Fight();
                     return;
 
+                case StageGoal.Examine:
+                    // Authored discoveries are marked one at a time, so the bot
+                    // walks the same route the player is being pointed along.
+                    if (!WalkTo(NearestNamed("ObjectiveMarker"))) Fight();
+                    return;
+
                 case StageGoal.Cinematic:
                     return; // the beat plays itself; input would only fight the camera
 

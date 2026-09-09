@@ -1,0 +1,207 @@
+using Emberline.Core;
+using Emberline.UI;
+using UnityEngine;
+
+namespace Emberline.Missions
+{
+    /// <summary>What a story prop is built from. Assembled out of the dressing library.</summary>
+    public enum StoryPropShape
+    {
+        Marker,        // a lit point — the fallback
+        Shrine,        // standing stone and a doused torch: the thing the fire missed
+        TrainingPost,  // a father's post, weathered rather than burned
+        Keepsake,      // small, low, and red: the one coloured thing in a grey mission
+        Body,          // a corpse and what it was carrying
+        Tracks,        // disturbed ash going somewhere
+    }
+
+    /// <summary>
+    /// One authored discovery: a named object at a known place, with its own line
+    /// and optionally its own cinematic.
+    ///
+    /// <para>
+    /// The existing <c>Clue</c> is a glowing cube dropped at a procedural ring
+    /// position. That is right for "search the camp for orders" and useless for
+    /// "the bracelet in the ashes of your sister's room" — a scene needs the
+    /// object to be a specific thing in a specific place. This is that.
+    /// </para>
+    /// </summary>
+    [System.Serializable]
+    public class StoryPropSpec
+    {
+        [Tooltip("Stable id. Diagnostics only.")]
+        public string id = "";
+
+        [Tooltip("Shown when the player is close enough to read it.")]
+        public string label = "";
+
+        [Tooltip("Arena-space position.")]
+        public Vector3 point;
+
+        public StoryPropShape shape = StoryPropShape.Marker;
+
+        [Tooltip("Spoken on discovery. Empty for silence — which is sometimes the point.")]
+        public string speaker = "";
+        [TextArea] public string line = "";
+
+        [Tooltip("Story beat played on discovery. Empty for none.")]
+        public string beatId = "";
+
+        [Tooltip("How close the player must be.")]
+        public float radius = 2.2f;
+    }
+
+    /// <summary>
+    /// The live prop. Walking into it is the interaction — this game has no
+    /// interact button and adding one for a single mission would be a worse
+    /// answer than walking somewhere, which the player already knows how to do.
+    /// </summary>
+    public class StoryProp : MonoBehaviour
+    {
+        public StoryPropSpec spec;
+
+        /// <summary>Already discovered — the marker moves past it.</summary>
+        public bool Taken => _taken;
+        private bool _taken;
+        private Transform _label;
+
+        public static StoryProp Build(StoryPropSpec spec, Transform parent)
+        {
+            var go = new GameObject($"StoryProp_{spec.id}");
+            go.transform.SetParent(parent, false);
+            go.transform.position = spec.point;
+            var prop = go.AddComponent<StoryProp>();
+            prop.spec = spec;
+            prop.Assemble();
+            return prop;
+        }
+
+        private void Assemble()
+        {
+            switch (spec.shape)
+            {
+                case StoryPropShape.Shrine:
+                    Dress("column", Vector3.zero, 0f, 0.9f);
+                    Dress("torch_lit", new Vector3(0.9f, 0f, 0.2f), 20f, 1f, doused: true);
+                    Glow(new Vector3(0f, 1.5f, 0f), new Color(0.82f, 0.86f, 1f), 0.22f);
+                    break;
+
+                case StoryPropShape.TrainingPost:
+                    // A post, not rubble: the weather took it, not the fire.
+                    Bar(new Vector3(0f, 0.85f, 0f), new Vector3(0.16f, 1.7f, 0.16f),
+                        new Color(0.24f, 0.20f, 0.16f));
+                    Dress("box_small", new Vector3(-0.9f, 0f, 0.5f), 35f);
+                    Glow(new Vector3(0f, 1.75f, 0f), new Color(0.9f, 0.84f, 0.7f), 0.18f);
+                    break;
+
+                case StoryPropShape.Keepsake:
+                    // Small, low, and the only red in the mission.
+                    Bar(new Vector3(0f, 0.10f, 0f), new Vector3(0.26f, 0.05f, 0.26f),
+                        new Color(0.62f, 0.11f, 0.12f));
+                    Glow(new Vector3(0f, 0.30f, 0f), new Color(0.95f, 0.35f, 0.32f), 0.30f);
+                    break;
+
+                case StoryPropShape.Body:
+                    Bar(new Vector3(0f, 0.16f, 0f), new Vector3(0.55f, 0.28f, 1.5f),
+                        new Color(0.12f, 0.12f, 0.15f));
+                    Dress("box_small", new Vector3(1.0f, 0f, -0.4f), 60f, 0.8f);
+                    Glow(new Vector3(0f, 0.6f, 0f), new Color(0.85f, 0.9f, 1f), 0.22f);
+                    break;
+
+                case StoryPropShape.Tracks:
+                    for (var i = 0; i < 5; i++)
+                        Patch(new Vector3((i % 2 == 0 ? 0.22f : -0.22f), 0.03f, i * 0.75f),
+                            0.42f, new Color(0.10f, 0.09f, 0.08f));
+                    Glow(new Vector3(0f, 0.5f, 1.5f), new Color(0.7f, 0.9f, 1f), 0.2f);
+                    break;
+
+                default:
+                    Glow(new Vector3(0f, 0.8f, 0f), new Color(0.7f, 0.9f, 1f), 0.28f);
+                    break;
+            }
+        }
+
+        // ---- assembly helpers ------------------------------------------------
+
+        private void Dress(string propName, Vector3 offset, float yaw, float scale = 1f,
+            bool doused = false)
+        {
+            var prefab = Resources.Load<GameObject>("Props/Dressing/" + propName);
+            if (prefab == null) return;
+            var go = Instantiate(prefab, transform.position + offset,
+                Quaternion.Euler(0f, yaw, 0f), transform);
+            go.transform.localScale = Vector3.one * scale;
+            foreach (var r in go.GetComponentsInChildren<Renderer>(true))
+                r.shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.Off;
+            if (doused)
+                foreach (var l in go.GetComponentsInChildren<Light>(true)) l.enabled = false;
+        }
+
+        private void Bar(Vector3 offset, Vector3 size, Color c)
+        {
+            var go = GameObject.CreatePrimitive(PrimitiveType.Cube);
+            Destroy(go.GetComponent<Collider>());
+            go.transform.SetParent(transform, false);
+            go.transform.localPosition = offset;
+            go.transform.localScale = size;
+            Paint(go, c, glow: false);
+        }
+
+        private void Patch(Vector3 offset, float size, Color c)
+        {
+            var q = GameObject.CreatePrimitive(PrimitiveType.Quad);
+            Destroy(q.GetComponent<Collider>());
+            q.transform.SetParent(transform, false);
+            q.transform.localPosition = offset;
+            q.transform.localRotation = Quaternion.Euler(90f, 0f, 0f);
+            q.transform.localScale = new Vector3(size, size * 1.5f, 1f);
+            Paint(q, c, glow: false);
+        }
+
+        /// <summary>The read: a small pulse so the eye finds it without a waypoint.</summary>
+        private void Glow(Vector3 offset, Color c, float size)
+        {
+            var go = GameObject.CreatePrimitive(PrimitiveType.Sphere);
+            Destroy(go.GetComponent<Collider>());
+            go.name = "Read";
+            go.transform.SetParent(transform, false);
+            go.transform.localPosition = offset;
+            go.transform.localScale = Vector3.one * size;
+            Paint(go, c, glow: true);
+            _label = go.transform;
+        }
+
+        private static void Paint(GameObject go, Color c, bool glow)
+        {
+            var shader = Shader.Find(glow ? "Emberline/Glow" : "Emberline/Toon");
+            var r = go.GetComponent<Renderer>();
+            if (shader != null) r.material = new Material(shader) { color = c };
+            else r.material.color = c;
+            r.shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.Off;
+        }
+
+        // ---- the interaction -------------------------------------------------
+
+        private void Update()
+        {
+            if (_label != null)
+            {
+                var s = 1f + 0.12f * Mathf.Sin(Time.time * 2.4f);
+                _label.localScale = Vector3.one * (_label.localScale.x > 0f ? s * 0.24f : 0.24f);
+            }
+            if (_taken) return;
+
+            var motor = SceneRefs.Motor;
+            if (motor == null) return;
+            var d = motor.transform.position - transform.position;
+            d.y = 0f;
+            if (d.sqrMagnitude > spec.radius * spec.radius) return;
+
+            _taken = true;
+            FxPools.Sparks(transform.position + Vector3.up * 0.6f,
+                new Color(0.82f, 0.9f, 1f), 6);
+            MissionDirector.Active?.OnStoryPropFound(spec);
+            if (_label != null) Destroy(_label.gameObject);
+        }
+    }
+}
