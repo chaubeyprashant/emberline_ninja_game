@@ -171,6 +171,89 @@ namespace Emberline.EditorTools
                 S("KAGACHI", ShotCamera.Handheld, 3f, "KAGACHI", "…Weak."),
                 S("", ShotCamera.Hold, 1f));
 
+            // ---- MISSION 7 — THE BROKEN HOUSE --------------------------------
+            // Renzo searches his own home. Two memories, both short, both of a
+            // life rather than of the fire. The escalation is the letter: three
+            // things that must never be brought together, one already taken, one
+            // entrusted to his family — and the third a sentence his father did
+            // not finish. The words Black Seal are not spoken; that is mission 8.
+
+            Make("broken_open", "THE BROKEN HOUSE",
+                S("", ShotCamera.Wide, 5f, audio: ShotAudio.Wind,
+                    theme: EnvThemeId.BurningVillage),
+                S("RENZO", ShotCamera.OverShoulder, 4.5f, audio: ShotAudio.Silence),
+                S("RENZO", ShotCamera.Hold, 4f, audio: ShotAudio.Wind),
+                S("", ShotCamera.Hold, 1f, fadeAfter: true, blackAfter: 0.6f));
+
+            // The courtyard. Warm, brief, and it ends on a joke he never got.
+            Make("broken_training", "TIRED PEOPLE MAKE HONEST MISTAKES",
+                S("RENZO", ShotCamera.Hold, 2.8f, audio: ShotAudio.Silence, blackAfter: 0.7f),
+                S("FATHER", ShotCamera.SlowDolly, 3.6f, audio: ShotAudio.Village,
+                    theme: EnvThemeId.VillageDawn),
+                S("", ShotCamera.Hold, 2.2f, "FATHER", "Again."),
+                S("", ShotCamera.Hold, 2.4f, "REN", "I'm tired."),
+                S("FATHER", ShotCamera.Hold, 2.4f, "FATHER", "Good."),
+                S("", ShotCamera.Hold, 2.6f, "REN", "Why is that good?"),
+                S("FATHER", ShotCamera.PushIn, 3.4f, "FATHER", "Because tired people make honest mistakes."),
+                S("", ShotCamera.Hold, 2.6f, "REN", "What does that mean?"),
+                S("FATHER", ShotCamera.Hold, 3.2f, "FATHER", "You'll understand when you're older."),
+                S("", ShotCamera.Hold, 1.4f, fadeAfter: true, blackAfter: 1.2f),
+                S("RENZO", ShotCamera.Hold, 4f, "RENZO", "I never understood.", audio: ShotAudio.Wind));
+
+            // The post. Small, and it is allowed to be funny.
+            Make("broken_post", "IT IS WHEN I LOSE",
+                S("RENZO", ShotCamera.PushIn, 2.6f, audio: ShotAudio.Silence, blackAfter: 0.6f),
+                S("AIKO", ShotCamera.Handheld, 3f, audio: ShotAudio.Birds,
+                    theme: EnvThemeId.VillageDawn),
+                S("", ShotCamera.Hold, 2.2f, "AIKO", "You're cheating."),
+                S("", ShotCamera.Hold, 2f, "REN", "How?"),
+                S("", ShotCamera.Hold, 2.2f, "AIKO", "You're stronger."),
+                S("", ShotCamera.Hold, 2.2f, "REN", "That's not cheating."),
+                S("AIKO", ShotCamera.Hold, 2.8f, "AIKO", "It is when I lose."),
+                S("", ShotCamera.Hold, 1.4f, fadeAfter: true, blackAfter: 1.2f));
+
+            // The escalation. Three things, one gone, one theirs — and the third
+            // is a line he did not finish.
+            Make("broken_letter", "THREE THINGS",
+                S("RENZO", ShotCamera.PushIn, 3.2f, audio: ShotAudio.Silence),
+                S("", ShotCamera.Hold, 3.2f, "FATHER", "Renzo. If you found this, then Yorune is already gone."),
+                S("", ShotCamera.Hold, 3f, "FATHER", "I hoped you would never need to know."),
+                S("", ShotCamera.Hold, 3.6f, "FATHER", "There are three things that must never be brought together."),
+                S("", ShotCamera.Hold, 3.4f, "FATHER", "One is already in the hands of the man who came for us."),
+                S("", ShotCamera.Hold, 3.2f, "FATHER", "The second was entrusted to our family."),
+                S("", ShotCamera.PushIn, 3.6f, "FATHER", "The third must never be found.", audio: ShotAudio.Sting),
+                S("RENZO", ShotCamera.Hold, 3.5f, "RENZO", "What did you hide, father?"),
+                S("", ShotCamera.Hold, 1.2f, fadeAfter: true, blackAfter: 1f));
+
+            // Goro was one layer. They already have a next man, and he is not named.
+            Make("broken_search", "THE NEXT MAN",
+                S("", ShotCamera.Hold, 2.2f, "SEARCHER", "The house?", audio: ShotAudio.Silence),
+                S("", ShotCamera.Hold, 2f, "SEARCHER", "Nothing."),
+                S("", ShotCamera.Hold, 2.2f, "SEARCHER", "Search again."),
+                S("", ShotCamera.Hold, 3f, "SEARCHER", "The Toll-Captain said the family kept records here."),
+                S("", ShotCamera.Hold, 2.8f, "SEARCHER", "The Toll-Captain is dead."),
+                S("", ShotCamera.PushIn, 3.2f, "SEARCHER", "Then we report to the next man."),
+                S("RENZO", ShotCamera.Hold, 2.8f, fadeAfter: true, blackAfter: 0.6f));
+
+            Make("broken_key", "IT IS A KEY",
+                S("RENZO", ShotCamera.PushIn, 3.5f, audio: ShotAudio.Silence),
+                S("RENZO", ShotCamera.Hold, 3f, "RENZO", "This isn't a weapon."),
+                S("RENZO", ShotCamera.PushIn, 3.4f, "RENZO", "It's a key.", audio: ShotAudio.Sting),
+                S("RENZO", ShotCamera.Hold, 3.2f, "RENZO", "You knew they'd come."),
+                S("RENZO", ShotCamera.Hold, 3.2f, "RENZO", "You knew I'd come back."),
+                S("RENZO", ShotCamera.Hold, 4f, "RENZO", "Why didn't you tell me?"),
+                S("", ShotCamera.Hold, 2.5f, fadeAfter: true, blackAfter: 1.2f));
+
+            Make("broken_end", "BUT YOU LEFT ME A PATH",
+                S("RENZO", ShotCamera.Hold, 3.5f, audio: ShotAudio.Wind),
+                S("RENZO", ShotCamera.Hold, 3.6f, "RENZO", "I came back looking for answers."),
+                S("RENZO", ShotCamera.Hold, 3.6f, "RENZO", "All I found were more questions."),
+                S("", ShotCamera.SlowDolly, 4f, audio: ShotAudio.MusicDark),
+                S("RENZO", ShotCamera.Hold, 3.4f, "RENZO", "But you left me a path."),
+                S("RENZO", ShotCamera.PushIn, 3.2f, "RENZO", "I'll follow it."),
+                S("", ShotCamera.Hold, 2.5f, fadeAfter: true, blackAfter: 2f,
+                    card: "THE BROKEN HOUSE"));
+
             // ---- MISSION 6 — THE HOUSE OF KAWAI ------------------------------
             // The mission after the boss fight, and deliberately quiet. Renzo has
             // spent five missions thinking of his father as the man who failed to

@@ -1006,6 +1006,136 @@ namespace Emberline.EditorTools
             // things to find. Renzo has spent five missions treating his father
             // as the man who failed to save Yorune. He leaves this one knowing
             // his father spent the last year of his life trying to empty it.
+            // ---------------------------------------------------------------
+            // 7 — THE BROKEN HOUSE. Renzo searches the place he grew up. Two
+            // short memories of a life rather than of the fire, an arrangement of
+            // objects his father left as a mark, and a letter that escalates the
+            // whole campaign in three sentences. The words Black Seal are not
+            // spoken here; mission 8 owns that.
+            var m7b = P_("S07_BrokenHouse");
+            m7b.id = 7; m7b.missionName = "THE BROKEN HOUSE"; m7b.missionType = "INVESTIGATION";
+            m7b.marsh = false; m7b.baseShards = 4;
+            m7b.applyTheme = true; m7b.theme = Core.EnvThemeId.BurningVillage;
+            m7b.briefing = "The map marks the one place Renzo has been avoiding since he came home: his own house.";
+            m7b.debrief = "Three things that must never be brought together. One is already taken. One was his family's. The third is a sentence his father did not finish — and the second is in Renzo's hand.";
+            m7b.dressing = new[] { DressingKind.BurnedHome, DressingKind.AbandonedWeapons,
+                DressingKind.EmptyHome, DressingKind.BloodTrail };
+            m7b.ruinedVillage = true;
+            m7b.challenge = MissionChallenge.NoAlarm; m7b.challengeShards = 3;
+            m7b.stages = new[]
+            {
+                St(StageGoal.Cinematic, "", "", beatId: "broken_open"),
+
+                // The house, at walking pace. Two of these are memories.
+                new MissionStage
+                {
+                    goal = StageGoal.Examine,
+                    objective = "WALK THROUGH THE RUINS",
+                    banner = "YOUR HOUSE",
+                    checkpoint = true,
+                    props = new[]
+                    {
+                        new StoryPropSpec
+                        {
+                            id = "courtyard", label = "THE COURTYARD",
+                            point = new Vector3(-4f, 0f, 11f), shape = StoryPropShape.Homestead,
+                            beatId = "broken_training", radius = 2.8f,
+                        },
+                        new StoryPropSpec
+                        {
+                            id = "post7", label = "THE TRAINING POST",
+                            point = new Vector3(3f, 0f, 14f), shape = StoryPropShape.TrainingPost,
+                            beatId = "broken_post", radius = 2.6f,
+                        },
+                        new StoryPropSpec
+                        {
+                            id = "beam", label = "THE FAMILY MARK",
+                            point = new Vector3(9f, 0f, 10f), shape = StoryPropShape.Shrine,
+                            speaker = "RENZO",
+                            line = "Our crest, cut into the beam. And under it a second mark — pointing at the ground behind the shrine. Father…",
+                        },
+                    },
+                },
+
+                // The arrangement. Not a puzzle to solve: a thing to notice.
+                new MissionStage
+                {
+                    goal = StageGoal.Examine,
+                    objective = "FIND WHAT THE MARK POINTS AT",
+                    banner = "IT WAS NOT DESTROYED",
+                    props = new[]
+                    {
+                        new StoryPropSpec
+                        {
+                            id = "arrange", label = "STONE, POST, BEAM",
+                            point = new Vector3(11f, 0f, 3f), shape = StoryPropShape.Cache,
+                            speaker = "RENZO",
+                            line = "The stone, the post and the beam line up. Nothing falls like that. This wasn't destroyed here — it was hidden.",
+                        },
+                    },
+                },
+
+                // The letter.
+                new MissionStage
+                {
+                    goal = StageGoal.Examine,
+                    objective = "OPEN WHAT HE HID",
+                    banner = "THE CACHE",
+                    checkpoint = true,
+                    props = new[]
+                    {
+                        new StoryPropSpec
+                        {
+                            id = "cache7", label = "A SEALED LETTER",
+                            point = new Vector3(13f, 0f, -1f), shape = StoryPropShape.Cache,
+                            beatId = "broken_letter", radius = 2.6f,
+                        },
+                    },
+                },
+
+                St(StageGoal.Cinematic, "", "", beatId: "broken_search"),
+
+                // They followed him home. One fight, in the ruins.
+                St(StageGoal.Wave, "THEY FOLLOWED YOU", "IN YOUR HOUSE",
+                    spawn: new[] { N, N, A, A, B }, checkpoint: true),
+
+                // Back to the cache for the thing under the letter.
+                new MissionStage
+                {
+                    goal = StageGoal.Examine,
+                    objective = "GO BACK TO THE CACHE",
+                    banner = "SOMETHING UNDER THE LETTER",
+                    props = new[]
+                    {
+                        new StoryPropSpec
+                        {
+                            id = "keypiece", label = "WORKED METAL",
+                            point = new Vector3(13f, 0f, -1f), shape = StoryPropShape.KeyPiece,
+                            beatId = "broken_key", radius = 2.4f,
+                        },
+                    },
+                },
+
+                new MissionStage
+                {
+                    goal = StageGoal.Examine,
+                    objective = "READ THE FAMILY MAP",
+                    props = new[]
+                    {
+                        new StoryPropSpec
+                        {
+                            id = "fammap", label = "THE FAMILY MAP",
+                            point = new Vector3(9f, 0f, -6f), shape = StoryPropShape.Marker,
+                            speaker = "RENZO",
+                            line = "A road drawn by hand, going up. Cut beside it: \"when the mountain opens, water remembers the path\". And a third mark I don't know.",
+                        },
+                    },
+                },
+
+                St(StageGoal.Cinematic, "", "", beatId: "broken_end"),
+            };
+            EditorUtility.SetDirty(m7b);
+
             var m6k = P_("S06_HouseOfKawai");
             m6k.id = 6; m6k.missionName = "THE HOUSE OF KAWAI"; m6k.missionType = "INVESTIGATION";
             m6k.marsh = false; m6k.baseShards = 3;

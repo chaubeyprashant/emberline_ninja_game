@@ -19,6 +19,7 @@ namespace Emberline.Missions
         CommandPost,   // a table someone works at: orders, a banner, lamplight
         Homestead,     // what is left of a house: beams, a doorway, household things
         Cache,         // a stone nobody would move, and what is under it
+        KeyPiece,      // small, worked metal: three grooves and a missing section
     }
 
     /// <summary>
@@ -178,6 +179,15 @@ namespace Emberline.Missions
                         new Color(0.29f, 0.28f, 0.26f));
                     Dress("box_small", new Vector3(0.7f, 0f, -0.9f), 30f, 0.9f);
                     Glow(new Vector3(0f, 0.5f, 0f), new Color(0.95f, 0.45f, 0.38f), 0.26f);
+                    break;
+
+                case StoryPropShape.KeyPiece:
+                    // Small and deliberate. It reads as made, not as debris.
+                    Bar(new Vector3(0f, 0.18f, 0f), new Vector3(0.22f, 0.06f, 0.5f),
+                        new Color(0.44f, 0.42f, 0.36f));
+                    Bar(new Vector3(0f, 0.24f, 0.18f), new Vector3(0.1f, 0.05f, 0.1f),
+                        new Color(0.5f, 0.47f, 0.4f));
+                    Glow(new Vector3(0f, 0.45f, 0f), new Color(0.92f, 0.86f, 0.62f), 0.24f);
                     break;
 
                 case StoryPropShape.Tracks:
