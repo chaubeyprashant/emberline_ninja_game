@@ -12,13 +12,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 814b8fc7fb4eb427480893eff898b203, type: 3}
   m_Name: S04_GorosToll
   m_EditorClassIdentifier: Assembly-CSharp::Emberline.Missions.MissionPlan
-  id: 5
+  id: 4
   missionName: GORO'S TOLL
-  missionType: BOSS
+  missionType: ASSAULT
   briefing: They have put a toll on the north road. Those who cannot pay are kept.
     The toll-captain is called Goro.
-  debrief: The prisoner ledger at the post carries a name Renzo has not heard spoken
-    in ten years. AIKO KUROGAWA.
+  debrief: The ledger at the post records eleven names and no coin. Goro was not
+    collecting money.
   marsh: 0
   nightOverride: 0
   rain: 0
@@ -122,4 +122,4 @@ MonoBehaviour:
   challenge: 2
   challengeSeconds: 240
   challengeShards: 3
-  baseShards: 5
+  baseShards: 4

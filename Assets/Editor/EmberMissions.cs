@@ -991,6 +991,135 @@ namespace Emberline.EditorTools
             // Renzo has been watching them for three missions; here they start
             // looking for him, and the chain of command gets a face. Goro is
             // fought but not beaten: Endure ends on its clock, not on a corpse.
+            // ---------------------------------------------------------------
+            // 5 — THE TOLL-CAPTAIN. Goro's fight and Goro's death. Three phases
+            // through BossPhase health gates with a beat between each, so the
+            // mid-fight dialogue happens with him still standing in the middle
+            // of the road rather than in a cutscene somewhere else.
+            //
+            // He gives up exactly two things: that the orders were not his, and
+            // a direction. He dies without finishing the sentence about the
+            // father, which is mission 6's problem.
+            var m5t = P_("S05_TollCaptain");
+            m5t.id = 5; m5t.missionName = "THE TOLL-CAPTAIN"; m5t.missionType = "BOSS";
+            m5t.marsh = false; m5t.nightOverride = true; m5t.baseShards = 5;
+            m5t.applyTheme = true; m5t.theme = Core.EnvThemeId.Forest;
+            m5t.briefing = "The token off the runner carries a toll mark. Goro keeps a road, and a road can be walked to.";
+            m5t.debrief = "Goro is dead and he was not the one giving orders — the sealed message in his coat reports to somebody it does not name. The burned page says only that a Kurogawa refused.";
+            m5t.dressing = new[] { DressingKind.KagehiraBanners, DressingKind.DestroyedCart,
+                DressingKind.AbandonedWeapons, DressingKind.BloodTrail };
+            m5t.challenge = MissionChallenge.NoAlarm; m5t.challengeShards = 3;
+            m5t.stages = new[]
+            {
+                St(StageGoal.Cinematic, "", "", beatId: "toll_open"),
+
+                // The road he keeps. Tracking, then the post itself.
+                new MissionStage
+                {
+                    goal = StageGoal.Examine,
+                    objective = "FOLLOW GORO'S ROUTE",
+                    banner = "THE TOLL ROAD",
+                    checkpoint = true,
+                    props = new[]
+                    {
+                        new StoryPropSpec
+                        {
+                            id = "tollmark", label = "A TOLL MARKER",
+                            point = new Vector3(-6f, 0f, 14f), shape = StoryPropShape.Tracks,
+                            speaker = "RENZO", line = "Same mark as the token. This road is his.",
+                        },
+                        new StoryPropSpec
+                        {
+                            id = "barricade", label = "A BARRICADE",
+                            point = new Vector3(6f, 0f, 17f), shape = StoryPropShape.Supply,
+                            speaker = "RENZO", line = "Nothing moves along here without him knowing.",
+                        },
+                    },
+                },
+
+                // Stealth or fight — either reaches the post.
+                St(StageGoal.Stealth, "GET INTO THE CHECKPOINT", "THEY HOLD THE ROAD",
+                    spawn: new[] { P, R, B }, checkpoint: true),
+
+                // The ledger, and under it a page that survived a fire badly.
+                new MissionStage
+                {
+                    goal = StageGoal.Examine,
+                    objective = "SEARCH THE POST",
+                    banner = "HIS PAPERWORK",
+                    checkpoint = true,
+                    props = new[]
+                    {
+                        new StoryPropSpec
+                        {
+                            id = "ledger", label = "THE ROUTE LEDGER",
+                            point = new Vector3(12f, 0f, 9f), shape = StoryPropShape.CommandPost,
+                            speaker = "RENZO",
+                            line = "\"Yorune, search complete. Kurogawa, unresolved.\" And at the bottom: if the boy returns, inform the Toll-Captain. They expected me.",
+                        },
+                        new StoryPropSpec
+                        {
+                            id = "burned", label = "A BURNED PAGE",
+                            point = new Vector3(15f, 0f, 3f), shape = StoryPropShape.Supply,
+                            speaker = "RENZO",
+                            line = "Older. Half of it is ash. \"Kurogawa… refused… the village… the mountain…\" Father.",
+                        },
+                    },
+                },
+
+                St(StageGoal.Cinematic, "", "", beatId: "toll_confront"),
+
+                // PHASE 1 — control. He spawns here and survives the gate.
+                new MissionStage
+                {
+                    goal = StageGoal.BossPhase,
+                    objective = "GORO",
+                    banner = "THE TOLL-CAPTAIN",
+                    foeDef = "goro",
+                    spawn = new[] { EnemyKind.Chief },
+                    bossHealthGate = 0.62f,
+                    checkpoint = true,
+                },
+
+                St(StageGoal.Cinematic, "", "", beatId: "toll_mid"),
+
+                // PHASE 2 — pressure. No foeDef and no spawn: the same man.
+                new MissionStage
+                {
+                    goal = StageGoal.BossPhase,
+                    objective = "HE IS NOT TIRING",
+                    banner = "PRESSURE",
+                    bossHealthGate = 0.28f,
+                },
+
+                St(StageGoal.Cinematic, "", "", beatId: "toll_last"),
+
+                // PHASE 3 — he dies here, and only here.
+                St(StageGoal.BossFight, "FINISH IT", "ON ONE KNEE", checkpoint: true),
+
+                St(StageGoal.Cinematic, "", "", beatId: "toll_death"),
+
+                // What he was carrying: a report to someone the report does not name.
+                new MissionStage
+                {
+                    goal = StageGoal.Examine,
+                    objective = "SEARCH HIM",
+                    props = new[]
+                    {
+                        new StoryPropSpec
+                        {
+                            id = "sealed", label = "A SEALED MESSAGE",
+                            point = Vector3.zero, shape = StoryPropShape.Body,
+                            speaker = "RENZO",
+                            line = "\"The Kurogawa has returned. If he survives, continue the search.\" No name under it. He was reporting to somebody.",
+                        },
+                    },
+                },
+
+                St(StageGoal.Cinematic, "", "", beatId: "toll_end"),
+            };
+            EditorUtility.SetDirty(m5t);
+
             var m4f = P_("S04_SilentForest");
             m4f.id = 4; m4f.missionName = "THE SILENT FOREST"; m4f.missionType = "HUNT";
             m4f.marsh = false; m4f.nightOverride = true; m4f.baseShards = 4;

@@ -171,6 +171,76 @@ namespace Emberline.EditorTools
                 S("KAGACHI", ShotCamera.Handheld, 3f, "KAGACHI", "…Weak."),
                 S("", ShotCamera.Hold, 1f));
 
+            // ---- MISSION 5 — THE TOLL-CAPTAIN --------------------------------
+            // The first real answer, and it is a small one: Renzo's father knew
+            // what was coming and refused something. Goro will not say what, and
+            // he dies without saying it. What he does give away is that he was
+            // never the top of anything — "not mine" is the line the mission is
+            // built around.
+
+            Make("toll_open", "A TOLL ROAD",
+                S("RENZO", ShotCamera.PushIn, 4f, audio: ShotAudio.Wind),
+                S("RENZO", ShotCamera.Hold, 3.5f, "RENZO", "A toll road."),
+                S("RENZO", ShotCamera.OverShoulder, 4f, "RENZO", "That's where he'll be."),
+                S("", ShotCamera.Hold, 1f, fadeAfter: true, blackAfter: 0.6f));
+
+            // He is not surprised, and he does not hurry. That is the character.
+            Make("toll_confront", "YOU SHOULD HAVE STAYED AWAY",
+                S("", ShotCamera.Hold, 2.5f, "SOLDIER", "Toll-Captain!", audio: ShotAudio.Silence),
+                S("", ShotCamera.Hold, 2.2f, "GORO", "I know."),
+                S("", ShotCamera.Hold, 2.5f, "SOLDIER", "The Kurogawa is here."),
+                S("", ShotCamera.Hold, 3f, "GORO", "Then stop wasting my time."),
+                S("GORO", ShotCamera.SlowDolly, 4.5f, audio: ShotAudio.MusicDark),
+                S("GORO", ShotCamera.Hold, 3.2f, "GORO", "You should have stayed away."),
+                S("RENZO", ShotCamera.Hold, 3f, "RENZO", "You knew my father."),
+                S("GORO", ShotCamera.Hold, 2.6f, "GORO", "I did."),
+                S("RENZO", ShotCamera.Hold, 2.8f, "RENZO", "What did he do?"),
+                S("GORO", ShotCamera.Hold, 3.2f, "GORO", "What he believed was right."),
+                S("RENZO", ShotCamera.Hold, 2.8f, "RENZO", "That's not an answer."),
+                S("GORO", ShotCamera.Hold, 3.2f, "GORO", "It's the only one you're getting."),
+                S("RENZO", ShotCamera.PushIn, 3f, "RENZO", "Then I'll make you talk."),
+                S("GORO", ShotCamera.Hold, 2.5f, "GORO", "Try."),
+                S("", ShotCamera.Hold, 0.8f, fadeAfter: true, blackAfter: 0.4f));
+
+            // The mission's real payload: he was following someone else's orders.
+            Make("toll_mid", "NOT MINE",
+                S("RENZO", ShotCamera.Handheld, 2.8f, "RENZO", "You were there.", audio: ShotAudio.Silence),
+                S("GORO", ShotCamera.Hold, 2.2f, "GORO", "Where?"),
+                S("RENZO", ShotCamera.Hold, 2.4f, "RENZO", "Yorune."),
+                S("GORO", ShotCamera.Hold, 3f, "GORO", "Yes."),
+                S("RENZO", ShotCamera.Hold, 2.8f, "RENZO", "You watched it burn."),
+                S("GORO", ShotCamera.Hold, 3.2f, "GORO", "I watched men follow orders."),
+                S("RENZO", ShotCamera.Hold, 2.6f, "RENZO", "Whose orders?"),
+                S("GORO", ShotCamera.PushIn, 3.5f, "GORO", "Not mine.", audio: ShotAudio.Sting),
+                S("", ShotCamera.Hold, 0.8f, fadeAfter: true, blackAfter: 0.4f));
+
+            // On one knee, and still refusing. He answers with a direction, not a
+            // fact, and then makes Renzo finish it.
+            Make("toll_last", "ASK THE MOUNTAIN",
+                S("GORO", ShotCamera.Hold, 3.2f, audio: ShotAudio.MusicOff),
+                S("GORO", ShotCamera.Hold, 2.8f, "GORO", "Go ahead."),
+                S("RENZO", ShotCamera.Hold, 2.6f, "RENZO", "Tell me."),
+                S("GORO", ShotCamera.Hold, 3.4f, "GORO", "Your father knew what was coming."),
+                S("RENZO", ShotCamera.Hold, 2.8f, "RENZO", "What was coming?"),
+                S("GORO", ShotCamera.PushIn, 3.6f, "GORO", "Ask the mountain."),
+                S("", ShotCamera.Hold, 1f, fadeAfter: true, blackAfter: 0.5f));
+
+            // Four words, and no speech. He does not explain anything on the way out.
+            Make("toll_death", "YOU HAVE HIS EYES",
+                S("GORO", ShotCamera.Hold, 3.5f, audio: ShotAudio.Silence),
+                S("GORO", ShotCamera.Hold, 3f, "GORO", "You have his eyes."),
+                S("RENZO", ShotCamera.Hold, 2.6f, "RENZO", "Who?"),
+                S("GORO", ShotCamera.PushIn, 3.5f, "GORO", "Your father."),
+                S("", ShotCamera.Hold, 3f, fadeAfter: true, blackAfter: 1.2f));
+
+            Make("toll_end", "ASK THE MOUNTAIN",
+                S("", ShotCamera.Wide, 4f, audio: ShotAudio.Wind),
+                S("RENZO", ShotCamera.Hold, 3.2f, "RENZO", "You knew him."),
+                S("RENZO", ShotCamera.Hold, 3.5f, "RENZO", "And you knew what happened."),
+                S("", ShotCamera.SlowDolly, 4f, audio: ShotAudio.MusicDark),
+                S("RENZO", ShotCamera.PushIn, 3.8f, "RENZO", "Then that's where I'll look."),
+                S("", ShotCamera.Hold, 2.5f, fadeAfter: true, blackAfter: 2f, card: "THE TOLL-CAPTAIN"));
+
             // ---- MISSION 4 — THE SILENT FOREST ------------------------------
             // The investigation acquires consequences. Renzo stops being someone
             // watching them and becomes someone they are looking for, and the

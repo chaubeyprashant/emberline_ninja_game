@@ -1,0 +1,309 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 814b8fc7fb4eb427480893eff898b203, type: 3}
+  m_Name: S05_TollCaptain
+  m_EditorClassIdentifier: Assembly-CSharp::Emberline.Missions.MissionPlan
+  id: 5
+  missionName: THE TOLL-CAPTAIN
+  missionType: BOSS
+  briefing: The token off the runner carries a toll mark. Goro keeps a road, and
+    a road can be walked to.
+  debrief: A sealed report addressed to no one Renzo can name, and a burned page
+    that says only that a Kurogawa refused.
+  marsh: 0
+  nightOverride: 1
+  rain: 0
+  snow: 0
+  fog: 0
+  applyTheme: 1
+  theme: 1
+  missionRadius: 0
+  missionRadiusZ: 0
+  nextReason: Goro is dead and he was not the one in charge. What the father refused
+    is somewhere on the mountain.
+  region: FOREST
+  stages:
+  - goal: 17
+    objective: 
+    banner: 
+    count: 1
+    duration: 0
+    point: {x: 0, y: 0, z: 0}
+    spawn: 
+    pointB: {x: 0, y: 0, z: 0}
+    spawnB: 
+    foeDef: 
+    beatId: toll_open
+    props: []
+    bossHealthGate: 0.6
+    onComplete: 0
+    optional: 0
+    bonusShards: 1
+    checkpoint: 0
+  - goal: 19
+    objective: FOLLOW GORO'S ROUTE
+    banner: THE TOLL ROAD
+    count: 1
+    duration: 0
+    point: {x: 0, y: 0, z: 0}
+    spawn: 
+    pointB: {x: 0, y: 0, z: 0}
+    spawnB: 
+    foeDef: 
+    beatId: 
+    props:
+    - id: tollmark
+      label: A TOLL MARKER
+      point: {x: -6, y: 0, z: 14}
+      shape: 5
+      speaker: RENZO
+      line: Same mark as the token. This road is his.
+      beatId: 
+      radius: 2.2
+      lanternLine: []
+    - id: barricade
+      label: A BARRICADE
+      point: {x: 6, y: 0, z: 17}
+      shape: 7
+      speaker: RENZO
+      line: Nothing moves along here without him knowing.
+      beatId: 
+      radius: 2.2
+      lanternLine: []
+    bossHealthGate: 0.6
+    onComplete: 0
+    optional: 0
+    bonusShards: 1
+    checkpoint: 1
+  - goal: 7
+    objective: GET INTO THE CHECKPOINT
+    banner: THEY HOLD THE ROAD
+    count: 1
+    duration: 0
+    point: {x: 0, y: 0, z: 0}
+    spawn: 070000000100000000000000
+    pointB: {x: 0, y: 0, z: 0}
+    spawnB: 
+    foeDef: 
+    beatId: 
+    props: []
+    bossHealthGate: 0.6
+    onComplete: 0
+    optional: 0
+    bonusShards: 1
+    checkpoint: 1
+  - goal: 19
+    objective: SEARCH THE POST
+    banner: HIS PAPERWORK
+    count: 1
+    duration: 0
+    point: {x: 0, y: 0, z: 0}
+    spawn: 
+    pointB: {x: 0, y: 0, z: 0}
+    spawnB: 
+    foeDef: 
+    beatId: 
+    props:
+    - id: ledger
+      label: THE ROUTE LEDGER
+      point: {x: 12, y: 0, z: 9}
+      shape: 9
+      speaker: RENZO
+      line: '"Yorune, search complete. Kurogawa, unresolved." And at the bottom:
+        if the boy returns, inform the Toll-Captain. They expected me.'
+      beatId: 
+      radius: 2.2
+      lanternLine: []
+    - id: burned
+      label: A BURNED PAGE
+      point: {x: 15, y: 0, z: 3}
+      shape: 7
+      speaker: RENZO
+      line: "Older. Half of it is ash. \"Kurogawa\u2026 refused\u2026 the village\u2026
+        the mountain\u2026\" Father."
+      beatId: 
+      radius: 2.2
+      lanternLine: []
+    bossHealthGate: 0.6
+    onComplete: 0
+    optional: 0
+    bonusShards: 1
+    checkpoint: 1
+  - goal: 17
+    objective: 
+    banner: 
+    count: 1
+    duration: 0
+    point: {x: 0, y: 0, z: 0}
+    spawn: 
+    pointB: {x: 0, y: 0, z: 0}
+    spawnB: 
+    foeDef: 
+    beatId: toll_confront
+    props: []
+    bossHealthGate: 0.6
+    onComplete: 0
+    optional: 0
+    bonusShards: 1
+    checkpoint: 0
+  - goal: 14
+    objective: GORO
+    banner: THE TOLL-CAPTAIN
+    count: 1
+    duration: 0
+    point: {x: 0, y: 0, z: 0}
+    spawn: 02000000
+    pointB: {x: 0, y: 0, z: 0}
+    spawnB: 
+    foeDef: goro
+    beatId: 
+    props: []
+    bossHealthGate: 0.62
+    onComplete: 0
+    optional: 0
+    bonusShards: 1
+    checkpoint: 1
+  - goal: 17
+    objective: 
+    banner: 
+    count: 1
+    duration: 0
+    point: {x: 0, y: 0, z: 0}
+    spawn: 
+    pointB: {x: 0, y: 0, z: 0}
+    spawnB: 
+    foeDef: 
+    beatId: toll_mid
+    props: []
+    bossHealthGate: 0.6
+    onComplete: 0
+    optional: 0
+    bonusShards: 1
+    checkpoint: 0
+  - goal: 14
+    objective: HE IS NOT TIRING
+    banner: PRESSURE
+    count: 1
+    duration: 0
+    point: {x: 0, y: 0, z: 0}
+    spawn: 
+    pointB: {x: 0, y: 0, z: 0}
+    spawnB: 
+    foeDef: 
+    beatId: 
+    props: []
+    bossHealthGate: 0.28
+    onComplete: 0
+    optional: 0
+    bonusShards: 1
+    checkpoint: 0
+  - goal: 17
+    objective: 
+    banner: 
+    count: 1
+    duration: 0
+    point: {x: 0, y: 0, z: 0}
+    spawn: 
+    pointB: {x: 0, y: 0, z: 0}
+    spawnB: 
+    foeDef: 
+    beatId: toll_last
+    props: []
+    bossHealthGate: 0.6
+    onComplete: 0
+    optional: 0
+    bonusShards: 1
+    checkpoint: 0
+  - goal: 11
+    objective: FINISH IT
+    banner: ON ONE KNEE
+    count: 1
+    duration: 0
+    point: {x: 0, y: 0, z: 0}
+    spawn: 
+    pointB: {x: 0, y: 0, z: 0}
+    spawnB: 
+    foeDef: 
+    beatId: 
+    props: []
+    bossHealthGate: 0.6
+    onComplete: 0
+    optional: 0
+    bonusShards: 1
+    checkpoint: 1
+  - goal: 17
+    objective: 
+    banner: 
+    count: 1
+    duration: 0
+    point: {x: 0, y: 0, z: 0}
+    spawn: 
+    pointB: {x: 0, y: 0, z: 0}
+    spawnB: 
+    foeDef: 
+    beatId: toll_death
+    props: []
+    bossHealthGate: 0.6
+    onComplete: 0
+    optional: 0
+    bonusShards: 1
+    checkpoint: 0
+  - goal: 19
+    objective: SEARCH HIM
+    banner: 
+    count: 1
+    duration: 0
+    point: {x: 0, y: 0, z: 0}
+    spawn: 
+    pointB: {x: 0, y: 0, z: 0}
+    spawnB: 
+    foeDef: 
+    beatId: 
+    props:
+    - id: sealed
+      label: A SEALED MESSAGE
+      point: {x: 0, y: 0, z: 0}
+      shape: 4
+      speaker: RENZO
+      line: '"The Kurogawa has returned. If he survives, continue the search." No
+        name under it. He was reporting to somebody.'
+      beatId: 
+      radius: 2.2
+      lanternLine: []
+    bossHealthGate: 0.6
+    onComplete: 0
+    optional: 0
+    bonusShards: 1
+    checkpoint: 0
+  - goal: 17
+    objective: 
+    banner: 
+    count: 1
+    duration: 0
+    point: {x: 0, y: 0, z: 0}
+    spawn: 
+    pointB: {x: 0, y: 0, z: 0}
+    spawnB: 
+    foeDef: 
+    beatId: toll_end
+    props: []
+    bossHealthGate: 0.6
+    onComplete: 0
+    optional: 0
+    bonusShards: 1
+    checkpoint: 0
+  dressing: 09000000030000000400000005000000
+  ruinedVillage: 0
+  challenge: 1
+  challengeSeconds: 240
+  challengeShards: 3
+  baseShards: 5
