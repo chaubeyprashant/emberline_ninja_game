@@ -13,6 +13,9 @@ namespace Emberline.Missions
         Keepsake,      // small, low, and red: the one coloured thing in a grey mission
         Body,          // a corpse and what it was carrying
         Tracks,        // disturbed ash going somewhere
+        Camp,          // a fire ring, bedding and the things people leave out
+        Supply,        // stacked crates, kegs, and a lantern to work by
+        Lookout,       // the high post: a ladder, a rail, a signal lantern
     }
 
     /// <summary>
@@ -49,6 +52,10 @@ namespace Emberline.Missions
 
         [Tooltip("How close the player must be.")]
         public float radius = 2.2f;
+
+        [Tooltip("Light the enemy signal line when this is found — three lanterns " +
+                 "answering each other across the valley. Points are world-space.")]
+        public Vector3[] lanternLine = System.Array.Empty<Vector3>();
     }
 
     /// <summary>
@@ -106,6 +113,36 @@ namespace Emberline.Missions
                         new Color(0.12f, 0.12f, 0.15f));
                     Dress("box_small", new Vector3(1.0f, 0f, -0.4f), 60f, 0.8f);
                     Glow(new Vector3(0f, 0.6f, 0f), new Color(0.85f, 0.9f, 1f), 0.22f);
+                    break;
+
+                case StoryPropShape.Camp:
+                    // Slept in, cooked in, worked in — and only just left.
+                    Dress("keg", new Vector3(-1.3f, 0f, 0.7f), 15f);
+                    Dress("box_small", new Vector3(1.2f, 0f, 0.9f), 70f);
+                    Dress("torch_lit", new Vector3(0f, 0f, -1.4f), 0f);
+                    Patch(new Vector3(0f, 0.03f, 0f), 1.5f, new Color(0.09f, 0.08f, 0.075f));
+                    Bar(new Vector3(0.9f, 0.09f, -0.5f), new Vector3(1.5f, 0.16f, 0.6f),
+                        new Color(0.30f, 0.27f, 0.21f));   // bedroll
+                    Glow(new Vector3(0f, 0.55f, 0f), new Color(1f, 0.6f, 0.3f), 0.24f);
+                    break;
+
+                case StoryPropShape.Supply:
+                    // Identical crates, stacked by someone who expects to come back.
+                    Dress("crates_stacked", Vector3.zero, 20f, 1.05f);
+                    Dress("box_large", new Vector3(1.9f, 0f, 0.4f), -25f);
+                    Dress("barrel_large", new Vector3(-1.7f, 0f, 0.8f), 40f);
+                    Dress("torch_lit", new Vector3(0.4f, 0f, -1.8f), 0f);
+                    Glow(new Vector3(0f, 1.4f, 0f), new Color(0.85f, 0.9f, 1f), 0.22f);
+                    break;
+
+                case StoryPropShape.Lookout:
+                    // A post to see the valley from, and a lantern to answer with.
+                    Dress("crates_stacked", new Vector3(0.9f, 0f, 0.6f), 0f, 1.1f);
+                    Bar(new Vector3(0f, 1.3f, 0f), new Vector3(0.18f, 2.6f, 0.18f),
+                        new Color(0.22f, 0.19f, 0.16f));
+                    Bar(new Vector3(0f, 2.5f, 0f), new Vector3(1.6f, 0.12f, 0.12f),
+                        new Color(0.22f, 0.19f, 0.16f));
+                    Glow(new Vector3(0f, 2.75f, 0f), new Color(1f, 0.62f, 0.3f), 0.3f);
                     break;
 
                 case StoryPropShape.Tracks:

@@ -575,6 +575,11 @@ namespace Emberline.Missions
             _progress++;
             Sfx3D.Ui();
             MarkNextProp();
+            // The signal line runs under the beat rather than inside it: the
+            // lanterns are in the world, so the cinematic camera simply finds
+            // them lighting instead of cutting to an effect.
+            if (spec.lanternLine != null && spec.lanternLine.Length > 0)
+                LanternSignal.Play(spec.lanternLine);
             if (!string.IsNullOrEmpty(spec.line))
                 UI.EmberHud.Live?.SayLine(spec.speaker, spec.line);
             else if (!string.IsNullOrEmpty(spec.label))
@@ -708,6 +713,14 @@ namespace Emberline.Missions
             }
             if (heard > 0) Sfx3D.Ui();
         }
+
+        /// <summary>
+        /// Where the current objective is, or null. The HUD draws an indicator for
+        /// it: a glowing ring on the ground is easy to lose behind a treeline, and
+        /// "go somewhere" is not a clear objective if the somewhere is off screen.
+        /// </summary>
+        public Vector3? ObjectivePoint =>
+            _marker != null ? _marker.position : (Vector3?)null;
 
         private void SpawnMarker(Vector3 at, Color tint)
         {

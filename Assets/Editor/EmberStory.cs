@@ -171,6 +171,48 @@ namespace Emberline.EditorTools
                 S("KAGACHI", ShotCamera.Handheld, 3f, "KAGACHI", "…Weak."),
                 S("", ShotCamera.Hold, 1f));
 
+            // ---- MISSION 2 — RED THREAD -------------------------------------
+            // One question: who are they. It is answered — an organised force,
+            // searching for something, that knows the Kurogawa name — and it
+            // opens the next one, which is who sent them. Nothing here names what
+            // they are looking for, and nothing suggests Aiko lived.
+
+            Make("thread_open", "THE RED MARK",
+                S("RENZO", ShotCamera.PushIn, 3.5f, audio: ShotAudio.Wind),
+                S("RENZO", ShotCamera.Hold, 3.5f, "RENZO", "They left a trail."),
+                S("RENZO", ShotCamera.OverShoulder, 3.5f, "RENZO", "I'll follow it."),
+                S("", ShotCamera.Hold, 1f, fadeAfter: true, blackAfter: 0.6f));
+
+            // The network. Three lights answering each other across a valley says
+            // "organised" faster than any line of dialogue could.
+            Make("thread_lanterns", "THEY ARE TALKING",
+                S("", ShotCamera.Wide, 5f, audio: ShotAudio.Silence),
+                S("", ShotCamera.SlowDolly, 5.5f, audio: ShotAudio.MusicSoft),
+                S("RENZO", ShotCamera.Hold, 4f, "RENZO", "One light. Then an answer."),
+                S("RENZO", ShotCamera.PushIn, 4.5f, "RENZO", "They are talking to each other across the whole valley."),
+                S("", ShotCamera.Hold, 1.5f, fadeAfter: true, blackAfter: 0.8f));
+
+            // The turn. Restrained on purpose: they do not say what they are
+            // looking for, and the only name spoken is his own.
+            Make("thread_kurogawa", "KUROGAWA",
+                S("", ShotCamera.Hold, 2.5f, "GUARD", "Nothing?", audio: ShotAudio.Silence),
+                S("", ShotCamera.Hold, 2.2f, "PATROL", "Nothing."),
+                S("", ShotCamera.Hold, 2.5f, "GUARD", "Then keep searching."),
+                S("", ShotCamera.Hold, 2.5f, "PATROL", "Until when?"),
+                S("", ShotCamera.Hold, 3.5f, "GUARD", "Until we find what they left behind."),
+                S("", ShotCamera.PushIn, 3.5f, "PATROL", "…Kurogawa."),
+                S("", ShotCamera.Hold, 2.5f, "GUARD", "Report it.", audio: ShotAudio.Sting),
+                S("RENZO", ShotCamera.PushIn, 4.5f, "RENZO", "Why are they looking for my family?"),
+                S("RENZO", ShotCamera.Hold, 2.5f, fadeAfter: true, blackAfter: 1f));
+
+            Make("thread_map", "SOMEONE SENT THEM",
+                S("RENZO", ShotCamera.Hold, 3.5f, audio: ShotAudio.Silence),
+                S("RENZO", ShotCamera.PushIn, 4f, "RENZO", "Routes. Watch posts. Supply. This is not a raiding party."),
+                S("RENZO", ShotCamera.Hold, 4f, "RENZO", "Someone sent them here."),
+                S("RENZO", ShotCamera.Hold, 4f, "RENZO", "But who?"),
+                S("", ShotCamera.PullOut, 5.5f, audio: ShotAudio.MusicDark),
+                S("", ShotCamera.Hold, 2.5f, fadeAfter: true, blackAfter: 2f, card: "RED THREAD"));
+
             // ---- MISSION 1 — ASHES ------------------------------------------
             // Renzo comes home. The mission asks one question, WHO IS STILL HERE,
             // and answers none. Aiko is a loss here, not a lead: nothing in these

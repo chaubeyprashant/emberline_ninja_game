@@ -59,6 +59,62 @@ namespace Emberline.UI
         public static EmberHud Live { get; private set; }
 
         /// <summary>
+        /// A single marker for where the mission wants you to go.
+        ///
+        /// <para>
+        /// Enemies have had off-screen arrows since the beginning; objectives have
+        /// only ever had a glowing ring on the ground, which is invisible from
+        /// forty metres away behind a treeline. "Follow the red mark" is not a
+        /// clear instruction if the mark is off screen, so it gets an arrow at the
+        /// edge and a soft diamond when it is in view.
+        /// </para>
+        /// </summary>
+        private void DrawObjectiveIndicator()
+        {
+            var dir = Missions.MissionDirector.Active;
+            var point = dir?.ObjectivePoint;
+            var cam = Core.SceneRefs.Cam;
+            var show = point.HasValue && cam != null && _screen == Screen.Hud
+                       && !GameManager.CinematicActive;
+
+            if (!show)
+            {
+                if (_objMark != null) _objMark.enabled = false;
+                return;
+            }
+
+            if (_objMark == null)
+            {
+                var rt = UiKit.Rect(_screenRoot, "ObjectiveMark", new Vector2(0f, 0f),
+                    Vector2.zero, new Vector2(26f, 26f), new Vector2(0.5f, 0.5f));
+                _objMark = rt.gameObject.AddComponent<UnityEngine.UI.Image>();
+                _objMark.raycastTarget = false;
+                _objMark.color = UiKit.Ember;
+            }
+            _objMark.enabled = true;
+
+            var sp = cam.WorldToScreenPoint(point.Value + Vector3.up * 1.2f);
+            var onScreen = sp.z > 0f && sp.x > 40f && sp.x < UnityEngine.Screen.width - 40f
+                           && sp.y > 40f && sp.y < UnityEngine.Screen.height - 40f;
+            var p = new Vector2(sp.x, sp.y);
+            if (sp.z < 0f) p = new Vector2(UnityEngine.Screen.width - p.x, 60f);
+            p.x = Mathf.Clamp(p.x, 40f, UnityEngine.Screen.width - 40f);
+            p.y = Mathf.Clamp(p.y, 40f, UnityEngine.Screen.height - 40f);
+
+            var scale = _root != null ? 1f / Mathf.Max(0.01f, _root.lossyScale.x) : 1f;
+            var rtm = (RectTransform)_objMark.transform;
+            rtm.anchoredPosition = p * scale;
+            // On screen it is a quiet diamond; off screen it turns and points.
+            rtm.localRotation = Quaternion.Euler(0f, 0f, onScreen ? 45f : 45f);
+            rtm.localScale = Vector3.one * (onScreen ? 0.75f : 1.15f);
+            var pulse = 0.55f + 0.25f * Mathf.Sin(Time.unscaledTime * 3f);
+            _objMark.color = new Color(UiKit.Ember.r, UiKit.Ember.g, UiKit.Ember.b,
+                onScreen ? pulse * 0.8f : 0.95f);
+        }
+
+        private UnityEngine.UI.Image _objMark;
+
+        /// <summary>
         /// Fold the gameplay HUD away while a beat plays. The cinematic director
         /// draws its letterbox and subtitles on its own canvas, so this hides the
         /// game's own furniture and nothing of the scene.
@@ -217,6 +273,7 @@ namespace Emberline.UI
             // before, so every story beat in the campaign played with the touch
             // buttons and the movement hint sitting on top of it.
             HideForCinematic();
+            DrawObjectiveIndicator();
 
             if (_gm == null) return;
             ReadStick();

@@ -812,6 +812,147 @@ namespace Emberline.EditorTools
             EditorUtility.SetDirty(m1);
 
             // ---------------------------------------------------------------
+            // 2 — RED THREAD. Mission 1 asked who is still here; this answers it
+            // and asks who sent them. Tracking and stealth, not a rescue: the
+            // player learns the enemy is organised by walking through what they
+            // left behind, not by being told.
+            //
+            // Everything is inside the ~34 m play area. The valley's own enemy
+            // camp is 71 m out at (46,-54) and unreachable without changing the
+            // arena for every other mission, so this camp is mission dressing.
+            var m2r = P_("S02_RedThread");
+            m2r.id = 2; m2r.missionName = "RED THREAD"; m2r.missionType = "TRACKING";
+            m2r.marsh = false; m2r.baseShards = 3;
+            m2r.briefing = "The map from the assassin's coat marks one road in red. It leads out of Yorune, north-east, into the trees.";
+            m2r.debrief = "Patrol routes, watch posts, supply drops, and a signal line that reaches further than the valley. Somebody is running this.";
+            m2r.dressing = new[] { DressingKind.AbandonedWeapons, DressingKind.DestroyedCart,
+                DressingKind.KagehiraBanners, DressingKind.EmptyHome };
+            m2r.ruinedVillage = true;      // still Yorune; it is still ash
+            m2r.challenge = MissionChallenge.NoAlarm; m2r.challengeShards = 2;
+            m2r.stages = new[]
+            {
+                // 1 — the map. Short: mission 1 already did the long opening.
+                St(StageGoal.Cinematic, "", "", beatId: "thread_open"),
+
+                // 2 — the trail out of the village. Environmental, not a marker
+                // trail: disturbed ash, a dropped strap, wheel ruts.
+                new MissionStage
+                {
+                    goal = StageGoal.Examine,
+                    objective = "FOLLOW THE RED MARK",
+                    banner = "OUT OF YORUNE",
+                    checkpoint = true,
+                    props = new[]
+                    {
+                        new StoryPropSpec
+                        {
+                            id = "ash", label = "DISTURBED ASH",
+                            point = new Vector3(6f, 0f, 9f), shape = StoryPropShape.Tracks,
+                            speaker = "RENZO", line = "Boots. Going out, not in.",
+                        },
+                        new StoryPropSpec
+                        {
+                            id = "ruts", label = "WHEEL RUTS",
+                            point = new Vector3(11f, 0f, 4f), shape = StoryPropShape.Tracks,
+                            speaker = "RENZO", line = "Loaded carts. They have been supplying something.",
+                        },
+                    },
+                },
+
+                // 3 — the camp. Slept in, cooked in, worked in. The read is
+                // "recently", then "for a while".
+                new MissionStage
+                {
+                    goal = StageGoal.Examine,
+                    objective = "FIND THEIR CAMP",
+                    banner = "SOMEBODY HAS BEEN LIVING HERE",
+                    checkpoint = true,
+                    props = new[]
+                    {
+                        new StoryPropSpec
+                        {
+                            id = "fire", label = "A FIRE, STILL WARM",
+                            point = new Vector3(13f, 0f, -3f), shape = StoryPropShape.Camp,
+                            speaker = "RENZO", line = "Warm. They will be back for it.",
+                        },
+                        new StoryPropSpec
+                        {
+                            id = "supply", label = "SUPPLY CRATES",
+                            point = new Vector3(9f, 0f, -8f), shape = StoryPropShape.Supply,
+                            speaker = "RENZO", line = "Every crate marked the same. This is not scavenging.",
+                        },
+                    },
+                },
+
+                // 4 — the patrol. Three, spawned unaware: sneak past, take one
+                // quietly, or fight. All three work; the challenge rewards the
+                // quiet answer rather than forcing it.
+                St(StageGoal.Stealth, "GET PAST THE PATROL", "THREE OF THEM",
+                    spawn: new[] { B, B, R }, checkpoint: true),
+
+                // 5 — the lookout, and the signal line lighting across the valley.
+                new MissionStage
+                {
+                    goal = StageGoal.Examine,
+                    objective = "REACH THE LOOKOUT",
+                    banner = "HIGH GROUND",
+                    checkpoint = true,
+                    props = new[]
+                    {
+                        new StoryPropSpec
+                        {
+                            id = "lookout", label = "THE LOOKOUT",
+                            point = new Vector3(-6f, 0f, -12f), shape = StoryPropShape.Lookout,
+                            beatId = "thread_lanterns", radius = 2.8f,
+                            // Answering each other, further out each time.
+                            lanternLine = new[]
+                            {
+                                new Vector3(4f, 0f, -16f),
+                                new Vector3(17f, 0f, -13f),
+                                new Vector3(26f, 0f, -6f),
+                            },
+                        },
+                    },
+                },
+
+                // 6 — the conversation. Examine, not Listen: Listen completes only
+                // when every enemy is dead, which is the opposite of eavesdropping.
+                new MissionStage
+                {
+                    goal = StageGoal.Examine,
+                    objective = "GET CLOSE ENOUGH TO HEAR THEM",
+                    banner = "TWO OF THEM, TALKING",
+                    props = new[]
+                    {
+                        new StoryPropSpec
+                        {
+                            id = "earshot", label = "WITHIN EARSHOT",
+                            point = new Vector3(-13f, 0f, -4f), shape = StoryPropShape.Marker,
+                            beatId = "thread_kurogawa", radius = 3f,
+                        },
+                    },
+                },
+
+                // 7 — the regional map: the operation is bigger than the patrol.
+                new MissionStage
+                {
+                    goal = StageGoal.Examine,
+                    objective = "TAKE THEIR MAP",
+                    banner = "THE WATCH POST",
+                    props = new[]
+                    {
+                        new StoryPropSpec
+                        {
+                            id = "regional", label = "A REGIONAL MAP",
+                            point = new Vector3(-11f, 0f, 8f), shape = StoryPropShape.Supply,
+                            beatId = "thread_map",
+                        },
+                    },
+                },
+            };
+            EditorUtility.SetDirty(m2r);
+
+            // ---------------------------------------------------------------
             // 2 — THE LANTERN ROAD. You are not the objective. An old man is,
             // and he keeps walking whether or not you are ready.
             var m2 = P_("S02_LanternRoad");
