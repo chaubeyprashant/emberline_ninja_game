@@ -99,6 +99,9 @@ namespace Emberline.Missions
             MissionBounds.Configure(Vector3.zero, plan.missionRadius, plan.missionRadiusZ);
             ApplyPlanConditions(plan);
             d.Challenge = new ChallengeTracker(plan, gm);
+            // Burn the village before the dressing goes down, so the mission's own
+            // rubble lands on scorched ground rather than beside a standing house.
+            if (plan.ruinedVillage) VillageRuin.Apply(plan.id);
             MissionDressing.Build(plan, MissionBounds.LegacyHalfExtents);
             // Resume from the last checkpoint rather than the top of the mission.
             d.StageIndex = Checkpoints.Load(plan.id);

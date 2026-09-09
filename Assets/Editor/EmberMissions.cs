@@ -718,6 +718,7 @@ namespace Emberline.EditorTools
             m1.debrief = "The map in the assassin's coat was drawn this season. Whoever came back to Yorune is still using the road north.";
             m1.dressing = new[] { DressingKind.BurnedHome, DressingKind.AbandonedWeapons,
                 DressingKind.DestroyedCart, DressingKind.MissingNotice };
+            m1.ruinedVillage = true;   // Yorune is ash, not a village with a bad night
             m1.challenge = MissionChallenge.None;
             m1.stages = new[]
             {

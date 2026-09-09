@@ -58,6 +58,26 @@ namespace Emberline.UI
         /// </summary>
         public static EmberHud Live { get; private set; }
 
+        /// <summary>
+        /// Fold the gameplay HUD away while a beat plays. The cinematic director
+        /// draws its letterbox and subtitles on its own canvas, so this hides the
+        /// game's own furniture and nothing of the scene.
+        /// </summary>
+        private void HideForCinematic()
+        {
+            if (_screenRoot == null) return;
+            var hide = GameManager.CinematicActive && _screen == Screen.Hud;
+            if (_hudFade == null || _hudFade.gameObject != _screenRoot.gameObject)
+                _hudFade = _screenRoot.GetComponent<CanvasGroup>()
+                           ?? _screenRoot.gameObject.AddComponent<CanvasGroup>();
+            var target = hide ? 0f : 1f;
+            _hudFade.alpha = Mathf.MoveTowards(_hudFade.alpha, target, Time.unscaledDeltaTime * 6f);
+            _hudFade.blocksRaycasts = !hide;
+            _hudFade.interactable = !hide;
+        }
+
+        private CanvasGroup _hudFade;
+
         /// <summary>Speak one line in the player's own voice, mid-mission.</summary>
         public void SayLine(string speaker, string text)
         {
@@ -193,6 +213,11 @@ namespace Emberline.UI
 
         private void Update()
         {
+            // The HUD is the live game; a cinematic is not. Nothing checked this
+            // before, so every story beat in the campaign played with the touch
+            // buttons and the movement hint sitting on top of it.
+            HideForCinematic();
+
             if (_gm == null) return;
             ReadStick();
             UpdateScreenRouting();
