@@ -1022,6 +1022,149 @@ namespace Emberline.EditorTools
             // sister died in the fire since mission 1; this gives him evidence
             // and refuses him proof. She never speaks, is never named by anyone
             // but him, and is never shown clearly.
+            // ---------------------------------------------------------------
+            // 10 — THE SERPENT. The act closes. Aiko is confirmed alive by an
+            // enemy record before anyone says it aloud, Kagehira is confirmed by
+            // a signature before he is seen, and he is never reachable — there is
+            // no boss here on purpose. He explains almost nothing: he needed a
+            // Kurogawa, and the father refused him.
+            var m10s = P_("S10_Serpent");
+            m10s.id = 10; m10s.missionName = "THE SERPENT"; m10s.missionType = "INFILTRATION";
+            m10s.marsh = false; m10s.nightOverride = true; m10s.baseShards = 5;
+            m10s.applyTheme = true; m10s.theme = Core.EnvThemeId.Fortress;
+            m10s.fog = true;
+            m10s.briefing = "The lantern line is lit along the ridge and it does not stop at the treeline. Whatever it reaches is where they took her.";
+            m10s.debrief = "Their own records confirm it: the girl is alive, held, and not to be harmed until the commander arrives. The orders are signed Kagehira.";
+            m10s.dressing = new[] { DressingKind.KagehiraBanners, DressingKind.PrisonerCamp,
+                DressingKind.DestroyedCart, DressingKind.AbandonedWeapons };
+            m10s.challenge = MissionChallenge.NoAlarm; m10s.challengeShards = 4;
+            m10s.stages = new[]
+            {
+                St(StageGoal.Cinematic, "", "", beatId: "serpent_open"),
+
+                // The signal, walked rather than described.
+                new MissionStage
+                {
+                    goal = StageGoal.Examine,
+                    objective = "FOLLOW THE LANTERN SIGNAL",
+                    banner = "THE LINE IS LIT",
+                    checkpoint = true,
+                    props = new[]
+                    {
+                        new StoryPropSpec
+                        {
+                            id = "sig1", label = "A LIT POST",
+                            point = new Vector3(-5f, 0f, 13f), shape = StoryPropShape.Lookout,
+                            speaker = "RENZO", line = "Answered within a count of three. This one is manned.",
+                            lanternLine = new[]
+                            {
+                                new Vector3(6f, 0f, 17f),
+                                new Vector3(16f, 0f, 12f),
+                                new Vector3(22f, 0f, 4f),
+                            },
+                        },
+                        new StoryPropSpec
+                        {
+                            id = "sig2", label = "A CUT ROUTE",
+                            point = new Vector3(9f, 0f, 15f), shape = StoryPropShape.Tracks,
+                            speaker = "RENZO", line = "Widened for carts. They have been supplying this for months.",
+                        },
+                    },
+                },
+
+                // In, quietly if the player wants it.
+                St(StageGoal.Stealth, "INFILTRATE THE OUTPOST", "THE OUTER LINE",
+                    spawn: new[] { N, R, B, A }, checkpoint: true),
+
+                // The paperwork does the reveal, one page at a time.
+                new MissionStage
+                {
+                    goal = StageGoal.Examine,
+                    objective = "SEARCH THE COMMAND AREA",
+                    banner = "SOMEBODY RUNS THIS",
+                    checkpoint = true,
+                    props = new[]
+                    {
+                        new StoryPropSpec
+                        {
+                            id = "rec1", label = "A DEPLOYMENT RECORD",
+                            point = new Vector3(15f, 0f, -2f), shape = StoryPropShape.CommandPost,
+                            speaker = "RENZO",
+                            line = "\"Mountain route active. Search teams deployed. The Kurogawa subject is confirmed. The girl remains under watch.\" …The girl.",
+                        },
+                        new StoryPropSpec
+                        {
+                            id = "rec2", label = "A HOLDING ORDER",
+                            point = new Vector3(19f, 0f, -6f), shape = StoryPropShape.Supply,
+                            speaker = "RENZO",
+                            line = "\"Subject remains compliant. No transfer until the commander arrives. Bloodline verification required. Do not harm her.\" Don't harm her. Why?",
+                        },
+                        new StoryPropSpec
+                        {
+                            id = "rec3", label = "A SIGNED ORDER",
+                            point = new Vector3(13f, 0f, -9f), shape = StoryPropShape.CommandPost,
+                            speaker = "RENZO",
+                            line = "\"Continue the search. The Kurogawa must be brought to the mountain. The girl is to remain alive. No exceptions.\" Signed with a serpent. Kagehira. You're still alive.",
+                        },
+                    },
+                },
+
+                St(StageGoal.Cinematic, "", "", beatId: "serpent_overheard"),
+
+                // Hers, and recent.
+                new MissionStage
+                {
+                    goal = StageGoal.Examine,
+                    objective = "FIND WHAT THEY KEPT OF HERS",
+                    banner = "IN THE COMMAND TENT",
+                    checkpoint = true,
+                    props = new[]
+                    {
+                        new StoryPropSpec
+                        {
+                            id = "hers", label = "A WOODEN CHARM",
+                            point = new Vector3(17f, 0f, -12f), shape = StoryPropShape.Keepsake,
+                            beatId = "serpent_alive", radius = 2.4f,
+                        },
+                    },
+                },
+
+                // Found. The way out is through them.
+                St(StageGoal.Escape, "ESCAPE THE OUTPOST", "HE'S INSIDE",
+                    duration: 95f, point: new Vector3(-14f, 0f, -8f),
+                    spawn: new[] { N, N, A, R }, checkpoint: true),
+
+                // One elite on the gate. Not a boss.
+                St(StageGoal.Wave, "THE GATE IS HELD", "ONE OF THEIR BEST",
+                    spawn: new[] { E }, checkpoint: true),
+
+                // The ridge: the convoy below, and the man who will not turn round.
+                new MissionStage
+                {
+                    goal = StageGoal.Examine,
+                    objective = "REACH THE RIDGE",
+                    banner = "BELOW THE ROAD",
+                    checkpoint = true,
+                    props = new[]
+                    {
+                        new StoryPropSpec
+                        {
+                            id = "ridge", label = "THE ROAD BELOW",
+                            point = new Vector3(-18f, 0f, -4f), shape = StoryPropShape.Marker,
+                            beatId = "serpent_ridge", radius = 3f,
+                            figurePath = new[]
+                            {
+                                new Vector3(-24f, 0f, -10f),
+                                new Vector3(-30f, 0f, -16f),
+                            },
+                        },
+                    },
+                },
+
+                St(StageGoal.Cinematic, "", "", beatId: "serpent_end"),
+            };
+            EditorUtility.SetDirty(m10s);
+
             var m9r = P_("S09_GirlInRed");
             m9r.id = 9; m9r.missionName = "THE GIRL IN RED"; m9r.missionType = "TRACKING";
             m9r.marsh = false; m9r.baseShards = 4;

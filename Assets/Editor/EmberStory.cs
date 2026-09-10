@@ -171,6 +171,79 @@ namespace Emberline.EditorTools
                 S("KAGACHI", ShotCamera.Handheld, 3f, "KAGACHI", "…Weak."),
                 S("", ShotCamera.Hold, 1f));
 
+            // ---- MISSION 10 — THE SERPENT ------------------------------------
+            // The payoff of the act. Aiko is confirmed alive by paperwork before
+            // anyone says it out loud, Kagehira is confirmed by a signature before
+            // he is seen, and he is never reachable. He explains almost nothing:
+            // he needed a Kurogawa, and Renzo's father refused him. That is all.
+
+            Make("serpent_open", "THAT WAS YOU",
+                S("RENZO", ShotCamera.PushIn, 4f, audio: ShotAudio.Wind,
+                    theme: EnvThemeId.Mountain),
+                S("RENZO", ShotCamera.Hold, 3.4f, "RENZO", "That was you."),
+                S("RENZO", ShotCamera.Hold, 3.2f, "RENZO", "I know it."),
+                S("", ShotCamera.Wide, 4.5f, audio: ShotAudio.Silence),
+                S("RENZO", ShotCamera.Hold, 3.4f, "RENZO", "They're still moving."),
+                S("", ShotCamera.Hold, 1f, fadeAfter: true, blackAfter: 0.6f));
+
+            // The line nobody explains.
+            Make("serpent_overheard", "BLOOD REMEMBERS",
+                S("", ShotCamera.Hold, 2.4f, "SOLDIER", "When does she leave?", audio: ShotAudio.Silence),
+                S("", ShotCamera.Hold, 2.6f, "SOLDIER", "When the commander arrives."),
+                S("", ShotCamera.Hold, 2.2f, "SOLDIER", "And the Kurogawa?"),
+                S("", ShotCamera.Hold, 2.2f, "SOLDIER", "He'll come."),
+                S("", ShotCamera.Hold, 2.4f, "SOLDIER", "How do you know?"),
+                S("", ShotCamera.PushIn, 3.4f, "SOLDIER", "Because blood remembers."),
+                S("RENZO", ShotCamera.Hold, 3.4f, "RENZO", "You knew I'd come."),
+                S("RENZO", ShotCamera.PushIn, 3.6f, "RENZO", "You wanted me to."),
+                S("", ShotCamera.Hold, 1.2f, fadeAfter: true, blackAfter: 0.8f));
+
+            // He lets himself believe it.
+            Make("serpent_alive", "YOU'RE ALIVE",
+                S("RENZO", ShotCamera.PushIn, 4f, audio: ShotAudio.Silence),
+                S("RENZO", ShotCamera.Hold, 3.2f, "RENZO", "She was here."),
+                S("RENZO", ShotCamera.Hold, 3.2f, "RENZO", "Recently."),
+                S("RENZO", ShotCamera.Hold, 4.5f, "RENZO", "You're alive.",
+                    audio: ShotAudio.MusicSoft),
+                S("", ShotCamera.Hold, 1.6f, fadeAfter: true, blackAfter: 1f));
+
+            // The ridge. He is never close, never fully turned, and never fought.
+            Make("serpent_ridge", "I NEEDED A KUROGAWA",
+                S("", ShotCamera.Wide, 5f, audio: ShotAudio.Wind),
+                S("RENZO", ShotCamera.Hold, 2.6f, "RENZO", "Aiko!"),
+                S("", ShotCamera.Hold, 3.5f, audio: ShotAudio.Silence),
+                S("", ShotCamera.SlowDolly, 4f, "KAGACHI", "Leave him."),
+                S("", ShotCamera.Hold, 3.4f, "KAGACHI", "He will come."),
+                S("RENZO", ShotCamera.PushIn, 3f, "RENZO", "Kagehira!"),
+                S("KAGACHI", ShotCamera.Hold, 3.6f, "KAGACHI", "Renzo Kurogawa."),
+                S("KAGACHI", ShotCamera.Hold, 3.4f, "KAGACHI", "You took your time."),
+                S("RENZO", ShotCamera.Hold, 3f, "RENZO", "Where is my sister?"),
+                S("KAGACHI", ShotCamera.Hold, 3.4f, "KAGACHI", "Where she has always been."),
+                S("RENZO", ShotCamera.Hold, 3f, "RENZO", "You kept her alive."),
+                S("KAGACHI", ShotCamera.Hold, 2.6f, "KAGACHI", "Of course."),
+                S("KAGACHI", ShotCamera.PushIn, 4f, "KAGACHI", "I needed a Kurogawa.",
+                    audio: ShotAudio.Sting),
+                S("RENZO", ShotCamera.Hold, 2.8f, "RENZO", "You burned Yorune."),
+                S("KAGACHI", ShotCamera.Hold, 3.2f, "KAGACHI", "Your father made his choice."),
+                S("RENZO", ShotCamera.Hold, 2.6f, "RENZO", "You killed them."),
+                S("KAGACHI", ShotCamera.Hold, 3f, "KAGACHI", "Your father refused."),
+                S("RENZO", ShotCamera.Hold, 2.6f, "RENZO", "And Aiko?"),
+                S("KAGACHI", ShotCamera.Hold, 3.4f, "KAGACHI", "She was never the target."),
+                S("RENZO", ShotCamera.Hold, 2.8f, "RENZO", "Then what do you want?"),
+                S("KAGACHI", ShotCamera.Hold, 4f, "KAGACHI", "What your father refused to give me."),
+                S("KAGACHI", ShotCamera.SlowDolly, 3.4f, "KAGACHI", "Come to the mountain."),
+                S("KAGACHI", ShotCamera.Hold, 3.6f, "KAGACHI", "If you want your sister."),
+                S("", ShotCamera.Wide, 4f, fadeAfter: true, blackAfter: 1.5f));
+
+            Make("serpent_end", "TEN YEARS",
+                S("RENZO", ShotCamera.Hold, 4f, audio: ShotAudio.Wind),
+                S("RENZO", ShotCamera.Hold, 3.4f, "RENZO", "Ten years."),
+                S("RENZO", ShotCamera.PushIn, 4f, "RENZO", "You waited ten years."),
+                S("", ShotCamera.Wide, 4f, audio: ShotAudio.MusicDark),
+                S("RENZO", ShotCamera.Hold, 3.6f, "RENZO", "I'm coming."),
+                S("", ShotCamera.Hold, 2.5f, fadeAfter: true, blackAfter: 2f,
+                    card: "THE SERPENT"));
+
             // ---- MISSION 9 — THE GIRL IN RED ---------------------------------
             // The turn. Renzo has believed his sister died in the fire since the
             // first mission; this one gives him evidence and refuses him proof.

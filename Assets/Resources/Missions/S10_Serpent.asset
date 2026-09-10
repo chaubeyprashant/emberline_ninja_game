@@ -1,0 +1,288 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 814b8fc7fb4eb427480893eff898b203, type: 3}
+  m_Name: S10_Serpent
+  m_EditorClassIdentifier: Assembly-CSharp::Emberline.Missions.MissionPlan
+  id: 10
+  missionName: THE SERPENT
+  missionType: STEALTH
+  briefing: The lantern line is lit along the ridge and it does not stop at the treeline.
+    Whatever it reaches is where they took her.
+  debrief: Kagehira, unreachable, telling Renzo to come to the mountain if he wants
+    his sister.
+  marsh: 0
+  nightOverride: 1
+  rain: 0
+  snow: 0
+  fog: 1
+  applyTheme: 1
+  theme: 6
+  missionRadius: 0
+  missionRadiusZ: 0
+  nextReason: Aiko is alive and held. Renzo goes after her.
+  region: MOUNTAINS
+  stages:
+  - goal: 17
+    objective: 
+    banner: 
+    count: 1
+    duration: 0
+    point: {x: 0, y: 0, z: 0}
+    spawn: 
+    pointB: {x: 0, y: 0, z: 0}
+    spawnB: 
+    foeDef: 
+    beatId: serpent_open
+    props: []
+    bossHealthGate: 0.6
+    onComplete: 0
+    optional: 0
+    bonusShards: 1
+    checkpoint: 0
+  - goal: 19
+    objective: FOLLOW THE LANTERN SIGNAL
+    banner: THE LINE IS LIT
+    count: 1
+    duration: 0
+    point: {x: 0, y: 0, z: 0}
+    spawn: 
+    pointB: {x: 0, y: 0, z: 0}
+    spawnB: 
+    foeDef: 
+    beatId: 
+    props:
+    - id: sig1
+      label: A LIT POST
+      point: {x: -5, y: 0, z: 13}
+      shape: 8
+      speaker: RENZO
+      line: Answered within a count of three. This one is manned.
+      beatId: 
+      radius: 2.2
+      figurePath: []
+      lanternLine:
+      - {x: 6, y: 0, z: 17}
+      - {x: 16, y: 0, z: 12}
+      - {x: 22, y: 0, z: 4}
+    - id: sig2
+      label: A CUT ROUTE
+      point: {x: 9, y: 0, z: 15}
+      shape: 5
+      speaker: RENZO
+      line: Widened for carts. They have been supplying this for months.
+      beatId: 
+      radius: 2.2
+      figurePath: []
+      lanternLine: []
+    bossHealthGate: 0.6
+    onComplete: 0
+    optional: 0
+    bonusShards: 1
+    checkpoint: 1
+  - goal: 7
+    objective: INFILTRATE THE OUTPOST
+    banner: THE OUTER LINE
+    count: 1
+    duration: 0
+    point: {x: 0, y: 0, z: 0}
+    spawn: 0b000000010000000000000009000000
+    pointB: {x: 0, y: 0, z: 0}
+    spawnB: 
+    foeDef: 
+    beatId: 
+    props: []
+    bossHealthGate: 0.6
+    onComplete: 0
+    optional: 0
+    bonusShards: 1
+    checkpoint: 1
+  - goal: 19
+    objective: SEARCH THE COMMAND AREA
+    banner: SOMEBODY RUNS THIS
+    count: 1
+    duration: 0
+    point: {x: 0, y: 0, z: 0}
+    spawn: 
+    pointB: {x: 0, y: 0, z: 0}
+    spawnB: 
+    foeDef: 
+    beatId: 
+    props:
+    - id: rec1
+      label: A DEPLOYMENT RECORD
+      point: {x: 15, y: 0, z: -2}
+      shape: 9
+      speaker: RENZO
+      line: "\"Mountain route active. Search teams deployed. The Kurogawa subject
+        is confirmed. The girl remains under watch.\" \u2026The girl."
+      beatId: 
+      radius: 2.2
+      figurePath: []
+      lanternLine: []
+    - id: rec2
+      label: A HOLDING ORDER
+      point: {x: 19, y: 0, z: -6}
+      shape: 7
+      speaker: RENZO
+      line: '"Subject remains compliant. No transfer until the commander arrives.
+        Bloodline verification required. Do not harm her." Don''t harm her. Why?'
+      beatId: 
+      radius: 2.2
+      figurePath: []
+      lanternLine: []
+    - id: rec3
+      label: A SIGNED ORDER
+      point: {x: 13, y: 0, z: -9}
+      shape: 9
+      speaker: RENZO
+      line: '"Continue the search. The Kurogawa must be brought to the mountain.
+        The girl is to remain alive. No exceptions." Signed with a serpent. Kagehira.
+        You''re still alive.'
+      beatId: 
+      radius: 2.2
+      figurePath: []
+      lanternLine: []
+    bossHealthGate: 0.6
+    onComplete: 0
+    optional: 0
+    bonusShards: 1
+    checkpoint: 1
+  - goal: 17
+    objective: 
+    banner: 
+    count: 1
+    duration: 0
+    point: {x: 0, y: 0, z: 0}
+    spawn: 
+    pointB: {x: 0, y: 0, z: 0}
+    spawnB: 
+    foeDef: 
+    beatId: serpent_overheard
+    props: []
+    bossHealthGate: 0.6
+    onComplete: 0
+    optional: 0
+    bonusShards: 1
+    checkpoint: 0
+  - goal: 19
+    objective: FIND WHAT THEY KEPT OF HERS
+    banner: IN THE COMMAND TENT
+    count: 1
+    duration: 0
+    point: {x: 0, y: 0, z: 0}
+    spawn: 
+    pointB: {x: 0, y: 0, z: 0}
+    spawnB: 
+    foeDef: 
+    beatId: 
+    props:
+    - id: hers
+      label: A WOODEN CHARM
+      point: {x: 17, y: 0, z: -12}
+      shape: 3
+      speaker: 
+      line: 
+      beatId: serpent_alive
+      radius: 2.4
+      figurePath: []
+      lanternLine: []
+    bossHealthGate: 0.6
+    onComplete: 0
+    optional: 0
+    bonusShards: 1
+    checkpoint: 1
+  - goal: 12
+    objective: ESCAPE THE OUTPOST
+    banner: HE'S INSIDE
+    count: 1
+    duration: 95
+    point: {x: -14, y: 0, z: -8}
+    spawn: 0b0000000b0000000900000001000000
+    pointB: {x: 0, y: 0, z: 0}
+    spawnB: 
+    foeDef: 
+    beatId: 
+    props: []
+    bossHealthGate: 0.6
+    onComplete: 0
+    optional: 0
+    bonusShards: 1
+    checkpoint: 1
+  - goal: 1
+    objective: THE GATE IS HELD
+    banner: ONE OF THEIR BEST
+    count: 1
+    duration: 0
+    point: {x: 0, y: 0, z: 0}
+    spawn: 0c000000
+    pointB: {x: 0, y: 0, z: 0}
+    spawnB: 
+    foeDef: 
+    beatId: 
+    props: []
+    bossHealthGate: 0.6
+    onComplete: 0
+    optional: 0
+    bonusShards: 1
+    checkpoint: 1
+  - goal: 19
+    objective: REACH THE RIDGE
+    banner: BELOW THE ROAD
+    count: 1
+    duration: 0
+    point: {x: 0, y: 0, z: 0}
+    spawn: 
+    pointB: {x: 0, y: 0, z: 0}
+    spawnB: 
+    foeDef: 
+    beatId: 
+    props:
+    - id: ridge
+      label: THE ROAD BELOW
+      point: {x: -18, y: 0, z: -4}
+      shape: 0
+      speaker: 
+      line: 
+      beatId: serpent_ridge
+      radius: 3
+      figurePath:
+      - {x: -24, y: 0, z: -10}
+      - {x: -30, y: 0, z: -16}
+      lanternLine: []
+    bossHealthGate: 0.6
+    onComplete: 0
+    optional: 0
+    bonusShards: 1
+    checkpoint: 1
+  - goal: 17
+    objective: 
+    banner: 
+    count: 1
+    duration: 0
+    point: {x: 0, y: 0, z: 0}
+    spawn: 
+    pointB: {x: 0, y: 0, z: 0}
+    spawnB: 
+    foeDef: 
+    beatId: serpent_end
+    props: []
+    bossHealthGate: 0.6
+    onComplete: 0
+    optional: 0
+    bonusShards: 1
+    checkpoint: 0
+  dressing: 09000000070000000300000004000000
+  ruinedVillage: 0
+  challenge: 1
+  challengeSeconds: 240
+  challengeShards: 4
+  baseShards: 5

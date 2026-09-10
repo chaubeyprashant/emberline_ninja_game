@@ -151,15 +151,15 @@ namespace Emberline.Campaign
                 "Somebody has been keeping her hidden. Renzo goes looking for where she was taken.",
                 K(N, N, A, A, B), fog: true, plan: "S09_GirlInRed"),
 
-            M(10, "THE OLD TEMPLE", T(Combat, Exploration), Region.Temples, Temple,
-                "The chapter's payoff: the Seal is not Kagehira's. It is Renzo's.",
-                "Enter the ruined temple and find what Kagehira's men are afraid of.",
-                "The temple comes down around the fight: the last stage is an escape through a collapsing hall.",
-                "The Black Seal is bound to Renzo's family. The temple carvings show a Kurogawa holding it.",
-                "Elite warriors in the temple's heart, then the ceiling.",
-                "Renzo walks out of the dust with a fragment of the seal in his hand.",
-                "One fragment means there are others, and Kagehira is collecting. Renzo follows his supply lines to find where.",
-                K(M_, E, E, S), marsh: true),
+            M(10, "THE SERPENT", T(Stealth, Combat), Region.Mountains, Fortress,
+                "The act closes: the sister Renzo buried is alive, and the man who burned Yorune has been waiting for him.",
+                "Follow the lantern line to the mountain outpost and find where they took her.",
+                "The reveal is their own paperwork: Aiko is confirmed alive by a holding order before anyone says it out loud.",
+                "Aiko was kept alive deliberately, Kagehira signed the orders, and the Black Seal needs a Kurogawa to open it.",
+                "A convoy on the road below the ridge, and a man at the head of it who does not turn round.",
+                "Kagehira, unreachable, telling Renzo to come to the mountain if he wants his sister.",
+                "Aiko is alive and held. Renzo goes after her.",
+                K(N, N, A, R, B), night: true, fog: true, plan: "S10_Serpent"),
 
             // =============================================================
             // CHAPTER 2 — THE LANTERN NETWORK
