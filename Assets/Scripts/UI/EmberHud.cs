@@ -123,16 +123,19 @@ namespace Emberline.UI
         {
             if (_screenRoot == null) return;
             var hide = GameManager.CinematicActive && _screen == Screen.Hud;
-            if (_hudFade == null || _hudFade.gameObject != _screenRoot.gameObject)
-                _hudFade = _screenRoot.GetComponent<CanvasGroup>()
-                           ?? _screenRoot.gameObject.AddComponent<CanvasGroup>();
+            // Not cached. The screen is destroyed and rebuilt whenever the HUD
+            // changes, and a cached CanvasGroup outlives its object: Unity's null
+            // check does not catch that, so every frame of every cinematic threw
+            // MissingComponentException on the first property read. TryGetComponent
+            // allocates nothing and cannot go stale.
+            if (!_screenRoot.TryGetComponent<CanvasGroup>(out var fade))
+                fade = _screenRoot.gameObject.AddComponent<CanvasGroup>();
             var target = hide ? 0f : 1f;
-            _hudFade.alpha = Mathf.MoveTowards(_hudFade.alpha, target, Time.unscaledDeltaTime * 6f);
-            _hudFade.blocksRaycasts = !hide;
-            _hudFade.interactable = !hide;
+            fade.alpha = Mathf.MoveTowards(fade.alpha, target, Time.unscaledDeltaTime * 6f);
+            fade.blocksRaycasts = !hide;
+            fade.interactable = !hide;
         }
 
-        private CanvasGroup _hudFade;
 
         /// <summary>Speak one line in the player's own voice, mid-mission.</summary>
         public void SayLine(string speaker, string text)

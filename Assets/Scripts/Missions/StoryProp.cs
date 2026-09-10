@@ -59,6 +59,10 @@ namespace Emberline.Missions
         [Tooltip("How close the player must be.")]
         public float radius = 2.2f;
 
+        [Tooltip("Send a distant figure along this path when this is found. " +
+                 "Waypoints are world-space; the last one is where she is lost.")]
+        public Vector3[] figurePath = System.Array.Empty<Vector3>();
+
         [Tooltip("Light the enemy signal line when this is found — three lanterns " +
                  "answering each other across the valley. Points are world-space.")]
         public Vector3[] lanternLine = System.Array.Empty<Vector3>();

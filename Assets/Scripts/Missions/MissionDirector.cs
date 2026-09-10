@@ -580,6 +580,8 @@ namespace Emberline.Missions
             // them lighting instead of cutting to an effect.
             if (spec.lanternLine != null && spec.lanternLine.Length > 0)
                 LanternSignal.Play(spec.lanternLine);
+            if (spec.figurePath != null && spec.figurePath.Length > 0)
+                DistantFigure.Play(spec.figurePath);
             if (!string.IsNullOrEmpty(spec.line))
                 UI.EmberHud.Live?.SayLine(spec.speaker, spec.line);
             else if (!string.IsNullOrEmpty(spec.label))

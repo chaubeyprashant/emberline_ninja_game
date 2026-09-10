@@ -1017,6 +1017,172 @@ namespace Emberline.EditorTools
             // three marked stones read in turn — a thing to notice rather than a
             // thing to solve, because the discovery is narrative and a lock the
             // player can fail would only get in its way.
+            // ---------------------------------------------------------------
+            // 9 — THE GIRL IN RED. The turn of the act. Renzo has believed his
+            // sister died in the fire since mission 1; this gives him evidence
+            // and refuses him proof. She never speaks, is never named by anyone
+            // but him, and is never shown clearly.
+            var m9r = P_("S09_GirlInRed");
+            m9r.id = 9; m9r.missionName = "THE GIRL IN RED"; m9r.missionType = "TRACKING";
+            m9r.marsh = false; m9r.baseShards = 4;
+            m9r.applyTheme = true; m9r.theme = Core.EnvThemeId.Mountain;
+            m9r.fog = true;
+            m9r.briefing = "The route beyond the chamber runs along the ridge. Something red is caught on a branch at the head of it.";
+            m9r.debrief = "A shelter someone had been living in, a broken red-thread bracelet, and soldiers hunting a girl who knows the mountain. Renzo does not know what he saw on the overlook.";
+            m9r.dressing = new[] { DressingKind.EmptyHome, DressingKind.AbandonedWeapons,
+                DressingKind.MissingNotice };
+            m9r.challenge = MissionChallenge.NoAlarm; m9r.challengeShards = 3;
+            m9r.stages = new[]
+            {
+                St(StageGoal.Cinematic, "", "", beatId: "red_open"),
+
+                // The trail. Small, quiet reads — no glowing collectibles.
+                new MissionStage
+                {
+                    goal = StageGoal.Examine,
+                    objective = "FOLLOW THE RED THREAD",
+                    banner = "CAUGHT ON A BRANCH",
+                    checkpoint = true,
+                    props = new[]
+                    {
+                        new StoryPropSpec
+                        {
+                            id = "thread1", label = "RED THREAD",
+                            point = new Vector3(-6f, 0f, 13f), shape = StoryPropShape.Keepsake,
+                            speaker = "RENZO", line = "Weathered. It has been out here a while.",
+                        },
+                        new StoryPropSpec
+                        {
+                            id = "prints9", label = "FOOTPRINTS",
+                            point = new Vector3(2f, 0f, 16f), shape = StoryPropShape.Tracks,
+                            speaker = "RENZO", line = "Grown. These aren't mine, and they aren't a soldier's.",
+                        },
+                        new StoryPropSpec
+                        {
+                            id = "thread2", label = "A TORN FIBRE",
+                            point = new Vector3(10f, 0f, 13f), shape = StoryPropShape.Keepsake,
+                            speaker = "RENZO", line = "Fresher than the first. Someone passed through here.",
+                        },
+                    },
+                },
+
+                // Hidden, and close enough to hear the word that matters.
+                new MissionStage
+                {
+                    goal = StageGoal.Examine,
+                    objective = "GET CLOSE ENOUGH TO HEAR THEM",
+                    banner = "THREE OF THEM, SEARCHING",
+                    props = new[]
+                    {
+                        new StoryPropSpec
+                        {
+                            id = "listen9", label = "WITHIN EARSHOT",
+                            point = new Vector3(15f, 0f, 7f), shape = StoryPropShape.Marker,
+                            beatId = "red_overheard", radius = 3f,
+                        },
+                    },
+                },
+
+                St(StageGoal.Cinematic, "", "", beatId: "red_girl"),
+
+                // Somebody has been living out here.
+                new MissionStage
+                {
+                    goal = StageGoal.Examine,
+                    objective = "SEARCH THE SHELTER",
+                    banner = "SOMEONE LIVED HERE",
+                    checkpoint = true,
+                    props = new[]
+                    {
+                        new StoryPropSpec
+                        {
+                            id = "shelter", label = "AN OLD SHELTER",
+                            point = new Vector3(13f, 0f, -3f), shape = StoryPropShape.Camp,
+                            speaker = "RENZO", line = "A blanket. A bowl. Ash still warm at the edges. Someone lived here — recently.",
+                        },
+                        new StoryPropSpec
+                        {
+                            id = "turned", label = "TURNED OVER",
+                            point = new Vector3(9f, 0f, -7f), shape = StoryPropShape.Supply,
+                            speaker = "RENZO", line = "Bedding thrown aside, the latch broken from outside. They weren't looking for a key. They were looking for her.",
+                        },
+                    },
+                },
+
+                // The bracelet.
+                new MissionStage
+                {
+                    goal = StageGoal.Examine,
+                    objective = "FIND THE RED BRACELET",
+                    banner = "UNDER THE BEDDING",
+                    checkpoint = true,
+                    props = new[]
+                    {
+                        new StoryPropSpec
+                        {
+                            id = "bracelet", label = "A BROKEN BRACELET",
+                            point = new Vector3(11f, 0f, -6f), shape = StoryPropShape.Keepsake,
+                            beatId = "red_bracelet", radius = 2.4f,
+                        },
+                    },
+                },
+
+                // Hunted. Avoidable.
+                St(StageGoal.Stealth, "GET AWAY FROM THE SEARCH PARTY", "THEY CAME BACK",
+                    spawn: new[] { N, N, A, A, B }, checkpoint: true),
+
+                // She is ahead on the path, and she does not wait.
+                new MissionStage
+                {
+                    goal = StageGoal.Examine,
+                    objective = "FOLLOW HER",
+                    banner = "SOMEONE ON THE PATH",
+                    checkpoint = true,
+                    props = new[]
+                    {
+                        new StoryPropSpec
+                        {
+                            id = "sighting", label = "MOVEMENT AHEAD",
+                            point = new Vector3(2f, 0f, -11f), shape = StoryPropShape.Marker,
+                            radius = 2.8f,
+                            figurePath = new[]
+                            {
+                                new Vector3(-4f, 0f, -15f),
+                                new Vector3(-12f, 0f, -13f),
+                                new Vector3(-16f, 0f, -6f),
+                            },
+                        },
+                    },
+                },
+
+                // Seconds too late, and a mark left where she stood.
+                new MissionStage
+                {
+                    goal = StageGoal.Examine,
+                    objective = "FIND WHERE SHE WENT",
+                    banner = "THE OVERLOOK",
+                    props = new[]
+                    {
+                        new StoryPropSpec
+                        {
+                            id = "overlook", label = "WHERE SHE STOOD",
+                            point = new Vector3(-16f, 0f, -6f), shape = StoryPropShape.Shrine,
+                            beatId = "red_figure", radius = 2.8f,
+                        },
+                        new StoryPropSpec
+                        {
+                            id = "newmark", label = "TWO MARKS",
+                            point = new Vector3(-13f, 0f, -2f), shape = StoryPropShape.StoneMarker,
+                            speaker = "RENZO",
+                            line = "Our mark, cut years ago. And under it a newer one, cut by a hand I don't know. Someone brought her here. Someone has been keeping her hidden.",
+                        },
+                    },
+                },
+
+                St(StageGoal.Cinematic, "", "", beatId: "red_end"),
+            };
+            EditorUtility.SetDirty(m9r);
+
             var m8m = P_("S08_FathersMark");
             m8m.id = 8; m8m.missionName = "FATHER'S MARK"; m8m.missionType = "EXPLORATION";
             m8m.marsh = false; m8m.baseShards = 4;

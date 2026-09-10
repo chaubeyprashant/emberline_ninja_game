@@ -69,6 +69,7 @@ MonoBehaviour:
       line: Boots. Going out, not in.
       beatId: 
       radius: 2.2
+      figurePath: []
       lanternLine: []
     - id: ruts
       label: WHEEL RUTS
@@ -78,6 +79,7 @@ MonoBehaviour:
       line: Loaded carts. They have been supplying something.
       beatId: 
       radius: 2.2
+      figurePath: []
       lanternLine: []
     bossHealthGate: 0.6
     onComplete: 0
@@ -104,6 +106,7 @@ MonoBehaviour:
       line: Warm. They will be back for it.
       beatId: 
       radius: 2.2
+      figurePath: []
       lanternLine: []
     - id: supply
       label: SUPPLY CRATES
@@ -113,6 +116,7 @@ MonoBehaviour:
       line: Every crate marked the same. This is not scavenging.
       beatId: 
       radius: 2.2
+      figurePath: []
       lanternLine: []
     bossHealthGate: 0.6
     onComplete: 0
@@ -156,6 +160,7 @@ MonoBehaviour:
       line: 
       beatId: thread_lanterns
       radius: 2.8
+      figurePath: []
       lanternLine:
       - {x: 4, y: 0, z: -16}
       - {x: 17, y: 0, z: -13}
@@ -185,6 +190,7 @@ MonoBehaviour:
       line: 
       beatId: thread_kurogawa
       radius: 3
+      figurePath: []
       lanternLine: []
     bossHealthGate: 0.6
     onComplete: 0
@@ -211,6 +217,7 @@ MonoBehaviour:
       line: 
       beatId: thread_map
       radius: 2.2
+      figurePath: []
       lanternLine: []
     bossHealthGate: 0.6
     onComplete: 0

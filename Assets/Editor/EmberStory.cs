@@ -171,6 +171,93 @@ namespace Emberline.EditorTools
                 S("KAGACHI", ShotCamera.Handheld, 3f, "KAGACHI", "…Weak."),
                 S("", ShotCamera.Hold, 1f));
 
+            // ---- MISSION 9 — THE GIRL IN RED ---------------------------------
+            // The turn. Renzo has believed his sister died in the fire since the
+            // first mission; this one gives him evidence and refuses him proof.
+            // She is never named by anyone but him, never speaks, and is never
+            // shown clearly — the mission ends on a question, not an answer.
+
+            Make("red_open", "FOLLOW THE RED THREAD",
+                S("RENZO", ShotCamera.OverShoulder, 3.5f, audio: ShotAudio.Wind,
+                    theme: EnvThemeId.Mountain),
+                S("RENZO", ShotCamera.PushIn, 4f, audio: ShotAudio.Silence),
+                S("RENZO", ShotCamera.Hold, 4f, "RENZO", "No…"),
+                S("", ShotCamera.Hold, 1.8f, blackAfter: 0.7f),
+                // The memory is four lines and gives nothing away.
+                S("AIKO", ShotCamera.Handheld, 2.6f, audio: ShotAudio.Birds,
+                    theme: EnvThemeId.VillageDawn),
+                S("", ShotCamera.Hold, 2.2f, "AIKO", "You'll forget me."),
+                S("", ShotCamera.Hold, 2.2f, "REN", "I won't."),
+                S("", ShotCamera.Hold, 2f, "AIKO", "Promise?"),
+                S("", ShotCamera.Hold, 2.2f, "REN", "Promise."),
+                S("", ShotCamera.Hold, 1.4f, fadeAfter: true, blackAfter: 1.2f),
+                S("RENZO", ShotCamera.Hold, 3.6f, "RENZO", "I remember.", audio: ShotAudio.Wind));
+
+            // The word that changes the mission is "her".
+            Make("red_overheard", "DID YOU FIND HER",
+                S("", ShotCamera.Hold, 2.4f, "SOLDIER", "Did you find her?", audio: ShotAudio.Silence),
+                S("", ShotCamera.Hold, 2f, "SOLDIER", "No."),
+                S("", ShotCamera.Hold, 2.2f, "SOLDIER", "Then keep looking."),
+                S("", ShotCamera.Hold, 2.8f, "SOLDIER", "The girl couldn't have gone far."),
+                S("RENZO", ShotCamera.PushIn, 3.5f, audio: ShotAudio.Silence),
+                S("", ShotCamera.Hold, 2.6f, "SOLDIER", "The trail came from the old route."),
+                S("", ShotCamera.Hold, 2.4f, "SOLDIER", "Then she used it."),
+                S("", ShotCamera.Hold, 2.6f, "SOLDIER", "Why would she come here?"),
+                S("", ShotCamera.Hold, 2.8f, "SOLDIER", "Because she knows the mountain."),
+                S("", ShotCamera.Hold, 2.6f, "SOLDIER", "Does the commander know?"),
+                S("", ShotCamera.Hold, 3f, "SOLDIER", "He knows everything that matters."),
+                S("", ShotCamera.Hold, 1.4f, fadeAfter: true, blackAfter: 0.8f));
+
+            Make("red_girl", "NOT A GHOST",
+                S("RENZO", ShotCamera.Hold, 3f, audio: ShotAudio.Silence),
+                S("RENZO", ShotCamera.Hold, 2.8f, "RENZO", "She."),
+                S("RENZO", ShotCamera.Hold, 3.4f, "RENZO", "They were looking for a girl."),
+                S("RENZO", ShotCamera.PushIn, 3.4f, "RENZO", "Not a ghost."),
+                S("RENZO", ShotCamera.Hold, 3.2f, "RENZO", "A girl."),
+                S("", ShotCamera.Hold, 1.2f, fadeAfter: true, blackAfter: 0.8f));
+
+            // The strongest moment in the act. Silence first; music only after.
+            Make("red_bracelet", "THEN DON'T LOSE ME",
+                S("RENZO", ShotCamera.PushIn, 4f, audio: ShotAudio.Silence),
+                S("RENZO", ShotCamera.Hold, 4.5f, audio: ShotAudio.Silence),
+                S("", ShotCamera.Hold, 1.6f, blackAfter: 0.7f),
+                S("AIKO", ShotCamera.Handheld, 2.6f, audio: ShotAudio.Birds,
+                    theme: EnvThemeId.VillageDawn),
+                S("", ShotCamera.Hold, 2.2f, "AIKO", "Don't lose it."),
+                S("", ShotCamera.Hold, 2.4f, "REN", "You gave it to me."),
+                S("AIKO", ShotCamera.PushIn, 3f, "AIKO", "Then don't lose me."),
+                S("", ShotCamera.Hold, 1.6f, fadeAfter: true, blackAfter: 1.5f),
+                S("RENZO", ShotCamera.Hold, 3.8f, "RENZO", "I didn't.", audio: ShotAudio.Silence),
+                S("RENZO", ShotCamera.PushIn, 4.5f, "RENZO", "I thought I lost you.",
+                    audio: ShotAudio.MusicSoft),
+                S("", ShotCamera.Hold, 2f, fadeAfter: true, blackAfter: 1.2f));
+
+            // She turns slightly. That is all the camera is allowed.
+            Make("red_figure", "IT WAS HERS",
+                S("", ShotCamera.Wide, 4f, audio: ShotAudio.Wind),
+                S("RENZO", ShotCamera.Hold, 2.6f, "RENZO", "Wait."),
+                S("", ShotCamera.Hold, 3.5f, audio: ShotAudio.Silence),
+                S("RENZO", ShotCamera.Hold, 3f, "RENZO", "Who are you?"),
+                S("", ShotCamera.SlowDolly, 3.5f),
+                S("RENZO", ShotCamera.PushIn, 3.6f, "RENZO", "That bracelet."),
+                S("RENZO", ShotCamera.Hold, 3.4f, "RENZO", "It was hers."),
+                S("", ShotCamera.Hold, 1.4f, fadeAfter: true, blackAfter: 1f));
+
+            Make("red_end", "AIKO",
+                S("RENZO", ShotCamera.Hold, 4f, audio: ShotAudio.Wind),
+                S("RENZO", ShotCamera.PushIn, 4f, audio: ShotAudio.Silence),
+                S("", ShotCamera.Hold, 1.6f, blackAfter: 0.6f),
+                S("AIKO", ShotCamera.Handheld, 2f, audio: ShotAudio.Birds,
+                    theme: EnvThemeId.VillageDawn),
+                S("", ShotCamera.Hold, 1.8f, "AIKO", "Promise?"),
+                S("", ShotCamera.Hold, 1.4f, fadeAfter: true, blackAfter: 1.4f),
+                S("RENZO", ShotCamera.Hold, 4f, "RENZO", "If that was you…",
+                    audio: ShotAudio.MusicSoft),
+                S("RENZO", ShotCamera.Hold, 4.2f, "RENZO", "Then where have you been?"),
+                S("RENZO", ShotCamera.PushIn, 4.5f, "RENZO", "Aiko."),
+                S("", ShotCamera.Hold, 2.5f, fadeAfter: true, blackAfter: 2f,
+                    card: "THE GIRL IN RED"));
+
             // ---- MISSION 8 — FATHER'S MARK -----------------------------------
             // The name lands here, and only the name. The Black Seal exists, it
             // takes three keys, the Kurogawa were one of the three hands — and
