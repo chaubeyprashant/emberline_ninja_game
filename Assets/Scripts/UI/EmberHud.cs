@@ -288,18 +288,20 @@ namespace Emberline.UI
 
         private void UpdateScreenRouting()
         {
+            if (AuthManager.Instance != null && !AuthManager.Instance.IsAuthenticated)
+            {
+                if (_screen != Screen.Login) SetScreen(Screen.Login);
+                return;
+            }
+
             var wanted = _gm.State switch
             {
                 // Deny-list, not allow-list: in the menu phase the player may sit on
                 // any menu screen, and only a gameplay screen (or nothing) is
-                // routed back to the root. The previous allow-list omitted every
-                // screen added after it was written, so March, Forge, Weapons and
-                // Arms were rebuilt and discarded within a single frame.
+                // routed back to the root.
                 GameManager.Phase.Menu =>
-                    _screen is Screen.None or Screen.Hud or Screen.Briefing or Screen.Result
-                        ? (AuthManager.Instance != null && !AuthManager.Instance.IsAuthenticated
-                            ? Screen.Login : Screen.MenuRoot)
-                        : _screen,
+                    _screen is Screen.None or Screen.Hud or Screen.Briefing or Screen.Result or Screen.Login
+                        ? Screen.MenuRoot : _screen,
                 GameManager.Phase.Intro => Screen.Briefing,
                 GameManager.Phase.Playing => Screen.Hud,
                 _ => _screen == Screen.Skills ? Screen.Skills : Screen.Result,
@@ -456,6 +458,13 @@ namespace Emberline.UI
             UiKit.MakeButton(_screenRoot, "ZONE", new Vector2(0, 0), new Vector2(672, 34),
                 new Vector2(120, 52),
                 () => UnityEngine.SceneManagement.SceneManager.LoadScene("Zone"), 16);
+
+            UiKit.MakeButton(_screenRoot, "LOGOUT", new Vector2(0, 0), new Vector2(840, 34),
+                new Vector2(144, 52), () => 
+                { 
+                    AuthManager.Instance?.SignOut(); 
+                    SetScreen(Screen.Login); 
+                }, 16);
 
             // ---- right two thirds: the modes, as cards
             var items = new (string label, string sub, System.Action go)[]
