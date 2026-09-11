@@ -197,6 +197,9 @@ namespace Emberline.EditorTools
             // Dev perf readout: own object so its canvas is independent of the
             // HUD's. Hidden unless toggled (F3 / four-finger tap).
             new GameObject("PerfOverlay").AddComponent<UI.PerfOverlay>();
+            // Authentication: DontDestroyOnLoad singleton — only the first scene's
+            // instance survives, so it is safe to add one in every scene.
+            new GameObject("AuthManager").AddComponent<Core.AuthManager>();
 
             MarkArenaStatic(player);
             EditorSceneManager.SaveScene(scene, path);
@@ -379,6 +382,9 @@ namespace Emberline.EditorTools
             runner.beatId = "opening";
             runner.nextScene = "Rooftop";
             runner.openingState = Story.SetState.Peace;
+
+            // Auth singleton — available from the first scene onward.
+            new GameObject("AuthManager").AddComponent<Core.AuthManager>();
 
             var scene = UnityEngine.SceneManagement.SceneManager.GetActiveScene();
             AssertNoMissingScripts(scene);

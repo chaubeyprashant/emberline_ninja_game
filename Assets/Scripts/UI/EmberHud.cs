@@ -19,7 +19,7 @@ namespace Emberline.UI
     /// </summary>
     public class EmberHud : MonoBehaviour
     {
-        private enum Screen { None, MenuRoot, Story, Fight, Bio, Skills, Codex, Briefing, Hud, Result, Weapons, Arms, March, Forge, Chapter }
+        private enum Screen { None, Login, MenuRoot, Story, Fight, Bio, Skills, Codex, Briefing, Hud, Result, Weapons, Arms, March, Forge, Chapter }
 
         private GameManager _gm;
         private Health _health;
@@ -282,7 +282,7 @@ namespace Emberline.UI
             ReadStick();
             UpdateScreenRouting();
             if (_screen == Screen.Hud) UpdateHud();
-            if (_screen is Screen.MenuRoot or Screen.Story or Screen.Fight or Screen.Bio or Screen.Chapter)
+            if (_screen is Screen.Login or Screen.MenuRoot or Screen.Story or Screen.Fight or Screen.Bio or Screen.Chapter)
                 UpdateEmbers();
         }
 
@@ -297,7 +297,9 @@ namespace Emberline.UI
                 // Arms were rebuilt and discarded within a single frame.
                 GameManager.Phase.Menu =>
                     _screen is Screen.None or Screen.Hud or Screen.Briefing or Screen.Result
-                        ? Screen.MenuRoot : _screen,
+                        ? (AuthManager.Instance != null && !AuthManager.Instance.IsAuthenticated
+                            ? Screen.Login : Screen.MenuRoot)
+                        : _screen,
                 GameManager.Phase.Intro => Screen.Briefing,
                 GameManager.Phase.Playing => Screen.Hud,
                 _ => _screen == Screen.Skills ? Screen.Skills : Screen.Result,
@@ -327,6 +329,7 @@ namespace Emberline.UI
 
             switch (s)
             {
+                case Screen.Login: BuildLogin(); break;
                 case Screen.MenuRoot: BuildMenuRoot(); break;
                 case Screen.Story: BuildStorySelect(); break;
                 case Screen.Chapter: BuildChapterSelect(); break;
@@ -481,6 +484,101 @@ namespace Emberline.UI
 
             UiKit.Label(_screenRoot, "v" + Application.version, 13, UiKit.Faint, new Vector2(1, 0),
                 new Vector2(-40, 30), new Vector2(200, 18), align: TextAnchor.MiddleRight);
+        }
+
+        // --------------------------------------------------------------- login
+
+        private bool _loginBusy;
+        private TMP_Text _loginStatus;
+
+        private void BuildLogin()
+        {
+            _loginBusy = false;
+            BuildEmberLayer();
+
+            // Subscribe to auth events for this screen's lifetime.
+            if (AuthManager.Instance != null)
+            {
+                AuthManager.Instance.OnAuthStateChanged -= OnLoginSuccess;
+                AuthManager.Instance.OnAuthError -= OnLoginError;
+                AuthManager.Instance.OnAuthStateChanged += OnLoginSuccess;
+                AuthManager.Instance.OnAuthError += OnLoginError;
+            }
+
+            // Centre column.
+            var col = UiKit.Rect(_screenRoot, "LoginColumn", new Vector2(0.5f, 0.5f),
+                Vector2.zero, new Vector2(420, 400), new Vector2(0.5f, 0.5f));
+
+            // Title block.
+            UiKit.Label(col, "EMBERLINE", 56, UiKit.Pale, new Vector2(0.5f, 1),
+                new Vector2(0, 0), new Vector2(420, 72), display: true).characterSpacing = 6f;
+            UiKit.Label(col, "3D NINJA ACTION", 16, UiKit.Dim, new Vector2(0.5f, 1),
+                new Vector2(0, -74), new Vector2(420, 24)).characterSpacing = 5f;
+            UiKit.Accent(col, new Vector2(0.5f, 1), new Vector2(0, -104), 48f);
+
+            // Continue with Google — primary button.
+            var googleBtn = UiKit.MakeButton(col, "CONTINUE WITH GOOGLE", new Vector2(0.5f, 0.5f),
+                new Vector2(0, 20), new Vector2(320, 60), OnGoogleClicked, 18, primary: true);
+
+            // OR divider.
+            UiKit.Label(col, "OR", 14, UiKit.Faint, new Vector2(0.5f, 0.5f),
+                new Vector2(0, -30), new Vector2(420, 22)).characterSpacing = 6f;
+
+            // Continue as Guest — secondary button.
+            var guestBtn = UiKit.MakeButton(col, "CONTINUE AS GUEST", new Vector2(0.5f, 0.5f),
+                new Vector2(0, -68), new Vector2(320, 56), OnGuestClicked, 17);
+
+            // Status text for loading/error.
+            _loginStatus = UiKit.Label(col, "", 15, UiKit.Dim, new Vector2(0.5f, 0),
+                new Vector2(0, 24), new Vector2(420, 30));
+
+            // Version.
+            UiKit.Label(_screenRoot, "v" + Application.version, 13, UiKit.Faint,
+                new Vector2(1, 0), new Vector2(-40, 30), new Vector2(200, 18),
+                align: TextAnchor.MiddleRight);
+        }
+
+        private void OnGoogleClicked()
+        {
+            if (_loginBusy) return;
+            _loginBusy = true;
+            SetLoginStatus("Signing in with Google…", UiKit.Dim);
+            AuthManager.Instance?.SignInWithGoogle();
+        }
+
+        private void OnGuestClicked()
+        {
+            if (_loginBusy) return;
+            _loginBusy = true;
+            SetLoginStatus("Signing in…", UiKit.Dim);
+            AuthManager.Instance?.SignInAsGuest();
+        }
+
+        private void OnLoginSuccess(string uid)
+        {
+            _loginBusy = false;
+            // Unsubscribe — the login screen is done.
+            if (AuthManager.Instance != null)
+            {
+                AuthManager.Instance.OnAuthStateChanged -= OnLoginSuccess;
+                AuthManager.Instance.OnAuthError -= OnLoginError;
+            }
+            SetScreen(Screen.MenuRoot);
+        }
+
+        private void OnLoginError(string message)
+        {
+            _loginBusy = false;
+            SetLoginStatus(message, UiKit.Blood);
+        }
+
+        private void SetLoginStatus(string text, Color color)
+        {
+            if (_loginStatus != null)
+            {
+                _loginStatus.text = text;
+                _loginStatus.color = color;
+            }
         }
 
         /// <summary>One mode: a plate, a large name, two live lines, a hairline.</summary>
