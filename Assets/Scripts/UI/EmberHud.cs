@@ -19,7 +19,7 @@ namespace Emberline.UI
     /// </summary>
     public class EmberHud : MonoBehaviour
     {
-        private enum Screen { None, MenuRoot, Story, Fight, Bio, Skills, Codex, Briefing, Hud, Result, Weapons, Arms, March, Forge, Chapter }
+        private enum Screen { None, Login, MenuRoot, Story, Fight, Bio, Skills, Codex, Briefing, Hud, Result, Weapons, Arms, March, Forge, Chapter }
 
         private GameManager _gm;
         private Health _health;
@@ -50,6 +50,100 @@ namespace Emberline.UI
         private float _vignetteT;
         private int _waveStamp = -1;
         private TMP_Text _hpLabel, _bossLabel, _waveLabel, _comboText, _objectiveText, _bannerText, _hintText;
+
+        /// <summary>
+        /// The live HUD, so a mission can put one line on screen without owning a
+        /// canvas of its own. There is exactly one HUD; a second dialogue system
+        /// would be the wrong answer to a one-line problem.
+        /// </summary>
+        public static EmberHud Live { get; private set; }
+
+        /// <summary>
+        /// A single marker for where the mission wants you to go.
+        ///
+        /// <para>
+        /// Enemies have had off-screen arrows since the beginning; objectives have
+        /// only ever had a glowing ring on the ground, which is invisible from
+        /// forty metres away behind a treeline. "Follow the red mark" is not a
+        /// clear instruction if the mark is off screen, so it gets an arrow at the
+        /// edge and a soft diamond when it is in view.
+        /// </para>
+        /// </summary>
+        private void DrawObjectiveIndicator()
+        {
+            var dir = Missions.MissionDirector.Active;
+            var point = dir?.ObjectivePoint;
+            var cam = Core.SceneRefs.Cam;
+            var show = point.HasValue && cam != null && _screen == Screen.Hud
+                       && !GameManager.CinematicActive;
+
+            if (!show)
+            {
+                if (_objMark != null) _objMark.enabled = false;
+                return;
+            }
+
+            if (_objMark == null)
+            {
+                var rt = UiKit.Rect(_screenRoot, "ObjectiveMark", new Vector2(0f, 0f),
+                    Vector2.zero, new Vector2(26f, 26f), new Vector2(0.5f, 0.5f));
+                _objMark = rt.gameObject.AddComponent<UnityEngine.UI.Image>();
+                _objMark.raycastTarget = false;
+                _objMark.color = UiKit.Ember;
+            }
+            _objMark.enabled = true;
+
+            var sp = cam.WorldToScreenPoint(point.Value + Vector3.up * 1.2f);
+            var onScreen = sp.z > 0f && sp.x > 40f && sp.x < UnityEngine.Screen.width - 40f
+                           && sp.y > 40f && sp.y < UnityEngine.Screen.height - 40f;
+            var p = new Vector2(sp.x, sp.y);
+            if (sp.z < 0f) p = new Vector2(UnityEngine.Screen.width - p.x, 60f);
+            p.x = Mathf.Clamp(p.x, 40f, UnityEngine.Screen.width - 40f);
+            p.y = Mathf.Clamp(p.y, 40f, UnityEngine.Screen.height - 40f);
+
+            var scale = _root != null ? 1f / Mathf.Max(0.01f, _root.lossyScale.x) : 1f;
+            var rtm = (RectTransform)_objMark.transform;
+            rtm.anchoredPosition = p * scale;
+            // On screen it is a quiet diamond; off screen it turns and points.
+            rtm.localRotation = Quaternion.Euler(0f, 0f, onScreen ? 45f : 45f);
+            rtm.localScale = Vector3.one * (onScreen ? 0.75f : 1.15f);
+            var pulse = 0.55f + 0.25f * Mathf.Sin(Time.unscaledTime * 3f);
+            _objMark.color = new Color(UiKit.Ember.r, UiKit.Ember.g, UiKit.Ember.b,
+                onScreen ? pulse * 0.8f : 0.95f);
+        }
+
+        private UnityEngine.UI.Image _objMark;
+
+        /// <summary>
+        /// Fold the gameplay HUD away while a beat plays. The cinematic director
+        /// draws its letterbox and subtitles on its own canvas, so this hides the
+        /// game's own furniture and nothing of the scene.
+        /// </summary>
+        private void HideForCinematic()
+        {
+            if (_screenRoot == null) return;
+            var hide = GameManager.CinematicActive && _screen == Screen.Hud;
+            // Not cached. The screen is destroyed and rebuilt whenever the HUD
+            // changes, and a cached CanvasGroup outlives its object: Unity's null
+            // check does not catch that, so every frame of every cinematic threw
+            // MissingComponentException on the first property read. TryGetComponent
+            // allocates nothing and cannot go stale.
+            if (!_screenRoot.TryGetComponent<CanvasGroup>(out var fade))
+                fade = _screenRoot.gameObject.AddComponent<CanvasGroup>();
+            var target = hide ? 0f : 1f;
+            fade.alpha = Mathf.MoveTowards(fade.alpha, target, Time.unscaledDeltaTime * 6f);
+            fade.blocksRaycasts = !hide;
+            fade.interactable = !hide;
+        }
+
+
+        /// <summary>Speak one line in the player's own voice, mid-mission.</summary>
+        public void SayLine(string speaker, string text)
+        {
+            if (_screenRoot == null || string.IsNullOrEmpty(text)) return;
+            var line = string.IsNullOrEmpty(speaker) ? text : speaker + "|" + text;
+            DialogueBox.Show(_screenRoot, new[] { line });
+        }
         private Image _surgeGlow;
         private CanvasGroup _bannerGroup, _comboGroup;
         private readonly List<Image> _gateIcons = new();
@@ -133,6 +227,9 @@ namespace Emberline.UI
 
         // ------------------------------------------------------------ lifetime
 
+        private void OnEnable() => Live = this;
+        private void OnDisable() { if (Live == this) Live = null; }
+
         private void Start()
         {
             _gm = FindFirstObjectByType<GameManager>();
@@ -175,11 +272,17 @@ namespace Emberline.UI
 
         private void Update()
         {
+            // The HUD is the live game; a cinematic is not. Nothing checked this
+            // before, so every story beat in the campaign played with the touch
+            // buttons and the movement hint sitting on top of it.
+            HideForCinematic();
+            DrawObjectiveIndicator();
+
             if (_gm == null) return;
             ReadStick();
             UpdateScreenRouting();
             if (_screen == Screen.Hud) UpdateHud();
-            if (_screen is Screen.MenuRoot or Screen.Story or Screen.Fight or Screen.Bio or Screen.Chapter)
+            if (_screen is Screen.Login or Screen.MenuRoot or Screen.Story or Screen.Fight or Screen.Bio or Screen.Chapter)
                 UpdateEmbers();
         }
 
@@ -194,7 +297,9 @@ namespace Emberline.UI
                 // Arms were rebuilt and discarded within a single frame.
                 GameManager.Phase.Menu =>
                     _screen is Screen.None or Screen.Hud or Screen.Briefing or Screen.Result
-                        ? Screen.MenuRoot : _screen,
+                        ? (AuthManager.Instance != null && !AuthManager.Instance.IsAuthenticated
+                            ? Screen.Login : Screen.MenuRoot)
+                        : _screen,
                 GameManager.Phase.Intro => Screen.Briefing,
                 GameManager.Phase.Playing => Screen.Hud,
                 _ => _screen == Screen.Skills ? Screen.Skills : Screen.Result,
@@ -224,6 +329,7 @@ namespace Emberline.UI
 
             switch (s)
             {
+                case Screen.Login: BuildLogin(); break;
                 case Screen.MenuRoot: BuildMenuRoot(); break;
                 case Screen.Story: BuildStorySelect(); break;
                 case Screen.Chapter: BuildChapterSelect(); break;
@@ -378,6 +484,101 @@ namespace Emberline.UI
 
             UiKit.Label(_screenRoot, "v" + Application.version, 13, UiKit.Faint, new Vector2(1, 0),
                 new Vector2(-40, 30), new Vector2(200, 18), align: TextAnchor.MiddleRight);
+        }
+
+        // --------------------------------------------------------------- login
+
+        private bool _loginBusy;
+        private TMP_Text _loginStatus;
+
+        private void BuildLogin()
+        {
+            _loginBusy = false;
+            BuildEmberLayer();
+
+            // Subscribe to auth events for this screen's lifetime.
+            if (AuthManager.Instance != null)
+            {
+                AuthManager.Instance.OnAuthStateChanged -= OnLoginSuccess;
+                AuthManager.Instance.OnAuthError -= OnLoginError;
+                AuthManager.Instance.OnAuthStateChanged += OnLoginSuccess;
+                AuthManager.Instance.OnAuthError += OnLoginError;
+            }
+
+            // Centre column.
+            var col = UiKit.Rect(_screenRoot, "LoginColumn", new Vector2(0.5f, 0.5f),
+                Vector2.zero, new Vector2(420, 400), new Vector2(0.5f, 0.5f));
+
+            // Title block.
+            UiKit.Label(col, "EMBERLINE", 56, UiKit.Pale, new Vector2(0.5f, 1),
+                new Vector2(0, 0), new Vector2(420, 72), display: true).characterSpacing = 6f;
+            UiKit.Label(col, "3D NINJA ACTION", 16, UiKit.Dim, new Vector2(0.5f, 1),
+                new Vector2(0, -74), new Vector2(420, 24)).characterSpacing = 5f;
+            UiKit.Accent(col, new Vector2(0.5f, 1), new Vector2(0, -104), 48f);
+
+            // Continue with Google — primary button.
+            var googleBtn = UiKit.MakeButton(col, "CONTINUE WITH GOOGLE", new Vector2(0.5f, 0.5f),
+                new Vector2(0, 20), new Vector2(320, 60), OnGoogleClicked, 18, primary: true);
+
+            // OR divider.
+            UiKit.Label(col, "OR", 14, UiKit.Faint, new Vector2(0.5f, 0.5f),
+                new Vector2(0, -30), new Vector2(420, 22)).characterSpacing = 6f;
+
+            // Continue as Guest — secondary button.
+            var guestBtn = UiKit.MakeButton(col, "CONTINUE AS GUEST", new Vector2(0.5f, 0.5f),
+                new Vector2(0, -68), new Vector2(320, 56), OnGuestClicked, 17);
+
+            // Status text for loading/error.
+            _loginStatus = UiKit.Label(col, "", 15, UiKit.Dim, new Vector2(0.5f, 0),
+                new Vector2(0, 24), new Vector2(420, 30));
+
+            // Version.
+            UiKit.Label(_screenRoot, "v" + Application.version, 13, UiKit.Faint,
+                new Vector2(1, 0), new Vector2(-40, 30), new Vector2(200, 18),
+                align: TextAnchor.MiddleRight);
+        }
+
+        private void OnGoogleClicked()
+        {
+            if (_loginBusy) return;
+            _loginBusy = true;
+            SetLoginStatus("Signing in with Google…", UiKit.Dim);
+            AuthManager.Instance?.SignInWithGoogle();
+        }
+
+        private void OnGuestClicked()
+        {
+            if (_loginBusy) return;
+            _loginBusy = true;
+            SetLoginStatus("Signing in…", UiKit.Dim);
+            AuthManager.Instance?.SignInAsGuest();
+        }
+
+        private void OnLoginSuccess(string uid)
+        {
+            _loginBusy = false;
+            // Unsubscribe — the login screen is done.
+            if (AuthManager.Instance != null)
+            {
+                AuthManager.Instance.OnAuthStateChanged -= OnLoginSuccess;
+                AuthManager.Instance.OnAuthError -= OnLoginError;
+            }
+            SetScreen(Screen.MenuRoot);
+        }
+
+        private void OnLoginError(string message)
+        {
+            _loginBusy = false;
+            SetLoginStatus(message, UiKit.Blood);
+        }
+
+        private void SetLoginStatus(string text, Color color)
+        {
+            if (_loginStatus != null)
+            {
+                _loginStatus.text = text;
+                _loginStatus.color = color;
+            }
         }
 
         /// <summary>One mode: a plate, a large name, two live lines, a hairline.</summary>

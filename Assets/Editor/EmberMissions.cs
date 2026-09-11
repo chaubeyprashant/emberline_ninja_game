@@ -706,24 +706,251 @@ namespace Emberline.EditorTools
             // ---------------------------------------------------------------
             // 1 — FIRST BLOOD. The lesson: one enemy who has not seen you, and
             // the game says so out loud. Then it takes the option away.
-            var m1 = P_("S01_FirstBlood");
-            m1.id = 1; m1.missionName = "FIRST BLOOD"; m1.missionType = "ASSASSINATION";
+            // ---------------------------------------------------------------
+            // 1 — ASHES. Renzo comes home. The mission asks one question and
+            // answers none of it: WHO IS STILL HERE. No stealth verb is taught
+            // here — mission 2 owns stealth, and teaching a verb this mission
+            // does not use was the old opening's mistake.
+            var m1 = P_("S01_Ashes");
+            m1.id = 1; m1.missionName = "ASHES"; m1.missionType = "RETURN";
             m1.marsh = false; m1.baseShards = 3;
-            m1.briefing = "Raiders on the east terraces. One of them is watching the lantern line and has not looked behind him once.";
-            m1.debrief = "They carried nothing away. Whatever they came for, they did not find it. The notice on the post is three weeks old.";
-            m1.dressing = new[] { DressingKind.BurnedHome, DressingKind.MissingNotice,
-                DressingKind.HidingVillagers };
-            m1.challenge = MissionChallenge.SilentKill; m1.challengeShards = 2;
+            m1.briefing = "Yorune burned ten years ago. Nobody has lived in it since.";
+            m1.debrief = "The map in the assassin's coat was drawn this season. Whoever came back to Yorune is still using the road north.";
+            m1.dressing = new[] { DressingKind.BurnedHome, DressingKind.AbandonedWeapons,
+                DressingKind.DestroyedCart, DressingKind.MissingNotice };
+            m1.ruinedVillage = true;   // Yorune is ash, not a village with a bad night
+            m1.challenge = MissionChallenge.None;
             m1.stages = new[]
             {
-                St(StageGoal.Reach, "GET ABOVE HIS POST", "THE EAST TERRACE", point: east, checkpoint: true),
-                St(StageGoal.Stealth, "TAKE HIM UNSEEN", "HE HAS NOT SEEN YOU", spawn: new[] { B },
-                    onComplete: StageEvent.AlarmTriggered),
-                St(StageGoal.Investigate, "WHAT WERE THEY SEARCHING FOR?", "THE HOUSE IS EMPTY", count: 2),
-                St(StageGoal.Wave, "CUT YOUR WAY OUT", "THEY KNOW", spawn: new[] { B, B, R }),
-                St(StageGoal.Reach, "OFF THE ROOF", "GO HOME", point: south, checkpoint: true),
+                // The opening plays in place. The mission holds for it.
+                St(StageGoal.Cinematic, "", "", beatId: "ashes_return"),
+
+                St(StageGoal.Reach, "WALK INTO YORUNE", "TEN YEARS LATER",
+                    point: north, checkpoint: true),
+
+                // The emotional centre, authored rather than scattered: a shrine
+                // the fire missed, his father's post, and the one red thing left.
+                new MissionStage
+                {
+                    goal = StageGoal.Examine,
+                    objective = "SEARCH WHAT IS LEFT OF YOUR HOUSE",
+                    banner = "THE KUROGAWA HOUSE",
+                    checkpoint = true,
+                    props = new[]
+                    {
+                        new StoryPropSpec
+                        {
+                            id = "shrine", label = "THE FAMILY SHRINE",
+                            point = new Vector3(-7.5f, 0f, 7f),
+                            shape = StoryPropShape.Shrine,
+                            speaker = "RENZO",
+                            line = "The shrine is still standing. Of course it is.",
+                        },
+                        new StoryPropSpec
+                        {
+                            id = "post", label = "HIS FATHER'S TRAINING POST",
+                            point = new Vector3(-3f, 0f, 10.5f),
+                            shape = StoryPropShape.TrainingPost,
+                            speaker = "RENZO",
+                            line = "He'd have had me on this at dawn. Every dawn.",
+                        },
+                        new StoryPropSpec
+                        {
+                            id = "bracelet", label = "RED THREAD",
+                            point = new Vector3(2.5f, 0f, 12f),
+                            shape = StoryPropShape.Keepsake,
+                            beatId = "ashes_bracelet",
+                        },
+                    },
+                },
+
+                // The turn: from loss to something being wrong.
+                new MissionStage
+                {
+                    goal = StageGoal.Examine,
+                    objective = "FOLLOW THE TRACKS",
+                    banner = "THESE ARE FRESH",
+                    checkpoint = true,
+                    // No Ambush event: it adds an assassin and a bandit behind the
+                    // player, and the first fight of the game is one enemy. The
+                    // surprise is carried by the Wave's banner instead.
+                    props = new[]
+                    {
+                        new StoryPropSpec
+                        {
+                            id = "tracks", label = "DISTURBED ASH",
+                            point = new Vector3(9f, 0f, 8f),
+                            shape = StoryPropShape.Tracks,
+                            speaker = "RENZO",
+                            line = "Days old. Not years.",
+                            radius = 2.6f,
+                        },
+                    },
+                },
+
+                // One enemy. It is the combat tutorial, and it is enough.
+                St(StageGoal.Wave, "SURVIVE", "HE WAS WAITING", spawn: new[] { A }),
+
+                new MissionStage
+                {
+                    goal = StageGoal.Examine,
+                    objective = "SEARCH THE BODY",
+                    props = new[]
+                    {
+                        new StoryPropSpec
+                        {
+                            id = "map", label = "A MAP, RECENTLY DRAWN",
+                            point = Vector3.zero,   // resolved to the body at runtime
+                            shape = StoryPropShape.Body,
+                            speaker = "RENZO",
+                            line = "One road, marked in red. Drawn this season.",
+                            beatId = "ashes_map",
+                        },
+                    },
+                },
             };
             EditorUtility.SetDirty(m1);
+
+            // ---------------------------------------------------------------
+            // 2 — RED THREAD. Mission 1 asked who is still here; this answers it
+            // and asks who sent them. Tracking and stealth, not a rescue: the
+            // player learns the enemy is organised by walking through what they
+            // left behind, not by being told.
+            //
+            // Everything is inside the ~34 m play area. The valley's own enemy
+            // camp is 71 m out at (46,-54) and unreachable without changing the
+            // arena for every other mission, so this camp is mission dressing.
+            var m2r = P_("S02_RedThread");
+            m2r.id = 2; m2r.missionName = "RED THREAD"; m2r.missionType = "TRACKING";
+            m2r.marsh = false; m2r.baseShards = 3;
+            m2r.briefing = "The map from the assassin's coat marks one road in red. It leads out of Yorune, north-east, into the trees.";
+            m2r.debrief = "Patrol routes, watch posts, supply drops, and a signal line that reaches further than the valley. Somebody is running this.";
+            m2r.dressing = new[] { DressingKind.AbandonedWeapons, DressingKind.DestroyedCart,
+                DressingKind.KagehiraBanners, DressingKind.EmptyHome };
+            m2r.ruinedVillage = true;      // still Yorune; it is still ash
+            m2r.challenge = MissionChallenge.NoAlarm; m2r.challengeShards = 2;
+            m2r.stages = new[]
+            {
+                // 1 — the map. Short: mission 1 already did the long opening.
+                St(StageGoal.Cinematic, "", "", beatId: "thread_open"),
+
+                // 2 — the trail out of the village. Environmental, not a marker
+                // trail: disturbed ash, a dropped strap, wheel ruts.
+                new MissionStage
+                {
+                    goal = StageGoal.Examine,
+                    objective = "FOLLOW THE RED MARK",
+                    banner = "OUT OF YORUNE",
+                    checkpoint = true,
+                    props = new[]
+                    {
+                        new StoryPropSpec
+                        {
+                            id = "ash", label = "DISTURBED ASH",
+                            point = new Vector3(6f, 0f, 9f), shape = StoryPropShape.Tracks,
+                            speaker = "RENZO", line = "Boots. Going out, not in.",
+                        },
+                        new StoryPropSpec
+                        {
+                            id = "ruts", label = "WHEEL RUTS",
+                            point = new Vector3(11f, 0f, 4f), shape = StoryPropShape.Tracks,
+                            speaker = "RENZO", line = "Loaded carts. They have been supplying something.",
+                        },
+                    },
+                },
+
+                // 3 — the camp. Slept in, cooked in, worked in. The read is
+                // "recently", then "for a while".
+                new MissionStage
+                {
+                    goal = StageGoal.Examine,
+                    objective = "FIND THEIR CAMP",
+                    banner = "SOMEBODY HAS BEEN LIVING HERE",
+                    checkpoint = true,
+                    props = new[]
+                    {
+                        new StoryPropSpec
+                        {
+                            id = "fire", label = "A FIRE, STILL WARM",
+                            point = new Vector3(13f, 0f, -3f), shape = StoryPropShape.Camp,
+                            speaker = "RENZO", line = "Warm. They will be back for it.",
+                        },
+                        new StoryPropSpec
+                        {
+                            id = "supply", label = "SUPPLY CRATES",
+                            point = new Vector3(9f, 0f, -8f), shape = StoryPropShape.Supply,
+                            speaker = "RENZO", line = "Every crate marked the same. This is not scavenging.",
+                        },
+                    },
+                },
+
+                // 4 — the patrol. Three, spawned unaware: sneak past, take one
+                // quietly, or fight. All three work; the challenge rewards the
+                // quiet answer rather than forcing it.
+                St(StageGoal.Stealth, "GET PAST THE PATROL", "THREE OF THEM",
+                    spawn: new[] { B, B, R }, checkpoint: true),
+
+                // 5 — the lookout, and the signal line lighting across the valley.
+                new MissionStage
+                {
+                    goal = StageGoal.Examine,
+                    objective = "REACH THE LOOKOUT",
+                    banner = "HIGH GROUND",
+                    checkpoint = true,
+                    props = new[]
+                    {
+                        new StoryPropSpec
+                        {
+                            id = "lookout", label = "THE LOOKOUT",
+                            point = new Vector3(-6f, 0f, -12f), shape = StoryPropShape.Lookout,
+                            beatId = "thread_lanterns", radius = 2.8f,
+                            // Answering each other, further out each time.
+                            lanternLine = new[]
+                            {
+                                new Vector3(4f, 0f, -16f),
+                                new Vector3(17f, 0f, -13f),
+                                new Vector3(26f, 0f, -6f),
+                            },
+                        },
+                    },
+                },
+
+                // 6 — the conversation. Examine, not Listen: Listen completes only
+                // when every enemy is dead, which is the opposite of eavesdropping.
+                new MissionStage
+                {
+                    goal = StageGoal.Examine,
+                    objective = "GET CLOSE ENOUGH TO HEAR THEM",
+                    banner = "TWO OF THEM, TALKING",
+                    props = new[]
+                    {
+                        new StoryPropSpec
+                        {
+                            id = "earshot", label = "WITHIN EARSHOT",
+                            point = new Vector3(-13f, 0f, -4f), shape = StoryPropShape.Marker,
+                            beatId = "thread_kurogawa", radius = 3f,
+                        },
+                    },
+                },
+
+                // 7 — the regional map: the operation is bigger than the patrol.
+                new MissionStage
+                {
+                    goal = StageGoal.Examine,
+                    objective = "TAKE THEIR MAP",
+                    banner = "THE WATCH POST",
+                    props = new[]
+                    {
+                        new StoryPropSpec
+                        {
+                            id = "regional", label = "A REGIONAL MAP",
+                            point = new Vector3(-11f, 0f, 8f), shape = StoryPropShape.Supply,
+                            beatId = "thread_map",
+                        },
+                    },
+                },
+            };
+            EditorUtility.SetDirty(m2r);
 
             // ---------------------------------------------------------------
             // 2 — THE LANTERN ROAD. You are not the objective. An old man is,
@@ -753,23 +980,1115 @@ namespace Emberline.EditorTools
             // ---------------------------------------------------------------
             // 3 — EYES IN THE DARK. The mission you lose by being seen. Short
             // sight, loud rain, and everything that can hurt you is at range.
-            var m3 = P_("S03_EyesInTheDark");
-            m3.id = 3; m3.missionName = "EYES IN THE DARK"; m3.missionType = "STEALTH";
+            // ---------------------------------------------------------------
+            // 3 — THE LANTERNS. Mission 2 found the signal line; this follows it
+            // up the chain of command. The question it asks — who is leading them
+            // — is deliberately not answered: the officer is masked, unnamed, and
+            // the mark on his orders is one nobody in Yorune has seen. What the
+            // player leaves with is that these men were told to expect him.
+            // ---------------------------------------------------------------
+            // 4 — THE SILENT FOREST. The investigation acquires consequences.
+            // Renzo has been watching them for three missions; here they start
+            // looking for him, and the chain of command gets a face. Goro is
+            // fought but not beaten: Endure ends on its clock, not on a corpse.
+            // ---------------------------------------------------------------
+            // 5 — THE TOLL-CAPTAIN. Goro's fight and Goro's death. Three phases
+            // through BossPhase health gates with a beat between each, so the
+            // mid-fight dialogue happens with him still standing in the middle
+            // of the road rather than in a cutscene somewhere else.
+            //
+            // He gives up exactly two things: that the orders were not his, and
+            // a direction. He dies without finishing the sentence about the
+            // father, which is mission 6's problem.
+            // ---------------------------------------------------------------
+            // 6 — THE HOUSE OF KAWAI. The mission after the boss fight, and
+            // deliberately slow: no boss, one avoidable search party, and five
+            // things to find. Renzo has spent five missions treating his father
+            // as the man who failed to save Yorune. He leaves this one knowing
+            // his father spent the last year of his life trying to empty it.
+            // ---------------------------------------------------------------
+            // 7 — THE BROKEN HOUSE. Renzo searches the place he grew up. Two
+            // short memories of a life rather than of the fire, an arrangement of
+            // objects his father left as a mark, and a letter that escalates the
+            // whole campaign in three sentences. The words Black Seal are not
+            // spoken here; mission 8 owns that.
+            // ---------------------------------------------------------------
+            // 8 — FATHER'S MARK. The mountain, and the name. The "puzzle" is
+            // three marked stones read in turn — a thing to notice rather than a
+            // thing to solve, because the discovery is narrative and a lock the
+            // player can fail would only get in its way.
+            // ---------------------------------------------------------------
+            // 9 — THE GIRL IN RED. The turn of the act. Renzo has believed his
+            // sister died in the fire since mission 1; this gives him evidence
+            // and refuses him proof. She never speaks, is never named by anyone
+            // but him, and is never shown clearly.
+            // ---------------------------------------------------------------
+            // 10 — THE SERPENT. The act closes. Aiko is confirmed alive by an
+            // enemy record before anyone says it aloud, Kagehira is confirmed by
+            // a signature before he is seen, and he is never reachable — there is
+            // no boss here on purpose. He explains almost nothing: he needed a
+            // Kurogawa, and the father refused him.
+            var m10s = P_("S10_Serpent");
+            m10s.id = 10; m10s.missionName = "THE SERPENT"; m10s.missionType = "INFILTRATION";
+            m10s.marsh = false; m10s.nightOverride = true; m10s.baseShards = 5;
+            m10s.applyTheme = true; m10s.theme = Core.EnvThemeId.Fortress;
+            m10s.fog = true;
+            m10s.briefing = "The lantern line is lit along the ridge and it does not stop at the treeline. Whatever it reaches is where they took her.";
+            m10s.debrief = "Their own records confirm it: the girl is alive, held, and not to be harmed until the commander arrives. The orders are signed Kagehira.";
+            m10s.dressing = new[] { DressingKind.KagehiraBanners, DressingKind.PrisonerCamp,
+                DressingKind.DestroyedCart, DressingKind.AbandonedWeapons };
+            m10s.challenge = MissionChallenge.NoAlarm; m10s.challengeShards = 4;
+            m10s.stages = new[]
+            {
+                St(StageGoal.Cinematic, "", "", beatId: "serpent_open"),
+
+                // The signal, walked rather than described.
+                new MissionStage
+                {
+                    goal = StageGoal.Examine,
+                    objective = "FOLLOW THE LANTERN SIGNAL",
+                    banner = "THE LINE IS LIT",
+                    checkpoint = true,
+                    props = new[]
+                    {
+                        new StoryPropSpec
+                        {
+                            id = "sig1", label = "A LIT POST",
+                            point = new Vector3(-5f, 0f, 13f), shape = StoryPropShape.Lookout,
+                            speaker = "RENZO", line = "Answered within a count of three. This one is manned.",
+                            lanternLine = new[]
+                            {
+                                new Vector3(6f, 0f, 17f),
+                                new Vector3(16f, 0f, 12f),
+                                new Vector3(22f, 0f, 4f),
+                            },
+                        },
+                        new StoryPropSpec
+                        {
+                            id = "sig2", label = "A CUT ROUTE",
+                            point = new Vector3(9f, 0f, 15f), shape = StoryPropShape.Tracks,
+                            speaker = "RENZO", line = "Widened for carts. They have been supplying this for months.",
+                        },
+                    },
+                },
+
+                // In, quietly if the player wants it.
+                St(StageGoal.Stealth, "INFILTRATE THE OUTPOST", "THE OUTER LINE",
+                    spawn: new[] { N, R, B, A }, checkpoint: true),
+
+                // The paperwork does the reveal, one page at a time.
+                new MissionStage
+                {
+                    goal = StageGoal.Examine,
+                    objective = "SEARCH THE COMMAND AREA",
+                    banner = "SOMEBODY RUNS THIS",
+                    checkpoint = true,
+                    props = new[]
+                    {
+                        new StoryPropSpec
+                        {
+                            id = "rec1", label = "A DEPLOYMENT RECORD",
+                            point = new Vector3(15f, 0f, -2f), shape = StoryPropShape.CommandPost,
+                            speaker = "RENZO",
+                            line = "\"Mountain route active. Search teams deployed. The Kurogawa subject is confirmed. The girl remains under watch.\" …The girl.",
+                        },
+                        new StoryPropSpec
+                        {
+                            id = "rec2", label = "A HOLDING ORDER",
+                            point = new Vector3(19f, 0f, -6f), shape = StoryPropShape.Supply,
+                            speaker = "RENZO",
+                            line = "\"Subject remains compliant. No transfer until the commander arrives. Bloodline verification required. Do not harm her.\" Don't harm her. Why?",
+                        },
+                        new StoryPropSpec
+                        {
+                            id = "rec3", label = "A SIGNED ORDER",
+                            point = new Vector3(13f, 0f, -9f), shape = StoryPropShape.CommandPost,
+                            speaker = "RENZO",
+                            line = "\"Continue the search. The Kurogawa must be brought to the mountain. The girl is to remain alive. No exceptions.\" Signed with a serpent. Kagehira. You're still alive.",
+                        },
+                    },
+                },
+
+                St(StageGoal.Cinematic, "", "", beatId: "serpent_overheard"),
+
+                // Hers, and recent.
+                new MissionStage
+                {
+                    goal = StageGoal.Examine,
+                    objective = "FIND WHAT THEY KEPT OF HERS",
+                    banner = "IN THE COMMAND TENT",
+                    checkpoint = true,
+                    props = new[]
+                    {
+                        new StoryPropSpec
+                        {
+                            id = "hers", label = "A WOODEN CHARM",
+                            point = new Vector3(17f, 0f, -12f), shape = StoryPropShape.Keepsake,
+                            beatId = "serpent_alive", radius = 2.4f,
+                        },
+                    },
+                },
+
+                // Found. The way out is through them.
+                St(StageGoal.Escape, "ESCAPE THE OUTPOST", "HE'S INSIDE",
+                    duration: 95f, point: new Vector3(-14f, 0f, -8f),
+                    spawn: new[] { N, N, A, R }, checkpoint: true),
+
+                // One elite on the gate. Not a boss.
+                St(StageGoal.Wave, "THE GATE IS HELD", "ONE OF THEIR BEST",
+                    spawn: new[] { E }, checkpoint: true),
+
+                // The ridge: the convoy below, and the man who will not turn round.
+                new MissionStage
+                {
+                    goal = StageGoal.Examine,
+                    objective = "REACH THE RIDGE",
+                    banner = "BELOW THE ROAD",
+                    checkpoint = true,
+                    props = new[]
+                    {
+                        new StoryPropSpec
+                        {
+                            id = "ridge", label = "THE ROAD BELOW",
+                            point = new Vector3(-18f, 0f, -4f), shape = StoryPropShape.Marker,
+                            beatId = "serpent_ridge", radius = 3f,
+                            figurePath = new[]
+                            {
+                                new Vector3(-24f, 0f, -10f),
+                                new Vector3(-30f, 0f, -16f),
+                            },
+                        },
+                    },
+                },
+
+                St(StageGoal.Cinematic, "", "", beatId: "serpent_end"),
+            };
+            EditorUtility.SetDirty(m10s);
+
+            var m9r = P_("S09_GirlInRed");
+            m9r.id = 9; m9r.missionName = "THE GIRL IN RED"; m9r.missionType = "TRACKING";
+            m9r.marsh = false; m9r.baseShards = 4;
+            m9r.applyTheme = true; m9r.theme = Core.EnvThemeId.Mountain;
+            m9r.fog = true;
+            m9r.briefing = "The route beyond the chamber runs along the ridge. Something red is caught on a branch at the head of it.";
+            m9r.debrief = "A shelter someone had been living in, a broken red-thread bracelet, and soldiers hunting a girl who knows the mountain. Renzo does not know what he saw on the overlook.";
+            m9r.dressing = new[] { DressingKind.EmptyHome, DressingKind.AbandonedWeapons,
+                DressingKind.MissingNotice };
+            m9r.challenge = MissionChallenge.NoAlarm; m9r.challengeShards = 3;
+            m9r.stages = new[]
+            {
+                St(StageGoal.Cinematic, "", "", beatId: "red_open"),
+
+                // The trail. Small, quiet reads — no glowing collectibles.
+                new MissionStage
+                {
+                    goal = StageGoal.Examine,
+                    objective = "FOLLOW THE RED THREAD",
+                    banner = "CAUGHT ON A BRANCH",
+                    checkpoint = true,
+                    props = new[]
+                    {
+                        new StoryPropSpec
+                        {
+                            id = "thread1", label = "RED THREAD",
+                            point = new Vector3(-6f, 0f, 13f), shape = StoryPropShape.Keepsake,
+                            speaker = "RENZO", line = "Weathered. It has been out here a while.",
+                        },
+                        new StoryPropSpec
+                        {
+                            id = "prints9", label = "FOOTPRINTS",
+                            point = new Vector3(2f, 0f, 16f), shape = StoryPropShape.Tracks,
+                            speaker = "RENZO", line = "Grown. These aren't mine, and they aren't a soldier's.",
+                        },
+                        new StoryPropSpec
+                        {
+                            id = "thread2", label = "A TORN FIBRE",
+                            point = new Vector3(10f, 0f, 13f), shape = StoryPropShape.Keepsake,
+                            speaker = "RENZO", line = "Fresher than the first. Someone passed through here.",
+                        },
+                    },
+                },
+
+                // Hidden, and close enough to hear the word that matters.
+                new MissionStage
+                {
+                    goal = StageGoal.Examine,
+                    objective = "GET CLOSE ENOUGH TO HEAR THEM",
+                    banner = "THREE OF THEM, SEARCHING",
+                    props = new[]
+                    {
+                        new StoryPropSpec
+                        {
+                            id = "listen9", label = "WITHIN EARSHOT",
+                            point = new Vector3(15f, 0f, 7f), shape = StoryPropShape.Marker,
+                            beatId = "red_overheard", radius = 3f,
+                        },
+                    },
+                },
+
+                St(StageGoal.Cinematic, "", "", beatId: "red_girl"),
+
+                // Somebody has been living out here.
+                new MissionStage
+                {
+                    goal = StageGoal.Examine,
+                    objective = "SEARCH THE SHELTER",
+                    banner = "SOMEONE LIVED HERE",
+                    checkpoint = true,
+                    props = new[]
+                    {
+                        new StoryPropSpec
+                        {
+                            id = "shelter", label = "AN OLD SHELTER",
+                            point = new Vector3(13f, 0f, -3f), shape = StoryPropShape.Camp,
+                            speaker = "RENZO", line = "A blanket. A bowl. Ash still warm at the edges. Someone lived here — recently.",
+                        },
+                        new StoryPropSpec
+                        {
+                            id = "turned", label = "TURNED OVER",
+                            point = new Vector3(9f, 0f, -7f), shape = StoryPropShape.Supply,
+                            speaker = "RENZO", line = "Bedding thrown aside, the latch broken from outside. They weren't looking for a key. They were looking for her.",
+                        },
+                    },
+                },
+
+                // The bracelet.
+                new MissionStage
+                {
+                    goal = StageGoal.Examine,
+                    objective = "FIND THE RED BRACELET",
+                    banner = "UNDER THE BEDDING",
+                    checkpoint = true,
+                    props = new[]
+                    {
+                        new StoryPropSpec
+                        {
+                            id = "bracelet", label = "A BROKEN BRACELET",
+                            point = new Vector3(11f, 0f, -6f), shape = StoryPropShape.Keepsake,
+                            beatId = "red_bracelet", radius = 2.4f,
+                        },
+                    },
+                },
+
+                // Hunted. Avoidable.
+                St(StageGoal.Stealth, "GET AWAY FROM THE SEARCH PARTY", "THEY CAME BACK",
+                    spawn: new[] { N, N, A, A, B }, checkpoint: true),
+
+                // She is ahead on the path, and she does not wait.
+                new MissionStage
+                {
+                    goal = StageGoal.Examine,
+                    objective = "FOLLOW HER",
+                    banner = "SOMEONE ON THE PATH",
+                    checkpoint = true,
+                    props = new[]
+                    {
+                        new StoryPropSpec
+                        {
+                            id = "sighting", label = "MOVEMENT AHEAD",
+                            point = new Vector3(2f, 0f, -11f), shape = StoryPropShape.Marker,
+                            radius = 2.8f,
+                            figurePath = new[]
+                            {
+                                new Vector3(-4f, 0f, -15f),
+                                new Vector3(-12f, 0f, -13f),
+                                new Vector3(-16f, 0f, -6f),
+                            },
+                        },
+                    },
+                },
+
+                // Seconds too late, and a mark left where she stood.
+                new MissionStage
+                {
+                    goal = StageGoal.Examine,
+                    objective = "FIND WHERE SHE WENT",
+                    banner = "THE OVERLOOK",
+                    props = new[]
+                    {
+                        new StoryPropSpec
+                        {
+                            id = "overlook", label = "WHERE SHE STOOD",
+                            point = new Vector3(-16f, 0f, -6f), shape = StoryPropShape.Shrine,
+                            beatId = "red_figure", radius = 2.8f,
+                        },
+                        new StoryPropSpec
+                        {
+                            id = "newmark", label = "TWO MARKS",
+                            point = new Vector3(-13f, 0f, -2f), shape = StoryPropShape.StoneMarker,
+                            speaker = "RENZO",
+                            line = "Our mark, cut years ago. And under it a newer one, cut by a hand I don't know. Someone brought her here. Someone has been keeping her hidden.",
+                        },
+                    },
+                },
+
+                St(StageGoal.Cinematic, "", "", beatId: "red_end"),
+            };
+            EditorUtility.SetDirty(m9r);
+
+            var m8m = P_("S08_FathersMark");
+            m8m.id = 8; m8m.missionName = "FATHER'S MARK"; m8m.missionType = "EXPLORATION";
+            m8m.marsh = false; m8m.baseShards = 4;
+            m8m.applyTheme = true; m8m.theme = Core.EnvThemeId.Mountain;
+            m8m.fog = true;
+            m8m.briefing = "The road on the family map goes up, and it was cut by people who did not want it followed.";
+            m8m.debrief = "The Black Seal takes three keys and was entrusted to three hands. Renzo's family held one. He is carrying two pieces and does not know where the third is — or why the page mentions Kurogawa blood.";
+            m8m.dressing = new[] { DressingKind.AbandonedWeapons, DressingKind.MissingNotice,
+                DressingKind.EmptyHome };
+            m8m.challenge = MissionChallenge.NoAlarm; m8m.challengeShards = 3;
+            m8m.stages = new[]
+            {
+                St(StageGoal.Cinematic, "", "", beatId: "mark_open"),
+
+                // The climb. Three short reads, none of them stopping the player.
+                new MissionStage
+                {
+                    goal = StageGoal.Examine,
+                    objective = "FOLLOW THE OLD MOUNTAIN PATH",
+                    banner = "THE OLD ROAD UP",
+                    checkpoint = true,
+                    props = new[]
+                    {
+                        new StoryPropSpec
+                        {
+                            id = "marker8", label = "A BROKEN MARKER",
+                            point = new Vector3(-7f, 0f, 12f), shape = StoryPropShape.StoneMarker,
+                            speaker = "RENZO", line = "Faded, but it's ours. Father came this way.",
+                        },
+                        new StoryPropSpec
+                        {
+                            id = "drag8", label = "DRAG MARKS",
+                            point = new Vector3(1f, 0f, 16f), shape = StoryPropShape.Tracks,
+                            speaker = "RENZO", line = "Someone else found the path.",
+                        },
+                        new StoryPropSpec
+                        {
+                            id = "moved8", label = "A MOVED STONE",
+                            point = new Vector3(9f, 0f, 14f), shape = StoryPropShape.StoneMarker,
+                            speaker = "RENZO", line = "And they're still looking.",
+                        },
+                    },
+                },
+
+                // The mark that is not a crest.
+                new MissionStage
+                {
+                    goal = StageGoal.Examine,
+                    objective = "INVESTIGATE THE KUROGAWA MARK",
+                    banner = "ON THE OLD WALL",
+                    props = new[]
+                    {
+                        new StoryPropSpec
+                        {
+                            id = "wallmark8", label = "A KUROGAWA MARK",
+                            point = new Vector3(14f, 0f, 9f), shape = StoryPropShape.Shrine,
+                            speaker = "RENZO",
+                            line = "Not a family crest. A direction. He cut it for someone who could read it.",
+                        },
+                    },
+                },
+
+                // The mechanism: three stones, each with part of the mark, read
+                // in any order. Notice, not solve — it cannot be failed.
+                new MissionStage
+                {
+                    goal = StageGoal.Examine,
+                    objective = "FOLLOW YOUR FATHER'S MARK",
+                    banner = "THREE STONES",
+                    checkpoint = true,
+                    props = new[]
+                    {
+                        new StoryPropSpec
+                        {
+                            id = "stoneA", label = "THE FIRST STONE",
+                            point = new Vector3(16f, 0f, 2f), shape = StoryPropShape.StoneMarker,
+                            speaker = "RENZO", line = "Part of a mark. A third of one.",
+                        },
+                        new StoryPropSpec
+                        {
+                            id = "stoneB", label = "THE SECOND STONE",
+                            point = new Vector3(13f, 0f, -5f), shape = StoryPropShape.StoneMarker,
+                            speaker = "RENZO", line = "Another third. They line up with the grooves.",
+                        },
+                        new StoryPropSpec
+                        {
+                            id = "stoneC", label = "THE THIRD STONE",
+                            point = new Vector3(7f, 0f, -9f), shape = StoryPropShape.StoneMarker,
+                            speaker = "RENZO", line = "Three stones, three grooves. That's the whole lock.",
+                        },
+                    },
+                },
+
+                // The way in, and the memory of being taught to find it.
+                new MissionStage
+                {
+                    goal = StageGoal.Examine,
+                    objective = "FIND THE HIDDEN PASSAGE",
+                    banner = "THE WALL IS WRONG HERE",
+                    checkpoint = true,
+                    props = new[]
+                    {
+                        new StoryPropSpec
+                        {
+                            id = "panel", label = "A SLAB THAT DOES NOT MATCH",
+                            point = new Vector3(2f, 0f, -12f), shape = StoryPropShape.Passage,
+                            beatId = "mark_father", radius = 2.8f,
+                        },
+                    },
+                },
+
+                // The chamber: the second piece, and the page with the name on it.
+                new MissionStage
+                {
+                    goal = StageGoal.Examine,
+                    objective = "SEARCH THE HIDDEN CHAMBER",
+                    banner = "HIS FAMILY KEPT THIS PLACE",
+                    checkpoint = true,
+                    props = new[]
+                    {
+                        new StoryPropSpec
+                        {
+                            id = "piece2", label = "A SECOND FITTING",
+                            point = new Vector3(-4f, 0f, -14f), shape = StoryPropShape.KeyPiece,
+                            speaker = "RENZO",
+                            line = "It sits against the first. Two. Father said three.",
+                        },
+                        new StoryPropSpec
+                        {
+                            id = "sealdoc", label = "A DAMAGED RECORD",
+                            point = new Vector3(-9f, 0f, -11f), shape = StoryPropShape.CommandPost,
+                            beatId = "mark_seal", radius = 2.6f,
+                        },
+                    },
+                },
+
+                St(StageGoal.Cinematic, "", "", beatId: "mark_search"),
+
+                // Avoidable. The mission is not asking for a fight here.
+                St(StageGoal.Stealth, "GET PAST THE SEARCH PARTY", "THEY ARE ON THE PATH",
+                    spawn: new[] { N, N, A, B }, checkpoint: true),
+
+                // The two questions it refuses to answer.
+                new MissionStage
+                {
+                    goal = StageGoal.Examine,
+                    objective = "TAKE WHAT IS LEFT",
+                    banner = "ONE LAST PAGE",
+                    checkpoint = true,
+                    props = new[]
+                    {
+                        new StoryPropSpec
+                        {
+                            id = "bloodpage", label = "A BURNED PAGE",
+                            point = new Vector3(-11f, 0f, -6f), shape = StoryPropShape.Supply,
+                            speaker = "RENZO",
+                            line = "\"If they obtain the third key… Kurogawa blood… must never open it.\" Why would they need me?",
+                        },
+                        new StoryPropSpec
+                        {
+                            id = "routemap", label = "A ROUTE MAP",
+                            point = new Vector3(-6f, 0f, -3f), shape = StoryPropShape.Marker,
+                            speaker = "RENZO",
+                            line = "Another path, deeper in, and marked sealed. Two pieces in my hand. So where is the third?",
+                        },
+                    },
+                },
+
+                St(StageGoal.Cinematic, "", "", beatId: "mark_end"),
+            };
+            EditorUtility.SetDirty(m8m);
+
+            var m7b = P_("S07_BrokenHouse");
+            m7b.id = 7; m7b.missionName = "THE BROKEN HOUSE"; m7b.missionType = "INVESTIGATION";
+            m7b.marsh = false; m7b.baseShards = 4;
+            m7b.applyTheme = true; m7b.theme = Core.EnvThemeId.BurningVillage;
+            m7b.briefing = "The map marks the one place Renzo has been avoiding since he came home: his own house.";
+            m7b.debrief = "Three things that must never be brought together. One is already taken. One was his family's. The third is a sentence his father did not finish — and the second is in Renzo's hand.";
+            m7b.dressing = new[] { DressingKind.BurnedHome, DressingKind.AbandonedWeapons,
+                DressingKind.EmptyHome, DressingKind.BloodTrail };
+            m7b.ruinedVillage = true;
+            m7b.challenge = MissionChallenge.NoAlarm; m7b.challengeShards = 3;
+            m7b.stages = new[]
+            {
+                St(StageGoal.Cinematic, "", "", beatId: "broken_open"),
+
+                // The house, at walking pace. Two of these are memories.
+                new MissionStage
+                {
+                    goal = StageGoal.Examine,
+                    objective = "WALK THROUGH THE RUINS",
+                    banner = "YOUR HOUSE",
+                    checkpoint = true,
+                    props = new[]
+                    {
+                        new StoryPropSpec
+                        {
+                            id = "courtyard", label = "THE COURTYARD",
+                            point = new Vector3(-4f, 0f, 11f), shape = StoryPropShape.Homestead,
+                            beatId = "broken_training", radius = 2.8f,
+                        },
+                        new StoryPropSpec
+                        {
+                            id = "post7", label = "THE TRAINING POST",
+                            point = new Vector3(3f, 0f, 14f), shape = StoryPropShape.TrainingPost,
+                            beatId = "broken_post", radius = 2.6f,
+                        },
+                        new StoryPropSpec
+                        {
+                            id = "beam", label = "THE FAMILY MARK",
+                            point = new Vector3(9f, 0f, 10f), shape = StoryPropShape.Shrine,
+                            speaker = "RENZO",
+                            line = "Our crest, cut into the beam. And under it a second mark — pointing at the ground behind the shrine. Father…",
+                        },
+                    },
+                },
+
+                // The arrangement. Not a puzzle to solve: a thing to notice.
+                new MissionStage
+                {
+                    goal = StageGoal.Examine,
+                    objective = "FIND WHAT THE MARK POINTS AT",
+                    banner = "IT WAS NOT DESTROYED",
+                    props = new[]
+                    {
+                        new StoryPropSpec
+                        {
+                            id = "arrange", label = "STONE, POST, BEAM",
+                            point = new Vector3(11f, 0f, 3f), shape = StoryPropShape.Cache,
+                            speaker = "RENZO",
+                            line = "The stone, the post and the beam line up. Nothing falls like that. This wasn't destroyed here — it was hidden.",
+                        },
+                    },
+                },
+
+                // The letter.
+                new MissionStage
+                {
+                    goal = StageGoal.Examine,
+                    objective = "OPEN WHAT HE HID",
+                    banner = "THE CACHE",
+                    checkpoint = true,
+                    props = new[]
+                    {
+                        new StoryPropSpec
+                        {
+                            id = "cache7", label = "A SEALED LETTER",
+                            point = new Vector3(13f, 0f, -1f), shape = StoryPropShape.Cache,
+                            beatId = "broken_letter", radius = 2.6f,
+                        },
+                    },
+                },
+
+                St(StageGoal.Cinematic, "", "", beatId: "broken_search"),
+
+                // They followed him home. One fight, in the ruins.
+                St(StageGoal.Wave, "THEY FOLLOWED YOU", "IN YOUR HOUSE",
+                    spawn: new[] { N, N, A, A, B }, checkpoint: true),
+
+                // Back to the cache for the thing under the letter.
+                new MissionStage
+                {
+                    goal = StageGoal.Examine,
+                    objective = "GO BACK TO THE CACHE",
+                    banner = "SOMETHING UNDER THE LETTER",
+                    props = new[]
+                    {
+                        new StoryPropSpec
+                        {
+                            id = "keypiece", label = "WORKED METAL",
+                            point = new Vector3(13f, 0f, -1f), shape = StoryPropShape.KeyPiece,
+                            beatId = "broken_key", radius = 2.4f,
+                        },
+                    },
+                },
+
+                new MissionStage
+                {
+                    goal = StageGoal.Examine,
+                    objective = "READ THE FAMILY MAP",
+                    props = new[]
+                    {
+                        new StoryPropSpec
+                        {
+                            id = "fammap", label = "THE FAMILY MAP",
+                            point = new Vector3(9f, 0f, -6f), shape = StoryPropShape.Marker,
+                            speaker = "RENZO",
+                            line = "A road drawn by hand, going up. Cut beside it: \"when the mountain opens, water remembers the path\". And a third mark I don't know.",
+                        },
+                    },
+                },
+
+                St(StageGoal.Cinematic, "", "", beatId: "broken_end"),
+            };
+            EditorUtility.SetDirty(m7b);
+
+            var m6k = P_("S06_HouseOfKawai");
+            m6k.id = 6; m6k.missionName = "THE HOUSE OF KAWAI"; m6k.missionType = "INVESTIGATION";
+            m6k.marsh = false; m6k.baseShards = 3;
+            m6k.applyTheme = true; m6k.theme = Core.EnvThemeId.VillageDawn;
+            m6k.briefing = "The old road out of the valley passes a house the Kurogawa name still means something in. Somebody has already been through it.";
+            m6k.debrief = "His father kept a list of every family he moved south, a store of medicine and children's clothes for people who were not his, and a letter that stops mid-sentence.";
+            m6k.dressing = new[] { DressingKind.BurnedHome, DressingKind.EmptyHome,
+                DressingKind.DestroyedCart, DressingKind.MissingNotice };
+            m6k.challenge = MissionChallenge.NoAlarm; m6k.challengeShards = 2;
+            m6k.stages = new[]
+            {
+                St(StageGoal.Cinematic, "", "", beatId: "kawai_open"),
+
+                // The house. Three things, and none of them are about the enemy.
+                new MissionStage
+                {
+                    goal = StageGoal.Examine,
+                    objective = "SEARCH THE HOUSE OF KAWAI",
+                    banner = "NOBODY HAS LIVED HERE IN YEARS",
+                    checkpoint = true,
+                    props = new[]
+                    {
+                        new StoryPropSpec
+                        {
+                            id = "ledger6", label = "AN OLD LEDGER",
+                            point = new Vector3(-8f, 0f, 11f), shape = StoryPropShape.Homestead,
+                            speaker = "RENZO",
+                            line = "Names. Forty of them, and where each family was sent. He was keeping track of everyone.",
+                        },
+                        new StoryPropSpec
+                        {
+                            id = "storebox", label = "A STORAGE BOX",
+                            point = new Vector3(-2f, 0f, 15f), shape = StoryPropShape.Supply,
+                            speaker = "RENZO",
+                            line = "Medicine. Bandages. Children's clothes, sized for people who aren't his. He was preparing for something.",
+                        },
+                        new StoryPropSpec
+                        {
+                            id = "wallmark", label = "A MARK ON THE POST",
+                            point = new Vector3(5f, 0f, 13f), shape = StoryPropShape.Shrine,
+                            speaker = "RENZO",
+                            line = "Our crest. And cut beside it, one I don't know — but I know what it means. Shelter.",
+                        },
+                    },
+                },
+
+                // The letter he hid rather than sent, and the memory under it.
+                new MissionStage
+                {
+                    goal = StageGoal.Examine,
+                    objective = "FIND WHERE HE HID THINGS",
+                    banner = "HE HID THINGS WELL",
+                    props = new[]
+                    {
+                        new StoryPropSpec
+                        {
+                            id = "hidden", label = "A FOLDED LETTER",
+                            point = new Vector3(9f, 0f, 9f), shape = StoryPropShape.CommandPost,
+                            beatId = "kawai_father", radius = 2.6f,
+                            speaker = "RENZO",
+                            line = "\"If they come, take the families south. Do not let them reach the mountain.\"",
+                        },
+                    },
+                },
+
+                // Somebody has been through here, and not ten years ago.
+                new MissionStage
+                {
+                    goal = StageGoal.Examine,
+                    objective = "SOMEBODY SEARCHED THIS PLACE",
+                    banner = "FRESH BOOTPRINTS",
+                    props = new[]
+                    {
+                        new StoryPropSpec
+                        {
+                            id = "searched", label = "A BROKEN LOCK",
+                            point = new Vector3(13f, 0f, 4f), shape = StoryPropShape.Tracks,
+                            speaker = "RENZO", line = "Lock's been forced. This week. They were here.",
+                        },
+                    },
+                },
+
+                // What they did not find.
+                new MissionStage
+                {
+                    goal = StageGoal.Examine,
+                    objective = "FIND WHAT THEY WERE LOOKING FOR",
+                    banner = "THEY MISSED SOMETHING",
+                    checkpoint = true,
+                    props = new[]
+                    {
+                        new StoryPropSpec
+                        {
+                            id = "cache", label = "UNDER THE STONE",
+                            point = new Vector3(6f, 0f, -6f), shape = StoryPropShape.Cache,
+                            beatId = "kawai_thread", radius = 2.6f,
+                        },
+                    },
+                },
+
+                St(StageGoal.Cinematic, "", "", beatId: "kawai_letter"),
+
+                // One search party, avoidable. They are looking for records, not
+                // for him — which is its own piece of information.
+                St(StageGoal.Stealth, "THE SEARCH PARTY", "THEY CAME BACK",
+                    spawn: new[] { N, N, A, B }, checkpoint: true),
+
+                new MissionStage
+                {
+                    goal = StageGoal.Examine,
+                    objective = "READ HIS MAP",
+                    banner = "THE CACHE, AGAIN",
+                    props = new[]
+                    {
+                        new StoryPropSpec
+                        {
+                            id = "oldmap", label = "AN OLD MAP",
+                            point = new Vector3(6f, 0f, -6f), shape = StoryPropShape.Marker,
+                            speaker = "RENZO",
+                            line = "Yorune, the mountain, and one place marked that he never told anyone about. I've seen this. It's the old family road.",
+                        },
+                    },
+                },
+
+                St(StageGoal.Cinematic, "", "", beatId: "kawai_end"),
+            };
+            EditorUtility.SetDirty(m6k);
+
+            var m5t = P_("S05_TollCaptain");
+            m5t.id = 5; m5t.missionName = "THE TOLL-CAPTAIN"; m5t.missionType = "BOSS";
+            m5t.marsh = false; m5t.nightOverride = true; m5t.baseShards = 5;
+            m5t.applyTheme = true; m5t.theme = Core.EnvThemeId.Forest;
+            m5t.briefing = "The token off the runner carries a toll mark. Goro keeps a road, and a road can be walked to.";
+            m5t.debrief = "Goro is dead and he was not the one giving orders — the sealed message in his coat reports to somebody it does not name. The burned page says only that a Kurogawa refused.";
+            m5t.dressing = new[] { DressingKind.KagehiraBanners, DressingKind.DestroyedCart,
+                DressingKind.AbandonedWeapons, DressingKind.BloodTrail };
+            m5t.challenge = MissionChallenge.NoAlarm; m5t.challengeShards = 3;
+            m5t.stages = new[]
+            {
+                St(StageGoal.Cinematic, "", "", beatId: "toll_open"),
+
+                // The road he keeps. Tracking, then the post itself.
+                new MissionStage
+                {
+                    goal = StageGoal.Examine,
+                    objective = "FOLLOW GORO'S ROUTE",
+                    banner = "THE TOLL ROAD",
+                    checkpoint = true,
+                    props = new[]
+                    {
+                        new StoryPropSpec
+                        {
+                            id = "tollmark", label = "A TOLL MARKER",
+                            point = new Vector3(-6f, 0f, 14f), shape = StoryPropShape.Tracks,
+                            speaker = "RENZO", line = "Same mark as the token. This road is his.",
+                        },
+                        new StoryPropSpec
+                        {
+                            id = "barricade", label = "A BARRICADE",
+                            point = new Vector3(6f, 0f, 17f), shape = StoryPropShape.Supply,
+                            speaker = "RENZO", line = "Nothing moves along here without him knowing.",
+                        },
+                    },
+                },
+
+                // Stealth or fight — either reaches the post.
+                St(StageGoal.Stealth, "GET INTO THE CHECKPOINT", "THEY HOLD THE ROAD",
+                    spawn: new[] { P, R, B }, checkpoint: true),
+
+                // The ledger, and under it a page that survived a fire badly.
+                new MissionStage
+                {
+                    goal = StageGoal.Examine,
+                    objective = "SEARCH THE POST",
+                    banner = "HIS PAPERWORK",
+                    checkpoint = true,
+                    props = new[]
+                    {
+                        new StoryPropSpec
+                        {
+                            id = "ledger", label = "THE ROUTE LEDGER",
+                            point = new Vector3(12f, 0f, 9f), shape = StoryPropShape.CommandPost,
+                            speaker = "RENZO",
+                            line = "\"Yorune, search complete. Kurogawa, unresolved.\" And at the bottom: if the boy returns, inform the Toll-Captain. They expected me.",
+                        },
+                        new StoryPropSpec
+                        {
+                            id = "burned", label = "A BURNED PAGE",
+                            point = new Vector3(15f, 0f, 3f), shape = StoryPropShape.Supply,
+                            speaker = "RENZO",
+                            line = "Older. Half of it is ash. \"Kurogawa… refused… the village… the mountain…\" Father.",
+                        },
+                    },
+                },
+
+                St(StageGoal.Cinematic, "", "", beatId: "toll_confront"),
+
+                // PHASE 1 — control. He spawns here and survives the gate.
+                new MissionStage
+                {
+                    goal = StageGoal.BossPhase,
+                    objective = "GORO",
+                    banner = "THE TOLL-CAPTAIN",
+                    foeDef = "goro",
+                    spawn = new[] { EnemyKind.Chief },
+                    bossHealthGate = 0.62f,
+                    checkpoint = true,
+                },
+
+                St(StageGoal.Cinematic, "", "", beatId: "toll_mid"),
+
+                // PHASE 2 — pressure. No foeDef and no spawn: the same man.
+                new MissionStage
+                {
+                    goal = StageGoal.BossPhase,
+                    objective = "HE IS NOT TIRING",
+                    banner = "PRESSURE",
+                    bossHealthGate = 0.28f,
+                },
+
+                St(StageGoal.Cinematic, "", "", beatId: "toll_last"),
+
+                // PHASE 3 — he dies here, and only here.
+                St(StageGoal.BossFight, "FINISH IT", "ON ONE KNEE", checkpoint: true),
+
+                St(StageGoal.Cinematic, "", "", beatId: "toll_death"),
+
+                // What he was carrying: a report to someone the report does not name.
+                new MissionStage
+                {
+                    goal = StageGoal.Examine,
+                    objective = "SEARCH HIM",
+                    props = new[]
+                    {
+                        new StoryPropSpec
+                        {
+                            id = "sealed", label = "A SEALED MESSAGE",
+                            point = Vector3.zero, shape = StoryPropShape.Body,
+                            speaker = "RENZO",
+                            line = "\"The Kurogawa has returned. If he survives, continue the search.\" No name under it. He was reporting to somebody.",
+                        },
+                    },
+                },
+
+                St(StageGoal.Cinematic, "", "", beatId: "toll_end"),
+            };
+            EditorUtility.SetDirty(m5t);
+
+            var m4f = P_("S04_SilentForest");
+            m4f.id = 4; m4f.missionName = "THE SILENT FOREST"; m4f.missionType = "HUNT";
+            m4f.marsh = false; m4f.nightOverride = true; m4f.baseShards = 4;
+            m4f.applyTheme = true; m4f.theme = Core.EnvThemeId.Forest;
+            m4f.briefing = "The lantern line went dark behind you on the way out. Someone counted the lights and found one missing.";
+            m4f.debrief = "A stamped token off a dead runner: the toll-captain's mark. Goro is the one they report to — and he knew the Kurogawa name before Renzo said a word.";
+            m4f.dressing = new[] { DressingKind.AbandonedWeapons, DressingKind.BloodTrail,
+                DressingKind.EmptyHome, DressingKind.KagehiraBanners };
+            m4f.challenge = MissionChallenge.UnderTime; m4f.challengeShards = 3;
+            m4f.stages = new[]
+            {
+                St(StageGoal.Cinematic, "", "", beatId: "forest_open"),
+
+                // Tracking, the same verb mission 2 taught, now in the trees.
+                new MissionStage
+                {
+                    goal = StageGoal.Examine,
+                    objective = "FOLLOW THE TRAIL",
+                    banner = "INTO THE TREES",
+                    checkpoint = true,
+                    props = new[]
+                    {
+                        new StoryPropSpec
+                        {
+                            id = "prints", label = "FOOTPRINTS, LEAVING",
+                            point = new Vector3(-7f, 0f, 12f), shape = StoryPropShape.Tracks,
+                            speaker = "RENZO", line = "Going out. In a hurry.",
+                        },
+                        new StoryPropSpec
+                        {
+                            id = "blood", label = "BLOOD ON THE LEAVES",
+                            point = new Vector3(2f, 0f, 16f), shape = StoryPropShape.Tracks,
+                            speaker = "RENZO", line = "One of them is hurt.",
+                        },
+                    },
+                },
+
+                // The staging point: left in a hurry, and the map on the crate
+                // says they are moving people along one route in particular.
+                new MissionStage
+                {
+                    goal = StageGoal.Examine,
+                    objective = "SEARCH THE STAGING POINT",
+                    banner = "RECENTLY ABANDONED",
+                    checkpoint = true,
+                    props = new[]
+                    {
+                        new StoryPropSpec
+                        {
+                            id = "fire2", label = "A DEAD FIRE",
+                            point = new Vector3(12f, 0f, 14f), shape = StoryPropShape.Camp,
+                            speaker = "RENZO", line = "Doused, not burned out. They left fast.",
+                        },
+                        new StoryPropSpec
+                        {
+                            id = "patrolmap", label = "A PATROL MAP",
+                            point = new Vector3(16f, 0f, 8f), shape = StoryPropShape.Supply,
+                            speaker = "RENZO", line = "Routes all round Yorune — and one of them marked differently. They're moving people through here.",
+                        },
+                    },
+                },
+
+                // The transition out of investigation. Four, and they found him.
+                St(StageGoal.Wave, "THEY FOUND YOU", "BRANCHES, BEHIND YOU",
+                    spawn: new[] { N, N, A, B }),
+
+                // One breaks. Catching him is the mission's only lead.
+                St(StageGoal.Chase, "STOP THE RUNNER", "ONE OF THEM RAN",
+                    duration: 45f, spawn: new[] { B }),
+
+                St(StageGoal.Cinematic, "", "", beatId: "forest_runner"),
+
+                // The token: the first physical link between scattered patrols
+                // and one man.
+                new MissionStage
+                {
+                    goal = StageGoal.Examine,
+                    objective = "SEARCH THE RUNNER",
+                    props = new[]
+                    {
+                        new StoryPropSpec
+                        {
+                            id = "token", label = "A STAMPED TOKEN",
+                            point = Vector3.zero, shape = StoryPropShape.Body,
+                            speaker = "RENZO", line = "Toll-captain's mark. So you're the one they're reporting to.",
+                        },
+                    },
+                },
+
+                // The crossing: they hold this route. Stealth, or fight it.
+                St(StageGoal.Stealth, "CROSS THE GUARDED FORD", "THEY HOLD THE CROSSING",
+                    spawn: new[] { R, P, B }, checkpoint: true),
+
+                St(StageGoal.Cinematic, "", "", beatId: "forest_goro"),
+
+                // Goro. Endure, not a boss fight: the clock ends it, and he walks
+                // away on his own terms with his men covering him.
+                new MissionStage
+                {
+                    goal = StageGoal.Endure,
+                    objective = "SURVIVE HIM",
+                    banner = "GORO, THE TOLL-CAPTAIN",
+                    duration = 26f,
+                    foeDef = "goro",
+                    spawn = new[] { EnemyKind.Chief },
+                    onComplete = StageEvent.FoeWithdraws,
+                    checkpoint = true,
+                },
+
+                // Discovered, and hunted out of the forest.
+                St(StageGoal.Escape, "ESCAPE THE FOREST", "THEY ARE COMING",
+                    duration: 70f, point: new Vector3(-15f, 0f, -10f), spawn: new[] { N, A, P }),
+
+                St(StageGoal.Cinematic, "", "", beatId: "forest_end"),
+            };
+            EditorUtility.SetDirty(m4f);
+
+            var m3 = P_("S03_Lanterns");
+            m3.id = 3; m3.missionName = "THE LANTERNS"; m3.missionType = "INFILTRATION";
             m3.marsh = false; m3.nightOverride = true; m3.rain = true; m3.baseShards = 4;
-            m3.briefing = "Something is watching the terraces from the chimneys, and it has not seen you yet. Keep it that way.";
-            m3.debrief = "The banner on the last roof is a serpent eating a lantern. Nobody in Yorune has seen that mark before.";
+            m3.briefing = "The lights answer each other along the ridge. Follow them back to whoever is lighting the first one.";
+            m3.debrief = "The orders are signed with a serpent eating a lantern. Nobody in Yorune has ever seen that mark — and they are written to men who were told to expect a Kurogawa.";
             m3.dressing = new[] { DressingKind.KagehiraBanners, DressingKind.EmptyHome,
-                DressingKind.BloodTrail };
+                DressingKind.AbandonedWeapons };
             m3.challenge = MissionChallenge.NoAlarm; m3.challengeShards = 3;
             m3.stages = new[]
             {
-                St(StageGoal.Reach, "GET UP TO THE ROOFLINE", "STAY LOW", point: northWest, checkpoint: true),
-                St(StageGoal.Stealth, "THE WATCHERS, UNSEEN", "TWO ON THE CHIMNEYS", spawn: new[] { R, R },
-                    onComplete: StageEvent.LightsOut),
-                St(StageGoal.Investigate, "WHAT ARE THEY WATCHING?", "THE LANTERNS ARE OUT", count: 3),
-                St(StageGoal.Stealth, "AND THE REST OF THEM", "MORE ON THE NORTH ROOF", spawn: new[] { R, P }),
-                St(StageGoal.Assassinate, "THE ONE GIVING ORDERS", "THE SPOTTER", spawn: new[] { N }),
-                St(StageGoal.Reach, "DOWN AND OUT", "NOBODY SAW YOU", point: south, checkpoint: true),
+                St(StageGoal.Cinematic, "", "", beatId: "lanterns_open"),
+
+                // A — the first light, and the patrol below turning when it lights.
+                new MissionStage
+                {
+                    goal = StageGoal.Examine,
+                    objective = "FOLLOW THE LANTERNS",
+                    banner = "THE FIRST LIGHT",
+                    checkpoint = true,
+                    props = new[]
+                    {
+                        new StoryPropSpec
+                        {
+                            id = "lanternA", label = "THE FIRST LANTERN",
+                            point = new Vector3(-9f, 0f, 13f), shape = StoryPropShape.Lookout,
+                            beatId = "lanterns_signal", radius = 2.8f,
+                            lanternLine = new[]
+                            {
+                                new Vector3(2f, 0f, 17f),
+                                new Vector3(14f, 0f, 12f),
+                                new Vector3(19f, 0f, 2f),
+                            },
+                        },
+                    },
+                },
+
+                // B — two between here and the next light. Avoidable.
+                St(StageGoal.Stealth, "REACH THE SECOND LANTERN", "TWO ON THE PATH",
+                    spawn: new[] { R, B }, checkpoint: true),
+
+                new MissionStage
+                {
+                    goal = StageGoal.Examine,
+                    objective = "GET CLOSE ENOUGH TO HEAR THEM",
+                    banner = "TWO OF THEM, TALKING",
+                    props = new[]
+                    {
+                        new StoryPropSpec
+                        {
+                            id = "lanternB", label = "WITHIN EARSHOT",
+                            point = new Vector3(13f, 0f, 11f), shape = StoryPropShape.Marker,
+                            beatId = "lanterns_overheard", radius = 3f,
+                        },
+                    },
+                },
+
+                // C — the officer, watched from cover. No fight here on purpose.
+                new MissionStage
+                {
+                    goal = StageGoal.Examine,
+                    objective = "WATCH THE COMMAND POST",
+                    banner = "SOMEONE IS GIVING ORDERS",
+                    checkpoint = true,
+                    props = new[]
+                    {
+                        new StoryPropSpec
+                        {
+                            id = "watch", label = "COVER, ABOVE THE POST",
+                            point = new Vector3(17f, 0f, -3f), shape = StoryPropShape.Lookout,
+                            beatId = "lanterns_officer", radius = 3f,
+                        },
+                    },
+                },
+
+                // The largest stealth section so far — three, and they are awake
+                // to noise. Still avoidable; the challenge pays for going unseen.
+                St(StageGoal.Stealth, "GET INSIDE THE COMMAND POST", "THREE ON THE POST",
+                    spawn: new[] { R, B, P }, checkpoint: true),
+
+                new MissionStage
+                {
+                    goal = StageGoal.Examine,
+                    objective = "TAKE THEIR ORDERS",
+                    banner = "THE TABLE",
+                    onComplete = StageEvent.AlarmTriggered,
+                    props = new[]
+                    {
+                        new StoryPropSpec
+                        {
+                            id = "orders", label = "WRITTEN ORDERS",
+                            point = new Vector3(9f, 0f, -12f), shape = StoryPropShape.CommandPost,
+                            speaker = "RENZO",
+                            line = "\"Priority: Kurogawa. Report immediately if he appears.\" Signed with a mark I don't know.",
+                        },
+                    },
+                },
+
+                // Out, with the valley awake. Short and timed rather than a fight.
+                St(StageGoal.Escape, "GET OUT", "THEY KNOW YOU ARE HERE",
+                    duration: 55f, point: new Vector3(-14f, 0f, -8f)),
+
+                St(StageGoal.Cinematic, "", "", beatId: "lanterns_document"),
             };
             EditorUtility.SetDirty(m3);
 

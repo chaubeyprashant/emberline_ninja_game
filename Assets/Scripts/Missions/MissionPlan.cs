@@ -51,6 +51,10 @@ namespace Emberline.Missions
                  "should say what happened here without anyone narrating it.")]
         public DressingKind[] dressing = System.Array.Empty<DressingKind>();
 
+        [Tooltip("Burn the valley's village down for this mission. Yorune has been " +
+                 "ash for ten years and the generated village is a living one.")]
+        public bool ruinedVillage;
+
         [Header("Optional objective")]
         [Tooltip("A condition on the whole mission, not a stage you can skip.")]
         public MissionChallenge challenge = MissionChallenge.None;

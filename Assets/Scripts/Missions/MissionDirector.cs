@@ -50,6 +50,8 @@ namespace Emberline.Missions
                     StageGoal.Survive or StageGoal.Defend or StageGoal.Escape =>
                         $"{text} — {Mathf.CeilToInt(Mathf.Max(0f, _stageT))}s",
                     StageGoal.Investigate => $"{text} — {_progress}/{s.count}",
+                    StageGoal.Examine when s.props.Length > 1 =>
+                        $"{text} — {_progress}/{s.props.Length}",
                     StageGoal.Eliminate or StageGoal.Assassinate =>
                         $"{text} — {Mathf.Max(0, s.count - _progress)} LEFT",
                     StageGoal.Endure => $"{text} — {Mathf.CeilToInt(Mathf.Max(0f, _stageT))}s",
@@ -97,6 +99,9 @@ namespace Emberline.Missions
             MissionBounds.Configure(Vector3.zero, plan.missionRadius, plan.missionRadiusZ);
             ApplyPlanConditions(plan);
             d.Challenge = new ChallengeTracker(plan, gm);
+            // Burn the village before the dressing goes down, so the mission's own
+            // rubble lands on scorched ground rather than beside a standing house.
+            if (plan.ruinedVillage) VillageRuin.Apply(plan.id);
             MissionDressing.Build(plan, MissionBounds.LegacyHalfExtents);
             // Resume from the last checkpoint rather than the top of the mission.
             d.StageIndex = Checkpoints.Load(plan.id);
@@ -189,6 +194,10 @@ namespace Emberline.Missions
 
                 case StageGoal.Investigate:
                     SpawnClues(s.count);
+                    break;
+
+                case StageGoal.Examine:
+                    SpawnStoryProps(s);
                     break;
 
                 case StageGoal.Cinematic:
@@ -340,6 +349,10 @@ namespace Emberline.Missions
 
                 case StageGoal.Investigate:
                     return _progress >= s.count;
+
+                case StageGoal.Examine:
+                    // Every authored discovery, and any beat one of them fired.
+                    return _progress >= Mathf.Max(1, s.props.Length) && _beatDone;
 
                 case StageGoal.Stealth:
                     if (_gm != null && _gm.AlarmRaised) { /* not a fail — costs rank */ }
@@ -512,6 +525,81 @@ namespace Emberline.Missions
             return n;
         }
 
+        /// <summary>Place one authored discovery per spec, where it was authored.</summary>
+        private void SpawnStoryProps(MissionStage s)
+        {
+            _beatDone = true; // nothing pending until a prop asks for a beat
+            if (s.props == null) return;
+            _propRoot = new GameObject("StoryProps").transform;
+            foreach (var spec in s.props)
+            {
+                var placed = spec.point;
+                var flat = Walkable(placed);
+                placed = new Vector3(flat.x, Core.Ground.HeightAt(flat.x, flat.z), flat.z);
+                var copy = spec;
+                copy.point = placed;
+                StoryProp.Build(copy, _propRoot);
+            }
+            MarkNextProp();
+        }
+
+        /// <summary>
+        /// Put the objective marker on the next thing still to find. Three props
+        /// scattered across a valley with nothing pointing at them is exactly the
+        /// vagueness this mission is meant to remove — and the marker moving on
+        /// as each is found is what keeps "one clear objective" true when a stage
+        /// has more than one.
+        /// </summary>
+        private void MarkNextProp()
+        {
+            if (_marker != null) Destroy(_marker.gameObject);
+            _marker = null;
+            if (_propRoot == null) return;
+            for (var i = 0; i < _propRoot.childCount; i++)
+            {
+                var prop = _propRoot.GetChild(i).GetComponent<StoryProp>();
+                if (prop == null || prop.Taken) continue;
+                SpawnMarker(prop.transform.position, new Color(0.95f, 0.82f, 0.55f));
+                return;
+            }
+        }
+
+        private Transform _propRoot;
+
+        /// <summary>
+        /// A story prop was walked into. It speaks, and it may take the camera —
+        /// the stage does not complete until any beat it fired has finished.
+        /// </summary>
+        public void OnStoryPropFound(StoryPropSpec spec)
+        {
+            _progress++;
+            Sfx3D.Ui();
+            MarkNextProp();
+            // The signal line runs under the beat rather than inside it: the
+            // lanterns are in the world, so the cinematic camera simply finds
+            // them lighting instead of cutting to an effect.
+            if (spec.lanternLine != null && spec.lanternLine.Length > 0)
+                LanternSignal.Play(spec.lanternLine);
+            if (spec.figurePath != null && spec.figurePath.Length > 0)
+                DistantFigure.Play(spec.figurePath);
+            if (!string.IsNullOrEmpty(spec.line))
+                UI.EmberHud.Live?.SayLine(spec.speaker, spec.line);
+            else if (!string.IsNullOrEmpty(spec.label))
+                _gm?.Announce(spec.label);
+
+            if (string.IsNullOrEmpty(spec.beatId)) return;
+            var beat = Resources.Load<Story.StoryBeat>("Story/" + spec.beatId);
+            if (beat == null)
+            {
+                Debug.LogWarning($"[Mission] story prop beat '{spec.beatId}' missing");
+                return;
+            }
+            _beatDone = false;
+            CastStandIn.EnsureFor(beat);
+            var rig = SceneRefs.Cam != null ? SceneRefs.Cam.GetComponent<CameraRig>() : null;
+            _beat = CinematicDirector.Play(beat, _gm, rig, () => _beatDone = true);
+        }
+
         /// <summary>Called by a clue pickup when the player walks over it.</summary>
         public void OnClueFound()
         {
@@ -627,6 +715,14 @@ namespace Emberline.Missions
             }
             if (heard > 0) Sfx3D.Ui();
         }
+
+        /// <summary>
+        /// Where the current objective is, or null. The HUD draws an indicator for
+        /// it: a glowing ring on the ground is easy to lose behind a treeline, and
+        /// "go somewhere" is not a clear objective if the somewhere is off screen.
+        /// </summary>
+        public Vector3? ObjectivePoint =>
+            _marker != null ? _marker.position : (Vector3?)null;
 
         private void SpawnMarker(Vector3 at, Color tint)
         {

@@ -12,12 +12,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 814b8fc7fb4eb427480893eff898b203, type: 3}
   m_Name: S06_IntoTheReeds
   m_EditorClassIdentifier: Assembly-CSharp::Emberline.Missions.MissionPlan
-  id: 9
-  missionName: INTO THE FOG
+  id: 6
+  missionName: INTO THE REEDS
   missionType: SURVIVAL
   briefing: "The reeds are full of something that was not born there. Go in. Do not
     run \u2014 you will not hear them coming."
-  debrief: Through the fog, lanterns. Dozens of them. A temple.
+  debrief: They came apart like wet paper and left no bodies. Whatever they were,
+    they were made, and made here.
   marsh: 1
   nightOverride: 0
   rain: 0
@@ -42,6 +43,7 @@ MonoBehaviour:
     spawnB: 
     foeDef: 
     beatId: 
+    props: []
     bossHealthGate: 0.6
     onComplete: 8
     optional: 0
@@ -58,6 +60,7 @@ MonoBehaviour:
     spawnB: 
     foeDef: 
     beatId: 
+    props: []
     bossHealthGate: 0.6
     onComplete: 0
     optional: 0
@@ -74,6 +77,7 @@ MonoBehaviour:
     spawnB: 
     foeDef: 
     beatId: 
+    props: []
     bossHealthGate: 0.6
     onComplete: 0
     optional: 0
@@ -90,6 +94,7 @@ MonoBehaviour:
     spawnB: 
     foeDef: 
     beatId: 
+    props: []
     bossHealthGate: 0.6
     onComplete: 0
     optional: 0
@@ -106,6 +111,7 @@ MonoBehaviour:
     spawnB: 
     foeDef: 
     beatId: 
+    props: []
     bossHealthGate: 0.6
     onComplete: 0
     optional: 0
@@ -122,12 +128,14 @@ MonoBehaviour:
     spawnB: 
     foeDef: 
     beatId: 
+    props: []
     bossHealthGate: 0.6
     onComplete: 0
     optional: 0
     bonusShards: 1
     checkpoint: 0
   dressing: 040000000500000003000000
+  ruinedVillage: 0
   challenge: 5
   challengeSeconds: 210
   challengeShards: 3

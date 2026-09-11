@@ -1,0 +1,316 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 814b8fc7fb4eb427480893eff898b203, type: 3}
+  m_Name: S09_GirlInRed
+  m_EditorClassIdentifier: Assembly-CSharp::Emberline.Missions.MissionPlan
+  id: 9
+  missionName: THE GIRL IN RED
+  missionType: INVESTIGATION
+  briefing: The route beyond the chamber runs along the ridge. Something red is caught
+    on a branch at the head of it.
+  debrief: 'Two marks cut at the overlook: the Kurogawa mark, and a newer one by
+    a hand Renzo does not know.'
+  marsh: 0
+  nightOverride: 0
+  rain: 0
+  snow: 0
+  fog: 1
+  applyTheme: 1
+  theme: 3
+  missionRadius: 0
+  missionRadiusZ: 0
+  nextReason: Somebody has been keeping her hidden. Renzo goes looking for where
+    she was taken.
+  region: MOUNTAINS
+  stages:
+  - goal: 17
+    objective: 
+    banner: 
+    count: 1
+    duration: 0
+    point: {x: 0, y: 0, z: 0}
+    spawn: 
+    pointB: {x: 0, y: 0, z: 0}
+    spawnB: 
+    foeDef: 
+    beatId: red_open
+    props: []
+    bossHealthGate: 0.6
+    onComplete: 0
+    optional: 0
+    bonusShards: 1
+    checkpoint: 0
+  - goal: 19
+    objective: FOLLOW THE RED THREAD
+    banner: CAUGHT ON A BRANCH
+    count: 1
+    duration: 0
+    point: {x: 0, y: 0, z: 0}
+    spawn: 
+    pointB: {x: 0, y: 0, z: 0}
+    spawnB: 
+    foeDef: 
+    beatId: 
+    props:
+    - id: thread1
+      label: RED THREAD
+      point: {x: -6, y: 0, z: 13}
+      shape: 3
+      speaker: RENZO
+      line: Weathered. It has been out here a while.
+      beatId: 
+      radius: 2.2
+      figurePath: []
+      lanternLine: []
+    - id: prints9
+      label: FOOTPRINTS
+      point: {x: 2, y: 0, z: 16}
+      shape: 5
+      speaker: RENZO
+      line: Grown. These aren't mine, and they aren't a soldier's.
+      beatId: 
+      radius: 2.2
+      figurePath: []
+      lanternLine: []
+    - id: thread2
+      label: A TORN FIBRE
+      point: {x: 10, y: 0, z: 13}
+      shape: 3
+      speaker: RENZO
+      line: Fresher than the first. Someone passed through here.
+      beatId: 
+      radius: 2.2
+      figurePath: []
+      lanternLine: []
+    bossHealthGate: 0.6
+    onComplete: 0
+    optional: 0
+    bonusShards: 1
+    checkpoint: 1
+  - goal: 19
+    objective: GET CLOSE ENOUGH TO HEAR THEM
+    banner: THREE OF THEM, SEARCHING
+    count: 1
+    duration: 0
+    point: {x: 0, y: 0, z: 0}
+    spawn: 
+    pointB: {x: 0, y: 0, z: 0}
+    spawnB: 
+    foeDef: 
+    beatId: 
+    props:
+    - id: listen9
+      label: WITHIN EARSHOT
+      point: {x: 15, y: 0, z: 7}
+      shape: 0
+      speaker: 
+      line: 
+      beatId: red_overheard
+      radius: 3
+      figurePath: []
+      lanternLine: []
+    bossHealthGate: 0.6
+    onComplete: 0
+    optional: 0
+    bonusShards: 1
+    checkpoint: 0
+  - goal: 17
+    objective: 
+    banner: 
+    count: 1
+    duration: 0
+    point: {x: 0, y: 0, z: 0}
+    spawn: 
+    pointB: {x: 0, y: 0, z: 0}
+    spawnB: 
+    foeDef: 
+    beatId: red_girl
+    props: []
+    bossHealthGate: 0.6
+    onComplete: 0
+    optional: 0
+    bonusShards: 1
+    checkpoint: 0
+  - goal: 19
+    objective: SEARCH THE SHELTER
+    banner: SOMEONE LIVED HERE
+    count: 1
+    duration: 0
+    point: {x: 0, y: 0, z: 0}
+    spawn: 
+    pointB: {x: 0, y: 0, z: 0}
+    spawnB: 
+    foeDef: 
+    beatId: 
+    props:
+    - id: shelter
+      label: AN OLD SHELTER
+      point: {x: 13, y: 0, z: -3}
+      shape: 6
+      speaker: RENZO
+      line: "A blanket. A bowl. Ash still warm at the edges. Someone lived here \u2014
+        recently."
+      beatId: 
+      radius: 2.2
+      figurePath: []
+      lanternLine: []
+    - id: turned
+      label: TURNED OVER
+      point: {x: 9, y: 0, z: -7}
+      shape: 7
+      speaker: RENZO
+      line: Bedding thrown aside, the latch broken from outside. They weren't looking
+        for a key. They were looking for her.
+      beatId: 
+      radius: 2.2
+      figurePath: []
+      lanternLine: []
+    bossHealthGate: 0.6
+    onComplete: 0
+    optional: 0
+    bonusShards: 1
+    checkpoint: 1
+  - goal: 19
+    objective: FIND THE RED BRACELET
+    banner: UNDER THE BEDDING
+    count: 1
+    duration: 0
+    point: {x: 0, y: 0, z: 0}
+    spawn: 
+    pointB: {x: 0, y: 0, z: 0}
+    spawnB: 
+    foeDef: 
+    beatId: 
+    props:
+    - id: bracelet
+      label: A BROKEN BRACELET
+      point: {x: 11, y: 0, z: -6}
+      shape: 3
+      speaker: 
+      line: 
+      beatId: red_bracelet
+      radius: 2.4
+      figurePath: []
+      lanternLine: []
+    bossHealthGate: 0.6
+    onComplete: 0
+    optional: 0
+    bonusShards: 1
+    checkpoint: 1
+  - goal: 7
+    objective: GET AWAY FROM THE SEARCH PARTY
+    banner: THEY CAME BACK
+    count: 1
+    duration: 0
+    point: {x: 0, y: 0, z: 0}
+    spawn: 0b0000000b000000090000000900000000000000
+    pointB: {x: 0, y: 0, z: 0}
+    spawnB: 
+    foeDef: 
+    beatId: 
+    props: []
+    bossHealthGate: 0.6
+    onComplete: 0
+    optional: 0
+    bonusShards: 1
+    checkpoint: 1
+  - goal: 19
+    objective: FOLLOW HER
+    banner: SOMEONE ON THE PATH
+    count: 1
+    duration: 0
+    point: {x: 0, y: 0, z: 0}
+    spawn: 
+    pointB: {x: 0, y: 0, z: 0}
+    spawnB: 
+    foeDef: 
+    beatId: 
+    props:
+    - id: sighting
+      label: MOVEMENT AHEAD
+      point: {x: 2, y: 0, z: -11}
+      shape: 0
+      speaker: 
+      line: 
+      beatId: 
+      radius: 2.8
+      figurePath:
+      - {x: -4, y: 0, z: -15}
+      - {x: -12, y: 0, z: -13}
+      - {x: -16, y: 0, z: -6}
+      lanternLine: []
+    bossHealthGate: 0.6
+    onComplete: 0
+    optional: 0
+    bonusShards: 1
+    checkpoint: 1
+  - goal: 19
+    objective: FIND WHERE SHE WENT
+    banner: THE OVERLOOK
+    count: 1
+    duration: 0
+    point: {x: 0, y: 0, z: 0}
+    spawn: 
+    pointB: {x: 0, y: 0, z: 0}
+    spawnB: 
+    foeDef: 
+    beatId: 
+    props:
+    - id: overlook
+      label: WHERE SHE STOOD
+      point: {x: -16, y: 0, z: -6}
+      shape: 1
+      speaker: 
+      line: 
+      beatId: red_figure
+      radius: 2.8
+      figurePath: []
+      lanternLine: []
+    - id: newmark
+      label: TWO MARKS
+      point: {x: -13, y: 0, z: -2}
+      shape: 13
+      speaker: RENZO
+      line: Our mark, cut years ago. And under it a newer one, cut by a hand I don't
+        know. Someone brought her here. Someone has been keeping her hidden.
+      beatId: 
+      radius: 2.2
+      figurePath: []
+      lanternLine: []
+    bossHealthGate: 0.6
+    onComplete: 0
+    optional: 0
+    bonusShards: 1
+    checkpoint: 0
+  - goal: 17
+    objective: 
+    banner: 
+    count: 1
+    duration: 0
+    point: {x: 0, y: 0, z: 0}
+    spawn: 
+    pointB: {x: 0, y: 0, z: 0}
+    spawnB: 
+    foeDef: 
+    beatId: red_end
+    props: []
+    bossHealthGate: 0.6
+    onComplete: 0
+    optional: 0
+    bonusShards: 1
+    checkpoint: 0
+  dressing: 020000000400000006000000
+  ruinedVillage: 0
+  challenge: 1
+  challengeSeconds: 240
+  challengeShards: 3
+  baseShards: 4

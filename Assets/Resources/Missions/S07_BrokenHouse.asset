@@ -1,0 +1,265 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 814b8fc7fb4eb427480893eff898b203, type: 3}
+  m_Name: S07_BrokenHouse
+  m_EditorClassIdentifier: Assembly-CSharp::Emberline.Missions.MissionPlan
+  id: 7
+  missionName: THE BROKEN HOUSE
+  missionType: EXPLORATION
+  briefing: 'The map marks the one place Renzo has been avoiding since he came home:
+    his own house.'
+  debrief: Worked metal with three grooves and a section missing, and a road drawn
+    by hand going up the mountain.
+  marsh: 0
+  nightOverride: 0
+  rain: 0
+  snow: 0
+  fog: 0
+  applyTheme: 1
+  theme: 8
+  missionRadius: 0
+  missionRadiusZ: 0
+  nextReason: His father left a path as well as a warning. Renzo follows it up.
+  region: RUINS
+  stages:
+  - goal: 17
+    objective: 
+    banner: 
+    count: 1
+    duration: 0
+    point: {x: 0, y: 0, z: 0}
+    spawn: 
+    pointB: {x: 0, y: 0, z: 0}
+    spawnB: 
+    foeDef: 
+    beatId: broken_open
+    props: []
+    bossHealthGate: 0.6
+    onComplete: 0
+    optional: 0
+    bonusShards: 1
+    checkpoint: 0
+  - goal: 19
+    objective: WALK THROUGH THE RUINS
+    banner: YOUR HOUSE
+    count: 1
+    duration: 0
+    point: {x: 0, y: 0, z: 0}
+    spawn: 
+    pointB: {x: 0, y: 0, z: 0}
+    spawnB: 
+    foeDef: 
+    beatId: 
+    props:
+    - id: courtyard
+      label: THE COURTYARD
+      point: {x: -4, y: 0, z: 11}
+      shape: 10
+      speaker: 
+      line: 
+      beatId: broken_training
+      radius: 2.8
+      figurePath: []
+      lanternLine: []
+    - id: post7
+      label: THE TRAINING POST
+      point: {x: 3, y: 0, z: 14}
+      shape: 2
+      speaker: 
+      line: 
+      beatId: broken_post
+      radius: 2.6
+      figurePath: []
+      lanternLine: []
+    - id: beam
+      label: THE FAMILY MARK
+      point: {x: 9, y: 0, z: 10}
+      shape: 1
+      speaker: RENZO
+      line: "Our crest, cut into the beam. And under it a second mark \u2014 pointing
+        at the ground behind the shrine. Father\u2026"
+      beatId: 
+      radius: 2.2
+      figurePath: []
+      lanternLine: []
+    bossHealthGate: 0.6
+    onComplete: 0
+    optional: 0
+    bonusShards: 1
+    checkpoint: 1
+  - goal: 19
+    objective: FIND WHAT THE MARK POINTS AT
+    banner: IT WAS NOT DESTROYED
+    count: 1
+    duration: 0
+    point: {x: 0, y: 0, z: 0}
+    spawn: 
+    pointB: {x: 0, y: 0, z: 0}
+    spawnB: 
+    foeDef: 
+    beatId: 
+    props:
+    - id: arrange
+      label: STONE, POST, BEAM
+      point: {x: 11, y: 0, z: 3}
+      shape: 11
+      speaker: RENZO
+      line: "The stone, the post and the beam line up. Nothing falls like that. This
+        wasn't destroyed here \u2014 it was hidden."
+      beatId: 
+      radius: 2.2
+      figurePath: []
+      lanternLine: []
+    bossHealthGate: 0.6
+    onComplete: 0
+    optional: 0
+    bonusShards: 1
+    checkpoint: 0
+  - goal: 19
+    objective: OPEN WHAT HE HID
+    banner: THE CACHE
+    count: 1
+    duration: 0
+    point: {x: 0, y: 0, z: 0}
+    spawn: 
+    pointB: {x: 0, y: 0, z: 0}
+    spawnB: 
+    foeDef: 
+    beatId: 
+    props:
+    - id: cache7
+      label: A SEALED LETTER
+      point: {x: 13, y: 0, z: -1}
+      shape: 11
+      speaker: 
+      line: 
+      beatId: broken_letter
+      radius: 2.6
+      figurePath: []
+      lanternLine: []
+    bossHealthGate: 0.6
+    onComplete: 0
+    optional: 0
+    bonusShards: 1
+    checkpoint: 1
+  - goal: 17
+    objective: 
+    banner: 
+    count: 1
+    duration: 0
+    point: {x: 0, y: 0, z: 0}
+    spawn: 
+    pointB: {x: 0, y: 0, z: 0}
+    spawnB: 
+    foeDef: 
+    beatId: broken_search
+    props: []
+    bossHealthGate: 0.6
+    onComplete: 0
+    optional: 0
+    bonusShards: 1
+    checkpoint: 0
+  - goal: 1
+    objective: THEY FOLLOWED YOU
+    banner: IN YOUR HOUSE
+    count: 1
+    duration: 0
+    point: {x: 0, y: 0, z: 0}
+    spawn: 0b0000000b000000090000000900000000000000
+    pointB: {x: 0, y: 0, z: 0}
+    spawnB: 
+    foeDef: 
+    beatId: 
+    props: []
+    bossHealthGate: 0.6
+    onComplete: 0
+    optional: 0
+    bonusShards: 1
+    checkpoint: 1
+  - goal: 19
+    objective: GO BACK TO THE CACHE
+    banner: SOMETHING UNDER THE LETTER
+    count: 1
+    duration: 0
+    point: {x: 0, y: 0, z: 0}
+    spawn: 
+    pointB: {x: 0, y: 0, z: 0}
+    spawnB: 
+    foeDef: 
+    beatId: 
+    props:
+    - id: keypiece
+      label: WORKED METAL
+      point: {x: 13, y: 0, z: -1}
+      shape: 12
+      speaker: 
+      line: 
+      beatId: broken_key
+      radius: 2.4
+      figurePath: []
+      lanternLine: []
+    bossHealthGate: 0.6
+    onComplete: 0
+    optional: 0
+    bonusShards: 1
+    checkpoint: 0
+  - goal: 19
+    objective: READ THE FAMILY MAP
+    banner: 
+    count: 1
+    duration: 0
+    point: {x: 0, y: 0, z: 0}
+    spawn: 
+    pointB: {x: 0, y: 0, z: 0}
+    spawnB: 
+    foeDef: 
+    beatId: 
+    props:
+    - id: fammap
+      label: THE FAMILY MAP
+      point: {x: 9, y: 0, z: -6}
+      shape: 0
+      speaker: RENZO
+      line: 'A road drawn by hand, going up. Cut beside it: "when the mountain opens,
+        water remembers the path". And a third mark I don''t know.'
+      beatId: 
+      radius: 2.2
+      figurePath: []
+      lanternLine: []
+    bossHealthGate: 0.6
+    onComplete: 0
+    optional: 0
+    bonusShards: 1
+    checkpoint: 0
+  - goal: 17
+    objective: 
+    banner: 
+    count: 1
+    duration: 0
+    point: {x: 0, y: 0, z: 0}
+    spawn: 
+    pointB: {x: 0, y: 0, z: 0}
+    spawnB: 
+    foeDef: 
+    beatId: broken_end
+    props: []
+    bossHealthGate: 0.6
+    onComplete: 0
+    optional: 0
+    bonusShards: 1
+    checkpoint: 0
+  dressing: 01000000040000000200000005000000
+  ruinedVillage: 1
+  challenge: 1
+  challengeSeconds: 240
+  challengeShards: 3
+  baseShards: 4

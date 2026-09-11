@@ -1,0 +1,87 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9f3b1ee5018f440738f3a40a8004f072, type: 3}
+  m_Name: toll_death
+  m_EditorClassIdentifier: Assembly-CSharp::Emberline.Story.StoryBeat
+  id: toll_death
+  title: YOU HAVE HIS EYES
+  shots:
+  - subject: GORO
+    camera: 0
+    duration: 3.5
+    letterbox: 1
+    speaker: 
+    line: 
+    voice: {fileID: 0}
+    applyTheme: 0
+    theme: 0
+    audio: 1
+    setState: 0
+    card: 
+    fadeOutAfter: 0
+    blackAfter: 0
+  - subject: GORO
+    camera: 0
+    duration: 3
+    letterbox: 1
+    speaker: GORO
+    line: You have his eyes.
+    voice: {fileID: 0}
+    applyTheme: 0
+    theme: 0
+    audio: 0
+    setState: 0
+    card: 
+    fadeOutAfter: 0
+    blackAfter: 0
+  - subject: RENZO
+    camera: 0
+    duration: 2.6
+    letterbox: 1
+    speaker: RENZO
+    line: Who?
+    voice: {fileID: 0}
+    applyTheme: 0
+    theme: 0
+    audio: 0
+    setState: 0
+    card: 
+    fadeOutAfter: 0
+    blackAfter: 0
+  - subject: GORO
+    camera: 2
+    duration: 3.5
+    letterbox: 1
+    speaker: GORO
+    line: Your father.
+    voice: {fileID: 0}
+    applyTheme: 0
+    theme: 0
+    audio: 0
+    setState: 0
+    card: 
+    fadeOutAfter: 0
+    blackAfter: 0
+  - subject: 
+    camera: 0
+    duration: 3
+    letterbox: 1
+    speaker: 
+    line: 
+    voice: {fileID: 0}
+    applyTheme: 0
+    theme: 0
+    audio: 0
+    setState: 0
+    card: 
+    fadeOutAfter: 1
+    blackAfter: 1.2

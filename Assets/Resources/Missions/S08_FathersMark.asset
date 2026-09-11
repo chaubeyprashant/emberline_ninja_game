@@ -1,0 +1,333 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 814b8fc7fb4eb427480893eff898b203, type: 3}
+  m_Name: S08_FathersMark
+  m_EditorClassIdentifier: Assembly-CSharp::Emberline.Missions.MissionPlan
+  id: 8
+  missionName: FATHER'S MARK
+  missionType: EXPLORATION
+  briefing: The road on the family map goes up, and it was cut by people who did
+    not want it followed.
+  debrief: A second fitting that sits against the first, and a burned page that mentions
+    Kurogawa blood.
+  marsh: 0
+  nightOverride: 0
+  rain: 0
+  snow: 0
+  fog: 1
+  applyTheme: 1
+  theme: 3
+  missionRadius: 0
+  missionRadiusZ: 0
+  nextReason: Two pieces, and no idea where the third is. Renzo goes looking for
+    it.
+  region: MOUNTAINS
+  stages:
+  - goal: 17
+    objective: 
+    banner: 
+    count: 1
+    duration: 0
+    point: {x: 0, y: 0, z: 0}
+    spawn: 
+    pointB: {x: 0, y: 0, z: 0}
+    spawnB: 
+    foeDef: 
+    beatId: mark_open
+    props: []
+    bossHealthGate: 0.6
+    onComplete: 0
+    optional: 0
+    bonusShards: 1
+    checkpoint: 0
+  - goal: 19
+    objective: FOLLOW THE OLD MOUNTAIN PATH
+    banner: THE OLD ROAD UP
+    count: 1
+    duration: 0
+    point: {x: 0, y: 0, z: 0}
+    spawn: 
+    pointB: {x: 0, y: 0, z: 0}
+    spawnB: 
+    foeDef: 
+    beatId: 
+    props:
+    - id: marker8
+      label: A BROKEN MARKER
+      point: {x: -7, y: 0, z: 12}
+      shape: 13
+      speaker: RENZO
+      line: Faded, but it's ours. Father came this way.
+      beatId: 
+      radius: 2.2
+      figurePath: []
+      lanternLine: []
+    - id: drag8
+      label: DRAG MARKS
+      point: {x: 1, y: 0, z: 16}
+      shape: 5
+      speaker: RENZO
+      line: Someone else found the path.
+      beatId: 
+      radius: 2.2
+      figurePath: []
+      lanternLine: []
+    - id: moved8
+      label: A MOVED STONE
+      point: {x: 9, y: 0, z: 14}
+      shape: 13
+      speaker: RENZO
+      line: And they're still looking.
+      beatId: 
+      radius: 2.2
+      figurePath: []
+      lanternLine: []
+    bossHealthGate: 0.6
+    onComplete: 0
+    optional: 0
+    bonusShards: 1
+    checkpoint: 1
+  - goal: 19
+    objective: INVESTIGATE THE KUROGAWA MARK
+    banner: ON THE OLD WALL
+    count: 1
+    duration: 0
+    point: {x: 0, y: 0, z: 0}
+    spawn: 
+    pointB: {x: 0, y: 0, z: 0}
+    spawnB: 
+    foeDef: 
+    beatId: 
+    props:
+    - id: wallmark8
+      label: A KUROGAWA MARK
+      point: {x: 14, y: 0, z: 9}
+      shape: 1
+      speaker: RENZO
+      line: Not a family crest. A direction. He cut it for someone who could read
+        it.
+      beatId: 
+      radius: 2.2
+      figurePath: []
+      lanternLine: []
+    bossHealthGate: 0.6
+    onComplete: 0
+    optional: 0
+    bonusShards: 1
+    checkpoint: 0
+  - goal: 19
+    objective: FOLLOW YOUR FATHER'S MARK
+    banner: THREE STONES
+    count: 1
+    duration: 0
+    point: {x: 0, y: 0, z: 0}
+    spawn: 
+    pointB: {x: 0, y: 0, z: 0}
+    spawnB: 
+    foeDef: 
+    beatId: 
+    props:
+    - id: stoneA
+      label: THE FIRST STONE
+      point: {x: 16, y: 0, z: 2}
+      shape: 13
+      speaker: RENZO
+      line: Part of a mark. A third of one.
+      beatId: 
+      radius: 2.2
+      figurePath: []
+      lanternLine: []
+    - id: stoneB
+      label: THE SECOND STONE
+      point: {x: 13, y: 0, z: -5}
+      shape: 13
+      speaker: RENZO
+      line: Another third. They line up with the grooves.
+      beatId: 
+      radius: 2.2
+      figurePath: []
+      lanternLine: []
+    - id: stoneC
+      label: THE THIRD STONE
+      point: {x: 7, y: 0, z: -9}
+      shape: 13
+      speaker: RENZO
+      line: Three stones, three grooves. That's the whole lock.
+      beatId: 
+      radius: 2.2
+      figurePath: []
+      lanternLine: []
+    bossHealthGate: 0.6
+    onComplete: 0
+    optional: 0
+    bonusShards: 1
+    checkpoint: 1
+  - goal: 19
+    objective: FIND THE HIDDEN PASSAGE
+    banner: THE WALL IS WRONG HERE
+    count: 1
+    duration: 0
+    point: {x: 0, y: 0, z: 0}
+    spawn: 
+    pointB: {x: 0, y: 0, z: 0}
+    spawnB: 
+    foeDef: 
+    beatId: 
+    props:
+    - id: panel
+      label: A SLAB THAT DOES NOT MATCH
+      point: {x: 2, y: 0, z: -12}
+      shape: 14
+      speaker: 
+      line: 
+      beatId: mark_father
+      radius: 2.8
+      figurePath: []
+      lanternLine: []
+    bossHealthGate: 0.6
+    onComplete: 0
+    optional: 0
+    bonusShards: 1
+    checkpoint: 1
+  - goal: 19
+    objective: SEARCH THE HIDDEN CHAMBER
+    banner: HIS FAMILY KEPT THIS PLACE
+    count: 1
+    duration: 0
+    point: {x: 0, y: 0, z: 0}
+    spawn: 
+    pointB: {x: 0, y: 0, z: 0}
+    spawnB: 
+    foeDef: 
+    beatId: 
+    props:
+    - id: piece2
+      label: A SECOND FITTING
+      point: {x: -4, y: 0, z: -14}
+      shape: 12
+      speaker: RENZO
+      line: It sits against the first. Two. Father said three.
+      beatId: 
+      radius: 2.2
+      figurePath: []
+      lanternLine: []
+    - id: sealdoc
+      label: A DAMAGED RECORD
+      point: {x: -9, y: 0, z: -11}
+      shape: 9
+      speaker: 
+      line: 
+      beatId: mark_seal
+      radius: 2.6
+      figurePath: []
+      lanternLine: []
+    bossHealthGate: 0.6
+    onComplete: 0
+    optional: 0
+    bonusShards: 1
+    checkpoint: 1
+  - goal: 17
+    objective: 
+    banner: 
+    count: 1
+    duration: 0
+    point: {x: 0, y: 0, z: 0}
+    spawn: 
+    pointB: {x: 0, y: 0, z: 0}
+    spawnB: 
+    foeDef: 
+    beatId: mark_search
+    props: []
+    bossHealthGate: 0.6
+    onComplete: 0
+    optional: 0
+    bonusShards: 1
+    checkpoint: 0
+  - goal: 7
+    objective: GET PAST THE SEARCH PARTY
+    banner: THEY ARE ON THE PATH
+    count: 1
+    duration: 0
+    point: {x: 0, y: 0, z: 0}
+    spawn: 0b0000000b0000000900000000000000
+    pointB: {x: 0, y: 0, z: 0}
+    spawnB: 
+    foeDef: 
+    beatId: 
+    props: []
+    bossHealthGate: 0.6
+    onComplete: 0
+    optional: 0
+    bonusShards: 1
+    checkpoint: 1
+  - goal: 19
+    objective: TAKE WHAT IS LEFT
+    banner: ONE LAST PAGE
+    count: 1
+    duration: 0
+    point: {x: 0, y: 0, z: 0}
+    spawn: 
+    pointB: {x: 0, y: 0, z: 0}
+    spawnB: 
+    foeDef: 
+    beatId: 
+    props:
+    - id: bloodpage
+      label: A BURNED PAGE
+      point: {x: -11, y: 0, z: -6}
+      shape: 7
+      speaker: RENZO
+      line: "\"If they obtain the third key\u2026 Kurogawa blood\u2026 must never
+        open it.\" Why would they need me?"
+      beatId: 
+      radius: 2.2
+      figurePath: []
+      lanternLine: []
+    - id: routemap
+      label: A ROUTE MAP
+      point: {x: -6, y: 0, z: -3}
+      shape: 0
+      speaker: RENZO
+      line: Another path, deeper in, and marked sealed. Two pieces in my hand. So
+        where is the third?
+      beatId: 
+      radius: 2.2
+      figurePath: []
+      lanternLine: []
+    bossHealthGate: 0.6
+    onComplete: 0
+    optional: 0
+    bonusShards: 1
+    checkpoint: 1
+  - goal: 17
+    objective: 
+    banner: 
+    count: 1
+    duration: 0
+    point: {x: 0, y: 0, z: 0}
+    spawn: 
+    pointB: {x: 0, y: 0, z: 0}
+    spawnB: 
+    foeDef: 
+    beatId: mark_end
+    props: []
+    bossHealthGate: 0.6
+    onComplete: 0
+    optional: 0
+    bonusShards: 1
+    checkpoint: 0
+  dressing: 040000000600000002000000
+  ruinedVillage: 0
+  challenge: 1
+  challengeSeconds: 240
+  challengeShards: 3
+  baseShards: 4

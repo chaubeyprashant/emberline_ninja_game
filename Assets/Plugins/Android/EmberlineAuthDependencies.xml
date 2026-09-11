@@ -1,0 +1,15 @@
+// Google Credential Manager dependencies for Google Sign-In.
+// These are resolved by Unity's External Dependency Manager (EDM4U).
+// If EDM4U is not installed, add these to your mainTemplate.gradle manually:
+//
+//   implementation 'androidx.credentials:credentials:1.3.0'
+//   implementation 'androidx.credentials:credentials-play-services-auth:1.3.0'
+//   implementation 'com.google.android.libraries.identity.googleid:googleid:1.1.1'
+
+<dependencies>
+  <androidPackages>
+    <androidPackage spec="androidx.credentials:credentials:1.3.0" />
+    <androidPackage spec="androidx.credentials:credentials-play-services-auth:1.3.0" />
+    <androidPackage spec="com.google.android.libraries.identity.googleid:googleid:1.1.1" />
+  </androidPackages>
+</dependencies>

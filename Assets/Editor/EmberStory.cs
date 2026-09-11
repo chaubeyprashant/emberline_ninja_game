@@ -171,6 +171,637 @@ namespace Emberline.EditorTools
                 S("KAGACHI", ShotCamera.Handheld, 3f, "KAGACHI", "…Weak."),
                 S("", ShotCamera.Hold, 1f));
 
+            // ---- MISSION 10 — THE SERPENT ------------------------------------
+            // The payoff of the act. Aiko is confirmed alive by paperwork before
+            // anyone says it out loud, Kagehira is confirmed by a signature before
+            // he is seen, and he is never reachable. He explains almost nothing:
+            // he needed a Kurogawa, and Renzo's father refused him. That is all.
+
+            Make("serpent_open", "THAT WAS YOU",
+                S("RENZO", ShotCamera.PushIn, 4f, audio: ShotAudio.Wind,
+                    theme: EnvThemeId.Mountain),
+                S("RENZO", ShotCamera.Hold, 3.4f, "RENZO", "That was you."),
+                S("RENZO", ShotCamera.Hold, 3.2f, "RENZO", "I know it."),
+                S("", ShotCamera.Wide, 4.5f, audio: ShotAudio.Silence),
+                S("RENZO", ShotCamera.Hold, 3.4f, "RENZO", "They're still moving."),
+                S("", ShotCamera.Hold, 1f, fadeAfter: true, blackAfter: 0.6f));
+
+            // The line nobody explains.
+            Make("serpent_overheard", "BLOOD REMEMBERS",
+                S("", ShotCamera.Hold, 2.4f, "SOLDIER", "When does she leave?", audio: ShotAudio.Silence),
+                S("", ShotCamera.Hold, 2.6f, "SOLDIER", "When the commander arrives."),
+                S("", ShotCamera.Hold, 2.2f, "SOLDIER", "And the Kurogawa?"),
+                S("", ShotCamera.Hold, 2.2f, "SOLDIER", "He'll come."),
+                S("", ShotCamera.Hold, 2.4f, "SOLDIER", "How do you know?"),
+                S("", ShotCamera.PushIn, 3.4f, "SOLDIER", "Because blood remembers."),
+                S("RENZO", ShotCamera.Hold, 3.4f, "RENZO", "You knew I'd come."),
+                S("RENZO", ShotCamera.PushIn, 3.6f, "RENZO", "You wanted me to."),
+                S("", ShotCamera.Hold, 1.2f, fadeAfter: true, blackAfter: 0.8f));
+
+            // He lets himself believe it.
+            Make("serpent_alive", "YOU'RE ALIVE",
+                S("RENZO", ShotCamera.PushIn, 4f, audio: ShotAudio.Silence),
+                S("RENZO", ShotCamera.Hold, 3.2f, "RENZO", "She was here."),
+                S("RENZO", ShotCamera.Hold, 3.2f, "RENZO", "Recently."),
+                S("RENZO", ShotCamera.Hold, 4.5f, "RENZO", "You're alive.",
+                    audio: ShotAudio.MusicSoft),
+                S("", ShotCamera.Hold, 1.6f, fadeAfter: true, blackAfter: 1f));
+
+            // The ridge. He is never close, never fully turned, and never fought.
+            Make("serpent_ridge", "I NEEDED A KUROGAWA",
+                S("", ShotCamera.Wide, 5f, audio: ShotAudio.Wind),
+                S("RENZO", ShotCamera.Hold, 2.6f, "RENZO", "Aiko!"),
+                S("", ShotCamera.Hold, 3.5f, audio: ShotAudio.Silence),
+                S("", ShotCamera.SlowDolly, 4f, "KAGACHI", "Leave him."),
+                S("", ShotCamera.Hold, 3.4f, "KAGACHI", "He will come."),
+                S("RENZO", ShotCamera.PushIn, 3f, "RENZO", "Kagehira!"),
+                S("KAGACHI", ShotCamera.Hold, 3.6f, "KAGACHI", "Renzo Kurogawa."),
+                S("KAGACHI", ShotCamera.Hold, 3.4f, "KAGACHI", "You took your time."),
+                S("RENZO", ShotCamera.Hold, 3f, "RENZO", "Where is my sister?"),
+                S("KAGACHI", ShotCamera.Hold, 3.4f, "KAGACHI", "Where she has always been."),
+                S("RENZO", ShotCamera.Hold, 3f, "RENZO", "You kept her alive."),
+                S("KAGACHI", ShotCamera.Hold, 2.6f, "KAGACHI", "Of course."),
+                S("KAGACHI", ShotCamera.PushIn, 4f, "KAGACHI", "I needed a Kurogawa.",
+                    audio: ShotAudio.Sting),
+                S("RENZO", ShotCamera.Hold, 2.8f, "RENZO", "You burned Yorune."),
+                S("KAGACHI", ShotCamera.Hold, 3.2f, "KAGACHI", "Your father made his choice."),
+                S("RENZO", ShotCamera.Hold, 2.6f, "RENZO", "You killed them."),
+                S("KAGACHI", ShotCamera.Hold, 3f, "KAGACHI", "Your father refused."),
+                S("RENZO", ShotCamera.Hold, 2.6f, "RENZO", "And Aiko?"),
+                S("KAGACHI", ShotCamera.Hold, 3.4f, "KAGACHI", "She was never the target."),
+                S("RENZO", ShotCamera.Hold, 2.8f, "RENZO", "Then what do you want?"),
+                S("KAGACHI", ShotCamera.Hold, 4f, "KAGACHI", "What your father refused to give me."),
+                S("KAGACHI", ShotCamera.SlowDolly, 3.4f, "KAGACHI", "Come to the mountain."),
+                S("KAGACHI", ShotCamera.Hold, 3.6f, "KAGACHI", "If you want your sister."),
+                S("", ShotCamera.Wide, 4f, fadeAfter: true, blackAfter: 1.5f));
+
+            Make("serpent_end", "TEN YEARS",
+                S("RENZO", ShotCamera.Hold, 4f, audio: ShotAudio.Wind),
+                S("RENZO", ShotCamera.Hold, 3.4f, "RENZO", "Ten years."),
+                S("RENZO", ShotCamera.PushIn, 4f, "RENZO", "You waited ten years."),
+                S("", ShotCamera.Wide, 4f, audio: ShotAudio.MusicDark),
+                S("RENZO", ShotCamera.Hold, 3.6f, "RENZO", "I'm coming."),
+                S("", ShotCamera.Hold, 2.5f, fadeAfter: true, blackAfter: 2f,
+                    card: "THE SERPENT"));
+
+            // ---- MISSION 9 — THE GIRL IN RED ---------------------------------
+            // The turn. Renzo has believed his sister died in the fire since the
+            // first mission; this one gives him evidence and refuses him proof.
+            // She is never named by anyone but him, never speaks, and is never
+            // shown clearly — the mission ends on a question, not an answer.
+
+            Make("red_open", "FOLLOW THE RED THREAD",
+                S("RENZO", ShotCamera.OverShoulder, 3.5f, audio: ShotAudio.Wind,
+                    theme: EnvThemeId.Mountain),
+                S("RENZO", ShotCamera.PushIn, 4f, audio: ShotAudio.Silence),
+                S("RENZO", ShotCamera.Hold, 4f, "RENZO", "No…"),
+                S("", ShotCamera.Hold, 1.8f, blackAfter: 0.7f),
+                // The memory is four lines and gives nothing away.
+                S("AIKO", ShotCamera.Handheld, 2.6f, audio: ShotAudio.Birds,
+                    theme: EnvThemeId.VillageDawn),
+                S("", ShotCamera.Hold, 2.2f, "AIKO", "You'll forget me."),
+                S("", ShotCamera.Hold, 2.2f, "REN", "I won't."),
+                S("", ShotCamera.Hold, 2f, "AIKO", "Promise?"),
+                S("", ShotCamera.Hold, 2.2f, "REN", "Promise."),
+                S("", ShotCamera.Hold, 1.4f, fadeAfter: true, blackAfter: 1.2f),
+                S("RENZO", ShotCamera.Hold, 3.6f, "RENZO", "I remember.", audio: ShotAudio.Wind));
+
+            // The word that changes the mission is "her".
+            Make("red_overheard", "DID YOU FIND HER",
+                S("", ShotCamera.Hold, 2.4f, "SOLDIER", "Did you find her?", audio: ShotAudio.Silence),
+                S("", ShotCamera.Hold, 2f, "SOLDIER", "No."),
+                S("", ShotCamera.Hold, 2.2f, "SOLDIER", "Then keep looking."),
+                S("", ShotCamera.Hold, 2.8f, "SOLDIER", "The girl couldn't have gone far."),
+                S("RENZO", ShotCamera.PushIn, 3.5f, audio: ShotAudio.Silence),
+                S("", ShotCamera.Hold, 2.6f, "SOLDIER", "The trail came from the old route."),
+                S("", ShotCamera.Hold, 2.4f, "SOLDIER", "Then she used it."),
+                S("", ShotCamera.Hold, 2.6f, "SOLDIER", "Why would she come here?"),
+                S("", ShotCamera.Hold, 2.8f, "SOLDIER", "Because she knows the mountain."),
+                S("", ShotCamera.Hold, 2.6f, "SOLDIER", "Does the commander know?"),
+                S("", ShotCamera.Hold, 3f, "SOLDIER", "He knows everything that matters."),
+                S("", ShotCamera.Hold, 1.4f, fadeAfter: true, blackAfter: 0.8f));
+
+            Make("red_girl", "NOT A GHOST",
+                S("RENZO", ShotCamera.Hold, 3f, audio: ShotAudio.Silence),
+                S("RENZO", ShotCamera.Hold, 2.8f, "RENZO", "She."),
+                S("RENZO", ShotCamera.Hold, 3.4f, "RENZO", "They were looking for a girl."),
+                S("RENZO", ShotCamera.PushIn, 3.4f, "RENZO", "Not a ghost."),
+                S("RENZO", ShotCamera.Hold, 3.2f, "RENZO", "A girl."),
+                S("", ShotCamera.Hold, 1.2f, fadeAfter: true, blackAfter: 0.8f));
+
+            // The strongest moment in the act. Silence first; music only after.
+            Make("red_bracelet", "THEN DON'T LOSE ME",
+                S("RENZO", ShotCamera.PushIn, 4f, audio: ShotAudio.Silence),
+                S("RENZO", ShotCamera.Hold, 4.5f, audio: ShotAudio.Silence),
+                S("", ShotCamera.Hold, 1.6f, blackAfter: 0.7f),
+                S("AIKO", ShotCamera.Handheld, 2.6f, audio: ShotAudio.Birds,
+                    theme: EnvThemeId.VillageDawn),
+                S("", ShotCamera.Hold, 2.2f, "AIKO", "Don't lose it."),
+                S("", ShotCamera.Hold, 2.4f, "REN", "You gave it to me."),
+                S("AIKO", ShotCamera.PushIn, 3f, "AIKO", "Then don't lose me."),
+                S("", ShotCamera.Hold, 1.6f, fadeAfter: true, blackAfter: 1.5f),
+                S("RENZO", ShotCamera.Hold, 3.8f, "RENZO", "I didn't.", audio: ShotAudio.Silence),
+                S("RENZO", ShotCamera.PushIn, 4.5f, "RENZO", "I thought I lost you.",
+                    audio: ShotAudio.MusicSoft),
+                S("", ShotCamera.Hold, 2f, fadeAfter: true, blackAfter: 1.2f));
+
+            // She turns slightly. That is all the camera is allowed.
+            Make("red_figure", "IT WAS HERS",
+                S("", ShotCamera.Wide, 4f, audio: ShotAudio.Wind),
+                S("RENZO", ShotCamera.Hold, 2.6f, "RENZO", "Wait."),
+                S("", ShotCamera.Hold, 3.5f, audio: ShotAudio.Silence),
+                S("RENZO", ShotCamera.Hold, 3f, "RENZO", "Who are you?"),
+                S("", ShotCamera.SlowDolly, 3.5f),
+                S("RENZO", ShotCamera.PushIn, 3.6f, "RENZO", "That bracelet."),
+                S("RENZO", ShotCamera.Hold, 3.4f, "RENZO", "It was hers."),
+                S("", ShotCamera.Hold, 1.4f, fadeAfter: true, blackAfter: 1f));
+
+            Make("red_end", "AIKO",
+                S("RENZO", ShotCamera.Hold, 4f, audio: ShotAudio.Wind),
+                S("RENZO", ShotCamera.PushIn, 4f, audio: ShotAudio.Silence),
+                S("", ShotCamera.Hold, 1.6f, blackAfter: 0.6f),
+                S("AIKO", ShotCamera.Handheld, 2f, audio: ShotAudio.Birds,
+                    theme: EnvThemeId.VillageDawn),
+                S("", ShotCamera.Hold, 1.8f, "AIKO", "Promise?"),
+                S("", ShotCamera.Hold, 1.4f, fadeAfter: true, blackAfter: 1.4f),
+                S("RENZO", ShotCamera.Hold, 4f, "RENZO", "If that was you…",
+                    audio: ShotAudio.MusicSoft),
+                S("RENZO", ShotCamera.Hold, 4.2f, "RENZO", "Then where have you been?"),
+                S("RENZO", ShotCamera.PushIn, 4.5f, "RENZO", "Aiko."),
+                S("", ShotCamera.Hold, 2.5f, fadeAfter: true, blackAfter: 2f,
+                    card: "THE GIRL IN RED"));
+
+            // ---- MISSION 8 — FATHER'S MARK -----------------------------------
+            // The name lands here, and only the name. The Black Seal exists, it
+            // takes three keys, the Kurogawa were one of the three hands — and
+            // the mission ends on two questions it refuses to answer: where the
+            // third key is, and why they would need Renzo's blood.
+
+            Make("mark_open", "THREE PIECES",
+                S("RENZO", ShotCamera.PushIn, 4f, audio: ShotAudio.Wind,
+                    theme: EnvThemeId.Mountain),
+                S("RENZO", ShotCamera.Hold, 3f, "RENZO", "Three grooves."),
+                S("RENZO", ShotCamera.Hold, 3.2f, "RENZO", "Three pieces."),
+                S("", ShotCamera.Wide, 4.5f, audio: ShotAudio.Silence),
+                S("RENZO", ShotCamera.Hold, 4f, "RENZO", "What were you trying to open?"),
+                S("", ShotCamera.Hold, 1f, fadeAfter: true, blackAfter: 0.6f));
+
+            // Why the marks are hidden, in his father's own words, and the only
+            // thing he ever said about what is at the end of them.
+            Make("mark_father", "SOME PATHS SHOULD ONLY BE FOUND",
+                S("RENZO", ShotCamera.Hold, 2.6f, audio: ShotAudio.Silence, blackAfter: 0.8f),
+                S("FATHER", ShotCamera.SlowDolly, 3.6f, audio: ShotAudio.Wind,
+                    theme: EnvThemeId.VillageDawn),
+                S("", ShotCamera.Hold, 2.6f, "REN", "Why hide the signs?"),
+                S("FATHER", ShotCamera.Hold, 4f, "FATHER", "Because some paths should only be found by those who know where to look."),
+                S("", ShotCamera.Hold, 2.8f, "REN", "What if someone else finds them?"),
+                S("FATHER", ShotCamera.Hold, 3.6f, "FATHER", "Then you make sure they never reach the end."),
+                S("", ShotCamera.Hold, 2.4f, "REN", "What's at the end?"),
+                S("FATHER", ShotCamera.PushIn, 4.2f, "FATHER", "Something that should never belong to one man."),
+                S("", ShotCamera.Hold, 1.4f, fadeAfter: true, blackAfter: 1.2f),
+                S("RENZO", ShotCamera.Hold, 4f, "RENZO", "You knew this would happen.",
+                    audio: ShotAudio.Silence));
+
+            // The reveal. A name and a rule, nothing about what it does.
+            Make("mark_seal", "THE BLACK SEAL",
+                S("RENZO", ShotCamera.PushIn, 3.4f, audio: ShotAudio.Silence),
+                S("", ShotCamera.Hold, 3.2f, "FATHER", "The Black Seal must remain closed."),
+                S("", ShotCamera.Hold, 3.4f, "FATHER", "Three keys were entrusted to three hands."),
+                S("", ShotCamera.Hold, 3.4f, "FATHER", "The mountain must never be opened by force."),
+                S("", ShotCamera.Hold, 3.6f, "FATHER", "If the keys are brought together—"),
+                S("RENZO", ShotCamera.Hold, 3.5f, "RENZO", "Black Seal.", audio: ShotAudio.Sting),
+                S("RENZO", ShotCamera.PushIn, 4f, "RENZO", "That's what you were protecting."),
+                S("", ShotCamera.Hold, 1.5f, fadeAfter: true, blackAfter: 1f));
+
+            Make("mark_search", "THE FAMILY MARK AND THE KEY",
+                S("", ShotCamera.Hold, 2.4f, "SOLDIER", "The trail ends here.", audio: ShotAudio.Silence),
+                S("", ShotCamera.Hold, 2.4f, "SOLDIER", "Search the mountain."),
+                S("", ShotCamera.Hold, 2.8f, "SOLDIER", "We're looking for the family mark."),
+                S("", ShotCamera.Hold, 2.4f, "SOLDIER", "And the key."),
+                S("", ShotCamera.PushIn, 3.2f, "SOLDIER", "If you find either, report immediately."),
+                S("RENZO", ShotCamera.Hold, 2.6f, fadeAfter: true, blackAfter: 0.6f));
+
+            Make("mark_end", "I'LL FIND THE THIRD",
+                S("RENZO", ShotCamera.OverShoulder, 4f, audio: ShotAudio.Wind),
+                S("", ShotCamera.Wide, 5f, audio: ShotAudio.Silence),
+                S("RENZO", ShotCamera.Hold, 3.4f, "RENZO", "Father knew they would come."),
+                S("RENZO", ShotCamera.Hold, 3.2f, "RENZO", "He hid the path."),
+                S("RENZO", ShotCamera.Hold, 3.2f, "RENZO", "He hid the keys."),
+                S("", ShotCamera.SlowDolly, 4.5f, audio: ShotAudio.MusicDark),
+                S("RENZO", ShotCamera.Hold, 3.6f, "RENZO", "But he couldn't hide everything."),
+                S("RENZO", ShotCamera.PushIn, 3.4f, "RENZO", "I'll find the third."),
+                S("", ShotCamera.Hold, 2.5f, fadeAfter: true, blackAfter: 2f,
+                    card: "FATHER'S MARK"));
+
+            // ---- MISSION 7 — THE BROKEN HOUSE --------------------------------
+            // Renzo searches his own home. Two memories, both short, both of a
+            // life rather than of the fire. The escalation is the letter: three
+            // things that must never be brought together, one already taken, one
+            // entrusted to his family — and the third a sentence his father did
+            // not finish. The words Black Seal are not spoken; that is mission 8.
+
+            Make("broken_open", "THE BROKEN HOUSE",
+                S("", ShotCamera.Wide, 5f, audio: ShotAudio.Wind,
+                    theme: EnvThemeId.BurningVillage),
+                S("RENZO", ShotCamera.OverShoulder, 4.5f, audio: ShotAudio.Silence),
+                S("RENZO", ShotCamera.Hold, 4f, audio: ShotAudio.Wind),
+                S("", ShotCamera.Hold, 1f, fadeAfter: true, blackAfter: 0.6f));
+
+            // The courtyard. Warm, brief, and it ends on a joke he never got.
+            Make("broken_training", "TIRED PEOPLE MAKE HONEST MISTAKES",
+                S("RENZO", ShotCamera.Hold, 2.8f, audio: ShotAudio.Silence, blackAfter: 0.7f),
+                S("FATHER", ShotCamera.SlowDolly, 3.6f, audio: ShotAudio.Village,
+                    theme: EnvThemeId.VillageDawn),
+                S("", ShotCamera.Hold, 2.2f, "FATHER", "Again."),
+                S("", ShotCamera.Hold, 2.4f, "REN", "I'm tired."),
+                S("FATHER", ShotCamera.Hold, 2.4f, "FATHER", "Good."),
+                S("", ShotCamera.Hold, 2.6f, "REN", "Why is that good?"),
+                S("FATHER", ShotCamera.PushIn, 3.4f, "FATHER", "Because tired people make honest mistakes."),
+                S("", ShotCamera.Hold, 2.6f, "REN", "What does that mean?"),
+                S("FATHER", ShotCamera.Hold, 3.2f, "FATHER", "You'll understand when you're older."),
+                S("", ShotCamera.Hold, 1.4f, fadeAfter: true, blackAfter: 1.2f),
+                S("RENZO", ShotCamera.Hold, 4f, "RENZO", "I never understood.", audio: ShotAudio.Wind));
+
+            // The post. Small, and it is allowed to be funny.
+            Make("broken_post", "IT IS WHEN I LOSE",
+                S("RENZO", ShotCamera.PushIn, 2.6f, audio: ShotAudio.Silence, blackAfter: 0.6f),
+                S("AIKO", ShotCamera.Handheld, 3f, audio: ShotAudio.Birds,
+                    theme: EnvThemeId.VillageDawn),
+                S("", ShotCamera.Hold, 2.2f, "AIKO", "You're cheating."),
+                S("", ShotCamera.Hold, 2f, "REN", "How?"),
+                S("", ShotCamera.Hold, 2.2f, "AIKO", "You're stronger."),
+                S("", ShotCamera.Hold, 2.2f, "REN", "That's not cheating."),
+                S("AIKO", ShotCamera.Hold, 2.8f, "AIKO", "It is when I lose."),
+                S("", ShotCamera.Hold, 1.4f, fadeAfter: true, blackAfter: 1.2f));
+
+            // The escalation. Three things, one gone, one theirs — and the third
+            // is a line he did not finish.
+            Make("broken_letter", "THREE THINGS",
+                S("RENZO", ShotCamera.PushIn, 3.2f, audio: ShotAudio.Silence),
+                S("", ShotCamera.Hold, 3.2f, "FATHER", "Renzo. If you found this, then Yorune is already gone."),
+                S("", ShotCamera.Hold, 3f, "FATHER", "I hoped you would never need to know."),
+                S("", ShotCamera.Hold, 3.6f, "FATHER", "There are three things that must never be brought together."),
+                S("", ShotCamera.Hold, 3.4f, "FATHER", "One is already in the hands of the man who came for us."),
+                S("", ShotCamera.Hold, 3.2f, "FATHER", "The second was entrusted to our family."),
+                S("", ShotCamera.PushIn, 3.6f, "FATHER", "The third must never be found.", audio: ShotAudio.Sting),
+                S("RENZO", ShotCamera.Hold, 3.5f, "RENZO", "What did you hide, father?"),
+                S("", ShotCamera.Hold, 1.2f, fadeAfter: true, blackAfter: 1f));
+
+            // Goro was one layer. They already have a next man, and he is not named.
+            Make("broken_search", "THE NEXT MAN",
+                S("", ShotCamera.Hold, 2.2f, "SEARCHER", "The house?", audio: ShotAudio.Silence),
+                S("", ShotCamera.Hold, 2f, "SEARCHER", "Nothing."),
+                S("", ShotCamera.Hold, 2.2f, "SEARCHER", "Search again."),
+                S("", ShotCamera.Hold, 3f, "SEARCHER", "The Toll-Captain said the family kept records here."),
+                S("", ShotCamera.Hold, 2.8f, "SEARCHER", "The Toll-Captain is dead."),
+                S("", ShotCamera.PushIn, 3.2f, "SEARCHER", "Then we report to the next man."),
+                S("RENZO", ShotCamera.Hold, 2.8f, fadeAfter: true, blackAfter: 0.6f));
+
+            Make("broken_key", "IT IS A KEY",
+                S("RENZO", ShotCamera.PushIn, 3.5f, audio: ShotAudio.Silence),
+                S("RENZO", ShotCamera.Hold, 3f, "RENZO", "This isn't a weapon."),
+                S("RENZO", ShotCamera.PushIn, 3.4f, "RENZO", "It's a key.", audio: ShotAudio.Sting),
+                S("RENZO", ShotCamera.Hold, 3.2f, "RENZO", "You knew they'd come."),
+                S("RENZO", ShotCamera.Hold, 3.2f, "RENZO", "You knew I'd come back."),
+                S("RENZO", ShotCamera.Hold, 4f, "RENZO", "Why didn't you tell me?"),
+                S("", ShotCamera.Hold, 2.5f, fadeAfter: true, blackAfter: 1.2f));
+
+            Make("broken_end", "BUT YOU LEFT ME A PATH",
+                S("RENZO", ShotCamera.Hold, 3.5f, audio: ShotAudio.Wind),
+                S("RENZO", ShotCamera.Hold, 3.6f, "RENZO", "I came back looking for answers."),
+                S("RENZO", ShotCamera.Hold, 3.6f, "RENZO", "All I found were more questions."),
+                S("", ShotCamera.SlowDolly, 4f, audio: ShotAudio.MusicDark),
+                S("RENZO", ShotCamera.Hold, 3.4f, "RENZO", "But you left me a path."),
+                S("RENZO", ShotCamera.PushIn, 3.2f, "RENZO", "I'll follow it."),
+                S("", ShotCamera.Hold, 2.5f, fadeAfter: true, blackAfter: 2f,
+                    card: "THE BROKEN HOUSE"));
+
+            // ---- MISSION 6 — THE HOUSE OF KAWAI ------------------------------
+            // The mission after the boss fight, and deliberately quiet. Renzo has
+            // spent five missions thinking of his father as the man who failed to
+            // save Yorune; he leaves this one knowing his father spent the last
+            // year of his life trying to get everyone out. Nothing is explained:
+            // the man he refuses is never shown, the sentence about the mountain
+            // never finishes, and the red thread is a thing he lost, not a lead.
+
+            Make("kawai_open", "FATHER CAME THIS WAY",
+                S("RENZO", ShotCamera.OverShoulder, 4f, audio: ShotAudio.Wind,
+                    theme: EnvThemeId.VillageDawn),
+                S("", ShotCamera.SlowDolly, 4f, audio: ShotAudio.Birds),
+                S("RENZO", ShotCamera.PushIn, 4f, "RENZO", "Father came this way."),
+                S("", ShotCamera.Hold, 1f, fadeAfter: true, blackAfter: 0.6f));
+
+            // The refusal, from the outside. Whoever he is talking to is never in
+            // frame and is never named — the scene exists to make the player ask.
+            Make("kawai_father", "THEY ALREADY WILL",
+                S("", ShotCamera.Hold, 2.5f, audio: ShotAudio.Silence, blackAfter: 0.8f),
+                S("FATHER", ShotCamera.Handheld, 4f, audio: ShotAudio.Village,
+                    theme: EnvThemeId.VillageDawn),
+                S("", ShotCamera.Hold, 3f, "VISITOR", "You know what happens if you refuse."),
+                S("FATHER", ShotCamera.Hold, 2.6f, "FATHER", "I know."),
+                S("", ShotCamera.Hold, 2.6f, "VISITOR", "Then open it."),
+                S("FATHER", ShotCamera.PushIn, 3f, "FATHER", "No."),
+                S("", ShotCamera.Hold, 2.8f, "VISITOR", "People will die."),
+                S("FATHER", ShotCamera.Hold, 3.6f, "FATHER", "They already will if I do."),
+                S("", ShotCamera.Hold, 1.5f, fadeAfter: true, blackAfter: 1.2f),
+                S("RENZO", ShotCamera.Hold, 3.8f, "RENZO", "Who were you talking to?",
+                    audio: ShotAudio.Wind));
+
+            // The thread. A promise he did not keep, and nothing more than that —
+            // no suggestion she lived, because mission 9 needs that to be new.
+            Make("kawai_thread", "TWO THINGS",
+                S("RENZO", ShotCamera.PushIn, 3.5f, audio: ShotAudio.Silence),
+                S("", ShotCamera.Hold, 2.2f, blackAfter: 0.6f),
+                S("AIKO", ShotCamera.Handheld, 3f, "AIKO", "When you come back, will you bring me something?",
+                    audio: ShotAudio.Birds, theme: EnvThemeId.VillageDawn),
+                S("", ShotCamera.Hold, 2.2f, "RENZO", "What?"),
+                S("AIKO", ShotCamera.Hold, 2.6f, "AIKO", "Something from outside."),
+                S("", ShotCamera.Hold, 2.6f, "RENZO", "I'll bring you two things."),
+                S("AIKO", ShotCamera.Hold, 2.4f, "AIKO", "Promise?"),
+                S("", ShotCamera.Hold, 2.6f, "RENZO", "Promise."),
+                S("", ShotCamera.Hold, 1.5f, fadeAfter: true, blackAfter: 1.5f),
+                S("RENZO", ShotCamera.Hold, 4.5f, audio: ShotAudio.Silence));
+
+            // His father's hand, and it stops mid-sentence.
+            Make("kawai_letter", "DO NOT FOLLOW THE PATH THEY OFFER",
+                S("RENZO", ShotCamera.PushIn, 3.5f, audio: ShotAudio.Silence),
+                S("", ShotCamera.Hold, 3.4f, "FATHER", "Renzo. If you ever find this, then I failed to keep you away."),
+                S("", ShotCamera.Hold, 3.4f, "FATHER", "There are things a son should never have to carry."),
+                S("", ShotCamera.Hold, 3.2f, "FATHER", "I chose to protect this village."),
+                S("", ShotCamera.Hold, 3.6f, "FATHER", "Whatever happens, do not follow the path they offer you."),
+                S("", ShotCamera.Hold, 3.2f, "FATHER", "The mountain must remain—"),
+                S("RENZO", ShotCamera.PushIn, 4f, "RENZO", "Remain what?", audio: ShotAudio.Sting),
+                S("", ShotCamera.Hold, 1.5f, fadeAfter: true, blackAfter: 1f));
+
+            Make("kawai_end", "WHAT DID YOU LEAVE BEHIND",
+                S("RENZO", ShotCamera.Hold, 3.5f, audio: ShotAudio.Wind,
+                    theme: EnvThemeId.VillageDawn),
+                S("RENZO", ShotCamera.PushIn, 3.8f, "RENZO", "You were protecting them."),
+                S("RENZO", ShotCamera.Hold, 3.5f, "RENZO", "But from what?"),
+                S("", ShotCamera.Wide, 4.5f, audio: ShotAudio.MusicSoft),
+                S("RENZO", ShotCamera.Hold, 4f, "RENZO", "What did you leave behind?"),
+                S("", ShotCamera.Hold, 2.5f, fadeAfter: true, blackAfter: 2f,
+                    card: "THE HOUSE OF KAWAI"));
+
+            // ---- MISSION 5 — THE TOLL-CAPTAIN --------------------------------
+            // The first real answer, and it is a small one: Renzo's father knew
+            // what was coming and refused something. Goro will not say what, and
+            // he dies without saying it. What he does give away is that he was
+            // never the top of anything — "not mine" is the line the mission is
+            // built around.
+
+            Make("toll_open", "A TOLL ROAD",
+                S("RENZO", ShotCamera.PushIn, 4f, audio: ShotAudio.Wind),
+                S("RENZO", ShotCamera.Hold, 3.5f, "RENZO", "A toll road."),
+                S("RENZO", ShotCamera.OverShoulder, 4f, "RENZO", "That's where he'll be."),
+                S("", ShotCamera.Hold, 1f, fadeAfter: true, blackAfter: 0.6f));
+
+            // He is not surprised, and he does not hurry. That is the character.
+            Make("toll_confront", "YOU SHOULD HAVE STAYED AWAY",
+                S("", ShotCamera.Hold, 2.5f, "SOLDIER", "Toll-Captain!", audio: ShotAudio.Silence),
+                S("", ShotCamera.Hold, 2.2f, "GORO", "I know."),
+                S("", ShotCamera.Hold, 2.5f, "SOLDIER", "The Kurogawa is here."),
+                S("", ShotCamera.Hold, 3f, "GORO", "Then stop wasting my time."),
+                S("GORO", ShotCamera.SlowDolly, 4.5f, audio: ShotAudio.MusicDark),
+                S("GORO", ShotCamera.Hold, 3.2f, "GORO", "You should have stayed away."),
+                S("RENZO", ShotCamera.Hold, 3f, "RENZO", "You knew my father."),
+                S("GORO", ShotCamera.Hold, 2.6f, "GORO", "I did."),
+                S("RENZO", ShotCamera.Hold, 2.8f, "RENZO", "What did he do?"),
+                S("GORO", ShotCamera.Hold, 3.2f, "GORO", "What he believed was right."),
+                S("RENZO", ShotCamera.Hold, 2.8f, "RENZO", "That's not an answer."),
+                S("GORO", ShotCamera.Hold, 3.2f, "GORO", "It's the only one you're getting."),
+                S("RENZO", ShotCamera.PushIn, 3f, "RENZO", "Then I'll make you talk."),
+                S("GORO", ShotCamera.Hold, 2.5f, "GORO", "Try."),
+                S("", ShotCamera.Hold, 0.8f, fadeAfter: true, blackAfter: 0.4f));
+
+            // The mission's real payload: he was following someone else's orders.
+            Make("toll_mid", "NOT MINE",
+                S("RENZO", ShotCamera.Handheld, 2.8f, "RENZO", "You were there.", audio: ShotAudio.Silence),
+                S("GORO", ShotCamera.Hold, 2.2f, "GORO", "Where?"),
+                S("RENZO", ShotCamera.Hold, 2.4f, "RENZO", "Yorune."),
+                S("GORO", ShotCamera.Hold, 3f, "GORO", "Yes."),
+                S("RENZO", ShotCamera.Hold, 2.8f, "RENZO", "You watched it burn."),
+                S("GORO", ShotCamera.Hold, 3.2f, "GORO", "I watched men follow orders."),
+                S("RENZO", ShotCamera.Hold, 2.6f, "RENZO", "Whose orders?"),
+                S("GORO", ShotCamera.PushIn, 3.5f, "GORO", "Not mine.", audio: ShotAudio.Sting),
+                S("", ShotCamera.Hold, 0.8f, fadeAfter: true, blackAfter: 0.4f));
+
+            // On one knee, and still refusing. He answers with a direction, not a
+            // fact, and then makes Renzo finish it.
+            Make("toll_last", "ASK THE MOUNTAIN",
+                S("GORO", ShotCamera.Hold, 3.2f, audio: ShotAudio.MusicOff),
+                S("GORO", ShotCamera.Hold, 2.8f, "GORO", "Go ahead."),
+                S("RENZO", ShotCamera.Hold, 2.6f, "RENZO", "Tell me."),
+                S("GORO", ShotCamera.Hold, 3.4f, "GORO", "Your father knew what was coming."),
+                S("RENZO", ShotCamera.Hold, 2.8f, "RENZO", "What was coming?"),
+                S("GORO", ShotCamera.PushIn, 3.6f, "GORO", "Ask the mountain."),
+                S("", ShotCamera.Hold, 1f, fadeAfter: true, blackAfter: 0.5f));
+
+            // Four words, and no speech. He does not explain anything on the way out.
+            Make("toll_death", "YOU HAVE HIS EYES",
+                S("GORO", ShotCamera.Hold, 3.5f, audio: ShotAudio.Silence),
+                S("GORO", ShotCamera.Hold, 3f, "GORO", "You have his eyes."),
+                S("RENZO", ShotCamera.Hold, 2.6f, "RENZO", "Who?"),
+                S("GORO", ShotCamera.PushIn, 3.5f, "GORO", "Your father."),
+                S("", ShotCamera.Hold, 3f, fadeAfter: true, blackAfter: 1.2f));
+
+            Make("toll_end", "ASK THE MOUNTAIN",
+                S("", ShotCamera.Wide, 4f, audio: ShotAudio.Wind),
+                S("RENZO", ShotCamera.Hold, 3.2f, "RENZO", "You knew him."),
+                S("RENZO", ShotCamera.Hold, 3.5f, "RENZO", "And you knew what happened."),
+                S("", ShotCamera.SlowDolly, 4f, audio: ShotAudio.MusicDark),
+                S("RENZO", ShotCamera.PushIn, 3.8f, "RENZO", "Then that's where I'll look."),
+                S("", ShotCamera.Hold, 2.5f, fadeAfter: true, blackAfter: 2f, card: "THE TOLL-CAPTAIN"));
+
+            // ---- MISSION 4 — THE SILENT FOREST ------------------------------
+            // The investigation acquires consequences. Renzo stops being someone
+            // watching them and becomes someone they are looking for, and the
+            // chain of command finally has a face on it. Goro names Renzo's
+            // family and refuses to explain it — "ask your father" is the whole
+            // payload, and it is mission 5's problem.
+
+            Make("forest_open", "THE LIGHTS GO OUT",
+                S("RENZO", ShotCamera.OverShoulder, 4f, audio: ShotAudio.Wind),
+                S("", ShotCamera.SlowDolly, 4.5f, audio: ShotAudio.Silence),
+                S("RENZO", ShotCamera.Hold, 4f, "RENZO", "The line is going dark behind me."),
+                S("RENZO", ShotCamera.PushIn, 4f, "RENZO", "They know someone was here."),
+                S("", ShotCamera.Hold, 1f, fadeAfter: true, blackAfter: 0.6f));
+
+            // The runner. Short, ugly and not a set piece: he is a frightened man
+            // who gives up a name and then makes the wrong choice.
+            Make("forest_runner", "THE TOLL-CAPTAIN",
+                S("RENZO", ShotCamera.Handheld, 3f, audio: ShotAudio.Silence),
+                S("", ShotCamera.Hold, 3f, "RENZO", "Who gives the orders?"),
+                S("", ShotCamera.Hold, 3.2f, "RUNNER", "You don't know what you're walking into."),
+                S("", ShotCamera.Hold, 2.5f, "RENZO", "Then tell me."),
+                S("", ShotCamera.PushIn, 3f, "RUNNER", "The Toll-Captain."),
+                S("RENZO", ShotCamera.Hold, 3f, "RENZO", "Goro.", audio: ShotAudio.Sting),
+                S("", ShotCamera.Hold, 2.8f, "RUNNER", "You've heard of him?"),
+                S("RENZO", ShotCamera.Hold, 3.2f, "RENZO", "Not enough."),
+                S("", ShotCamera.Hold, 1.5f, fadeAfter: true, blackAfter: 0.8f));
+
+            // Goro, at distance and then close. He is controlled, faintly amused,
+            // and he stops his own soldier from saying the name out loud.
+            Make("forest_goro", "ASK YOUR FATHER",
+                S("", ShotCamera.Wide, 4f, audio: ShotAudio.MusicOff),
+                S("", ShotCamera.Hold, 2.8f, "GORO", "You searched the village?"),
+                S("", ShotCamera.Hold, 2.4f, "SOLDIER", "Every house."),
+                S("", ShotCamera.Hold, 2.2f, "GORO", "And?"),
+                S("", ShotCamera.Hold, 2.2f, "SOLDIER", "Nothing."),
+                S("", ShotCamera.Hold, 2.6f, "GORO", "Then search again."),
+                S("", ShotCamera.Hold, 2.4f, "SOLDIER", "The Kurogawa—"),
+                S("", ShotCamera.PushIn, 3.2f, "GORO", "Don't say that name here."),
+                S("", ShotCamera.Hold, 3.4f, "GORO", "If the boy is here, he'll come looking."),
+                // The turn: he sees him. Cut Renzo, cut Goro, hold the silence.
+                S("GORO", ShotCamera.SlowDolly, 4f, audio: ShotAudio.Silence),
+                S("GORO", ShotCamera.Hold, 3.2f, "GORO", "Kurogawa."),
+                S("RENZO", ShotCamera.Hold, 3f, "RENZO", "You know me."),
+                S("GORO", ShotCamera.Hold, 3.2f, "GORO", "I know your family."),
+                S("RENZO", ShotCamera.Hold, 3f, "RENZO", "Then tell me what happened."),
+                S("GORO", ShotCamera.Hold, 3.2f, "GORO", "You should have stayed away."),
+                S("RENZO", ShotCamera.Hold, 2.8f, "RENZO", "Who sent you?"),
+                S("GORO", ShotCamera.PushIn, 4.5f, "GORO", "Ask your father.", audio: ShotAudio.Sting),
+                S("", ShotCamera.Hold, 1.5f, fadeAfter: true, blackAfter: 0.8f));
+
+            Make("forest_end", "FIND THE TOLL-CAPTAIN",
+                S("RENZO", ShotCamera.Hold, 3.5f, audio: ShotAudio.Wind),
+                S("", ShotCamera.Wide, 4.5f, audio: ShotAudio.Silence),
+                S("RENZO", ShotCamera.PushIn, 3.5f, "RENZO", "Goro."),
+                S("RENZO", ShotCamera.Hold, 3.8f, "RENZO", "He knows my father."),
+                S("RENZO", ShotCamera.Hold, 3.5f, "RENZO", "And he knows me."),
+                S("RENZO", ShotCamera.Hold, 3.8f, "RENZO", "Then I'll find him.", audio: ShotAudio.MusicDark),
+                S("", ShotCamera.Hold, 2.5f, fadeAfter: true, blackAfter: 2f, card: "THE SILENT FOREST"));
+
+            // ---- MISSION 3 — THE LANTERNS -----------------------------------
+            // One question: who is leading them. It is not answered — the officer
+            // is masked and unnamed, and the signature on his orders is a mark
+            // nobody in Yorune has seen. What the player gets instead is worse:
+            // these men were told to expect a Kurogawa.
+
+            Make("lanterns_open", "THEY ARE WATCHING EACH OTHER",
+                S("RENZO", ShotCamera.Hold, 3.5f, audio: ShotAudio.Wind),
+                S("", ShotCamera.SlowDolly, 4f, audio: ShotAudio.Silence),
+                S("RENZO", ShotCamera.Hold, 3.5f, "RENZO", "They're not watching the village."),
+                S("RENZO", ShotCamera.PushIn, 4f, "RENZO", "They're watching each other."),
+                S("", ShotCamera.Hold, 1f, fadeAfter: true, blackAfter: 0.6f));
+
+            // The network's purpose, shown: a light goes up and men below change
+            // where they are walking.
+            Make("lanterns_signal", "THE SIGNAL MOVES THEM",
+                S("", ShotCamera.Wide, 4.5f, audio: ShotAudio.Silence),
+                S("", ShotCamera.SlowDolly, 4.5f, audio: ShotAudio.MusicSoft),
+                S("RENZO", ShotCamera.Hold, 4f, "RENZO", "One light, and they all turn."),
+                S("RENZO", ShotCamera.PushIn, 3.5f, "RENZO", "It tells them where to be."),
+                S("", ShotCamera.Hold, 1f, fadeAfter: true, blackAfter: 0.6f));
+
+            Make("lanterns_overheard", "COMMAND POST",
+                S("", ShotCamera.Hold, 2.5f, "GUARD", "Signal came from the north.", audio: ShotAudio.Silence),
+                S("", ShotCamera.Hold, 2.2f, "PATROL", "Then move."),
+                S("", ShotCamera.Hold, 2.2f, "GUARD", "Where?"),
+                S("", ShotCamera.PushIn, 3f, "PATROL", "Command post."),
+                S("RENZO", ShotCamera.Hold, 3.5f, fadeAfter: true, blackAfter: 0.8f));
+
+            // The turn of the mission. The officer is a shape and a voice: no
+            // name, no face, and nothing above him named either.
+            Make("lanterns_officer", "THEY WERE WAITING",
+                S("", ShotCamera.Wide, 4f, audio: ShotAudio.MusicOff),
+                S("", ShotCamera.Hold, 3f, "OFFICER", "Nothing in the ruins."),
+                S("", ShotCamera.Hold, 2.8f, "SOLDIER", "And the Kurogawa?"),
+                S("", ShotCamera.Hold, 2.8f, "OFFICER", "Keep searching."),
+                S("", ShotCamera.Hold, 2.8f, "SOLDIER", "If he returns?"),
+                S("", ShotCamera.PushIn, 4f, "OFFICER", "Then we'll know.", audio: ShotAudio.Sting),
+                S("RENZO", ShotCamera.PushIn, 4.5f, "RENZO", "They were waiting for me."),
+                S("RENZO", ShotCamera.Hold, 2.5f, fadeAfter: true, blackAfter: 1f));
+
+            Make("lanterns_document", "SO WHO ARE YOU",
+                S("RENZO", ShotCamera.Hold, 3.5f, audio: ShotAudio.Silence),
+                S("RENZO", ShotCamera.PushIn, 4f, "RENZO", "They know my name."),
+                S("RENZO", ShotCamera.Hold, 4f, "RENZO", "They knew I'd come back."),
+                S("", ShotCamera.SlowDolly, 4.5f, audio: ShotAudio.MusicDark),
+                S("RENZO", ShotCamera.Hold, 4f, "RENZO", "So who are you?"),
+                S("", ShotCamera.Hold, 2.5f, fadeAfter: true, blackAfter: 2f, card: "THE LANTERNS"));
+
+            // ---- MISSION 2 — RED THREAD -------------------------------------
+            // One question: who are they. It is answered — an organised force,
+            // searching for something, that knows the Kurogawa name — and it
+            // opens the next one, which is who sent them. Nothing here names what
+            // they are looking for, and nothing suggests Aiko lived.
+
+            Make("thread_open", "THE RED MARK",
+                S("RENZO", ShotCamera.PushIn, 3.5f, audio: ShotAudio.Wind),
+                S("RENZO", ShotCamera.Hold, 3.5f, "RENZO", "They left a trail."),
+                S("RENZO", ShotCamera.OverShoulder, 3.5f, "RENZO", "I'll follow it."),
+                S("", ShotCamera.Hold, 1f, fadeAfter: true, blackAfter: 0.6f));
+
+            // The network. Three lights answering each other across a valley says
+            // "organised" faster than any line of dialogue could.
+            Make("thread_lanterns", "THEY ARE TALKING",
+                S("", ShotCamera.Wide, 5f, audio: ShotAudio.Silence),
+                S("", ShotCamera.SlowDolly, 5.5f, audio: ShotAudio.MusicSoft),
+                S("RENZO", ShotCamera.Hold, 4f, "RENZO", "One light. Then an answer."),
+                S("RENZO", ShotCamera.PushIn, 4.5f, "RENZO", "They are talking to each other across the whole valley."),
+                S("", ShotCamera.Hold, 1.5f, fadeAfter: true, blackAfter: 0.8f));
+
+            // The turn. Restrained on purpose: they do not say what they are
+            // looking for, and the only name spoken is his own.
+            Make("thread_kurogawa", "KUROGAWA",
+                S("", ShotCamera.Hold, 2.5f, "GUARD", "Nothing?", audio: ShotAudio.Silence),
+                S("", ShotCamera.Hold, 2.2f, "PATROL", "Nothing."),
+                S("", ShotCamera.Hold, 2.5f, "GUARD", "Then keep searching."),
+                S("", ShotCamera.Hold, 2.5f, "PATROL", "Until when?"),
+                S("", ShotCamera.Hold, 3.5f, "GUARD", "Until we find what they left behind."),
+                S("", ShotCamera.PushIn, 3.5f, "PATROL", "…Kurogawa."),
+                S("", ShotCamera.Hold, 2.5f, "GUARD", "Report it.", audio: ShotAudio.Sting),
+                S("RENZO", ShotCamera.PushIn, 4.5f, "RENZO", "Why are they looking for my family?"),
+                S("RENZO", ShotCamera.Hold, 2.5f, fadeAfter: true, blackAfter: 1f));
+
+            Make("thread_map", "SOMEONE SENT THEM",
+                S("RENZO", ShotCamera.Hold, 3.5f, audio: ShotAudio.Silence),
+                S("RENZO", ShotCamera.PushIn, 4f, "RENZO", "Routes. Watch posts. Supply. This is not a raiding party."),
+                S("RENZO", ShotCamera.Hold, 4f, "RENZO", "Someone sent them here."),
+                S("RENZO", ShotCamera.Hold, 4f, "RENZO", "But who?"),
+                S("", ShotCamera.PullOut, 5.5f, audio: ShotAudio.MusicDark),
+                S("", ShotCamera.Hold, 2.5f, fadeAfter: true, blackAfter: 2f, card: "RED THREAD"));
+
+            // ---- MISSION 1 — ASHES ------------------------------------------
+            // Renzo comes home. The mission asks one question, WHO IS STILL HERE,
+            // and answers none. Aiko is a loss here, not a lead: nothing in these
+            // three beats suggests she lived, because mission 9 needs that to land.
+
+            Make("ashes_return", "ASHES",
+                // Black, and wind, before anything is shown. The ear settles first.
+                S("", ShotCamera.Hold, 4f, audio: ShotAudio.Wind, blackAfter: 1f),
+                // The only wide shot in the mission. Destruction is established
+                // once and never sold again.
+                S("", ShotCamera.Wide, 5.5f, audio: ShotAudio.Wind,
+                    theme: EnvThemeId.BurningVillage),
+                S("RENZO", ShotCamera.OverShoulder, 4f, audio: ShotAudio.Silence),
+                // Stops before it arrives: the shot wants to be closer and cannot.
+                S("RENZO", ShotCamera.PushIn, 5f, "RENZO", "This was my home."),
+                S("", ShotCamera.Hold, 4.5f, audio: ShotAudio.Wind, fadeAfter: true,
+                    blackAfter: 1f, card: "TEN YEARS LATER"));
+
+            // The emotional centre. Aiko is never on camera — a primitive stand-in
+            // in close-up would undercut the one scene that has to work, and a
+            // voice in an empty frame is the better shot anyway.
+            Make("ashes_bracelet", "WHAT THE ASH KEPT",
+                S("RENZO", ShotCamera.Hold, 3.5f, audio: ShotAudio.Silence),
+                S("", ShotCamera.Hold, 2f, "AIKO", "Renzo!", audio: ShotAudio.Birds),
+                S("RENZO", ShotCamera.PushIn, 4.5f, audio: ShotAudio.Silence),
+                S("RENZO", ShotCamera.Hold, 5f, "RENZO", "…She never took it off."),
+                S("RENZO", ShotCamera.PullOut, 4f, audio: ShotAudio.MusicSoft,
+                    fadeAfter: true, blackAfter: 1.5f));
+
+            Make("ashes_map", "SOMEBODY CAME BACK",
+                S("RENZO", ShotCamera.Hold, 3.5f, audio: ShotAudio.Silence),
+                S("RENZO", ShotCamera.PushIn, 4f, "RENZO", "Ten years."),
+                S("RENZO", ShotCamera.Hold, 4.5f, "RENZO", "Why come back now?"),
+                // Holds two beats past comfortable on the empty valley. Whoever
+                // is out there is not shown; the player supplies them.
+                S("", ShotCamera.PullOut, 6f, audio: ShotAudio.MusicDark),
+                S("", ShotCamera.Hold, 2.5f, fadeAfter: true, blackAfter: 2f,
+                    card: "ASHES"));
+
             Make("emberline_dawn", "EMBERLINE",
                 S("", ShotCamera.Wide, 5f, audio: ShotAudio.Wind, theme: EnvThemeId.VillageDawn),
                 S("AIKO", ShotCamera.SlowDolly, 5f, audio: ShotAudio.Birds),
@@ -208,8 +839,11 @@ namespace Emberline.EditorTools
             shots.Add(Set(SetState.Attack, ShotCamera.Wide, 4.5f,
                 audio: ShotAudio.Bells));
             shots.Add(S("MOTHER", ShotCamera.Handheld, 3.5f, audio: ShotAudio.Fire));
+            // Named nothing. The player is a child in this memory and hears a
+            // threat, not a proper noun — the name arrives in mission 8 with the
+            // letter, which is where it can mean something.
             shots.Add(S("FATHER", ShotCamera.Hold, 4f, "KAGEHIRA",
-                "The Black Seal. Say where it is, and this stops."));
+                "You know what I came for. Say where it is, and this stops."));
             shots.Add(S("FATHER", ShotCamera.PushIn, 4.5f, "FATHER",
                 "You will burn it all either way."));
             shots.Add(S("", ShotCamera.Hold, 2.5f, fadeAfter: true, blackAfter: 2.5f));
