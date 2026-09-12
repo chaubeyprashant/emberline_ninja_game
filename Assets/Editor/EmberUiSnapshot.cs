@@ -54,6 +54,7 @@ namespace Emberline.EditorTools
 
             foreach (var (name, file, state, pause) in new[]
             {
+                ("Login", "Logs/ui_login.png", GameManager.Phase.Menu, false),
                 ("MenuRoot", "Logs/ui_menu.png", GameManager.Phase.Menu, false),
                 ("Story", "Logs/ui_story.png", GameManager.Phase.Menu, false),
                 ("Fight", "Logs/ui_duels.png", GameManager.Phase.Menu, false),

@@ -1,0 +1,855 @@
+Unity Editor version:    6000.5.9f1 (b57deb96f08d)
+Branch:                  6000.5/staging
+Build type:              Release
+Batch mode:              YES
+macOS version:           Version 15.7 (Build 24G222)
+Darwin version:          24.6.0
+Architecture:            arm64
+Running under Rosetta:   NO
+Available memory:        8192 MB
+Date:                    2026-09-11T11:54:40Z
+[Licensing::Module] Trying to connect to existing licensing client channel...
+[Licensing::IpcConnector] Channel LicenseClient-prashant doesn't exist
+Launching external process: /Applications/Unity/Hub/Editor/6000.5.9f1/Unity.app/Contents/Helpers/UnityLicensingClient.app/Contents/MacOS/Unity.Licensing.Client
+[Licensing::Module] Successfully launched the LicensingClient (PId: 22007)
+Launching external process: /Applications/Unity/Hub/Editor/6000.5.9f1/Unity.app/Contents/Helpers/PackageManager/Server/UnityPackageManager
+
+COMMAND LINE ARGUMENTS:
+/Applications/Unity/Hub/Editor/6000.5.9f1/Unity.app/Contents/MacOS/Unity
+-batchmode
+-quit
+-projectPath
+/Users/prashant/StudioProjects/EmberlineUnity
+-importPackage
+/Users/prashant/Downloads/firebase_unity_sdk/FirebaseAuth.unitypackage
+-logFile
+import_auth.log
+Successfully changed project path to: /Users/prashant/StudioProjects/EmberlineUnity
+/Users/prashant/StudioProjects/EmberlineUnity
+[UnityMemory] Configuration Parameters - Can be set up in boot.config
+    "memorysetup-temp-allocator-size-gi-baking-worker=262144"
+    "memorysetup-temp-allocator-size-gi-baking-worker=262144"
+    "memorysetup-temp-allocator-size-gi-baking-worker=262144"
+    "memorysetup-temp-allocator-size-gi-baking-worker=262144"
+    "memorysetup-temp-allocator-size-gi-baking-worker=262144"
+    "memorysetup-temp-allocator-size-nav-mesh-worker=65536"
+    "memorysetup-temp-allocator-size-audio-worker=65536"
+    "memorysetup-temp-allocator-size-cloud-worker=32768"
+    "memorysetup-allocator-temp-initial-block-size-main=262144"
+    "memorysetup-allocator-temp-initial-block-size-worker=262144"
+    "memorysetup-temp-allocator-size-preload-manager=33554432"
+    "memorysetup-remapper-allocator-initial-capacity=32768"
+    "memorysetup-temp-allocator-size-gfx=262144"
+    "memorysetup-temp-allocator-size-background-worker=32768"
+    "memorysetup-temp-allocator-size-job-worker=262144"
+    "memorysetup-bucket-allocator-granularity=16"
+    "memorysetup-bucket-allocator-bucket-count=8"
+    "memorysetup-bucket-allocator-block-size=33554432"
+    "memorysetup-bucket-allocator-block-count=8"
+    "memorysetup-main-allocator-block-size=16777216"
+    "memorysetup-thread-allocator-block-size=16777216"
+    "memorysetup-main-allocator-mimalloc-enabled=0"
+    "memorysetup-gfx-main-allocator-block-size=16777216"
+    "memorysetup-gfx-thread-allocator-block-size=16777216"
+    "memorysetup-cache-allocator-block-size=4194304"
+    "memorysetup-typetree-allocator-block-size=2097152"
+    "memorysetup-profiler-bucket-allocator-granularity=16"
+    "memorysetup-profiler-bucket-allocator-bucket-count=8"
+    "memorysetup-profiler-bucket-allocator-block-size=33554432"
+    "memorysetup-profiler-bucket-allocator-block-count=8"
+    "memorysetup-profiler-allocator-block-size=16777216"
+    "memorysetup-profiler-editor-allocator-block-size=1048576"
+    "memorysetup-temp-allocator-size-main=16777216"
+    "memorysetup-job-temp-allocator-block-size=2097152"
+    "memorysetup-job-temp-allocator-block-size-background=1048576"
+    "memorysetup-job-temp-allocator-reduction-small-platforms=262144"
+Logging is directed to a specific file, skipping project log.Player connection [8343642432]  Target information:
+
+Player connection [8343642432]  * "[IP] 172.20.10.8 [Port] 55504 [Flags] 2 [Guid] 2182867363 [EditorId] 2182867363 [Version] 1048832 [Id] OSXEditor(0,Prashants-MacBook-Pro.local) [Debug] 1 [PackageName] OSXEditor [ProjectName] Editor" 
+
+Player connection [8343642432] Host joined multi-casting on [225.0.0.222:54997]...
+Player connection [8343642432] Host joined alternative multi-casting on [225.0.0.222:34997]...
+Input System module state changed to: Initialized.
+[Physics::Module] Initialized fallback backend.
+[Physics::Module] Id: 0xdecafbad
+[Licensing::IpcConnector] Successfully connected to: "LicenseClient-prashant" at "2026-09-11T11:54:41.294803Z"
+[Package Manager] Connected to IPC stream "Upm-22005" after 0.3 seconds.
+[Licensing::Module] Licensing is not yet initialized.
+[Licensing::Client] Handshaking with LicensingClient:
+  Version:                 1.18.3+d7ffd15
+  Session Id:              e8e601e23e7e4623a2ae1476d5d27d66
+  Correlation Id:          ced2a571f4580415a1bc4e144c2c8853
+  External correlation Id: 5671564361256136614
+  Machine Id:              VYyaWIPPCU6ZlvKh+klI+d/f748=
+[Licensing::Module] Successfully connected to LicensingClient on channel: "LicenseClient-prashant" (connect: 0.38s, validation: 0.03s, handshake: 0.25s)
+[Licensing::IpcConnector] Successfully connected to: "LicenseClient-prashant-notifications" at "2026-09-11T11:54:41.579953Z"
+[Licensing::Module] Connected to LicensingClient (PId: 22007, launch time: 0.00, total connection time: 0.67s)
+[Licensing::Module] Error: Access token is unavailable; failed to update
+[Licensing::Client] Successfully resolved entitlement details
+[Licensing::Module] License group:
+  Id: 13469303303375-UnityPersXXXX
+  Product: Unity Personal
+  Type: Assigned
+  Expiration: Unlimited
+[Licensing::Client] Successfully updated license, isAsync: True, time: 0.00
+[Licensing::Client] Successfully resolved entitlement details
+[Licensing::Module] Licensing Background thread has ended after 0.68s
+[Licensing::Module] Licensing is initialized (took 0.13s).
+[Licensing::Client] Successfully resolved entitlement details
+Library Redirect Path: Library/
+[Physics::Module] Selected backend.
+[Physics::Module] Name: PhysX
+[Physics::Module] Id: 0xf2b8ea05
+[Physics::Module] SDK Version: 4.1.2
+[Physics::Module] Integration Version: 1.0.0
+[Physics::Module] Threading Mode: Multi-Threaded
+[Licensing::Client] Successfully resolved entitlement details
+Initialize engine version: 6000.5.9f1 (b57deb96f08d)
+[Subsystems] Discovering subsystems at path /Applications/Unity/Hub/Editor/6000.5.9f1/Unity.app/Contents/Resources/UnitySubsystems
+[Subsystems] Discovering subsystems at path /Users/prashant/StudioProjects/EmberlineUnity/Assets
+GfxDevice: creating device client; kGfxThreadingModeNonThreaded
+ preferred device: Apple M2 (high power)
+Metal devices available: 1
+0: Apple M2 (high power)
+Using device Apple M2 (high power)
+Initializing Metal device caps: Apple M2
+Mac GPU Family: 2
+Apple GPU Family: 8
+MSL Version: 3.0
+Has Float MSAA: 1
+Has Float Filtering: 1
+ReadWrite Texture Tier: 2
+Initialize mono
+Mono path[0] = '/Applications/Unity/Hub/Editor/6000.5.9f1/Unity.app/Contents/Resources/Scripting/Managed'
+Mono path[1] = '/Applications/Unity/Hub/Editor/6000.5.9f1/Unity.app/Contents/Resources/Scripting/BCLExtensions/runtime/netstandard2.1'
+Mono path[2] = '/Applications/Unity/Hub/Editor/6000.5.9f1/Unity.app/Contents/Resources/Scripting/MonoBleedingEdge/lib/mono/unityjit-macos'
+Mono config path = '/Applications/Unity/Hub/Editor/6000.5.9f1/Unity.app/Contents/Resources/Scripting/MonoBleedingEdge/etc'
+Using monoOptions --debugger-agent=transport=dt_socket,embedding=1,server=y,suspend=n,address=127.0.0.1:56005
+CodeReloadManager initialized
+ImportWorker Server TCP listen port: 0
+AcceleratorClientConnectionCallback - disconnected - :0
+Begin MonoManager ReloadAssembly
+Registering precompiled unity dll's ...
+Register platform support module: /Applications/Unity/Hub/Editor/6000.5.9f1/PlaybackEngines/MacStandaloneSupport/UnityEditor.OSXStandalone.Extensions.dll
+Register platform support module: /Applications/Unity/Hub/Editor/6000.5.9f1/PlaybackEngines/AndroidPlayer/UnityEditor.Android.Extensions.dll
+[Licensing::Client] Successfully resolved entitlement details
+Register platform support module: /Applications/Unity/Hub/Editor/6000.5.9f1/PlaybackEngines/iOSSupport/UnityEditor.iOS.Extensions.dll
+Registered in 0.003307 seconds.
+[usbmuxd] Start listen thread
+[usbmuxd] Listen thread started
+[usbmuxd] Send listen message
+Native extension for iOS target not found
+Native extension for Android target not found
+Native extension for OSXStandalone target not found
+Package Manager log level set to [2]
+ScheduleIndexationOnStartup MainProcess:False IndexOnStartup:True
+Mono: successfully reloaded assembly
+- Finished resetting the current domain, in  0.817 seconds
+Domain Reload Profiling: 1188ms
+	BeginReloadAssembly (98ms)
+		CreateAndSetChildDomain (3ms)
+	RebuildCommonClasses (3ms)
+	RebuildNativeTypeToScriptingClass (18ms)
+	initialDomainReloadingComplete (44ms)
+	LoadAllAssembliesAndSetupDomain (209ms)
+		LoadAssemblies (95ms)
+		AnalyzeDomain (156ms)
+			TypeCache.Refresh (155ms)
+				TypeCache.ScanAssembly (140ms)
+	FinalizeReload (818ms)
+		SetupLoadedEditorAssemblies (0ms)
+			InitializePlatformSupportModulesInManaged (118ms)
+			BeforeProcessingInitializeOnLoad (55ms)
+			ProcessInitializeOnLoadAttributes (59ms)
+			ProcessInitializeOnLoadMethodAttributes (540ms)
+[Licensing::Client] Successfully resolved entitlement details
+[Licensing::Client] Successfully resolved entitlement details
+Application.AssetDatabase Initial Refresh Start
+[Package Manager] Restoring resolved packages state from cache
+[Licensing::Client] Successfully resolved entitlement details
+[Package Manager] Registered 38 packages:
+  Built-in packages:
+    com.unity.multiplayer.center@1.0.1 (location: /Users/prashant/StudioProjects/EmberlineUnity/Library/PackageCache/com.unity.multiplayer.center@b860850997d0)
+    com.unity.ugui@2.5.0 (location: /Users/prashant/StudioProjects/EmberlineUnity/Library/PackageCache/com.unity.ugui@1c4864518158)
+    com.unity.modules.accessibility@1.0.0 (location: /Users/prashant/StudioProjects/EmberlineUnity/Library/PackageCache/com.unity.modules.accessibility)
+    com.unity.modules.adaptiveperformance@1.0.0 (location: /Users/prashant/StudioProjects/EmberlineUnity/Library/PackageCache/com.unity.modules.adaptiveperformance)
+    com.unity.modules.ai@1.0.0 (location: /Users/prashant/StudioProjects/EmberlineUnity/Library/PackageCache/com.unity.modules.ai)
+    com.unity.modules.androidjni@1.0.0 (location: /Users/prashant/StudioProjects/EmberlineUnity/Library/PackageCache/com.unity.modules.androidjni)
+    com.unity.modules.animation@1.0.0 (location: /Users/prashant/StudioProjects/EmberlineUnity/Library/PackageCache/com.unity.modules.animation)
+    com.unity.modules.assetbundle@1.0.0 (location: /Users/prashant/StudioProjects/EmberlineUnity/Library/PackageCache/com.unity.modules.assetbundle)
+    com.unity.modules.audio@1.0.0 (location: /Users/prashant/StudioProjects/EmberlineUnity/Library/PackageCache/com.unity.modules.audio)
+    com.unity.modules.cloth@1.0.0 (location: /Users/prashant/StudioProjects/EmberlineUnity/Library/PackageCache/com.unity.modules.cloth)
+    com.unity.modules.director@1.0.0 (location: /Users/prashant/StudioProjects/EmberlineUnity/Library/PackageCache/com.unity.modules.director)
+    com.unity.modules.imageconversion@1.0.0 (location: /Users/prashant/StudioProjects/EmberlineUnity/Library/PackageCache/com.unity.modules.imageconversion)
+    com.unity.modules.imgui@1.0.0 (location: /Users/prashant/StudioProjects/EmberlineUnity/Library/PackageCache/com.unity.modules.imgui)
+    com.unity.modules.jsonserialize@1.0.0 (location: /Users/prashant/StudioProjects/EmberlineUnity/Library/PackageCache/com.unity.modules.jsonserialize)
+    com.unity.modules.particlesystem@1.0.0 (location: /Users/prashant/StudioProjects/EmberlineUnity/Library/PackageCache/com.unity.modules.particlesystem)
+    com.unity.modules.physics@1.0.0 (location: /Users/prashant/StudioProjects/EmberlineUnity/Library/PackageCache/com.unity.modules.physics)
+    com.unity.modules.physics2d@1.0.0 (location: /Users/prashant/StudioProjects/EmberlineUnity/Library/PackageCache/com.unity.modules.physics2d)
+    com.unity.modules.physicscore2d@1.0.0 (location: /Users/prashant/StudioProjects/EmberlineUnity/Library/PackageCache/com.unity.modules.physicscore2d)
+    com.unity.modules.screencapture@1.0.0 (location: /Users/prashant/StudioProjects/EmberlineUnity/Library/PackageCache/com.unity.modules.screencapture)
+    com.unity.modules.terrain@1.0.0 (location: /Users/prashant/StudioProjects/EmberlineUnity/Library/PackageCache/com.unity.modules.terrain)
+    com.unity.modules.terrainphysics@1.0.0 (location: /Users/prashant/StudioProjects/EmberlineUnity/Library/PackageCache/com.unity.modules.terrainphysics)
+    com.unity.modules.tilemap@1.0.0 (location: /Users/prashant/StudioProjects/EmberlineUnity/Library/PackageCache/com.unity.modules.tilemap)
+    com.unity.modules.ui@1.0.0 (location: /Users/prashant/StudioProjects/EmberlineUnity/Library/PackageCache/com.unity.modules.ui)
+    com.unity.modules.uielements@1.0.0 (location: /Users/prashant/StudioProjects/EmberlineUnity/Library/PackageCache/com.unity.modules.uielements)
+    com.unity.modules.umbra@1.0.0 (location: /Users/prashant/StudioProjects/EmberlineUnity/Library/PackageCache/com.unity.modules.umbra)
+    com.unity.modules.unityanalytics@1.0.0 (location: /Users/prashant/StudioProjects/EmberlineUnity/Library/PackageCache/com.unity.modules.unityanalytics)
+    com.unity.modules.unitywebrequest@1.0.0 (location: /Users/prashant/StudioProjects/EmberlineUnity/Library/PackageCache/com.unity.modules.unitywebrequest)
+    com.unity.modules.unitywebrequestassetbundle@1.0.0 (location: /Users/prashant/StudioProjects/EmberlineUnity/Library/PackageCache/com.unity.modules.unitywebrequestassetbundle)
+    com.unity.modules.unitywebrequestaudio@1.0.0 (location: /Users/prashant/StudioProjects/EmberlineUnity/Library/PackageCache/com.unity.modules.unitywebrequestaudio)
+    com.unity.modules.unitywebrequesttexture@1.0.0 (location: /Users/prashant/StudioProjects/EmberlineUnity/Library/PackageCache/com.unity.modules.unitywebrequesttexture)
+    com.unity.modules.unitywebrequestwww@1.0.0 (location: /Users/prashant/StudioProjects/EmberlineUnity/Library/PackageCache/com.unity.modules.unitywebrequestwww)
+    com.unity.modules.vectorgraphics@1.0.0 (location: /Users/prashant/StudioProjects/EmberlineUnity/Library/PackageCache/com.unity.modules.vectorgraphics)
+    com.unity.modules.vehicles@1.0.0 (location: /Users/prashant/StudioProjects/EmberlineUnity/Library/PackageCache/com.unity.modules.vehicles)
+    com.unity.modules.video@1.0.0 (location: /Users/prashant/StudioProjects/EmberlineUnity/Library/PackageCache/com.unity.modules.video)
+    com.unity.modules.wind@1.0.0 (location: /Users/prashant/StudioProjects/EmberlineUnity/Library/PackageCache/com.unity.modules.wind)
+    com.unity.modules.xr@1.0.0 (location: /Users/prashant/StudioProjects/EmberlineUnity/Library/PackageCache/com.unity.modules.xr)
+    com.unity.modules.subsystems@1.0.0 (location: /Users/prashant/StudioProjects/EmberlineUnity/Library/PackageCache/com.unity.modules.subsystems)
+    com.unity.modules.hierarchycore@1.0.0 (location: /Users/prashant/StudioProjects/EmberlineUnity/Library/PackageCache/com.unity.modules.hierarchycore)
+[Subsystems] No new subsystems found in resolved package list.
+[Package Manager] Done registering packages in 0.01 seconds
+A meta data file (.meta) exists but its asset 'Assets/Plugins/Android/EmberlineAuthDependencies.xml.disabled' can't be found. When moving or deleting files outside of Unity, please ensure that the corresponding .meta file is moved or deleted along with it.
+A meta data file (.meta) exists but its asset 'Assets/Plugins/Android/GoogleCredentialBridge.java.disabled' can't be found. When moving or deleting files outside of Unity, please ensure that the corresponding .meta file is moved or deleted along with it.
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://unix:/tmp/ilpp.sock-375d2598709af96017e9099c0af4eabc
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Production
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: /Users/prashant/StudioProjects/EmberlineUnity
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/2 POST http://ilpp/UnityILPP.PostProcessing/Ping - application/grpc -
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[0]
+      Executing endpoint 'gRPC - /UnityILPP.PostProcessing/Ping'
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[1]
+      Executed endpoint 'gRPC - /UnityILPP.PostProcessing/Ping'
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/2 POST http://ilpp/UnityILPP.PostProcessing/Ping - 200 - application/grpc 26.6289ms
+Starting: /Applications/Unity/Hub/Editor/6000.5.9f1/Unity.app/Contents/Resources/BuildPipeline/bee_backend --ipc --defer-dag-verification --dagfile="Library/Bee/1300b0aE.dag" --continue-on-failure --profile="Library/Bee/backend1.traceevents" ScriptAssemblies
+WorkingDir: /Users/prashant/StudioProjects/EmberlineUnity
+DisplayProgressbar: Compiling Scripts
+ExitCode: 0 Duration: 0s55ms
+*** Tundra build success (0.04 seconds), 0 items updated, 247 evaluated
+AssetDatabase: script compilation time: 0.597109s
+Begin MonoManager ReloadAssembly
+Native extension for iOS target not found
+Native extension for Android target not found
+Native extension for OSXStandalone target not found
+ScheduleIndexationOnStartup MainProcess:True IndexOnStartup:True
+Mono: successfully reloaded assembly
+- Finished resetting the current domain, in  0.253 seconds
+Domain Reload Profiling: 605ms
+	BeginReloadAssembly (244ms)
+		DisableScriptedObjects (12ms)
+		CreateAndSetChildDomain (135ms)
+	RebuildCommonClasses (5ms)
+	RebuildNativeTypeToScriptingClass (11ms)
+	initialDomainReloadingComplete (17ms)
+	LoadAllAssembliesAndSetupDomain (75ms)
+		LoadAssemblies (64ms)
+		AnalyzeDomain (23ms)
+			TypeCache.Refresh (17ms)
+				TypeCache.ScanAssembly (11ms)
+			BuildScriptInfoCaches (4ms)
+	FinalizeReload (254ms)
+		SetupLoadedEditorAssemblies (0ms)
+			InitializePlatformSupportModulesInManaged (8ms)
+			BeforeProcessingInitializeOnLoad (48ms)
+			ProcessInitializeOnLoadAttributes (38ms)
+			ProcessInitializeOnLoadMethodAttributes (47ms)
+		AwakeInstancesAfterBackupRestoration (13ms)
+Importing 'GUID: 928ea08c09cec41d7b85a28734244ceb - Path: Assets/google-services.json' with importer (TextScriptImporter)
+Imported 'GUID: 928ea08c09cec41d7b85a28734244ceb' -> (Import Result ID: '17f00fe50396194028a6c6e3a392d349') in 0.012 seconds [static dependencies only]. Details - ImportResultOutputID=95a5ee9134ea86a407392193125c776b DependenciesID=073bf35191d966ee1855ca3f74eb5cfc StaticDependenciesID=0f23be7c1372f0ef2d6b9be366e8ff2b 
+Importing 'GUID: d3a2128db05e641dfae7046de55b4c8d - Path: Assets/Plugins/Android/EmberlineAuthDependencies.xml' with importer (TextScriptImporter)
+Imported 'GUID: d3a2128db05e641dfae7046de55b4c8d' -> (Import Result ID: 'e0d3b5334a61635ee87a92effd5679c2') in 0.002 seconds [static dependencies only]. Details - ImportResultOutputID=87f1b697284cfa90b7aa672105ced05b DependenciesID=f3862ba5f2b3acc6dfaa2e5e5526f561 StaticDependenciesID=fe64da896daa80cef8098e1a4cf3d846 
+Starting new worker id: 0 with log in /Users/prashant/StudioProjects/EmberlineUnity/Logs/AssetImportWorkerHW0.log
+
+Asset Pipeline Refresh (id=b82bd1e8865f541aca250e1fd27ab394): Total: 1.487 seconds - Initiated by InitialRefreshV2(ForceSynchronousImport)
+	(Values over 0.05ms)
+	Summary:
+		Imports: total=2 (actual=2, local cache=0, cache server=0)
+		Asset DB Process Time: managed=0 ms, native=442 ms
+		Asset DB Callback time: managed=68 ms, native=13 ms
+		Scripting: domain reloads=1, domain reload time=360 ms, compile time=598 ms, other=3 ms
+		Project Asset Count: scripts=295, non-scripts=1633
+		Asset File Changes: new=3, changed=3, moved=0, deleted=2
+		Scan Filter Count: 1
+	InvokePackagesCallback: 12.034ms
+	ApplyChangesToAssetFolders: 0.161ms
+	Scan: 105.384ms
+	Collect global state as custom dependencies: 5.969ms
+	OnSourceAssetsModified: 0.670ms
+	CategorizeScriptCompilationAssets: 1.652ms
+	ProcessAssetsWithTransientArtifactChanges: 6.711ms
+	CategorizeAssets: 13.402ms
+	CompileScripts: 598.110ms
+	ImportOutOfDateAssets: 283.302ms (256.831ms without children)
+		ImportManagerImport: 16.873ms (0.580ms without children)
+		UnloadImportedAssets: 0.132ms
+		EnsureUptoDateAssetsAreRegisteredWithGuidPM: 0.177ms
+		ImportSchedulerStart: 9.283ms
+	PostProcessAllAssets: 68.748ms
+		MonoPostProcessAllAssets: 68.253ms
+			AssetPostprocessor.OnPostprocessAllAssets 43.258ms
+			StyleCatalogPostProcessor.OnPostprocessAllAssets 7.411ms
+			WindowAssetPostprocessingWatcher.OnPostprocessAllAssets 3.866ms
+			BuilderAssetPostprocessor.OnPostprocessAllAssets 3.862ms
+			AssetChangedListener.OnPostprocessAllAssets 1.207ms
+			SyncVS.PostprocessSyncProject 0.781ms
+			RetainedModeAssetPostprocessor.OnPostprocessAllAssets 0.722ms
+			EditModeScopePostprocessor.OnPostprocessAllAssets 0.470ms
+			SpeedTree9Postprocessor.OnPostprocessAllAssets 0.428ms
+			TextAssetPostProcessor.OnPostprocessAllAssets 0.317ms
+			ArtifactBrowserPostProcessor.OnPostprocessAllAssets 0.290ms
+			ReferencedClipsPostProcessor.OnPostprocessAllAssets 0.158ms
+			AudioMixerPostprocessor.OnPostprocessAllAssets 0.152ms
+			TMPro_TexturePostProcessor.OnPostprocessAllAssets 0.139ms
+			AssetEvents.OnPostprocessAllAssets 0.125ms
+			TerrainToolbarOverlayPostProcessor.OnPostprocessAllAssets 0.123ms
+			SpeedTreePostProcessor.OnPostprocessAllAssets 0.081ms
+			AssetDatabaseCallbacks.OnPostprocessAllAssets 0.079ms
+			ScenarioDriftAssetsTracker.OnPostprocessAllAssets 0.069ms
+			ConfigAssetsTracker.OnPostprocessAllAssets 0.060ms
+			RenderPipelineGlobalSettingsPostprocessor.OnPostprocessAllAssets 0.058ms
+	PostAssetChangesProfiler: 1.264ms
+	UnloadStreamsBegin: 0.960ms
+	PersistCurrentRevisions: 0.119ms
+	GenerateScriptTypeHashes: 0.296ms
+	GenerateScriptTypeSerializationHashes: 0.544ms
+	Untracked: 386.416ms
+
+Application.AssetDatabase Initial Refresh End
+Launching external process: /Applications/Unity/Hub/Editor/6000.5.9f1/Unity.app/Contents/Helpers/UnityShaderCompiler
+Launched and connected shader compiler UnityShaderCompiler after 0.07 seconds
+Scanning for USB devices : 0.111ms
+Initializing Unity extensions:
+[MODES] ModeService[none].Initialize
+[MODES] ModeService[none].LoadModes
+[MODES] Loading mode Default (0) for mode-current-id-Emberline
+2026-09-11 17:24:45.817 Unity[22005:745405] NSEventModifierFlagFunction specified to -setKeyEquivalentModifierMask: for item <NSMenuItem: 0x600000e12f40 SDF, ke='Command-F12'>, but is only supported for system-provided menu items; will not be used
+Unloading 22 Unused Serialized files (Serialized files now loaded: 0)
+Unloading 628 unused Assets / (1.9 MB). Loaded Objects now: 1420.
+Memory consumption went from 143.9 MB to 142.0 MB.
+Total: 5.772458 ms (FindLiveObjects: 0.072542 ms CreateObjectMapping: 0.091416 ms MarkObjects: 4.924250 ms  DeleteObjects: 0.683708 ms)
+
+2026-09-11 17:24:45.858 Unity[22005:745405] NSEventModifierFlagFunction specified to -setKeyEquivalentModifierMask: for item <NSMenuItem: 0x600000e1c4d0 SDF, ke='Command-F12'>, but is only supported for system-provided menu items; will not be used
+Import package from :/Users/prashant/Downloads/firebase_unity_sdk/FirebaseAuth.unitypackage !
+[API Updater] Processing imported assemblies took 72 ms (7/7 assembly(ies)).
+Worker ready: AssetImportWorkerHW0 0
+[Licensing::Client] Successfully resolved entitlement details
+[Licensing::Client] Successfully resolved entitlement details
+[Licensing::Client] Successfully resolved entitlement details
+[Licensing::Client] Successfully resolved entitlement details
+[Licensing::Client] Successfully resolved entitlement details
+[Licensing::Client] Successfully resolved entitlement details
+[Licensing::Client] Successfully resolved entitlement details
+Filename: /Applications/Unity/Hub/Editor/6000.5.9f1/Unity.app/Contents/Resources/Scripting/DotNetSdk/dotnet
+Arguments: "/Applications/Unity/Hub/Editor/6000.5.9f1/Unity.app/Contents/Resources/BuildPipeline/Compilation/ApiUpdater/AssemblyUpdater.dll" update -a "Assets/Firebase/Plugins/Firebase.Platform.dll" --output "/var/folders/4l/f529251n3sb0r7qvknj8q2780000gn/T/tmp29fbb3c0.tmp" --api-version 6000.5.9f1  -s "/Applications/Unity/Hub/Editor/6000.5.9f1/Unity.app/Contents/Resources/Scripting/NetStandard/ref/2.1.0:/Applications/Unity/Hub/Editor/6000.5.9f1/Unity.app/Contents/Resources/Scripting/NetStandard/compat/2.1.0/shims/netstandard:/Applications/Unity/Hub/Editor/6000.5.9f1/Unity.app/Contents/Resources/Scripting/NetStandard/compat/2.1.0/shims/netfx:+/Users/prashant/StudioProjects/EmberlineUnity/Assets:+/Users/prashant/StudioProjects/EmberlineUnity/Library/PackageCache/com.unity.multiplayer.center@b860850997d0:+/Users/prashant/StudioProjects/EmberlineUnity/Library/PackageCache/com.unity.ugui@1c4864518158:+/Users/prashant/StudioProjects/EmberlineUnity/Library/PackageCache/com.unity.modules.accessibility:+/Users/prashant/StudioProjects/EmberlineUnity/Library/PackageCache/com.unity.modules.adaptiveperformance:+/Users/prashant/StudioProjects/EmberlineUnity/Library/PackageCache/com.unity.modules.ai:+/Users/prashant/StudioProjects/EmberlineUnity/Library/PackageCache/com.unity.modules.androidjni:+/Users/prashant/StudioProjects/EmberlineUnity/Library/PackageCache/com.unity.modules.animation:+/Users/prashant/StudioProjects/EmberlineUnity/Library/PackageCache/com.unity.modules.assetbundle:+/Users/prashant/StudioProjects/EmberlineUnity/Library/PackageCache/com.unity.modules.audio:+/Users/prashant/StudioProjects/EmberlineUnity/Library/PackageCache/com.unity.modules.cloth:+/Users/prashant/StudioProjects/EmberlineUnity/Library/PackageCache/com.unity.modules.director:+/Users/prashant/StudioProjects/EmberlineUnity/Library/PackageCache/com.unity.modules.imageconversion:+/Users/prashant/StudioProjects/EmberlineUnity/Library/PackageCache/com.unity.modules.imgui:+/Users/prashant/StudioProjects/EmberlineUnity/Library/PackageCache/com.unity.modules.jsonserialize:+/Users/prashant/StudioProjects/EmberlineUnity/Library/PackageCache/com.unity.modules.particlesystem:+/Users/prashant/StudioProjects/EmberlineUnity/Library/PackageCache/com.unity.modules.physics:+/Users/prashant/StudioProjects/EmberlineUnity/Library/PackageCache/com.unity.modules.physics2d:+/Users/prashant/StudioProjects/EmberlineUnity/Library/PackageCache/com.unity.modules.physicscore2d:+/Users/prashant/StudioProjects/EmberlineUnity/Library/PackageCache/com.unity.modules.screencapture:+/Users/prashant/StudioProjects/EmberlineUnity/Library/PackageCache/com.unity.modules.terrain:+/Users/prashant/StudioProjects/EmberlineUnity/Library/PackageCache/com.unity.modules.terrainphysics:+/Users/prashant/StudioProjects/EmberlineUnity/Library/PackageCache/com.unity.modules.tilemap:+/Users/prashant/StudioProjects/EmberlineUnity/Library/PackageCache/com.unity.modules.ui:+/Users/prashant/StudioProjects/EmberlineUnity/Library/PackageCache/com.unity.modules.uielements:+/Users/prashant/StudioProjects/EmberlineUnity/Library/PackageCache/com.unity.modules.umbra:+/Users/prashant/StudioProjects/EmberlineUnity/Library/PackageCache/com.unity.modules.unityanalytics:+/Users/prashant/StudioProjects/EmberlineUnity/Library/PackageCache/com.unity.modules.unitywebrequest:+/Users/prashant/StudioProjects/EmberlineUnity/Library/PackageCache/com.unity.modules.unitywebrequestassetbundle:+/Users/prashant/StudioProjects/EmberlineUnity/Library/PackageCache/com.unity.modules.unitywebrequestaudio:+/Users/prashant/StudioProjects/EmberlineUnity/Library/PackageCache/com.unity.modules.unitywebrequesttexture:+/Users/prashant/StudioProjects/EmberlineUnity/Library/PackageCache/com.unity.modules.unitywebrequestwww:+/Users/prashant/StudioProjects/EmberlineUnity/Library/PackageCache/com.unity.modules.vectorgraphics:+/Users/prashant/StudioProjects/EmberlineUnity/Library/PackageCache/com.unity.modules.vehicles:+/Users/prashant/StudioProjects/EmberlineUnity/Library/PackageCache/com.unity.modules.video:+/Users/prashant/StudioProjects/EmberlineUnity/Library/PackageCache/com.unity.modules.wind:+/Users/prashant/StudioProjects/EmberlineUnity/Library/PackageCache/com.unity.modules.xr:+/Users/prashant/StudioProjects/EmberlineUnity/Library/PackageCache/com.unity.modules.subsystems:+/Users/prashant/StudioProjects/EmberlineUnity/Library/PackageCache/com.unity.modules.hierarchycore:Library/ScriptAssemblies:+/Applications/Unity/Hub/Editor/6000.5.9f1/Unity.app/Contents/Resources/Scripting/Managed" "/Applications/Unity/Hub/Editor/6000.5.9f1/Unity.app/Contents/Resources/Scripting/Managed/UnityEngine.dll"
+Filename: /Applications/Unity/Hub/Editor/6000.5.9f1/Unity.app/Contents/Resources/Scripting/DotNetSdk/dotnet
+Arguments: "/Applications/Unity/Hub/Editor/6000.5.9f1/Unity.app/Contents/Resources/BuildPipeline/Compilation/ApiUpdater/AssemblyUpdater.dll" update -a "Assets/ExternalDependencyManager/Editor/1.2.188/Google.PackageManagerResolver.dll" --output "/var/folders/4l/f529251n3sb0r7qvknj8q2780000gn/T/tmp5cb35cfb.tmp" --api-version 6000.5.9f1  -s "/Applications/Unity/Hub/Editor/6000.5.9f1/Unity.app/Contents/Resources/Scripting/NetStandard/ref/2.1.0:/Applications/Unity/Hub/Editor/6000.5.9f1/Unity.app/Contents/Resources/Scripting/NetStandard/compat/2.1.0/shims/netstandard:/Applications/Unity/Hub/Editor/6000.5.9f1/Unity.app/Contents/Resources/Scripting/NetStandard/compat/2.1.0/shims/netfx:+/Users/prashant/StudioProjects/EmberlineUnity/Assets:+/Users/prashant/StudioProjects/EmberlineUnity/Library/PackageCache/com.unity.multiplayer.center@b860850997d0:+/Users/prashant/StudioProjects/EmberlineUnity/Library/PackageCache/com.unity.ugui@1c4864518158:+/Users/prashant/StudioProjects/EmberlineUnity/Library/PackageCache/com.unity.modules.accessibility:+/Users/prashant/StudioProjects/EmberlineUnity/Library/PackageCache/com.unity.modules.adaptiveperformance:+/Users/prashant/StudioProjects/EmberlineUnity/Library/PackageCache/com.unity.modules.ai:+/Users/prashant/StudioProjects/EmberlineUnity/Library/PackageCache/com.unity.modules.androidjni:+/Users/prashant/StudioProjects/EmberlineUnity/Library/PackageCache/com.unity.modules.animation:+/Users/prashant/StudioProjects/EmberlineUnity/Library/PackageCache/com.unity.modules.assetbundle:+/Users/prashant/StudioProjects/EmberlineUnity/Library/PackageCache/com.unity.modules.audio:+/Users/prashant/StudioProjects/EmberlineUnity/Library/PackageCache/com.unity.modules.cloth:+/Users/prashant/StudioProjects/EmberlineUnity/Library/PackageCache/com.unity.modules.director:+/Users/prashant/StudioProjects/EmberlineUnity/Library/PackageCache/com.unity.modules.imageconversion:+/Users/prashant/StudioProjects/EmberlineUnity/Library/PackageCache/com.unity.modules.imgui:+/Users/prashant/StudioProjects/EmberlineUnity/Library/PackageCache/com.unity.modules.jsonserialize:+/Users/prashant/StudioProjects/EmberlineUnity/Library/PackageCache/com.unity.modules.particlesystem:+/Users/prashant/StudioProjects/EmberlineUnity/Library/PackageCache/com.unity.modules.physics:+/Users/prashant/StudioProjects/EmberlineUnity/Library/PackageCache/com.unity.modules.physics2d:+/Users/prashant/StudioProjects/EmberlineUnity/Library/PackageCache/com.unity.modules.physicscore2d:+/Users/prashant/StudioProjects/EmberlineUnity/Library/PackageCache/com.unity.modules.screencapture:+/Users/prashant/StudioProjects/EmberlineUnity/Library/PackageCache/com.unity.modules.terrain:+/Users/prashant/StudioProjects/EmberlineUnity/Library/PackageCache/com.unity.modules.terrainphysics:+/Users/prashant/StudioProjects/EmberlineUnity/Library/PackageCache/com.unity.modules.tilemap:+/Users/prashant/StudioProjects/EmberlineUnity/Library/PackageCache/com.unity.modules.ui:+/Users/prashant/StudioProjects/EmberlineUnity/Library/PackageCache/com.unity.modules.uielements:+/Users/prashant/StudioProjects/EmberlineUnity/Library/PackageCache/com.unity.modules.umbra:+/Users/prashant/StudioProjects/EmberlineUnity/Library/PackageCache/com.unity.modules.unityanalytics:+/Users/prashant/StudioProjects/EmberlineUnity/Library/PackageCache/com.unity.modules.unitywebrequest:+/Users/prashant/StudioProjects/EmberlineUnity/Library/PackageCache/com.unity.modules.unitywebrequestassetbundle:+/Users/prashant/StudioProjects/EmberlineUnity/Library/PackageCache/com.unity.modules.unitywebrequestaudio:+/Users/prashant/StudioProjects/EmberlineUnity/Library/PackageCache/com.unity.modules.unitywebrequesttexture:+/Users/prashant/StudioProjects/EmberlineUnity/Library/PackageCache/com.unity.modules.unitywebrequestwww:+/Users/prashant/StudioProjects/EmberlineUnity/Library/PackageCache/com.unity.modules.vectorgraphics:+/Users/prashant/StudioProjects/EmberlineUnity/Library/PackageCache/com.unity.modules.vehicles:+/Users/prashant/StudioProjects/EmberlineUnity/Library/PackageCache/com.unity.modules.video:+/Users/prashant/StudioProjects/EmberlineUnity/Library/PackageCache/com.unity.modules.wind:+/Users/prashant/StudioProjects/EmberlineUnity/Library/PackageCache/com.unity.modules.xr:+/Users/prashant/StudioProjects/EmberlineUnity/Library/PackageCache/com.unity.modules.subsystems:+/Users/prashant/StudioProjects/EmberlineUnity/Library/PackageCache/com.unity.modules.hierarchycore:Library/ScriptAssemblies:+/Applications/Unity/Hub/Editor/6000.5.9f1/Unity.app/Contents/Resources/Scripting/Managed" "/Applications/Unity/Hub/Editor/6000.5.9f1/Unity.app/Contents/Resources/Scripting/Managed/UnityEditor.dll" "/Applications/Unity/Hub/Editor/6000.5.9f1/Unity.app/Contents/Resources/Scripting/Managed/UnityEngine.dll"
+Filename: /Applications/Unity/Hub/Editor/6000.5.9f1/Unity.app/Contents/Resources/Scripting/DotNetSdk/dotnet
+Arguments: "/Applications/Unity/Hub/Editor/6000.5.9f1/Unity.app/Contents/Resources/BuildPipeline/Compilation/ApiUpdater/AssemblyUpdater.dll" update -a "Assets/ExternalDependencyManager/Editor/1.2.188/Google.VersionHandlerImpl.dll" --output "/var/folders/4l/f529251n3sb0r7qvknj8q2780000gn/T/tmp5b32ae1f.tmp" --api-version 6000.5.9f1  -s "/Applications/Unity/Hub/Editor/6000.5.9f1/Unity.app/Contents/Resources/Scripting/NetStandard/ref/2.1.0:/Applications/Unity/Hub/Editor/6000.5.9f1/Unity.app/Contents/Resources/Scripting/NetStandard/compat/2.1.0/shims/netstandard:/Applications/Unity/Hub/Editor/6000.5.9f1/Unity.app/Contents/Resources/Scripting/NetStandard/compat/2.1.0/shims/netfx:+/Users/prashant/StudioProjects/EmberlineUnity/Assets:+/Users/prashant/StudioProjects/EmberlineUnity/Library/PackageCache/com.unity.multiplayer.center@b860850997d0:+/Users/prashant/StudioProjects/EmberlineUnity/Library/PackageCache/com.unity.ugui@1c4864518158:+/Users/prashant/StudioProjects/EmberlineUnity/Library/PackageCache/com.unity.modules.accessibility:+/Users/prashant/StudioProjects/EmberlineUnity/Library/PackageCache/com.unity.modules.adaptiveperformance:+/Users/prashant/StudioProjects/EmberlineUnity/Library/PackageCache/com.unity.modules.ai:+/Users/prashant/StudioProjects/EmberlineUnity/Library/PackageCache/com.unity.modules.androidjni:+/Users/prashant/StudioProjects/EmberlineUnity/Library/PackageCache/com.unity.modules.animation:+/Users/prashant/StudioProjects/EmberlineUnity/Library/PackageCache/com.unity.modules.assetbundle:+/Users/prashant/StudioProjects/EmberlineUnity/Library/PackageCache/com.unity.modules.audio:+/Users/prashant/StudioProjects/EmberlineUnity/Library/PackageCache/com.unity.modules.cloth:+/Users/prashant/StudioProjects/EmberlineUnity/Library/PackageCache/com.unity.modules.director:+/Users/prashant/StudioProjects/EmberlineUnity/Library/PackageCache/com.unity.modules.imageconversion:+/Users/prashant/StudioProjects/EmberlineUnity/Library/PackageCache/com.unity.modules.imgui:+/Users/prashant/StudioProjects/EmberlineUnity/Library/PackageCache/com.unity.modules.jsonserialize:+/Users/prashant/StudioProjects/EmberlineUnity/Library/PackageCache/com.unity.modules.particlesystem:+/Users/prashant/StudioProjects/EmberlineUnity/Library/PackageCache/com.unity.modules.physics:+/Users/prashant/StudioProjects/EmberlineUnity/Library/PackageCache/com.unity.modules.physics2d:+/Users/prashant/StudioProjects/EmberlineUnity/Library/PackageCache/com.unity.modules.physicscore2d:+/Users/prashant/StudioProjects/EmberlineUnity/Library/PackageCache/com.unity.modules.screencapture:+/Users/prashant/StudioProjects/EmberlineUnity/Library/PackageCache/com.unity.modules.terrain:+/Users/prashant/StudioProjects/EmberlineUnity/Library/PackageCache/com.unity.modules.terrainphysics:+/Users/prashant/StudioProjects/EmberlineUnity/Library/PackageCache/com.unity.modules.tilemap:+/Users/prashant/StudioProjects/EmberlineUnity/Library/PackageCache/com.unity.modules.ui:+/Users/prashant/StudioProjects/EmberlineUnity/Library/PackageCache/com.unity.modules.uielements:+/Users/prashant/StudioProjects/EmberlineUnity/Library/PackageCache/com.unity.modules.umbra:+/Users/prashant/StudioProjects/EmberlineUnity/Library/PackageCache/com.unity.modules.unityanalytics:+/Users/prashant/StudioProjects/EmberlineUnity/Library/PackageCache/com.unity.modules.unitywebrequest:+/Users/prashant/StudioProjects/EmberlineUnity/Library/PackageCache/com.unity.modules.unitywebrequestassetbundle:+/Users/prashant/StudioProjects/EmberlineUnity/Library/PackageCache/com.unity.modules.unitywebrequestaudio:+/Users/prashant/StudioProjects/EmberlineUnity/Library/PackageCache/com.unity.modules.unitywebrequesttexture:+/Users/prashant/StudioProjects/EmberlineUnity/Library/PackageCache/com.unity.modules.unitywebrequestwww:+/Users/prashant/StudioProjects/EmberlineUnity/Library/PackageCache/com.unity.modules.vectorgraphics:+/Users/prashant/StudioProjects/EmberlineUnity/Library/PackageCache/com.unity.modules.vehicles:+/Users/prashant/StudioProjects/EmberlineUnity/Library/PackageCache/com.unity.modules.video:+/Users/prashant/StudioProjects/EmberlineUnity/Library/PackageCache/com.unity.modules.wind:+/Users/prashant/StudioProjects/EmberlineUnity/Library/PackageCache/com.unity.modules.xr:+/Users/prashant/StudioProjects/EmberlineUnity/Library/PackageCache/com.unity.modules.subsystems:+/Users/prashant/StudioProjects/EmberlineUnity/Library/PackageCache/com.unity.modules.hierarchycore:Library/ScriptAssemblies:+/Applications/Unity/Hub/Editor/6000.5.9f1/Unity.app/Contents/Resources/Scripting/Managed" "/Applications/Unity/Hub/Editor/6000.5.9f1/Unity.app/Contents/Resources/Scripting/Managed/UnityEditor.dll" "/Applications/Unity/Hub/Editor/6000.5.9f1/Unity.app/Contents/Resources/Scripting/Managed/UnityEngine.dll"
+Filename: /Applications/Unity/Hub/Editor/6000.5.9f1/Unity.app/Contents/Resources/Scripting/DotNetSdk/dotnet
+Arguments: "/Applications/Unity/Hub/Editor/6000.5.9f1/Unity.app/Contents/Resources/BuildPipeline/Compilation/ApiUpdater/AssemblyUpdater.dll" update -a "Assets/ExternalDependencyManager/Editor/Google.VersionHandler.dll" --output "/var/folders/4l/f529251n3sb0r7qvknj8q2780000gn/T/tmp3890eef3.tmp" --api-version 6000.5.9f1  -s "/Applications/Unity/Hub/Editor/6000.5.9f1/Unity.app/Contents/Resources/Scripting/NetStandard/ref/2.1.0:/Applications/Unity/Hub/Editor/6000.5.9f1/Unity.app/Contents/Resources/Scripting/NetStandard/compat/2.1.0/shims/netstandard:/Applications/Unity/Hub/Editor/6000.5.9f1/Unity.app/Contents/Resources/Scripting/NetStandard/compat/2.1.0/shims/netfx:+/Users/prashant/StudioProjects/EmberlineUnity/Assets:+/Users/prashant/StudioProjects/EmberlineUnity/Library/PackageCache/com.unity.multiplayer.center@b860850997d0:+/Users/prashant/StudioProjects/EmberlineUnity/Library/PackageCache/com.unity.ugui@1c4864518158:+/Users/prashant/StudioProjects/EmberlineUnity/Library/PackageCache/com.unity.modules.accessibility:+/Users/prashant/StudioProjects/EmberlineUnity/Library/PackageCache/com.unity.modules.adaptiveperformance:+/Users/prashant/StudioProjects/EmberlineUnity/Library/PackageCache/com.unity.modules.ai:+/Users/prashant/StudioProjects/EmberlineUnity/Library/PackageCache/com.unity.modules.androidjni:+/Users/prashant/StudioProjects/EmberlineUnity/Library/PackageCache/com.unity.modules.animation:+/Users/prashant/StudioProjects/EmberlineUnity/Library/PackageCache/com.unity.modules.assetbundle:+/Users/prashant/StudioProjects/EmberlineUnity/Library/PackageCache/com.unity.modules.audio:+/Users/prashant/StudioProjects/EmberlineUnity/Library/PackageCache/com.unity.modules.cloth:+/Users/prashant/StudioProjects/EmberlineUnity/Library/PackageCache/com.unity.modules.director:+/Users/prashant/StudioProjects/EmberlineUnity/Library/PackageCache/com.unity.modules.imageconversion:+/Users/prashant/StudioProjects/EmberlineUnity/Library/PackageCache/com.unity.modules.imgui:+/Users/prashant/StudioProjects/EmberlineUnity/Library/PackageCache/com.unity.modules.jsonserialize:+/Users/prashant/StudioProjects/EmberlineUnity/Library/PackageCache/com.unity.modules.particlesystem:+/Users/prashant/StudioProjects/EmberlineUnity/Library/PackageCache/com.unity.modules.physics:+/Users/prashant/StudioProjects/EmberlineUnity/Library/PackageCache/com.unity.modules.physics2d:+/Users/prashant/StudioProjects/EmberlineUnity/Library/PackageCache/com.unity.modules.physicscore2d:+/Users/prashant/StudioProjects/EmberlineUnity/Library/PackageCache/com.unity.modules.screencapture:+/Users/prashant/StudioProjects/EmberlineUnity/Library/PackageCache/com.unity.modules.terrain:+/Users/prashant/StudioProjects/EmberlineUnity/Library/PackageCache/com.unity.modules.terrainphysics:+/Users/prashant/StudioProjects/EmberlineUnity/Library/PackageCache/com.unity.modules.tilemap:+/Users/prashant/StudioProjects/EmberlineUnity/Library/PackageCache/com.unity.modules.ui:+/Users/prashant/StudioProjects/EmberlineUnity/Library/PackageCache/com.unity.modules.uielements:+/Users/prashant/StudioProjects/EmberlineUnity/Library/PackageCache/com.unity.modules.umbra:+/Users/prashant/StudioProjects/EmberlineUnity/Library/PackageCache/com.unity.modules.unityanalytics:+/Users/prashant/StudioProjects/EmberlineUnity/Library/PackageCache/com.unity.modules.unitywebrequest:+/Users/prashant/StudioProjects/EmberlineUnity/Library/PackageCache/com.unity.modules.unitywebrequestassetbundle:+/Users/prashant/StudioProjects/EmberlineUnity/Library/PackageCache/com.unity.modules.unitywebrequestaudio:+/Users/prashant/StudioProjects/EmberlineUnity/Library/PackageCache/com.unity.modules.unitywebrequesttexture:+/Users/prashant/StudioProjects/EmberlineUnity/Library/PackageCache/com.unity.modules.unitywebrequestwww:+/Users/prashant/StudioProjects/EmberlineUnity/Library/PackageCache/com.unity.modules.vectorgraphics:+/Users/prashant/StudioProjects/EmberlineUnity/Library/PackageCache/com.unity.modules.vehicles:+/Users/prashant/StudioProjects/EmberlineUnity/Library/PackageCache/com.unity.modules.video:+/Users/prashant/StudioProjects/EmberlineUnity/Library/PackageCache/com.unity.modules.wind:+/Users/prashant/StudioProjects/EmberlineUnity/Library/PackageCache/com.unity.modules.xr:+/Users/prashant/StudioProjects/EmberlineUnity/Library/PackageCache/com.unity.modules.subsystems:+/Users/prashant/StudioProjects/EmberlineUnity/Library/PackageCache/com.unity.modules.hierarchycore:Library/ScriptAssemblies:+/Applications/Unity/Hub/Editor/6000.5.9f1/Unity.app/Contents/Resources/Scripting/Managed" "/Applications/Unity/Hub/Editor/6000.5.9f1/Unity.app/Contents/Resources/Scripting/Managed/UnityEditor.dll" "/Applications/Unity/Hub/Editor/6000.5.9f1/Unity.app/Contents/Resources/Scripting/Managed/UnityEngine.dll"
+Filename: /Applications/Unity/Hub/Editor/6000.5.9f1/Unity.app/Contents/Resources/Scripting/DotNetSdk/dotnet
+Arguments: "/Applications/Unity/Hub/Editor/6000.5.9f1/Unity.app/Contents/Resources/BuildPipeline/Compilation/ApiUpdater/AssemblyUpdater.dll" update -a "Assets/Firebase/Editor/Firebase.Editor.dll" --output "/var/folders/4l/f529251n3sb0r7qvknj8q2780000gn/T/tmp6e75d0ed.tmp" --api-version 6000.5.9f1  -s "/Applications/Unity/Hub/Editor/6000.5.9f1/Unity.app/Contents/Resources/Scripting/NetStandard/ref/2.1.0:/Applications/Unity/Hub/Editor/6000.5.9f1/Unity.app/Contents/Resources/Scripting/NetStandard/compat/2.1.0/shims/netstandard:/Applications/Unity/Hub/Editor/6000.5.9f1/Unity.app/Contents/Resources/Scripting/NetStandard/compat/2.1.0/shims/netfx:+/Users/prashant/StudioProjects/EmberlineUnity/Assets:+/Users/prashant/StudioProjects/EmberlineUnity/Library/PackageCache/com.unity.multiplayer.center@b860850997d0:+/Users/prashant/StudioProjects/EmberlineUnity/Library/PackageCache/com.unity.ugui@1c4864518158:+/Users/prashant/StudioProjects/EmberlineUnity/Library/PackageCache/com.unity.modules.accessibility:+/Users/prashant/StudioProjects/EmberlineUnity/Library/PackageCache/com.unity.modules.adaptiveperformance:+/Users/prashant/StudioProjects/EmberlineUnity/Library/PackageCache/com.unity.modules.ai:+/Users/prashant/StudioProjects/EmberlineUnity/Library/PackageCache/com.unity.modules.androidjni:+/Users/prashant/StudioProjects/EmberlineUnity/Library/PackageCache/com.unity.modules.animation:+/Users/prashant/StudioProjects/EmberlineUnity/Library/PackageCache/com.unity.modules.assetbundle:+/Users/prashant/StudioProjects/EmberlineUnity/Library/PackageCache/com.unity.modules.audio:+/Users/prashant/StudioProjects/EmberlineUnity/Library/PackageCache/com.unity.modules.cloth:+/Users/prashant/StudioProjects/EmberlineUnity/Library/PackageCache/com.unity.modules.director:+/Users/prashant/StudioProjects/EmberlineUnity/Library/PackageCache/com.unity.modules.imageconversion:+/Users/prashant/StudioProjects/EmberlineUnity/Library/PackageCache/com.unity.modules.imgui:+/Users/prashant/StudioProjects/EmberlineUnity/Library/PackageCache/com.unity.modules.jsonserialize:+/Users/prashant/StudioProjects/EmberlineUnity/Library/PackageCache/com.unity.modules.particlesystem:+/Users/prashant/StudioProjects/EmberlineUnity/Library/PackageCache/com.unity.modules.physics:+/Users/prashant/StudioProjects/EmberlineUnity/Library/PackageCache/com.unity.modules.physics2d:+/Users/prashant/StudioProjects/EmberlineUnity/Library/PackageCache/com.unity.modules.physicscore2d:+/Users/prashant/StudioProjects/EmberlineUnity/Library/PackageCache/com.unity.modules.screencapture:+/Users/prashant/StudioProjects/EmberlineUnity/Library/PackageCache/com.unity.modules.terrain:+/Users/prashant/StudioProjects/EmberlineUnity/Library/PackageCache/com.unity.modules.terrainphysics:+/Users/prashant/StudioProjects/EmberlineUnity/Library/PackageCache/com.unity.modules.tilemap:+/Users/prashant/StudioProjects/EmberlineUnity/Library/PackageCache/com.unity.modules.ui:+/Users/prashant/StudioProjects/EmberlineUnity/Library/PackageCache/com.unity.modules.uielements:+/Users/prashant/StudioProjects/EmberlineUnity/Library/PackageCache/com.unity.modules.umbra:+/Users/prashant/StudioProjects/EmberlineUnity/Library/PackageCache/com.unity.modules.unityanalytics:+/Users/prashant/StudioProjects/EmberlineUnity/Library/PackageCache/com.unity.modules.unitywebrequest:+/Users/prashant/StudioProjects/EmberlineUnity/Library/PackageCache/com.unity.modules.unitywebrequestassetbundle:+/Users/prashant/StudioProjects/EmberlineUnity/Library/PackageCache/com.unity.modules.unitywebrequestaudio:+/Users/prashant/StudioProjects/EmberlineUnity/Library/PackageCache/com.unity.modules.unitywebrequesttexture:+/Users/prashant/StudioProjects/EmberlineUnity/Library/PackageCache/com.unity.modules.unitywebrequestwww:+/Users/prashant/StudioProjects/EmberlineUnity/Library/PackageCache/com.unity.modules.vectorgraphics:+/Users/prashant/StudioProjects/EmberlineUnity/Library/PackageCache/com.unity.modules.vehicles:+/Users/prashant/StudioProjects/EmberlineUnity/Library/PackageCache/com.unity.modules.video:+/Users/prashant/StudioProjects/EmberlineUnity/Library/PackageCache/com.unity.modules.wind:+/Users/prashant/StudioProjects/EmberlineUnity/Library/PackageCache/com.unity.modules.xr:+/Users/prashant/StudioProjects/EmberlineUnity/Library/PackageCache/com.unity.modules.subsystems:+/Users/prashant/StudioProjects/EmberlineUnity/Library/PackageCache/com.unity.modules.hierarchycore:Library/ScriptAssemblies:+/Applications/Unity/Hub/Editor/6000.5.9f1/Unity.app/Contents/Resources/Scripting/Managed" "/Applications/Unity/Hub/Editor/6000.5.9f1/Unity.app/Contents/Resources/Scripting/Managed/UnityEngine.dll" "/Applications/Unity/Hub/Editor/6000.5.9f1/Unity.app/Contents/Resources/Scripting/Managed/UnityEditor.dll"
+Filename: /Applications/Unity/Hub/Editor/6000.5.9f1/Unity.app/Contents/Resources/Scripting/DotNetSdk/dotnet
+Arguments: "/Applications/Unity/Hub/Editor/6000.5.9f1/Unity.app/Contents/Resources/BuildPipeline/Compilation/ApiUpdater/AssemblyUpdater.dll" update -a "Assets/ExternalDependencyManager/Editor/1.2.188/Google.JarResolver.dll" --output "/var/folders/4l/f529251n3sb0r7qvknj8q2780000gn/T/tmp4cd53a8e.tmp" --api-version 6000.5.9f1  -s "/Applications/Unity/Hub/Editor/6000.5.9f1/Unity.app/Contents/Resources/Scripting/NetStandard/ref/2.1.0:/Applications/Unity/Hub/Editor/6000.5.9f1/Unity.app/Contents/Resources/Scripting/NetStandard/compat/2.1.0/shims/netstandard:/Applications/Unity/Hub/Editor/6000.5.9f1/Unity.app/Contents/Resources/Scripting/NetStandard/compat/2.1.0/shims/netfx:+/Users/prashant/StudioProjects/EmberlineUnity/Assets:+/Users/prashant/StudioProjects/EmberlineUnity/Library/PackageCache/com.unity.multiplayer.center@b860850997d0:+/Users/prashant/StudioProjects/EmberlineUnity/Library/PackageCache/com.unity.ugui@1c4864518158:+/Users/prashant/StudioProjects/EmberlineUnity/Library/PackageCache/com.unity.modules.accessibility:+/Users/prashant/StudioProjects/EmberlineUnity/Library/PackageCache/com.unity.modules.adaptiveperformance:+/Users/prashant/StudioProjects/EmberlineUnity/Library/PackageCache/com.unity.modules.ai:+/Users/prashant/StudioProjects/EmberlineUnity/Library/PackageCache/com.unity.modules.androidjni:+/Users/prashant/StudioProjects/EmberlineUnity/Library/PackageCache/com.unity.modules.animation:+/Users/prashant/StudioProjects/EmberlineUnity/Library/PackageCache/com.unity.modules.assetbundle:+/Users/prashant/StudioProjects/EmberlineUnity/Library/PackageCache/com.unity.modules.audio:+/Users/prashant/StudioProjects/EmberlineUnity/Library/PackageCache/com.unity.modules.cloth:+/Users/prashant/StudioProjects/EmberlineUnity/Library/PackageCache/com.unity.modules.director:+/Users/prashant/StudioProjects/EmberlineUnity/Library/PackageCache/com.unity.modules.imageconversion:+/Users/prashant/StudioProjects/EmberlineUnity/Library/PackageCache/com.unity.modules.imgui:+/Users/prashant/StudioProjects/EmberlineUnity/Library/PackageCache/com.unity.modules.jsonserialize:+/Users/prashant/StudioProjects/EmberlineUnity/Library/PackageCache/com.unity.modules.particlesystem:+/Users/prashant/StudioProjects/EmberlineUnity/Library/PackageCache/com.unity.modules.physics:+/Users/prashant/StudioProjects/EmberlineUnity/Library/PackageCache/com.unity.modules.physics2d:+/Users/prashant/StudioProjects/EmberlineUnity/Library/PackageCache/com.unity.modules.physicscore2d:+/Users/prashant/StudioProjects/EmberlineUnity/Library/PackageCache/com.unity.modules.screencapture:+/Users/prashant/StudioProjects/EmberlineUnity/Library/PackageCache/com.unity.modules.terrain:+/Users/prashant/StudioProjects/EmberlineUnity/Library/PackageCache/com.unity.modules.terrainphysics:+/Users/prashant/StudioProjects/EmberlineUnity/Library/PackageCache/com.unity.modules.tilemap:+/Users/prashant/StudioProjects/EmberlineUnity/Library/PackageCache/com.unity.modules.ui:+/Users/prashant/StudioProjects/EmberlineUnity/Library/PackageCache/com.unity.modules.uielements:+/Users/prashant/StudioProjects/EmberlineUnity/Library/PackageCache/com.unity.modules.umbra:+/Users/prashant/StudioProjects/EmberlineUnity/Library/PackageCache/com.unity.modules.unityanalytics:+/Users/prashant/StudioProjects/EmberlineUnity/Library/PackageCache/com.unity.modules.unitywebrequest:+/Users/prashant/StudioProjects/EmberlineUnity/Library/PackageCache/com.unity.modules.unitywebrequestassetbundle:+/Users/prashant/StudioProjects/EmberlineUnity/Library/PackageCache/com.unity.modules.unitywebrequestaudio:+/Users/prashant/StudioProjects/EmberlineUnity/Library/PackageCache/com.unity.modules.unitywebrequesttexture:+/Users/prashant/StudioProjects/EmberlineUnity/Library/PackageCache/com.unity.modules.unitywebrequestwww:+/Users/prashant/StudioProjects/EmberlineUnity/Library/PackageCache/com.unity.modules.vectorgraphics:+/Users/prashant/StudioProjects/EmberlineUnity/Library/PackageCache/com.unity.modules.vehicles:+/Users/prashant/StudioProjects/EmberlineUnity/Library/PackageCache/com.unity.modules.video:+/Users/prashant/StudioProjects/EmberlineUnity/Library/PackageCache/com.unity.modules.wind:+/Users/prashant/StudioProjects/EmberlineUnity/Library/PackageCache/com.unity.modules.xr:+/Users/prashant/StudioProjects/EmberlineUnity/Library/PackageCache/com.unity.modules.subsystems:+/Users/prashant/StudioProjects/EmberlineUnity/Library/PackageCache/com.unity.modules.hierarchycore:Library/ScriptAssemblies:+/Applications/Unity/Hub/Editor/6000.5.9f1/Unity.app/Contents/Resources/Scripting/Managed" "/Applications/Unity/Hub/Editor/6000.5.9f1/Unity.app/Contents/Resources/Scripting/Managed/UnityEngine.dll" "/Applications/Unity/Hub/Editor/6000.5.9f1/Unity.app/Contents/Resources/Scripting/Managed/UnityEditor.dll"
+Filename: /Applications/Unity/Hub/Editor/6000.5.9f1/Unity.app/Contents/Resources/Scripting/DotNetSdk/dotnet
+Arguments: "/Applications/Unity/Hub/Editor/6000.5.9f1/Unity.app/Contents/Resources/BuildPipeline/Compilation/ApiUpdater/AssemblyUpdater.dll" update -a "Assets/ExternalDependencyManager/Editor/1.2.188/Google.IOSResolver.dll" --output "/var/folders/4l/f529251n3sb0r7qvknj8q2780000gn/T/tmp7d7fabfd.tmp" --api-version 6000.5.9f1  -s "/Applications/Unity/Hub/Editor/6000.5.9f1/Unity.app/Contents/Resources/Scripting/NetStandard/ref/2.1.0:/Applications/Unity/Hub/Editor/6000.5.9f1/Unity.app/Contents/Resources/Scripting/NetStandard/compat/2.1.0/shims/netstandard:/Applications/Unity/Hub/Editor/6000.5.9f1/Unity.app/Contents/Resources/Scripting/NetStandard/compat/2.1.0/shims/netfx:+/Users/prashant/StudioProjects/EmberlineUnity/Assets:+/Users/prashant/StudioProjects/EmberlineUnity/Library/PackageCache/com.unity.multiplayer.center@b860850997d0:+/Users/prashant/StudioProjects/EmberlineUnity/Library/PackageCache/com.unity.ugui@1c4864518158:+/Users/prashant/StudioProjects/EmberlineUnity/Library/PackageCache/com.unity.modules.accessibility:+/Users/prashant/StudioProjects/EmberlineUnity/Library/PackageCache/com.unity.modules.adaptiveperformance:+/Users/prashant/StudioProjects/EmberlineUnity/Library/PackageCache/com.unity.modules.ai:+/Users/prashant/StudioProjects/EmberlineUnity/Library/PackageCache/com.unity.modules.androidjni:+/Users/prashant/StudioProjects/EmberlineUnity/Library/PackageCache/com.unity.modules.animation:+/Users/prashant/StudioProjects/EmberlineUnity/Library/PackageCache/com.unity.modules.assetbundle:+/Users/prashant/StudioProjects/EmberlineUnity/Library/PackageCache/com.unity.modules.audio:+/Users/prashant/StudioProjects/EmberlineUnity/Library/PackageCache/com.unity.modules.cloth:+/Users/prashant/StudioProjects/EmberlineUnity/Library/PackageCache/com.unity.modules.director:+/Users/prashant/StudioProjects/EmberlineUnity/Library/PackageCache/com.unity.modules.imageconversion:+/Users/prashant/StudioProjects/EmberlineUnity/Library/PackageCache/com.unity.modules.imgui:+/Users/prashant/StudioProjects/EmberlineUnity/Library/PackageCache/com.unity.modules.jsonserialize:+/Users/prashant/StudioProjects/EmberlineUnity/Library/PackageCache/com.unity.modules.particlesystem:+/Users/prashant/StudioProjects/EmberlineUnity/Library/PackageCache/com.unity.modules.physics:+/Users/prashant/StudioProjects/EmberlineUnity/Library/PackageCache/com.unity.modules.physics2d:+/Users/prashant/StudioProjects/EmberlineUnity/Library/PackageCache/com.unity.modules.physicscore2d:+/Users/prashant/StudioProjects/EmberlineUnity/Library/PackageCache/com.unity.modules.screencapture:+/Users/prashant/StudioProjects/EmberlineUnity/Library/PackageCache/com.unity.modules.terrain:+/Users/prashant/StudioProjects/EmberlineUnity/Library/PackageCache/com.unity.modules.terrainphysics:+/Users/prashant/StudioProjects/EmberlineUnity/Library/PackageCache/com.unity.modules.tilemap:+/Users/prashant/StudioProjects/EmberlineUnity/Library/PackageCache/com.unity.modules.ui:+/Users/prashant/StudioProjects/EmberlineUnity/Library/PackageCache/com.unity.modules.uielements:+/Users/prashant/StudioProjects/EmberlineUnity/Library/PackageCache/com.unity.modules.umbra:+/Users/prashant/StudioProjects/EmberlineUnity/Library/PackageCache/com.unity.modules.unityanalytics:+/Users/prashant/StudioProjects/EmberlineUnity/Library/PackageCache/com.unity.modules.unitywebrequest:+/Users/prashant/StudioProjects/EmberlineUnity/Library/PackageCache/com.unity.modules.unitywebrequestassetbundle:+/Users/prashant/StudioProjects/EmberlineUnity/Library/PackageCache/com.unity.modules.unitywebrequestaudio:+/Users/prashant/StudioProjects/EmberlineUnity/Library/PackageCache/com.unity.modules.unitywebrequesttexture:+/Users/prashant/StudioProjects/EmberlineUnity/Library/PackageCache/com.unity.modules.unitywebrequestwww:+/Users/prashant/StudioProjects/EmberlineUnity/Library/PackageCache/com.unity.modules.vectorgraphics:+/Users/prashant/StudioProjects/EmberlineUnity/Library/PackageCache/com.unity.modules.vehicles:+/Users/prashant/StudioProjects/EmberlineUnity/Library/PackageCache/com.unity.modules.video:+/Users/prashant/StudioProjects/EmberlineUnity/Library/PackageCache/com.unity.modules.wind:+/Users/prashant/StudioProjects/EmberlineUnity/Library/PackageCache/com.unity.modules.xr:+/Users/prashant/StudioProjects/EmberlineUnity/Library/PackageCache/com.unity.modules.subsystems:+/Users/prashant/StudioProjects/EmberlineUnity/Library/PackageCache/com.unity.modules.hierarchycore:Library/ScriptAssemblies:+/Applications/Unity/Hub/Editor/6000.5.9f1/Unity.app/Contents/Resources/Scripting/Managed" "/Applications/Unity/Hub/Editor/6000.5.9f1/Unity.app/Contents/Resources/Scripting/Managed/UnityEditor.dll" "/Applications/Unity/Hub/Editor/6000.5.9f1/Unity.app/Contents/Resources/Scripting/Managed/UnityEngine.dll"
+[API Updater] Assemblies not requiring updates:
+[API Updater] Assets/ExternalDependencyManager/Editor/1.2.188/Google.VersionHandlerImpl.dll
+[API Updater] Assets/ExternalDependencyManager/Editor/1.2.188/Google.JarResolver.dll
+[API Updater] Assets/ExternalDependencyManager/Editor/Google.VersionHandler.dll
+[API Updater] Assets/Firebase/Plugins/Firebase.Platform.dll
+[API Updater] Assets/ExternalDependencyManager/Editor/1.2.188/Google.IOSResolver.dll
+[API Updater] Assets/ExternalDependencyManager/Editor/1.2.188/Google.PackageManagerResolver.dll
+[API Updater] Assets/Firebase/Editor/Firebase.Editor.dll
+[API Updater] Update finished with success in 4228 ms (0/7 assembly(ies) updated).
+Assembly Updater Post Process Assets time: 4.301933s
+[ScriptCompilation] Requested script compilation because: Assembly Definition File(s) changed
+[ScriptCompilation] Requested script compilation because: AssetDatabase observed changes in script compilation related files
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/2 POST http://ilpp/UnityILPP.PostProcessing/Ping - application/grpc -
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[0]
+      Executing endpoint 'gRPC - /UnityILPP.PostProcessing/Ping'
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[1]
+      Executed endpoint 'gRPC - /UnityILPP.PostProcessing/Ping'
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/2 POST http://ilpp/UnityILPP.PostProcessing/Ping - 200 - application/grpc 8.4780ms
+Starting: /Applications/Unity/Hub/Editor/6000.5.9f1/Unity.app/Contents/Resources/BuildPipeline/bee_backend --ipc --defer-dag-verification --dagfile="Library/Bee/1300b0aE.dag" --continue-on-failure --profile="Library/Bee/backend1.traceevents" ScriptAssemblies
+WorkingDir: /Users/prashant/StudioProjects/EmberlineUnity
+ExitCode: 4 Duration: 0s49ms
+Rebuilding DAG because FileSignature timestamp changed: Library/Bee/1300b0aE-inputdata.json
+*** Tundra requires additional run (0.04 seconds), 0 items updated, 247 evaluated
+Starting: /Applications/Unity/Hub/Editor/6000.5.9f1/Unity.app/Contents/Resources/Scripting/netcorerun/netcorerun "/Applications/Unity/Hub/Editor/6000.5.9f1/Unity.app/Contents/Resources/BuildPipeline/ScriptCompilationBuildProgram.exe" "Library/Bee/1300b0aE.dag.json" "Library/Bee/1300b0aE-inputdata.json" "Library/Bee/buildprogram0.traceevents"
+WorkingDir: /Users/prashant/StudioProjects/EmberlineUnity
+ExitCode: 0 Duration: 0s458ms
+Starting: /Applications/Unity/Hub/Editor/6000.5.9f1/Unity.app/Contents/Resources/BuildPipeline/bee_backend --ipc --defer-dag-verification --dagfile="Library/Bee/1300b0aE.dag" --continue-on-failure --dagfilejson="Library/Bee/1300b0aE.dag.json" --profile="Library/Bee/backend2.traceevents" ScriptAssemblies
+WorkingDir: /Users/prashant/StudioProjects/EmberlineUnity
+ExitCode: 0 Duration: 3s362ms
+Finished compiling graph: 258 nodes, 2445 flattened edges (2309 ToBuild, 22 ToUse), maximum node priority 123
+[184/255    0s] WriteText Library/Bee/artifacts/1300b0aE.dag/Unity.InternalAPIEngineBridge.004.rsp
+[185/255    0s] WriteText Library/Bee/artifacts/1300b0aE.dag/Unity.Multiplayer.Center.Common.rsp
+[186/255    0s] WriteText Library/Bee/artifacts/1300b0aE.dag/Firebase.App.Internal.rsp2
+[187/255    0s] WriteText Library/Bee/artifacts/1300b0aE.dag/Firebase.App.Internal.UnityAdditionalFile.txt
+[188/255    0s] WriteText Library/Bee/artifacts/1300b0aE.dag/Unity.TextMeshPro.rsp
+[189/255    0s] WriteText Library/Bee/artifacts/1300b0aE.dag/UnityEngine.UI.rsp
+[190/255    0s] WriteText Library/Bee/artifacts/1300b0aE.dag/UnityEditor.UI.Analytics.rsp
+[191/255    0s] WriteText Library/Bee/artifacts/1300b0aE.dag/Unity.TextMeshPro.Editor.rsp
+[194/255    0s] WriteText Library/Bee/artifacts/1300b0aE.dag/Unity.Multiplayer.Center.Editor.rsp
+[197/255    0s] WriteText Library/Bee/artifacts/1300b0aE.dag/Firebase.App.Internal.dll.mvfrm.rsp
+[198/255    0s] WriteText Library/Bee/artifacts/1300b0aE.dag/UnityEditor.UI.rsp
+[201/255    0s] WriteText Library/Bee/artifacts/1300b0aE.dag/Firebase.App.Internal.rsp
+[202/255    0s] WriteText Library/Bee/artifacts/1300b0aE.dag/Assembly-CSharp.rsp
+[203/255    0s] WriteText Library/Bee/artifacts/1300b0aE.dag/Assembly-CSharp-Editor.rsp
+[           0s] Csc Library/Bee/artifacts/1300b0aE.dag/UnityEngine.UI.dll (+2 others) [CacheMiss 8c45faf1ed7969cac45f5738431f87af00000000000000000000000000000006]
+[204/255    1s] Csc Library/Bee/artifacts/1300b0aE.dag/UnityEngine.UI.dll (+2 others)
+[           0s] Csc Library/Bee/artifacts/1300b0aE.dag/UnityEngine.UI.dll (+2 others) [CacheWrite 8c45faf1ed7969cac45f5738431f87af00000000000000000000000000000006]
+[207/255    0s] CopyFiles Library/ScriptAssemblies/UnityEngine.UI.pdb
+[208/255    0s] CopyFiles Library/ScriptAssemblies/UnityEngine.UI.dll
+[           0s] Csc Library/Bee/artifacts/1300b0aE.dag/UnityEditor.UI.dll (+2 others) [CacheMiss 2876acf05a2a27d67605e356afc16a1900000000000000000000000000000006]
+[209/255    0s] Csc Library/Bee/artifacts/1300b0aE.dag/UnityEditor.UI.dll (+2 others)
+[           0s] Csc Library/Bee/artifacts/1300b0aE.dag/UnityEditor.UI.dll (+2 others) [CacheWrite 2876acf05a2a27d67605e356afc16a1900000000000000000000000000000006]
+[213/255    0s] CopyFiles Library/ScriptAssemblies/UnityEditor.UI.pdb
+[214/255    0s] CopyFiles Library/ScriptAssemblies/UnityEditor.UI.dll
+[           0s] Csc Library/Bee/artifacts/1300b0aE.dag/Unity.Multiplayer.Center.Common.dll (+2 others) [CacheMiss 97d7b38eaaf584d5aa947b0155c0b41900000000000000000000000000000006]
+[           0s] Csc Library/Bee/artifacts/1300b0aE.dag/Unity.InternalAPIEngineBridge.004.dll (+2 others) [CacheMiss e2754863ede50f57856f831c4eea1deb00000000000000000000000000000006]
+[215/255    0s] MovedFromExtractor-Combine Library/Bee/artifacts/1300b0aE.dag/Firebase.App.Internal.dll.mvfrm
+[216/255    0s] Csc Library/Bee/artifacts/1300b0aE.dag/Firebase.App.Internal.dll (+2 others)
+[217/255    0s] CopyFiles Library/ScriptAssemblies/Firebase.App.Internal.pdb
+[218/255    0s] CopyFiles Library/ScriptAssemblies/Firebase.App.Internal.dll
+[219/255    0s] Csc Library/Bee/artifacts/1300b0aE.dag/Unity.InternalAPIEngineBridge.004.dll (+2 others)
+[220/255    0s] Csc Library/Bee/artifacts/1300b0aE.dag/Unity.Multiplayer.Center.Common.dll (+2 others)
+[           0s] Csc Library/Bee/artifacts/1300b0aE.dag/Unity.Multiplayer.Center.Common.dll (+2 others) [CacheWrite 97d7b38eaaf584d5aa947b0155c0b41900000000000000000000000000000006]
+[           0s] Csc Library/Bee/artifacts/1300b0aE.dag/Unity.InternalAPIEngineBridge.004.dll (+2 others) [CacheWrite e2754863ede50f57856f831c4eea1deb00000000000000000000000000000006]
+[225/255    0s] CopyFiles Library/ScriptAssemblies/Unity.InternalAPIEngineBridge.004.dll
+[226/255    0s] CopyFiles Library/ScriptAssemblies/Unity.Multiplayer.Center.Common.pdb
+[227/255    0s] CopyFiles Library/ScriptAssemblies/Unity.Multiplayer.Center.Common.dll
+[228/255    0s] CopyFiles Library/ScriptAssemblies/Unity.InternalAPIEngineBridge.004.pdb
+[           0s] Csc Library/Bee/artifacts/1300b0aE.dag/Unity.TextMeshPro.dll (+2 others) [CacheMiss 1259127f57a1ef9cb089c7e970386f0500000000000000000000000000000006]
+[           0s] Csc Library/Bee/artifacts/1300b0aE.dag/Unity.Multiplayer.Center.Editor.dll (+2 others) [CacheMiss b57e969e5dacf4049eaba3d4be0f886000000000000000000000000000000006]
+[229/255    0s] Csc Library/Bee/artifacts/1300b0aE.dag/Unity.Multiplayer.Center.Editor.dll (+2 others)
+[230/255    0s] Csc Library/Bee/artifacts/1300b0aE.dag/Unity.TextMeshPro.dll (+2 others)
+[           0s] Csc Library/Bee/artifacts/1300b0aE.dag/Unity.TextMeshPro.dll (+2 others) [CacheWrite 1259127f57a1ef9cb089c7e970386f0500000000000000000000000000000006]
+[           0s] Csc Library/Bee/artifacts/1300b0aE.dag/Unity.Multiplayer.Center.Editor.dll (+2 others) [CacheWrite b57e969e5dacf4049eaba3d4be0f886000000000000000000000000000000006]
+[235/255    0s] CopyFiles Library/ScriptAssemblies/Unity.Multiplayer.Center.Editor.dll
+[236/255    0s] CopyFiles Library/ScriptAssemblies/Unity.TextMeshPro.pdb
+[237/255    0s] CopyFiles Library/ScriptAssemblies/Unity.Multiplayer.Center.Editor.pdb
+[238/255    0s] CopyFiles Library/ScriptAssemblies/Unity.TextMeshPro.dll
+[           0s] Csc Library/Bee/artifacts/1300b0aE.dag/Unity.TextMeshPro.Editor.dll (+2 others) [CacheMiss fa347155abb72c93f337c31abc8db82e00000000000000000000000000000006]
+[           0s] Csc Library/Bee/artifacts/1300b0aE.dag/UnityEditor.UI.Analytics.dll (+2 others) [CacheMiss c40aa7763c8142c12bcd89951decd6af00000000000000000000000000000006]
+[239/255    0s] Csc Library/Bee/artifacts/1300b0aE.dag/UnityEditor.UI.Analytics.dll (+2 others)
+[240/255    0s] Csc Library/Bee/artifacts/1300b0aE.dag/Unity.TextMeshPro.Editor.dll (+2 others)
+[           0s] Csc Library/Bee/artifacts/1300b0aE.dag/UnityEditor.UI.Analytics.dll (+2 others) [CacheWrite c40aa7763c8142c12bcd89951decd6af00000000000000000000000000000006]
+[           0s] Csc Library/Bee/artifacts/1300b0aE.dag/Unity.TextMeshPro.Editor.dll (+2 others) [CacheWrite fa347155abb72c93f337c31abc8db82e00000000000000000000000000000006]
+[243/255    0s] CopyFiles Library/ScriptAssemblies/UnityEditor.UI.Analytics.pdb
+[244/255    0s] CopyFiles Library/ScriptAssemblies/UnityEditor.UI.Analytics.dll
+[247/255    0s] CopyFiles Library/ScriptAssemblies/Unity.TextMeshPro.Editor.pdb
+[248/255    0s] CopyFiles Library/ScriptAssemblies/Unity.TextMeshPro.Editor.dll
+[249/255    0s] Csc Library/Bee/artifacts/1300b0aE.dag/Assembly-CSharp.dll (+2 others)
+Assets/Scripts/ArenaMarkers.cs(39,70): warning CS0618: 'FindObjectsSortMode' is obsolete: 'FindObjectsSortMode has been deprecated. Use the FindObjectsByType overloads that do not take a FindObjectsSortMode parameter.'
+Assets/Scripts/ArenaMarkers.cs(39,34): warning CS0618: 'Object.FindObjectsByType<T>(FindObjectsSortMode)' is obsolete: 'FindObjectsByType with FindObjectsSortMode parameter has been deprecated. Use FindObjectsByType<T>() or FindObjectsByType<T>(FindObjectsInactive) instead. InstanceID will be replaced in the future with EntityId and previous sort order cannot be maintained.'
+Assets/Scripts/Core/AuthManager.cs(34,33): warning CS0618: 'Object.FindFirstObjectByType<T>()' is obsolete: 'FindFirstObjectByType has been deprecated because it relies on instance ID ordering. Use FindAnyObjectByType instead, which does not depend on ordering.'
+Assets/Scripts/Debug/CombatTestArena.cs(44,21): warning CS0618: 'Object.FindFirstObjectByType<T>()' is obsolete: 'FindFirstObjectByType has been deprecated because it relies on instance ID ordering. Use FindAnyObjectByType instead, which does not depend on ordering.'
+Assets/Scripts/GameManager.cs(217,79): warning CS0618: 'FindObjectsSortMode' is obsolete: 'FindObjectsSortMode has been deprecated. Use the FindObjectsByType overloads that do not take a FindObjectsSortMode parameter.'
+Assets/Scripts/GameManager.cs(217,27): warning CS0618: 'Object.FindObjectsByType<T>(FindObjectsSortMode)' is obsolete: 'FindObjectsByType with FindObjectsSortMode parameter has been deprecated. Use FindObjectsByType<T>() or FindObjectsByType<T>(FindObjectsInactive) instead. InstanceID will be replaced in the future with EntityId and previous sort order cannot be maintained.'
+Assets/Scripts/GameManager.cs(241,23): warning CS0618: 'Object.FindFirstObjectByType<T>()' is obsolete: 'FindFirstObjectByType has been deprecated because it relies on instance ID ordering. Use FindAnyObjectByType instead, which does not depend on ordering.'
+Assets/Scripts/GameManager.cs(242,20): warning CS0618: 'Object.FindFirstObjectByType<T>()' is obsolete: 'FindFirstObjectByType has been deprecated because it relies on instance ID ordering. Use FindAnyObjectByType instead, which does not depend on ordering.'
+Assets/Scripts/GameManager.cs(370,56): warning CS0618: 'FindObjectsSortMode' is obsolete: 'FindObjectsSortMode has been deprecated. Use the FindObjectsByType overloads that do not take a FindObjectsSortMode parameter.'
+Assets/Scripts/GameManager.cs(370,31): warning CS0618: 'Object.FindObjectsByType<T>(FindObjectsSortMode)' is obsolete: 'FindObjectsByType with FindObjectsSortMode parameter has been deprecated. Use FindObjectsByType<T>() or FindObjectsByType<T>(FindObjectsInactive) instead. InstanceID will be replaced in the future with EntityId and previous sort order cannot be maintained.'
+Assets/Scripts/Debug/ReelDirector.cs(237,73): warning CS0618: 'FindObjectsSortMode' is obsolete: 'FindObjectsSortMode has been deprecated. Use the FindObjectsByType overloads that do not take a FindObjectsSortMode parameter.'
+Assets/Scripts/Debug/ReelDirector.cs(237,39): warning CS0618: 'Object.FindObjectsByType<T>(FindObjectsSortMode)' is obsolete: 'FindObjectsByType with FindObjectsSortMode parameter has been deprecated. Use FindObjectsByType<T>() or FindObjectsByType<T>(FindObjectsInactive) instead. InstanceID will be replaced in the future with EntityId and previous sort order cannot be maintained.'
+Assets/Scripts/Debug/ReelDirector.cs(312,69): warning CS0618: 'FindObjectsSortMode' is obsolete: 'FindObjectsSortMode has been deprecated. Use the FindObjectsByType overloads that do not take a FindObjectsSortMode parameter.'
+Assets/Scripts/Debug/ReelDirector.cs(312,35): warning CS0618: 'Object.FindObjectsByType<T>(FindObjectsSortMode)' is obsolete: 'FindObjectsByType with FindObjectsSortMode parameter has been deprecated. Use FindObjectsByType<T>() or FindObjectsByType<T>(FindObjectsInactive) instead. InstanceID will be replaced in the future with EntityId and previous sort order cannot be maintained.'
+Assets/Scripts/Debug/ReelDirector.cs(317,67): warning CS0618: 'FindObjectsSortMode' is obsolete: 'FindObjectsSortMode has been deprecated. Use the FindObjectsByType overloads that do not take a FindObjectsSortMode parameter.'
+Assets/Scripts/Debug/ReelDirector.cs(317,32): warning CS0618: 'Object.FindObjectsByType<T>(FindObjectsSortMode)' is obsolete: 'FindObjectsByType with FindObjectsSortMode parameter has been deprecated. Use FindObjectsByType<T>() or FindObjectsByType<T>(FindObjectsInactive) instead. InstanceID will be replaced in the future with EntityId and previous sort order cannot be maintained.'
+Assets/Scripts/Story/Cast.cs(36,68): warning CS0618: 'FindObjectsSortMode' is obsolete: 'FindObjectsSortMode has been deprecated. Use the FindObjectsByType overloads that do not take a FindObjectsSortMode parameter.'
+Assets/Scripts/Story/Cast.cs(36,31): warning CS0618: 'Object.FindObjectsByType<T>(FindObjectsSortMode)' is obsolete: 'FindObjectsByType with FindObjectsSortMode parameter has been deprecated. Use FindObjectsByType<T>() or FindObjectsByType<T>(FindObjectsInactive) instead. InstanceID will be replaced in the future with EntityId and previous sort order cannot be maintained.'
+Assets/Scripts/Story/VillageSet.cs(65,56): warning CS0618: 'FindObjectsSortMode' is obsolete: 'FindObjectsSortMode has been deprecated. Use the FindObjectsByType overloads that do not take a FindObjectsSortMode parameter.'
+Assets/Scripts/Story/VillageSet.cs(65,31): warning CS0618: 'Object.FindObjectsByType<T>(FindObjectsSortMode)' is obsolete: 'FindObjectsByType with FindObjectsSortMode parameter has been deprecated. Use FindObjectsByType<T>() or FindObjectsByType<T>(FindObjectsInactive) instead. InstanceID will be replaced in the future with EntityId and previous sort order cannot be maintained.'
+Assets/Scripts/RoadNorth.cs(99,23): warning CS0618: 'Object.FindFirstObjectByType<T>()' is obsolete: 'FindFirstObjectByType has been deprecated because it relies on instance ID ordering. Use FindAnyObjectByType instead, which does not depend on ordering.'
+Assets/Scripts/Debug/MissionPlaythroughDriver.cs(206,68): warning CS0618: 'FindObjectsSortMode' is obsolete: 'FindObjectsSortMode has been deprecated. Use the FindObjectsByType overloads that do not take a FindObjectsSortMode parameter.'
+Assets/Scripts/Debug/MissionPlaythroughDriver.cs(206,27): warning CS0618: 'Object.FindObjectsByType<T>(FindObjectsSortMode)' is obsolete: 'FindObjectsByType with FindObjectsSortMode parameter has been deprecated. Use FindObjectsByType<T>() or FindObjectsByType<T>(FindObjectsInactive) instead. InstanceID will be replaced in the future with EntityId and previous sort order cannot be maintained.'
+Assets/Scripts/Debug/MissionPlaythroughDriver.cs(207,56): warning CS0618: 'FindObjectsSortMode' is obsolete: 'FindObjectsSortMode has been deprecated. Use the FindObjectsByType overloads that do not take a FindObjectsSortMode parameter.'
+Assets/Scripts/Debug/MissionPlaythroughDriver.cs(207,25): warning CS0618: 'Object.FindObjectsByType<T>(FindObjectsSortMode)' is obsolete: 'FindObjectsByType with FindObjectsSortMode parameter has been deprecated. Use FindObjectsByType<T>() or FindObjectsByType<T>(FindObjectsInactive) instead. InstanceID will be replaced in the future with EntityId and previous sort order cannot be maintained.'
+Assets/Scripts/Missions/VillageRuin.cs(42,24): warning CS0618: 'Object.FindFirstObjectByType<T>()' is obsolete: 'FindFirstObjectByType has been deprecated because it relies on instance ID ordering. Use FindAnyObjectByType instead, which does not depend on ordering.'
+Assets/Scripts/Missions/VillageRuin.cs(82,66): warning CS0618: 'FindObjectsSortMode' is obsolete: 'FindObjectsSortMode has been deprecated. Use the FindObjectsByType overloads that do not take a FindObjectsSortMode parameter.'
+Assets/Scripts/Missions/VillageRuin.cs(82,31): warning CS0618: 'Object.FindObjectsByType<T>(FindObjectsSortMode)' is obsolete: 'FindObjectsByType with FindObjectsSortMode parameter has been deprecated. Use FindObjectsByType<T>() or FindObjectsByType<T>(FindObjectsInactive) instead. InstanceID will be replaced in the future with EntityId and previous sort order cannot be maintained.'
+Assets/Scripts/UI/UiKit.cs(453,13): warning CS0618: 'TMP_Text.enableWordWrapping' is obsolete: 'The enabledWordWrapping property is now obsolete. Please use the textWrappingMode property instead.'
+Assets/Scripts/UI/UiKit.cs(471,13): warning CS0618: 'TMP_Text.enableWordWrapping' is obsolete: 'The enabledWordWrapping property is now obsolete. Please use the textWrappingMode property instead.'
+Assets/Scripts/Debug/MissionPlaythroughDriver.cs(400,72): warning CS0618: 'FindObjectsSortMode' is obsolete: 'FindObjectsSortMode has been deprecated. Use the FindObjectsByType overloads that do not take a FindObjectsSortMode parameter.'
+Assets/Scripts/Debug/MissionPlaythroughDriver.cs(400,31): warning CS0618: 'Object.FindObjectsByType<T>(FindObjectsSortMode)' is obsolete: 'FindObjectsByType with FindObjectsSortMode parameter has been deprecated. Use FindObjectsByType<T>() or FindObjectsByType<T>(FindObjectsInactive) instead. InstanceID will be replaced in the future with EntityId and previous sort order cannot be maintained.'
+Assets/Scripts/Debug/MissionPlaythroughDriver.cs(426,62): warning CS0618: 'FindObjectsSortMode' is obsolete: 'FindObjectsSortMode has been deprecated. Use the FindObjectsByType overloads that do not take a FindObjectsSortMode parameter.'
+Assets/Scripts/Debug/MissionPlaythroughDriver.cs(426,31): warning CS0618: 'Object.FindObjectsByType<T>(FindObjectsSortMode)' is obsolete: 'FindObjectsByType with FindObjectsSortMode parameter has been deprecated. Use FindObjectsByType<T>() or FindObjectsByType<T>(FindObjectsInactive) instead. InstanceID will be replaced in the future with EntityId and previous sort order cannot be maintained.'
+Assets/Scripts/Player/CombatController.cs(203,20): warning CS0618: 'Object.FindFirstObjectByType<T>()' is obsolete: 'FindFirstObjectByType has been deprecated because it relies on instance ID ordering. Use FindAnyObjectByType instead, which does not depend on ordering.'
+Assets/Scripts/UI/BossIntroDirector.cs(174,13): warning CS0618: 'TMP_Text.enableWordWrapping' is obsolete: 'The enabledWordWrapping property is now obsolete. Please use the textWrappingMode property instead.'
+Assets/Scripts/UI/EmberHud.cs(235,19): warning CS0618: 'Object.FindFirstObjectByType<T>()' is obsolete: 'FindFirstObjectByType has been deprecated because it relies on instance ID ordering. Use FindAnyObjectByType instead, which does not depend on ordering.'
+Assets/Scripts/UI/EmberHud.cs(236,23): warning CS0618: 'Object.FindFirstObjectByType<T>()' is obsolete: 'FindFirstObjectByType has been deprecated because it relies on instance ID ordering. Use FindAnyObjectByType instead, which does not depend on ordering.'
+Assets/Scripts/UI/EmberHud.cs(265,17): warning CS0618: 'Object.FindFirstObjectByType<T>()' is obsolete: 'FindFirstObjectByType has been deprecated because it relies on instance ID ordering. Use FindAnyObjectByType instead, which does not depend on ordering.'
+Assets/Scripts/Missions/MissionDirector.cs(133,67): warning CS0618: 'FindObjectsSortMode' is obsolete: 'FindObjectsSortMode has been deprecated. Use the FindObjectsByType overloads that do not take a FindObjectsSortMode parameter.'
+Assets/Scripts/Missions/MissionDirector.cs(133,35): warning CS0618: 'Object.FindObjectsByType<T>(FindObjectsSortMode)' is obsolete: 'FindObjectsByType with FindObjectsSortMode parameter has been deprecated. Use FindObjectsByType<T>() or FindObjectsByType<T>(FindObjectsInactive) instead. InstanceID will be replaced in the future with EntityId and previous sort order cannot be maintained.'
+Assets/Scripts/Missions/MissionDirector.cs(147,63): warning CS0618: 'FindObjectsSortMode' is obsolete: 'FindObjectsSortMode has been deprecated. Use the FindObjectsByType overloads that do not take a FindObjectsSortMode parameter.'
+Assets/Scripts/Missions/MissionDirector.cs(147,31): warning CS0618: 'Object.FindObjectsByType<T>(FindObjectsSortMode)' is obsolete: 'FindObjectsByType with FindObjectsSortMode parameter has been deprecated. Use FindObjectsByType<T>() or FindObjectsByType<T>(FindObjectsInactive) instead. InstanceID will be replaced in the future with EntityId and previous sort order cannot be maintained.'
+Assets/Scripts/Endless/EndlessDirector.cs(388,58): warning CS0618: 'FindObjectsSortMode' is obsolete: 'FindObjectsSortMode has been deprecated. Use the FindObjectsByType overloads that do not take a FindObjectsSortMode parameter.'
+Assets/Scripts/Endless/EndlessDirector.cs(388,26): warning CS0618: 'Object.FindObjectsByType<T>(FindObjectsSortMode)' is obsolete: 'FindObjectsByType with FindObjectsSortMode parameter has been deprecated. Use FindObjectsByType<T>() or FindObjectsByType<T>(FindObjectsInactive) instead. InstanceID will be replaced in the future with EntityId and previous sort order cannot be maintained.'
+Assets/Scripts/Enemies/EnemyBrain.cs(228,23): warning CS0414: The field 'EnemyBrain._defendT' is assigned but its value is never used
+Assets/Scripts/Debug/CombatScenarioDriver.cs(38,23): warning CS0414: The field 'CombatScenarioDriver._bossHp0' is assigned but its value is never used
+Assets/Scripts/Debug/DifficultyProbeDriver.cs(33,56): warning CS0414: The field 'DifficultyProbeDriver._lastDecisionT' is assigned but its value is never used
+Assets/Scripts/Debug/DifficultyProbeDriver.cs(33,44): warning CS0414: The field 'DifficultyProbeDriver._decisions' is assigned but its value is never used
+Assets/Scripts/Debug/AiEncounterDriver.cs(54,48): warning CS0414: The field 'AiEncounterDriver._playerHits' is assigned but its value is never used
+Assets/Scripts/Debug/DifficultyProbeDriver.cs(34,21): warning CS0414: The field 'DifficultyProbeDriver._lastAttacks' is assigned but its value is never used
+Assets/Scripts/Player/CombatController.cs(54,40): warning CS0414: The field 'CombatController.executeThreshold' is assigned but its value is never used
+[250/255    0s] CopyFiles Library/ScriptAssemblies/Assembly-CSharp.pdb
+[251/255    0s] CopyFiles Library/ScriptAssemblies/Assembly-CSharp.dll
+[252/255    0s] Csc Library/Bee/artifacts/1300b0aE.dag/Assembly-CSharp-Editor.dll (+2 others)
+Assets/Editor/EmberlineBootstrap.cs(219,70): warning CS0618: 'FindObjectsSortMode' is obsolete: 'FindObjectsSortMode has been deprecated. Use the FindObjectsByType overloads that do not take a FindObjectsSortMode parameter.'
+Assets/Editor/EmberlineBootstrap.cs(219,31): warning CS0618: 'Object.FindObjectsByType<T>(FindObjectsSortMode)' is obsolete: 'FindObjectsByType with FindObjectsSortMode parameter has been deprecated. Use FindObjectsByType<T>() or FindObjectsByType<T>(FindObjectsInactive) instead. InstanceID will be replaced in the future with EntityId and previous sort order cannot be maintained.'
+Assets/Editor/EmberStorySnapshot.cs(20,23): warning CS0618: 'Object.FindFirstObjectByType<T>()' is obsolete: 'FindFirstObjectByType has been deprecated because it relies on instance ID ordering. Use FindAnyObjectByType instead, which does not depend on ordering.'
+Assets/Editor/EmberStorySnapshot.cs(21,23): warning CS0618: 'Object.FindFirstObjectByType<T>()' is obsolete: 'FindFirstObjectByType has been deprecated because it relies on instance ID ordering. Use FindAnyObjectByType instead, which does not depend on ordering.'
+Assets/Editor/EmberStorySnapshot.cs(23,115): warning CS0618: 'FindObjectsSortMode' is obsolete: 'FindObjectsSortMode has been deprecated. Use the FindObjectsByType overloads that do not take a FindObjectsSortMode parameter.'
+Assets/Editor/EmberStorySnapshot.cs(23,78): warning CS0618: 'Object.FindObjectsByType<T>(FindObjectsSortMode)' is obsolete: 'FindObjectsByType with FindObjectsSortMode parameter has been deprecated. Use FindObjectsByType<T>() or FindObjectsByType<T>(FindObjectsInactive) instead. InstanceID will be replaced in the future with EntityId and previous sort order cannot be maintained.'
+Assets/Editor/EmberZone.cs(62,69): warning CS0618: 'FindObjectsSortMode' is obsolete: 'FindObjectsSortMode has been deprecated. Use the FindObjectsByType overloads that do not take a FindObjectsSortMode parameter.'
+Assets/Editor/EmberZone.cs(62,32): warning CS0618: 'Object.FindObjectsByType<T>(FindObjectsSortMode)' is obsolete: 'FindObjectsByType with FindObjectsSortMode parameter has been deprecated. Use FindObjectsByType<T>() or FindObjectsByType<T>(FindObjectsInactive) instead. InstanceID will be replaced in the future with EntityId and previous sort order cannot be maintained.'
+Assets/Editor/EmberDuelIntegrity.cs(69,50): warning CS1717: Assignment made to same variable; did you mean to assign something else?
+Assets/Editor/EmberMixamoExtract.cs(39,35): warning CS0618: 'ModelImporterMaterialLocation.External' is obsolete: 'External Material Location is no longer supported.'
+[253/255    0s] CopyFiles Library/ScriptAssemblies/Assembly-CSharp-Editor.pdb
+[254/255    0s] CopyFiles Library/ScriptAssemblies/Assembly-CSharp-Editor.dll
+*** Tundra build success (3.35 seconds), 48 items updated, 255 evaluated
+Assets/Scripts/ArenaMarkers.cs(39,70): warning CS0618: 'FindObjectsSortMode' is obsolete: 'FindObjectsSortMode has been deprecated. Use the FindObjectsByType overloads that do not take a FindObjectsSortMode parameter.'
+Assets/Scripts/ArenaMarkers.cs(39,34): warning CS0618: 'Object.FindObjectsByType<T>(FindObjectsSortMode)' is obsolete: 'FindObjectsByType with FindObjectsSortMode parameter has been deprecated. Use FindObjectsByType<T>() or FindObjectsByType<T>(FindObjectsInactive) instead. InstanceID will be replaced in the future with EntityId and previous sort order cannot be maintained.'
+Assets/Scripts/Core/AuthManager.cs(34,33): warning CS0618: 'Object.FindFirstObjectByType<T>()' is obsolete: 'FindFirstObjectByType has been deprecated because it relies on instance ID ordering. Use FindAnyObjectByType instead, which does not depend on ordering.'
+Assets/Scripts/Debug/CombatTestArena.cs(44,21): warning CS0618: 'Object.FindFirstObjectByType<T>()' is obsolete: 'FindFirstObjectByType has been deprecated because it relies on instance ID ordering. Use FindAnyObjectByType instead, which does not depend on ordering.'
+Assets/Scripts/GameManager.cs(217,79): warning CS0618: 'FindObjectsSortMode' is obsolete: 'FindObjectsSortMode has been deprecated. Use the FindObjectsByType overloads that do not take a FindObjectsSortMode parameter.'
+Assets/Scripts/GameManager.cs(217,27): warning CS0618: 'Object.FindObjectsByType<T>(FindObjectsSortMode)' is obsolete: 'FindObjectsByType with FindObjectsSortMode parameter has been deprecated. Use FindObjectsByType<T>() or FindObjectsByType<T>(FindObjectsInactive) instead. InstanceID will be replaced in the future with EntityId and previous sort order cannot be maintained.'
+Assets/Scripts/GameManager.cs(241,23): warning CS0618: 'Object.FindFirstObjectByType<T>()' is obsolete: 'FindFirstObjectByType has been deprecated because it relies on instance ID ordering. Use FindAnyObjectByType instead, which does not depend on ordering.'
+Assets/Scripts/GameManager.cs(242,20): warning CS0618: 'Object.FindFirstObjectByType<T>()' is obsolete: 'FindFirstObjectByType has been deprecated because it relies on instance ID ordering. Use FindAnyObjectByType instead, which does not depend on ordering.'
+Assets/Scripts/GameManager.cs(370,56): warning CS0618: 'FindObjectsSortMode' is obsolete: 'FindObjectsSortMode has been deprecated. Use the FindObjectsByType overloads that do not take a FindObjectsSortMode parameter.'
+Assets/Scripts/GameManager.cs(370,31): warning CS0618: 'Object.FindObjectsByType<T>(FindObjectsSortMode)' is obsolete: 'FindObjectsByType with FindObjectsSortMode parameter has been deprecated. Use FindObjectsByType<T>() or FindObjectsByType<T>(FindObjectsInactive) instead. InstanceID will be replaced in the future with EntityId and previous sort order cannot be maintained.'
+Assets/Scripts/Debug/ReelDirector.cs(237,73): warning CS0618: 'FindObjectsSortMode' is obsolete: 'FindObjectsSortMode has been deprecated. Use the FindObjectsByType overloads that do not take a FindObjectsSortMode parameter.'
+Assets/Scripts/Debug/ReelDirector.cs(237,39): warning CS0618: 'Object.FindObjectsByType<T>(FindObjectsSortMode)' is obsolete: 'FindObjectsByType with FindObjectsSortMode parameter has been deprecated. Use FindObjectsByType<T>() or FindObjectsByType<T>(FindObjectsInactive) instead. InstanceID will be replaced in the future with EntityId and previous sort order cannot be maintained.'
+Assets/Scripts/Debug/ReelDirector.cs(312,69): warning CS0618: 'FindObjectsSortMode' is obsolete: 'FindObjectsSortMode has been deprecated. Use the FindObjectsByType overloads that do not take a FindObjectsSortMode parameter.'
+Assets/Scripts/Debug/ReelDirector.cs(312,35): warning CS0618: 'Object.FindObjectsByType<T>(FindObjectsSortMode)' is obsolete: 'FindObjectsByType with FindObjectsSortMode parameter has been deprecated. Use FindObjectsByType<T>() or FindObjectsByType<T>(FindObjectsInactive) instead. InstanceID will be replaced in the future with EntityId and previous sort order cannot be maintained.'
+Assets/Scripts/Debug/ReelDirector.cs(317,67): warning CS0618: 'FindObjectsSortMode' is obsolete: 'FindObjectsSortMode has been deprecated. Use the FindObjectsByType overloads that do not take a FindObjectsSortMode parameter.'
+Assets/Scripts/Debug/ReelDirector.cs(317,32): warning CS0618: 'Object.FindObjectsByType<T>(FindObjectsSortMode)' is obsolete: 'FindObjectsByType with FindObjectsSortMode parameter has been deprecated. Use FindObjectsByType<T>() or FindObjectsByType<T>(FindObjectsInactive) instead. InstanceID will be replaced in the future with EntityId and previous sort order cannot be maintained.'
+Assets/Scripts/Story/Cast.cs(36,68): warning CS0618: 'FindObjectsSortMode' is obsolete: 'FindObjectsSortMode has been deprecated. Use the FindObjectsByType overloads that do not take a FindObjectsSortMode parameter.'
+Assets/Scripts/Story/Cast.cs(36,31): warning CS0618: 'Object.FindObjectsByType<T>(FindObjectsSortMode)' is obsolete: 'FindObjectsByType with FindObjectsSortMode parameter has been deprecated. Use FindObjectsByType<T>() or FindObjectsByType<T>(FindObjectsInactive) instead. InstanceID will be replaced in the future with EntityId and previous sort order cannot be maintained.'
+Assets/Scripts/Story/VillageSet.cs(65,56): warning CS0618: 'FindObjectsSortMode' is obsolete: 'FindObjectsSortMode has been deprecated. Use the FindObjectsByType overloads that do not take a FindObjectsSortMode parameter.'
+Assets/Scripts/Story/VillageSet.cs(65,31): warning CS0618: 'Object.FindObjectsByType<T>(FindObjectsSortMode)' is obsolete: 'FindObjectsByType with FindObjectsSortMode parameter has been deprecated. Use FindObjectsByType<T>() or FindObjectsByType<T>(FindObjectsInactive) instead. InstanceID will be replaced in the future with EntityId and previous sort order cannot be maintained.'
+Assets/Scripts/RoadNorth.cs(99,23): warning CS0618: 'Object.FindFirstObjectByType<T>()' is obsolete: 'FindFirstObjectByType has been deprecated because it relies on instance ID ordering. Use FindAnyObjectByType instead, which does not depend on ordering.'
+Assets/Scripts/Debug/MissionPlaythroughDriver.cs(206,68): warning CS0618: 'FindObjectsSortMode' is obsolete: 'FindObjectsSortMode has been deprecated. Use the FindObjectsByType overloads that do not take a FindObjectsSortMode parameter.'
+Assets/Scripts/Debug/MissionPlaythroughDriver.cs(206,27): warning CS0618: 'Object.FindObjectsByType<T>(FindObjectsSortMode)' is obsolete: 'FindObjectsByType with FindObjectsSortMode parameter has been deprecated. Use FindObjectsByType<T>() or FindObjectsByType<T>(FindObjectsInactive) instead. InstanceID will be replaced in the future with EntityId and previous sort order cannot be maintained.'
+Assets/Scripts/Debug/MissionPlaythroughDriver.cs(207,56): warning CS0618: 'FindObjectsSortMode' is obsolete: 'FindObjectsSortMode has been deprecated. Use the FindObjectsByType overloads that do not take a FindObjectsSortMode parameter.'
+Assets/Scripts/Debug/MissionPlaythroughDriver.cs(207,25): warning CS0618: 'Object.FindObjectsByType<T>(FindObjectsSortMode)' is obsolete: 'FindObjectsByType with FindObjectsSortMode parameter has been deprecated. Use FindObjectsByType<T>() or FindObjectsByType<T>(FindObjectsInactive) instead. InstanceID will be replaced in the future with EntityId and previous sort order cannot be maintained.'
+Assets/Scripts/Missions/VillageRuin.cs(42,24): warning CS0618: 'Object.FindFirstObjectByType<T>()' is obsolete: 'FindFirstObjectByType has been deprecated because it relies on instance ID ordering. Use FindAnyObjectByType instead, which does not depend on ordering.'
+Assets/Scripts/Missions/VillageRuin.cs(82,66): warning CS0618: 'FindObjectsSortMode' is obsolete: 'FindObjectsSortMode has been deprecated. Use the FindObjectsByType overloads that do not take a FindObjectsSortMode parameter.'
+Assets/Scripts/Missions/VillageRuin.cs(82,31): warning CS0618: 'Object.FindObjectsByType<T>(FindObjectsSortMode)' is obsolete: 'FindObjectsByType with FindObjectsSortMode parameter has been deprecated. Use FindObjectsByType<T>() or FindObjectsByType<T>(FindObjectsInactive) instead. InstanceID will be replaced in the future with EntityId and previous sort order cannot be maintained.'
+Assets/Scripts/UI/UiKit.cs(453,13): warning CS0618: 'TMP_Text.enableWordWrapping' is obsolete: 'The enabledWordWrapping property is now obsolete. Please use the textWrappingMode property instead.'
+Assets/Scripts/UI/UiKit.cs(471,13): warning CS0618: 'TMP_Text.enableWordWrapping' is obsolete: 'The enabledWordWrapping property is now obsolete. Please use the textWrappingMode property instead.'
+Assets/Scripts/Debug/MissionPlaythroughDriver.cs(400,72): warning CS0618: 'FindObjectsSortMode' is obsolete: 'FindObjectsSortMode has been deprecated. Use the FindObjectsByType overloads that do not take a FindObjectsSortMode parameter.'
+Assets/Scripts/Debug/MissionPlaythroughDriver.cs(400,31): warning CS0618: 'Object.FindObjectsByType<T>(FindObjectsSortMode)' is obsolete: 'FindObjectsByType with FindObjectsSortMode parameter has been deprecated. Use FindObjectsByType<T>() or FindObjectsByType<T>(FindObjectsInactive) instead. InstanceID will be replaced in the future with EntityId and previous sort order cannot be maintained.'
+Assets/Scripts/Debug/MissionPlaythroughDriver.cs(426,62): warning CS0618: 'FindObjectsSortMode' is obsolete: 'FindObjectsSortMode has been deprecated. Use the FindObjectsByType overloads that do not take a FindObjectsSortMode parameter.'
+Assets/Scripts/Debug/MissionPlaythroughDriver.cs(426,31): warning CS0618: 'Object.FindObjectsByType<T>(FindObjectsSortMode)' is obsolete: 'FindObjectsByType with FindObjectsSortMode parameter has been deprecated. Use FindObjectsByType<T>() or FindObjectsByType<T>(FindObjectsInactive) instead. InstanceID will be replaced in the future with EntityId and previous sort order cannot be maintained.'
+Assets/Scripts/Player/CombatController.cs(203,20): warning CS0618: 'Object.FindFirstObjectByType<T>()' is obsolete: 'FindFirstObjectByType has been deprecated because it relies on instance ID ordering. Use FindAnyObjectByType instead, which does not depend on ordering.'
+Assets/Scripts/UI/BossIntroDirector.cs(174,13): warning CS0618: 'TMP_Text.enableWordWrapping' is obsolete: 'The enabledWordWrapping property is now obsolete. Please use the textWrappingMode property instead.'
+Assets/Scripts/UI/EmberHud.cs(235,19): warning CS0618: 'Object.FindFirstObjectByType<T>()' is obsolete: 'FindFirstObjectByType has been deprecated because it relies on instance ID ordering. Use FindAnyObjectByType instead, which does not depend on ordering.'
+Assets/Scripts/UI/EmberHud.cs(236,23): warning CS0618: 'Object.FindFirstObjectByType<T>()' is obsolete: 'FindFirstObjectByType has been deprecated because it relies on instance ID ordering. Use FindAnyObjectByType instead, which does not depend on ordering.'
+Assets/Scripts/UI/EmberHud.cs(265,17): warning CS0618: 'Object.FindFirstObjectByType<T>()' is obsolete: 'FindFirstObjectByType has been deprecated because it relies on instance ID ordering. Use FindAnyObjectByType instead, which does not depend on ordering.'
+Assets/Scripts/Missions/MissionDirector.cs(133,67): warning CS0618: 'FindObjectsSortMode' is obsolete: 'FindObjectsSortMode has been deprecated. Use the FindObjectsByType overloads that do not take a FindObjectsSortMode parameter.'
+Assets/Scripts/Missions/MissionDirector.cs(133,35): warning CS0618: 'Object.FindObjectsByType<T>(FindObjectsSortMode)' is obsolete: 'FindObjectsByType with FindObjectsSortMode parameter has been deprecated. Use FindObjectsByType<T>() or FindObjectsByType<T>(FindObjectsInactive) instead. InstanceID will be replaced in the future with EntityId and previous sort order cannot be maintained.'
+Assets/Scripts/Missions/MissionDirector.cs(147,63): warning CS0618: 'FindObjectsSortMode' is obsolete: 'FindObjectsSortMode has been deprecated. Use the FindObjectsByType overloads that do not take a FindObjectsSortMode parameter.'
+Assets/Scripts/Missions/MissionDirector.cs(147,31): warning CS0618: 'Object.FindObjectsByType<T>(FindObjectsSortMode)' is obsolete: 'FindObjectsByType with FindObjectsSortMode parameter has been deprecated. Use FindObjectsByType<T>() or FindObjectsByType<T>(FindObjectsInactive) instead. InstanceID will be replaced in the future with EntityId and previous sort order cannot be maintained.'
+Assets/Scripts/Endless/EndlessDirector.cs(388,58): warning CS0618: 'FindObjectsSortMode' is obsolete: 'FindObjectsSortMode has been deprecated. Use the FindObjectsByType overloads that do not take a FindObjectsSortMode parameter.'
+Assets/Scripts/Endless/EndlessDirector.cs(388,26): warning CS0618: 'Object.FindObjectsByType<T>(FindObjectsSortMode)' is obsolete: 'FindObjectsByType with FindObjectsSortMode parameter has been deprecated. Use FindObjectsByType<T>() or FindObjectsByType<T>(FindObjectsInactive) instead. InstanceID will be replaced in the future with EntityId and previous sort order cannot be maintained.'
+Assets/Scripts/Enemies/EnemyBrain.cs(228,23): warning CS0414: The field 'EnemyBrain._defendT' is assigned but its value is never used
+Assets/Scripts/Debug/CombatScenarioDriver.cs(38,23): warning CS0414: The field 'CombatScenarioDriver._bossHp0' is assigned but its value is never used
+Assets/Scripts/Debug/DifficultyProbeDriver.cs(33,56): warning CS0414: The field 'DifficultyProbeDriver._lastDecisionT' is assigned but its value is never used
+Assets/Scripts/Debug/DifficultyProbeDriver.cs(33,44): warning CS0414: The field 'DifficultyProbeDriver._decisions' is assigned but its value is never used
+Assets/Scripts/Debug/AiEncounterDriver.cs(54,48): warning CS0414: The field 'AiEncounterDriver._playerHits' is assigned but its value is never used
+Assets/Scripts/Debug/DifficultyProbeDriver.cs(34,21): warning CS0414: The field 'DifficultyProbeDriver._lastAttacks' is assigned but its value is never used
+Assets/Scripts/Player/CombatController.cs(54,40): warning CS0414: The field 'CombatController.executeThreshold' is assigned but its value is never used
+Assets/Editor/EmberlineBootstrap.cs(219,70): warning CS0618: 'FindObjectsSortMode' is obsolete: 'FindObjectsSortMode has been deprecated. Use the FindObjectsByType overloads that do not take a FindObjectsSortMode parameter.'
+Assets/Editor/EmberlineBootstrap.cs(219,31): warning CS0618: 'Object.FindObjectsByType<T>(FindObjectsSortMode)' is obsolete: 'FindObjectsByType with FindObjectsSortMode parameter has been deprecated. Use FindObjectsByType<T>() or FindObjectsByType<T>(FindObjectsInactive) instead. InstanceID will be replaced in the future with EntityId and previous sort order cannot be maintained.'
+Assets/Editor/EmberStorySnapshot.cs(20,23): warning CS0618: 'Object.FindFirstObjectByType<T>()' is obsolete: 'FindFirstObjectByType has been deprecated because it relies on instance ID ordering. Use FindAnyObjectByType instead, which does not depend on ordering.'
+Assets/Editor/EmberStorySnapshot.cs(21,23): warning CS0618: 'Object.FindFirstObjectByType<T>()' is obsolete: 'FindFirstObjectByType has been deprecated because it relies on instance ID ordering. Use FindAnyObjectByType instead, which does not depend on ordering.'
+Assets/Editor/EmberStorySnapshot.cs(23,115): warning CS0618: 'FindObjectsSortMode' is obsolete: 'FindObjectsSortMode has been deprecated. Use the FindObjectsByType overloads that do not take a FindObjectsSortMode parameter.'
+Assets/Editor/EmberStorySnapshot.cs(23,78): warning CS0618: 'Object.FindObjectsByType<T>(FindObjectsSortMode)' is obsolete: 'FindObjectsByType with FindObjectsSortMode parameter has been deprecated. Use FindObjectsByType<T>() or FindObjectsByType<T>(FindObjectsInactive) instead. InstanceID will be replaced in the future with EntityId and previous sort order cannot be maintained.'
+Assets/Editor/EmberZone.cs(62,69): warning CS0618: 'FindObjectsSortMode' is obsolete: 'FindObjectsSortMode has been deprecated. Use the FindObjectsByType overloads that do not take a FindObjectsSortMode parameter.'
+Assets/Editor/EmberZone.cs(62,32): warning CS0618: 'Object.FindObjectsByType<T>(FindObjectsSortMode)' is obsolete: 'FindObjectsByType with FindObjectsSortMode parameter has been deprecated. Use FindObjectsByType<T>() or FindObjectsByType<T>(FindObjectsInactive) instead. InstanceID will be replaced in the future with EntityId and previous sort order cannot be maintained.'
+Assets/Editor/EmberDuelIntegrity.cs(69,50): warning CS1717: Assignment made to same variable; did you mean to assign something else?
+Assets/Editor/EmberMixamoExtract.cs(39,35): warning CS0618: 'ModelImporterMaterialLocation.External' is obsolete: 'External Material Location is no longer supported.'
+Reloading assemblies after forced synchronous recompile.
+Begin MonoManager ReloadAssembly
+Thread 0x3208c7000 may have been prematurely finalized
+Total cache size 269305640
+Total cache size after purge 268426932, took 00:00:00.0703915
+Importing 'GUID: 358e03af4fe8d4cf9b6819f8d967c8f0 - Path: Assets/Firebase' with importer (DefaultImporter)
+Imported 'GUID: 358e03af4fe8d4cf9b6819f8d967c8f0' -> (Import Result ID: '5aacf0cb19417131d41c847c1b11ec88') in 0.021 seconds [static dependencies only]. Details - ImportResultOutputID=fd124d50e6f1426123cd877b7f29ee55 DependenciesID=5ba2ed4d30defe289440f46b3c3de0ee StaticDependenciesID=a85b39f95522c17dcfab5127ca34bbc1 
+Importing 'GUID: 65af04310f8dc4ab8bcc4157ca8fdfe2 - Path: Assets/Editor Default Resources' with importer (DefaultImporter)
+Imported 'GUID: 65af04310f8dc4ab8bcc4157ca8fdfe2' -> (Import Result ID: '350aaafb3101c5f1a30312de7356b20d') in 0.001 seconds [static dependencies only]. Details - ImportResultOutputID=19f32e7b016685dc5e187db69ecee514 DependenciesID=e0b2e16943f72c35dbcea1208d48485d StaticDependenciesID=7ad54c0c2f85b3e2147fdd54b8488579 
+Importing 'GUID: 19dc17fe7f7b945fabb35897ca4c80e9 - Path: Assets/ExternalDependencyManager' with importer (DefaultImporter)
+Imported 'GUID: 19dc17fe7f7b945fabb35897ca4c80e9' -> (Import Result ID: '7bf083dfb93bd1bf44bc582470edc7b6') in 0.001 seconds [static dependencies only]. Details - ImportResultOutputID=bc79262a1a55e905764bf610cfa9bc71 DependenciesID=fad5e11cb6f58d7ab4a9081bde965b46 StaticDependenciesID=46cfc97a520d1a958c148decb1c5523d 
+Importing 'GUID: 0002740109e004344b8e74625941eca5 - Path: Assets/Plugins/tvOS' with importer (DefaultImporter)
+Imported 'GUID: 0002740109e004344b8e74625941eca5' -> (Import Result ID: '217a6632b25bfbfc0409d4f62f38f668') in 0.001 seconds [static dependencies only]. Details - ImportResultOutputID=66e43c94271ec879034324937e14df4d DependenciesID=00b9f5e3af7939d387497a2c936aefaa StaticDependenciesID=3b4ef9b25fbb811ef00c0dc567c3aa08 
+Importing 'GUID: c23aa42fa357648e19700e4257f4f1d5 - Path: Assets/Firebase/FirebaseApp' with importer (DefaultImporter)
+Imported 'GUID: c23aa42fa357648e19700e4257f4f1d5' -> (Import Result ID: '0f159fa2a22ff4cdf69ce6486544d16e') in 0.001 seconds [static dependencies only]. Details - ImportResultOutputID=e93e5d7cd8a38ff95edb842cc83fc777 DependenciesID=594663b3454d2de8b2c0cc47779c3504 StaticDependenciesID=31626b09bb3108bbc316b23a8a5a7809 
+Importing 'GUID: 47de3e9aae7094cd1b0327ab92ad2346 - Path: Assets/Firebase/Plugins' with importer (DefaultImporter)
+Imported 'GUID: 47de3e9aae7094cd1b0327ab92ad2346' -> (Import Result ID: '727993a214fd20d4026d9fbaebcedf29') in 0.001 seconds [static dependencies only]. Details - ImportResultOutputID=04c6e8469bf529f904cb567fd327df69 DependenciesID=e4ee03d9c617d0bbb43176caf2e4675f StaticDependenciesID=7dac5f931de229d357e73407f00f3a22 
+Importing 'GUID: a72051fb9ce5148419efd29fb9a5ee83 - Path: Assets/Editor Default Resources/Firebase' with importer (DefaultImporter)
+Imported 'GUID: a72051fb9ce5148419efd29fb9a5ee83' -> (Import Result ID: 'd12d3a05959aa6e9e58612872faa78c9') in 0.000 seconds [static dependencies only]. Details - ImportResultOutputID=c8cc5ca119328e9528398d704795c2e6 DependenciesID=7136d3d181ad4f20dfba37a1185c9df5 StaticDependenciesID=02c13909acf3c9f3286653ac9f482aaa 
+Importing 'GUID: c85b7725fce044b72b7c8a7f1a6bea3e - Path: Assets/Plugins/iOS' with importer (DefaultImporter)
+Imported 'GUID: c85b7725fce044b72b7c8a7f1a6bea3e' -> (Import Result ID: 'adcb148240fc04bbcce15e988ac30d1a') in 0.001 seconds [static dependencies only]. Details - ImportResultOutputID=bc335facc531563b66f4f02720667c1b DependenciesID=8bf1db6a33f0a01dceb06733b39f53a8 StaticDependenciesID=03bd10e3fa109c0ee182d192fb6aebef 
+Importing 'GUID: 3e0256b1bce9d44c1903ac2d94066a38 - Path: Assets/ExternalDependencyManager/Editor' with importer (DefaultImporter)
+Imported 'GUID: 3e0256b1bce9d44c1903ac2d94066a38' -> (Import Result ID: '0418d3f2be70f844723273449d95de41') in 0.000 seconds [static dependencies only]. Details - ImportResultOutputID=bafac11860cadf3a1c9a6e6ab7f72f61 DependenciesID=82430c120edc35980c0012377d4abfff StaticDependenciesID=a8face93e37c589c8e0fecd9861c5145 
+Importing 'GUID: 8fd370f2ac05944e38bf62f79ccaaf4a - Path: Assets/Firebase/m2repository' with importer (DefaultImporter)
+Imported 'GUID: 8fd370f2ac05944e38bf62f79ccaaf4a' -> (Import Result ID: '2823e2bcbe4df4123427c27bf5a1103b') in 0.000 seconds [static dependencies only]. Details - ImportResultOutputID=8fbf484059ec6a652771f96cb6421c3e DependenciesID=f50760d8aa0ffea77f7ebed43363c05e StaticDependenciesID=3aeda6346e1fae80de2cfad4162988da 
+Importing 'GUID: 9fa316b0650f34486a7a308949c65a75 - Path: Assets/Firebase/Editor' with importer (DefaultImporter)
+Imported 'GUID: 9fa316b0650f34486a7a308949c65a75' -> (Import Result ID: 'aa61379d7bc405157650c129c9362dec') in 0.000 seconds [static dependencies only]. Details - ImportResultOutputID=4e3a37ca7f7ee541650dfecf941a4224 DependenciesID=483b6adc265f72f37b3b6d26ebb61ad6 StaticDependenciesID=9316646433be0fb919625cd871fe472b 
+Importing 'GUID: 606c2a354f55747e488339a658bf44eb - Path: Assets/Firebase/FirebaseApp/Internal' with importer (DefaultImporter)
+Imported 'GUID: 606c2a354f55747e488339a658bf44eb' -> (Import Result ID: 'eac759e4c13fe5b8702aa8d886d012e8') in 0.001 seconds [static dependencies only]. Details - ImportResultOutputID=03a721d60f662b4b5799f00e0f3e8ebf DependenciesID=1ffc499b981d1ae30d2eded6ac19a55c StaticDependenciesID=5b794d5d2e0d3efa1abf6ce616bbe2e1 
+Importing 'GUID: 22d2d943b78794f12891e59e5978b02f - Path: Assets/Plugins/tvOS/Firebase' with importer (DefaultImporter)
+Imported 'GUID: 22d2d943b78794f12891e59e5978b02f' -> (Import Result ID: 'bd89f697f6a90f7bb66accb48a5eea86') in 0.001 seconds [static dependencies only]. Details - ImportResultOutputID=11cd2e400639fc4ae518429b104dd244 DependenciesID=c3f68c066f9f3643919ead9dd655f68d StaticDependenciesID=b96b55ec1cbcb412bed6fc4a53e65af3 
+Importing 'GUID: 23f04d6ce2cd1434f9e894f11b6094d8 - Path: Assets/Firebase/Plugins/iOS' with importer (DefaultImporter)
+Imported 'GUID: 23f04d6ce2cd1434f9e894f11b6094d8' -> (Import Result ID: '1325a41d469dedd5f456b82419541b47') in 0.001 seconds [static dependencies only]. Details - ImportResultOutputID=3e69dec6a1b638c161d3006019f1409d DependenciesID=047b316a7bdbb39aac2b837f694e9ed5 StaticDependenciesID=f22ee06694bc8690a826c32818312682 
+Importing 'GUID: 9375b071b967f4c6292336a3fe97654a - Path: Assets/Firebase/m2repository/com' with importer (DefaultImporter)
+Imported 'GUID: 9375b071b967f4c6292336a3fe97654a' -> (Import Result ID: 'e3eef39d5a4bca11e480d6f97fcb0bab') in 0.001 seconds [static dependencies only]. Details - ImportResultOutputID=cc0e44dbe9022707e9eacb1d474aebcd DependenciesID=c755760963f117b954c8f62ab5f8a909 StaticDependenciesID=81be996bb04c16ff562189bb9eb39f2a 
+Importing 'GUID: e45baa40d9a8d4153993ed5a95d12415 - Path: Assets/ExternalDependencyManager/Editor/1.2.188' with importer (DefaultImporter)
+Imported 'GUID: e45baa40d9a8d4153993ed5a95d12415' -> (Import Result ID: '0932f687dbe664a8709bd1a9eb6b2628') in 0.001 seconds [static dependencies only]. Details - ImportResultOutputID=f3a38ae60212d0ad87eb0e3785dd15c2 DependenciesID=6d24ee7d4c0fd651e38d88c217fa8a66 StaticDependenciesID=3939a542543f07a9e20a28f6ae0bc227 
+Importing 'GUID: 188aec7d9e9644015b8db2ec8887506a - Path: Assets/Plugins/iOS/Firebase' with importer (DefaultImporter)
+Imported 'GUID: 188aec7d9e9644015b8db2ec8887506a' -> (Import Result ID: 'cf89b8a2008e16d3155f2238f5a23297') in 0.000 seconds [static dependencies only]. Details - ImportResultOutputID=279218f44b16556b24044142e48e4ba4 DependenciesID=062ab8a5e5703e6c9a861172dd8388f4 StaticDependenciesID=87c7b0c916eab939ec7f9c4d40babcbb 
+Importing 'GUID: 6e8241dbd88e74198957ca8bc4a75172 - Path: Assets/Firebase/Plugins/x86_64' with importer (DefaultImporter)
+Imported 'GUID: 6e8241dbd88e74198957ca8bc4a75172' -> (Import Result ID: '5ec25b4b7ee9bb305688f79abc0d4bd0') in 0.001 seconds [static dependencies only]. Details - ImportResultOutputID=b4b963b8c767f6fb20a6b28dc29257f3 DependenciesID=e85e8a3391b9c6e726af1c3dc1020adf StaticDependenciesID=4c8db7e808daadf28591c982c739a480 
+Importing 'GUID: 8016d83563726454595c73cba252a966 - Path: Assets/Firebase/m2repository/com/google' with importer (DefaultImporter)
+Imported 'GUID: 8016d83563726454595c73cba252a966' -> (Import Result ID: 'd325b082c76d90f0c522a337dfa1e718') in 0.001 seconds [static dependencies only]. Details - ImportResultOutputID=87d2e53fe4670218db5713cc1220ece6 DependenciesID=20a033936044a8885e224e41d6f6da06 StaticDependenciesID=8cfe03db60c59c415b6df4533ed0f0aa 
+Importing 'GUID: 236906363019a4e218441ee397253656 - Path: Assets/Firebase/m2repository/com/google/firebase' with importer (DefaultImporter)
+Imported 'GUID: 236906363019a4e218441ee397253656' -> (Import Result ID: 'e1e3ca25361fd98f5f43dd22a3a202ab') in 0.001 seconds [static dependencies only]. Details - ImportResultOutputID=6f3cc98a5d7f666d671a8769cf8adb30 DependenciesID=d5a6a3971cd16fbf3b66da2a62b1868a StaticDependenciesID=9e5f4d314cc22f8ecd31d7f1694be935 
+Importing 'GUID: 69d40725a6e6c4fa4ad90d57cfdd9f21 - Path: Assets/Firebase/m2repository/com/google/firebase/firebase-app-unity' with importer (DefaultImporter)
+Imported 'GUID: 69d40725a6e6c4fa4ad90d57cfdd9f21' -> (Import Result ID: 'd757cbda042c815ee6bc923e69ac424a') in 0.001 seconds [static dependencies only]. Details - ImportResultOutputID=b5240d907b34b4fea211cd8882c71814 DependenciesID=0e7869b778c15f38a86b1a85095c668c StaticDependenciesID=00d7da8002b8df739770b3f34d350d25 
+Importing 'GUID: bd78805e3e16645fdafc729a9828990a - Path: Assets/Firebase/m2repository/com/google/firebase/firebase-auth-unity' with importer (DefaultImporter)
+Imported 'GUID: bd78805e3e16645fdafc729a9828990a' -> (Import Result ID: 'c8b18ad8accaf8d3512e8d23fccd1c1e') in 0.001 seconds [static dependencies only]. Details - ImportResultOutputID=aa953dadce9d11bf23e6ebd04ab4a62f DependenciesID=fae23854ee9f27caa680e4f0e098c2aa StaticDependenciesID=421343bc6155ad47b68f8d3391d5e94b 
+Importing 'GUID: d4b5027b355ef4cf8b4349bb2480a6be - Path: Assets/Firebase/m2repository/com/google/firebase/firebase-app-unity/13.16.0' with importer (DefaultImporter)
+Imported 'GUID: d4b5027b355ef4cf8b4349bb2480a6be' -> (Import Result ID: '3daae9e8b7280b7c2d9fe91f037aa6a2') in 0.000 seconds [static dependencies only]. Details - ImportResultOutputID=f6eca5db46b99ee2b71a4ecddb2e8b52 DependenciesID=993abbc5d0162cdbcb2f1cca48042d3d StaticDependenciesID=5c8881a399faab35b16eeac9265dba97 
+Importing 'GUID: f79b1fdfedecc429f899c01a4d924247 - Path: Assets/Firebase/m2repository/com/google/firebase/firebase-auth-unity/13.16.0' with importer (DefaultImporter)
+Imported 'GUID: f79b1fdfedecc429f899c01a4d924247' -> (Import Result ID: '3df05edb675afa2008ffe9e54eeec2d0') in 0.000 seconds [static dependencies only]. Details - ImportResultOutputID=7c3c04e4f16780e24c8648c86e5f3a83 DependenciesID=76e6f955021b5d6513a3d7514414bcaf StaticDependenciesID=86c83544ffec21e8953ee844b238596b 
+Importing 'GUID: 9b4ce77d2be44f25af03d4cbf9bee9f9 - Path: Assets/Firebase/FirebaseApp/Internal/Firebase.App.Internal.asmdef' with importer (AssemblyDefinitionImporter)
+Imported 'GUID: 9b4ce77d2be44f25af03d4cbf9bee9f9' -> (Import Result ID: '7bbaf98cd5c180eb339e1037e3cf5a61') in 0.001 seconds [static dependencies only]. Details - ImportResultOutputID=3ff1114ed5c4426e61ba70d791b6c281 DependenciesID=944880337f920e0cf4ec9429314237cc StaticDependenciesID=0e368210678fa866065cd1050e6eabf4 
+Native extension for iOS target not found
+Native extension for Android target not found
+Native extension for OSXStandalone target not found
+[MODES] ModeService[none].Initialize
+[MODES] ModeService[none].LoadModes
+2026-09-11 17:24:55.785 Unity[22005:745405] NSEventModifierFlagFunction specified to -setKeyEquivalentModifierMask: for item <NSMenuItem: 0x600000e1c620 SDF, ke='Command-F12'>, but is only supported for system-provided menu items; will not be used
+ScheduleIndexationOnStartup MainProcess:True IndexOnStartup:True
+Mono: successfully reloaded assembly
+- Finished resetting the current domain, in  0.358 seconds
+Domain Reload Profiling: 684ms
+	BeginReloadAssembly (158ms)
+		DisableScriptedObjects (13ms)
+		CreateAndSetChildDomain (46ms)
+	RebuildCommonClasses (5ms)
+	RebuildNativeTypeToScriptingClass (11ms)
+	initialDomainReloadingComplete (20ms)
+	LoadAllAssembliesAndSetupDomain (130ms)
+		LoadAssemblies (133ms)
+		AnalyzeDomain (20ms)
+			TypeCache.Refresh (14ms)
+				TypeCache.ScanAssembly (9ms)
+			BuildScriptInfoCaches (4ms)
+	FinalizeReload (359ms)
+		SetupLoadedEditorAssemblies (0ms)
+			InitializePlatformSupportModulesInManaged (14ms)
+			BeforeProcessingInitializeOnLoad (96ms)
+			ProcessInitializeOnLoadAttributes (71ms)
+			ProcessInitializeOnLoadMethodAttributes (43ms)
+		AwakeInstancesAfterBackupRestoration (17ms)
+Importing 'GUID: 42b1c6cac5c64154aef9df932e9e581d - Path: Assets/ExternalDependencyManager/Editor/LICENSE' with importer (DefaultImporter)
+Imported 'GUID: 42b1c6cac5c64154aef9df932e9e581d' -> (Import Result ID: 'a7d08d8dfb2084d20dfd309759460743') in 0.001 seconds [static dependencies only]. Details - ImportResultOutputID=42ee4548c6f4f69865561c5bb01cf2a5 DependenciesID=be23bfe0c0a8ce6b8d6af20b70f6f073 StaticDependenciesID=feaff3db563de6982eb593e29b05ac88 
+Importing 'GUID: f2ceb9c446ee4196b6476d4978a416b6 - Path: Assets/Firebase/Editor/Firebase.Editor.pdb' with importer (DefaultImporter)
+Imported 'GUID: f2ceb9c446ee4196b6476d4978a416b6' -> (Import Result ID: '1010f59af2ea7aa96a11a37ff317fff2') in 0.127 seconds [static dependencies only]. Details - ImportResultOutputID=e913fc92f3280586f28215d282ed9e1b DependenciesID=666bb1e7fb70ddd49c28a36aac8adf46 StaticDependenciesID=19d0e8b02e868af9dabde8340af035d5 
+Importing 'GUID: 736717de9e57417d930d929ac556b287 - Path: Assets/Firebase/Plugins/Firebase.TaskExtension.pdb' with importer (DefaultImporter)
+Imported 'GUID: 736717de9e57417d930d929ac556b287' -> (Import Result ID: '865ddd9f4598ced9eb8b9c436c3318bd') in 0.001 seconds [static dependencies only]. Details - ImportResultOutputID=f64ca57b1aa9972b81e03c3cfd757521 DependenciesID=0dbbe320c47d3e0f1ba4e1de87557998 StaticDependenciesID=b6bcd363197eebe55fcb6448d7dc39d9 
+Importing 'GUID: 44907853a9e64be4a31076a763ae13b3 - Path: Assets/Firebase/Plugins/Firebase.App.pdb' with importer (DefaultImporter)
+Imported 'GUID: 44907853a9e64be4a31076a763ae13b3' -> (Import Result ID: '1795a86e0dcd9c32ef996ff64401941e') in 0.001 seconds [static dependencies only]. Details - ImportResultOutputID=5213986a01722afff80f28551c58ba93 DependenciesID=4295d4da209365bac7ccab938029a256 StaticDependenciesID=475a2f55c08cc125b433323c8a5124ee 
+Importing 'GUID: 8a529042701647f3afa9e76ebbb531fc - Path: Assets/ExternalDependencyManager/Editor/Google.VersionHandler.pdb' with importer (DefaultImporter)
+Imported 'GUID: 8a529042701647f3afa9e76ebbb531fc' -> (Import Result ID: 'd253873c5da35c801edad4a4c7d26467') in 0.000 seconds [static dependencies only]. Details - ImportResultOutputID=3b78afcb2222531f8f8111bfca2cb172 DependenciesID=085cc18192d034a2fa9c7aad51a45c2f StaticDependenciesID=57e00da31df84bbaabc02e49a5b7f9e5 
+Importing 'GUID: ae88c0972b7448b5b36def1716f1d711 - Path: Assets/Firebase/Editor/generate_xml_from_google_services_json.exe' with importer (DefaultImporter)
+Imported 'GUID: ae88c0972b7448b5b36def1716f1d711' -> (Import Result ID: 'd8dcd1b8ef0b1b8ea39266fa5ca4cc6d') in 0.378 seconds [static dependencies only]. Details - ImportResultOutputID=630d81c147555b185800addba149701f DependenciesID=a135bf6f7e8978726838960819800cf2 StaticDependenciesID=a25965c66ee6f31c3fcb2bdd1e335f80 
+Importing 'GUID: 8f18ed76c0f04ce0a65736104f913ef8 - Path: Assets/Firebase/Editor/generate_xml_from_google_services_json.py' with importer (DefaultImporter)
+Imported 'GUID: 8f18ed76c0f04ce0a65736104f913ef8' -> (Import Result ID: '176da59d6b5c45c46b0d70e2017f21a4') in 0.075 seconds [static dependencies only]. Details - ImportResultOutputID=5a6da4f8942618d4efa9b92fb781db3e DependenciesID=07bbdcf95e0f2174b1ee6319566d1aea StaticDependenciesID=1bced52750fb2b4b96aa6f4c6db582c1 
+Importing 'GUID: 9f97da8d51fc402d811b543c1efe46ff - Path: Assets/Firebase/Plugins/Firebase.Auth.pdb' with importer (DefaultImporter)
+Imported 'GUID: 9f97da8d51fc402d811b543c1efe46ff' -> (Import Result ID: 'ffb5e3998a0860f0afd6a681ce03b9d5') in 0.001 seconds [static dependencies only]. Details - ImportResultOutputID=3944e243c345f737ba7b3400e50798a9 DependenciesID=55ef3b5b4b1bddcc4dc8f5058557dfb0 StaticDependenciesID=c3e5bd634e22021c0606ea41a1fc0daa 
+Importing 'GUID: af8fc0c835824578b855d4c0ed7b16ab - Path: Assets/Firebase/Plugins/Firebase.Platform.pdb' with importer (DefaultImporter)
+Imported 'GUID: af8fc0c835824578b855d4c0ed7b16ab' -> (Import Result ID: 'a95bf5068dfa0c60f044a39847ce80ae') in 0.001 seconds [static dependencies only]. Details - ImportResultOutputID=730fdf562381be45572b722ba16079a4 DependenciesID=39055006c76bf53056df37ff9f3379f5 StaticDependenciesID=e0cd664b3f92908cd369e9a0148295c3 
+Importing 'GUID: 2540d4575eb345e49656440d2b171a04 - Path: Assets/ExternalDependencyManager/Editor/1.2.188/Google.JarResolver.pdb' with importer (DefaultImporter)
+Imported 'GUID: 2540d4575eb345e49656440d2b171a04' -> (Import Result ID: '17d402dc46e5747d91071d65c9da5806') in 0.001 seconds [static dependencies only]. Details - ImportResultOutputID=4b6a9bf39df8209b2965f549ccb05741 DependenciesID=01acd63bf0bacf42805d73f198676f3a StaticDependenciesID=433dbc343b916ffeb4ca25bf3e9a932f 
+Importing 'GUID: 17414cd556f842239fa5728687967cfa - Path: Assets/ExternalDependencyManager/Editor/1.2.188/Google.VersionHandlerImpl.pdb' with importer (DefaultImporter)
+Imported 'GUID: 17414cd556f842239fa5728687967cfa' -> (Import Result ID: 'bfd349ffca917c5394eb2104f64e4e97') in 0.001 seconds [static dependencies only]. Details - ImportResultOutputID=4cb76280c94f24f6a375701f1faf485e DependenciesID=2c17a5938798665ea5260da1283da8e1 StaticDependenciesID=e72ad0cbace100fede91e587f518415c 
+Importing 'GUID: d95eb524298348f89f6671187c12892c - Path: Assets/ExternalDependencyManager/Editor/1.2.188/Google.PackageManagerResolver.pdb' with importer (DefaultImporter)
+Imported 'GUID: d95eb524298348f89f6671187c12892c' -> (Import Result ID: '3980005ceee7b6766b9daa26092f835d') in 0.001 seconds [static dependencies only]. Details - ImportResultOutputID=fe2d8609d43f9b5f3b0fcc7a35a8b41b DependenciesID=d7353ebfc5d22a3a38044529f702b6bb StaticDependenciesID=a1f627d36b544a7ff49b352be92ce9db 
+Importing 'GUID: e96748f6edd2467b95622dee98523c65 - Path: Assets/Firebase/Plugins/iOS/Firebase.App.pdb' with importer (DefaultImporter)
+Imported 'GUID: e96748f6edd2467b95622dee98523c65' -> (Import Result ID: '41e28832c7858f00c042f41babc22fc0') in 0.000 seconds [static dependencies only]. Details - ImportResultOutputID=387d3a65810aae607118ddd7e415d82c DependenciesID=2695b1ffc4a4827cbf34190b30a17ec6 StaticDependenciesID=95ce970ec6de43d71c75472bd7634d38 
+Importing 'GUID: 1e2d4187fd0d4ec4921481b6dda0826c - Path: Assets/Firebase/Plugins/iOS/Firebase.Auth.pdb' with importer (DefaultImporter)
+Imported 'GUID: 1e2d4187fd0d4ec4921481b6dda0826c' -> (Import Result ID: '3af8771d47b4dab8006b224e704f1b4c') in 0.000 seconds [static dependencies only]. Details - ImportResultOutputID=4ed0cae63a5c28aa2238fa0f1f3fe6c1 DependenciesID=f252fab8038c66279238020d7e143eb3 StaticDependenciesID=f2598dc9c8d2c3bdfc381707d06e8ca4 
+Importing 'GUID: ffd499abcc9844148684ce0e3b1c6dbe - Path: Assets/ExternalDependencyManager/Editor/1.2.188/Google.IOSResolver.pdb' with importer (DefaultImporter)
+Imported 'GUID: ffd499abcc9844148684ce0e3b1c6dbe' -> (Import Result ID: 'dd1aa945d0133f4d980e2d8c4cf5c139') in 0.000 seconds [static dependencies only]. Details - ImportResultOutputID=4d0c0b61416fcd3682646a0ffea55044 DependenciesID=d8bd3e44455d445d7e85f1ce4d81324d StaticDependenciesID=924c3f6740740b2ed950856f0e72f0ad 
+Importing 'GUID: 50beaac706be49ad89422c305d2bfefb - Path: Assets/Firebase/m2repository/com/google/firebase/firebase-app-unity/13.16.0/firebase-app-unity-13.16.0.pom' with importer (DefaultImporter)
+Imported 'GUID: 50beaac706be49ad89422c305d2bfefb' -> (Import Result ID: '92fb411cf00b51f78d677aaf0c58a3bc') in 0.099 seconds [static dependencies only]. Details - ImportResultOutputID=2dceea4b6df0852ba2a971d1984809f2 DependenciesID=4e1623d7f880754b0b92a2778dd58a43 StaticDependenciesID=b2858984ebe71f6af1ec91b04df5a46e 
+Importing 'GUID: 36b81a762c4b4cbcb00e5450f1be3bc4 - Path: Assets/Firebase/m2repository/com/google/firebase/firebase-auth-unity/13.16.0/firebase-auth-unity-13.16.0.pom' with importer (DefaultImporter)
+Imported 'GUID: 36b81a762c4b4cbcb00e5450f1be3bc4' -> (Import Result ID: 'cea4226ec12d5cf673bc52150b568ef7') in 0.001 seconds [static dependencies only]. Details - ImportResultOutputID=ff53520b9fc2e1045a404d055246632b DependenciesID=8d3e8255565d7d408ac7cd45182f4507 StaticDependenciesID=07e2219754c075a7764bb64b7f1093fd 
+Importing 'GUID: 5873f1a612c24fc4bdc12e64921dda82 - Path: Assets/Firebase/m2repository/com/google/firebase/firebase-app-unity/13.16.0/firebase-app-unity-13.16.0.srcaar' with importer (DefaultImporter)
+Imported 'GUID: 5873f1a612c24fc4bdc12e64921dda82' -> (Import Result ID: '1fde385e5563ac5d5b3c29685c95c5e9') in 0.025 seconds [static dependencies only]. Details - ImportResultOutputID=32687373d8e6fc92e418dd2f85ab3b00 DependenciesID=0642d8400c5c94657ff3b8913f05e007 StaticDependenciesID=1770de00fd945c6515505125dd020035 
+Importing 'GUID: da2e7ecc04044180addf528b7c930313 - Path: Assets/Firebase/m2repository/com/google/firebase/firebase-auth-unity/13.16.0/firebase-auth-unity-13.16.0.srcaar' with importer (DefaultImporter)
+Imported 'GUID: da2e7ecc04044180addf528b7c930313' -> (Import Result ID: 'e6b10af61b29940386b7b798df7fc769') in 0.001 seconds [static dependencies only]. Details - ImportResultOutputID=6b98238697527360b22cfb6d2b20b1f4 DependenciesID=87308c0aaf3fb5d9344a3728547dd34c StaticDependenciesID=1facb4e76dd3820680ca4893439b0a06 
+Importing 'GUID: 008a5e76206e49f9b06d8ba144aabb38 - Path: Assets/Editor Default Resources/Firebase/fb_crashlytics.png' with importer (TextureImporter)
+Imported 'GUID: 008a5e76206e49f9b06d8ba144aabb38' -> (Import Result ID: '4abbd35b6b4b7d86f7ad9d5ce7d739d7') in 0.013 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=34d5e5b0507c0f06b5a08458975ba82a DependenciesID=2d9ac50ce678eca7127bb7eeaac8ac63 StaticDependenciesID=18ab75e78defb263187e33530cceaa37 
+Importing 'GUID: 20c5b8a1f82cb4aadb77ca20683d2a6e - Path: Assets/Editor Default Resources/Firebase/fb_cloud_messaging_dark.png' with importer (TextureImporter)
+Imported 'GUID: 20c5b8a1f82cb4aadb77ca20683d2a6e' -> (Import Result ID: '84d26374052b54c8940cfd631f04127d') in 0.001 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=a143cb464a8b6f5d402b9e6f3280044e DependenciesID=47032f7c1e7576589191305538973765 StaticDependenciesID=297a7f1e3a9600dec00bf15e585411f6 
+Importing 'GUID: 214009068900439da4a9cded17d58090 - Path: Assets/Editor Default Resources/Firebase/fb_crashlytics_dark.png' with importer (TextureImporter)
+Imported 'GUID: 214009068900439da4a9cded17d58090' -> (Import Result ID: 'dcb364d7de9477c6364c7a7956581049') in 0.001 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=6b890e89ee16be5ae9d703773535ed92 DependenciesID=94bb5b6a57b9a2271fd4e0a5fcb3bd7f StaticDependenciesID=5a7cfd9c6e13278a5e1291384acfad38 
+Importing 'GUID: 415eaec414af14d11955222a282aca08 - Path: Assets/Editor Default Resources/Firebase/fb_config.png' with importer (TextureImporter)
+Imported 'GUID: 415eaec414af14d11955222a282aca08' -> (Import Result ID: '83bfb66c24e894d25337c24f4b1e0141') in 0.001 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=b9a1c7d968393218d65ce97f1058f5c0 DependenciesID=ffcedfd9f75d00d9ca92545e7a5132ca StaticDependenciesID=6306abec84fa7b8ab805eb16a72ffa00 
+Importing 'GUID: 837e8e1f35e334e81931d0857680cebf - Path: Assets/Editor Default Resources/Firebase/fb_cloud_messaging.png' with importer (TextureImporter)
+Imported 'GUID: 837e8e1f35e334e81931d0857680cebf' -> (Import Result ID: 'aa91e8bbbfd216a26af61a3e9e8d7b08') in 0.001 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=c6140d6e6a9ecf4e25cd9624de9ca96e DependenciesID=775c494f3b4ac2fc1aa2ac0a481cbf43 StaticDependenciesID=941e1f44dea864e8d2ccfd17a7ae10e0 
+Importing 'GUID: 953367231f9e3e22e70e5d1c91a40fe5 - Path: Assets/Editor Default Resources/Firebase/fb_functions.png' with importer (TextureImporter)
+Imported 'GUID: 953367231f9e3e22e70e5d1c91a40fe5' -> (Import Result ID: 'e0a0fcb44648a138751fb1abfa420039') in 0.001 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=3e5c21d2b6eb910bfd133dccde6883cf DependenciesID=cadd7cec6fc7216b634651eacdadfde2 StaticDependenciesID=e726e60ca776f51526142aeeaa2fc622 
+Importing 'GUID: b5aa3e4f7432e1c5698417cc13f85271 - Path: Assets/Editor Default Resources/Firebase/fb_functions_dark.png' with importer (TextureImporter)
+Imported 'GUID: b5aa3e4f7432e1c5698417cc13f85271' -> (Import Result ID: 'aeb2ca407991ad1551b732265f6cd681') in 0.001 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=ac437cc6f20fe141fff004bfb9e6822d DependenciesID=1843578df824667f53d1bd1551b96d8f StaticDependenciesID=69d9f55fb48f12d53cee66604c658070 
+Importing 'GUID: 573eb851c99f948f4bf2de49322bfd53 - Path: Assets/Editor Default Resources/Firebase/fb_storage.png' with importer (TextureImporter)
+Imported 'GUID: 573eb851c99f948f4bf2de49322bfd53' -> (Import Result ID: 'bcc839d13cb1fc03a40e03ef22c5feda') in 0.001 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=35b902d9d6b979690ffadbb83605fd25 DependenciesID=9a0bf352f28bd33df016f167f2630292 StaticDependenciesID=543fde753d5999189f976c047181dad3 
+Importing 'GUID: 2955864b938094f579ea9902b65ac10c - Path: Assets/Editor Default Resources/Firebase/fb_storage_dark.png' with importer (TextureImporter)
+Imported 'GUID: 2955864b938094f579ea9902b65ac10c' -> (Import Result ID: 'de339c8f71b7891ffe72df64f9920a1a') in 0.001 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=d3dcf92a02e060c6ae0588c3dd1ea866 DependenciesID=05fbbd6957ca3779eecbd3b4d4000297 StaticDependenciesID=9db660e8526d8e3be208eaa3f32a95a0 
+Importing 'GUID: 394b3ec4d60c24476a12e4ba696d9e5d - Path: Assets/Editor Default Resources/Firebase/fb_auth.png' with importer (TextureImporter)
+Imported 'GUID: 394b3ec4d60c24476a12e4ba696d9e5d' -> (Import Result ID: 'b09b24abd9a3cc1082f25c4cce83664e') in 0.001 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=5ecfc2d6891345a4fe1283a6e5d8e4d1 DependenciesID=edc6aa1a596c355822ca58d56fb6b40a StaticDependenciesID=19a7ed0d2aa98e07c1466bd4cbafa0d6 
+Importing 'GUID: b93330fc8ea08407dbc514b5101afa14 - Path: Assets/Editor Default Resources/Firebase/firebase_lockup_dark.png' with importer (TextureImporter)
+Imported 'GUID: b93330fc8ea08407dbc514b5101afa14' -> (Import Result ID: 'c25f71e075025a8eae962edaafbb3c68') in 0.003 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=e93a79689022849446d22f66b7c13f86 DependenciesID=dfa64ae86d4a8e075e883b0ca5e41207 StaticDependenciesID=efc1678f6b761d5edaca6946c008d292 
+Importing 'GUID: 0ad9ef5fff5524355a9670c90a99cbba - Path: Assets/Editor Default Resources/Firebase/fb_config_dark.png' with importer (TextureImporter)
+Imported 'GUID: 0ad9ef5fff5524355a9670c90a99cbba' -> (Import Result ID: '566acb911b87de2b3c0ed30e0e98b586') in 0.002 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=b3634aa01ab8bef0de40fa373b7c576c DependenciesID=6cd47592bd01e2e6b2c3de762ebc1503 StaticDependenciesID=6c6b861ce8121ae8e79c02a8ce4b16ed 
+Importing 'GUID: 3a9e1ef6287664c389bb09e2ac1b23b7 - Path: Assets/Editor Default Resources/Firebase/fb_auth_dark.png' with importer (TextureImporter)
+Imported 'GUID: 3a9e1ef6287664c389bb09e2ac1b23b7' -> (Import Result ID: '3d16ef87f41405836c86616f69f0ee4c') in 0.001 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=306b62239f1970aed0cf5b088166950a DependenciesID=86efc7497bffa01dda2e4591add387f5 StaticDependenciesID=ff256351fe866a1d9fdc82e718aba10a 
+Importing 'GUID: dc218b335b1d14cd5ae532f65042d829 - Path: Assets/Editor Default Resources/Firebase/fb_analytics.png' with importer (TextureImporter)
+Imported 'GUID: dc218b335b1d14cd5ae532f65042d829' -> (Import Result ID: 'fead2f44aa08152af0c9e9a01eb6dc4e') in 0.001 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=b560448a208460cd0f4435a2eda7c7af DependenciesID=0e9de85da57c55e1d67f268b65a72073 StaticDependenciesID=85e83a4a3d3e3c6a42429a1e7142a826 
+Importing 'GUID: 3eea7b558c67b48e18acf3c278392e3d - Path: Assets/Editor Default Resources/Firebase/fb_database.png' with importer (TextureImporter)
+Imported 'GUID: 3eea7b558c67b48e18acf3c278392e3d' -> (Import Result ID: 'b21941a640187d61873cf4bc018b875d') in 0.001 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=fa9e2e34e4fc74c5811c739b2e913a5e DependenciesID=4625f9190b4a4009456afdb68c9558d4 StaticDependenciesID=062f9e42f2197e4eb8629c0872aee85b 
+Importing 'GUID: 9fe4b3bd3b7d2477dac92fb7429d1d1b - Path: Assets/Editor Default Resources/Firebase/fb_analytics_dark.png' with importer (TextureImporter)
+Imported 'GUID: 9fe4b3bd3b7d2477dac92fb7429d1d1b' -> (Import Result ID: '81c88e0fbf7072ca90a4585a70dba4b0') in 0.001 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=72bfedde19974b9cedfbc58badd28cc5 DependenciesID=cef477536c329b5877da945b1f475e82 StaticDependenciesID=e6542a9b6f55916aae0c305abd693931 
+Importing 'GUID: 9f058f25e8e2d47cfb894951d4d7e48a - Path: Assets/Editor Default Resources/Firebase/firebase_lockup.png' with importer (TextureImporter)
+Imported 'GUID: 9f058f25e8e2d47cfb894951d4d7e48a' -> (Import Result ID: '891bf3fbf5953e36faa3258c7642ebdc') in 0.003 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=4cd8475e8c2538b7a2f77ced245bdeaa DependenciesID=bdd69639c31bb5a44c03d40d79662231 StaticDependenciesID=e92d7d1322ab1ec7b6a5eefca283812f 
+Importing 'GUID: 9f6bfa9d8aefb40dc92461c372c73b0f - Path: Assets/Editor Default Resources/Firebase/fb_database_dark.png' with importer (TextureImporter)
+Imported 'GUID: 9f6bfa9d8aefb40dc92461c372c73b0f' -> (Import Result ID: 'dab254beb4a6ff1288263934767437e2') in 0.001 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=5f3e01627e3d27836e5a4d914e31c097 DependenciesID=cdd3ee05e9b33b791bee496ad96cf4d4 StaticDependenciesID=323aca4aa5e961d46236e9a5f3600f2b 
+Importing 'GUID: 33c2f8ced25a49dc8dca68bd2b3fa289 - Path: Assets/ExternalDependencyManager/Editor/CHANGELOG.md' with importer (TextScriptImporter)
+Imported 'GUID: 33c2f8ced25a49dc8dca68bd2b3fa289' -> (Import Result ID: '541d81a51379e0d01245beca6babaffa') in 0.001 seconds [static dependencies only]. Details - ImportResultOutputID=173a1a1c9ce4a2bc6598c1cd7b3406c0 DependenciesID=bd486487ab6c5573328f573e9d90ac33 StaticDependenciesID=6378550483e6af25945929c9efe35e5c 
+Importing 'GUID: 667465a721ac496491225e3b17bb6165 - Path: Assets/Firebase/Editor/FirebaseAuth_version-13.16.0_manifest.txt' with importer (TextScriptImporter)
+Imported 'GUID: 667465a721ac496491225e3b17bb6165' -> (Import Result ID: 'ca5286fa987f5211c907667fa000b3f1') in 0.000 seconds [static dependencies only]. Details - ImportResultOutputID=348c08bd69c1141d0e48f6abaef35b6e DependenciesID=8837882be7afcf00b55081248e47c1e9 StaticDependenciesID=3e3b5c5ac8799231c8d17f81d45565aa 
+Importing 'GUID: 96337775a7c941d88ea15f8026ad6f8e - Path: Assets/Firebase/m2repository/com/google/firebase/firebase-app-unity/maven-metadata.xml' with importer (TextScriptImporter)
+Imported 'GUID: 96337775a7c941d88ea15f8026ad6f8e' -> (Import Result ID: '42966134c34194a0dae0a2658acc53d5') in 0.000 seconds [static dependencies only]. Details - ImportResultOutputID=81f2cc09924fa7b32412ead465851a0d DependenciesID=cea7a579b8349e425d18d8f6de33de9c StaticDependenciesID=8271e240321ee9b53d5840017e6d8ae3 
+Importing 'GUID: 178c4b1924574f9c95f7a7f28adfd218 - Path: Assets/Firebase/FirebaseApp/Internal/link.xml' with importer (TextScriptImporter)
+Imported 'GUID: 178c4b1924574f9c95f7a7f28adfd218' -> (Import Result ID: '44b8a06eae763c3e85dd5153d48dd88d') in 0.001 seconds [static dependencies only]. Details - ImportResultOutputID=d6508c5d9307b52cd9586b4001aa2836 DependenciesID=963e7010c2c8096e54a48d309551089f StaticDependenciesID=d7a62d97313489e6ff4431b976f3f3b4 
+Importing 'GUID: 397f194fd08a4159906375d8838517fc - Path: Assets/Firebase/m2repository/com/google/firebase/firebase-auth-unity/maven-metadata.xml' with importer (TextScriptImporter)
+Imported 'GUID: 397f194fd08a4159906375d8838517fc' -> (Import Result ID: 'c519cfb7d4727785a49134b72c368d83') in 0.000 seconds [static dependencies only]. Details - ImportResultOutputID=9923610e0845744be9e2c1a0a530f54e DependenciesID=b65a063623a4d2aec9722e4d804a83e2 StaticDependenciesID=acce217d0979064c3f2f5f66f5dcc1a7 
+Importing 'GUID: 2bec2bf8d84d4997ba2dd66263781f3d - Path: Assets/Firebase/Editor/AuthDependencies.xml' with importer (TextScriptImporter)
+Imported 'GUID: 2bec2bf8d84d4997ba2dd66263781f3d' -> (Import Result ID: '4a0a13d515482ae8f3249aff9d54da45') in 0.000 seconds [static dependencies only]. Details - ImportResultOutputID=119ad5f6503369586e22df47e02cb17b DependenciesID=23a15fe923a02ff3c0ec7432e7486ea5 StaticDependenciesID=4cc68a6e9fd506daaf39c016a9c6dd64 
+Importing 'GUID: 3b236528d74a43f9b912bb99ee2fda1a - Path: Assets/ExternalDependencyManager/Editor/README.md' with importer (TextScriptImporter)
+Imported 'GUID: 3b236528d74a43f9b912bb99ee2fda1a' -> (Import Result ID: '5899ac3a24da8f52ec6679e87e85d99b') in 0.001 seconds [static dependencies only]. Details - ImportResultOutputID=574f3afc91b561375fce0e720fd2bd8e DependenciesID=1474590ff5cc7417e1f979ea47fa7a7b StaticDependenciesID=2a1543d8b234c7c829739af120a6ecd1 
+Importing 'GUID: 9b63af95d9364af4a3d8ce58738b6223 - Path: Assets/Firebase/Editor/AppDependencies.xml' with importer (TextScriptImporter)
+Imported 'GUID: 9b63af95d9364af4a3d8ce58738b6223' -> (Import Result ID: 'fe717089e1ba43116c867a2a40ad3436') in 0.000 seconds [static dependencies only]. Details - ImportResultOutputID=40a58018b0da8c19e234aec5d319648b DependenciesID=abeab26d93b55a69c114b5caae5e7811 StaticDependenciesID=bf40050ca217cce66d2ab2cfc587ecf2 
+Importing 'GUID: 0c7e8f57d2d845cdb4f86f2b6643cf8b - Path: Assets/ExternalDependencyManager/Editor/external-dependency-manager_version-1.2.188_manifest.txt' with importer (TextScriptImporter)
+Imported 'GUID: 0c7e8f57d2d845cdb4f86f2b6643cf8b' -> (Import Result ID: '73949fc8a84e0b7a215c15e958bb4109') in 0.000 seconds [static dependencies only]. Details - ImportResultOutputID=f482cf75bded8e7461291391cfc69168 DependenciesID=35141544e13a078aacdb72da69ac551b StaticDependenciesID=7af81eb604da12ac01f9e59c088548ef 
+No restricted APIs configured; Validation skipped.
+Checking 13 assemblies for restricted APIs found 0 usage(s) in 3 ms
+
+Asset Pipeline Refresh (id=d8e3444d238a7448c8f8bece401b7c88): Total: 10.349 seconds - Initiated by RefreshV2(ForceSynchronousImport)
+	(Values over 0.05ms)
+	Summary:
+		Imports: total=71 (actual=71, local cache=0, cache server=0)
+		Asset DB Process Time: managed=4 ms, native=1407 ms
+		Asset DB Callback time: managed=50 ms, native=11 ms
+		Scripting: domain reloads=1, domain reload time=337 ms, compile time=1 ms, other=0 ms
+		Project Asset Count: scripts=320, non-scripts=1679
+		Asset File Changes: new=97, changed=97, moved=0, deleted=0
+		Scan Filter Count: 1
+	InvokePackagesCallback: 0.604ms
+	ApplyChangesToAssetFolders: 0.138ms
+	Scan: 63.454ms
+	Collect global state as custom dependencies: 0.664ms
+	ProcessAssetsWithTransientArtifactChanges: 1.635ms
+	CategorizeAssets: 8.194ms
+	CompileScripts: 1.266ms
+	ImportOutOfDateAssets: 1189.210ms (364.135ms without children)
+		ImportManagerImport: 817.950ms (2.789ms without children)
+			UpdateCategorizedAssets: 0.296ms
+		UnloadImportedAssets: 0.315ms
+		EnsureUptoDateAssetsAreRegisteredWithGuidPM: 0.195ms
+		ImportSchedulerStart: 6.608ms
+	PostProcessAllAssets: 59.119ms
+		AssemblyValidation.PostprocessAllAssets 2.687ms
+		VersionControlSettings.HiddenFilePostprocess 0.423ms
+		PostProcessCallbackCreateDeferredMaterials 0.243ms
+		VCAutoAddAssetPostprocess 0.124ms
+		ShaderAssetModifiedCallback 0.115ms
+		RaytracingShaderImportPostprocess 0.103ms
+		ComputeShaderImportPostprocess 0.095ms
+		SpeedTreeImporter.PostprocessAllAssets 0.076ms
+		LocalizationDatabase.AssetDatabasePostprocessCallback 0.074ms
+		XRBuildSystem.XRAssetImported 0.056ms
+		MonoPostProcessAllAssets: 49.866ms
+			PackageManagerResolver.OnPostprocessAllAssets 11.551ms
+			StyleCatalogPostProcessor.OnPostprocessAllAssets 6.356ms
+			PlayServicesResolver.OnPostprocessAllAssets 5.188ms
+			WindowAssetPostprocessingWatcher.OnPostprocessAllAssets 4.891ms
+			BuilderAssetPostprocessor.OnPostprocessAllAssets 4.644ms
+			AssetPostprocessor.OnPostprocessAllAssets 2.578ms
+			TMPro_TexturePostProcessor.OnPostprocessAllAssets 1.406ms
+			AssetChangedListener.OnPostprocessAllAssets 1.088ms
+			VersionHandlerImpl.OnPostprocessAllAssets 0.911ms
+			TextAssetPostProcessor.OnPostprocessAllAssets 0.882ms
+			RetainedModeAssetPostprocessor.OnPostprocessAllAssets 0.726ms
+			EditModeScopePostprocessor.OnPostprocessAllAssets 0.712ms
+			SyncVS.PostprocessSyncProject 0.642ms
+			SpeedTree9Postprocessor.OnPostprocessAllAssets 0.465ms
+			ArtifactBrowserPostProcessor.OnPostprocessAllAssets 0.361ms
+			IOSResolver.OnPostprocessAllAssets 0.222ms
+			AudioMixerPostprocessor.OnPostprocessAllAssets 0.163ms
+			ReferencedClipsPostProcessor.OnPostprocessAllAssets 0.145ms
+			TerrainToolbarOverlayPostProcessor.OnPostprocessAllAssets 0.141ms
+			AssetEvents.OnPostprocessAllAssets 0.120ms
+			AssetDatabaseCallbacks.OnPostprocessAllAssets 0.086ms
+			SpeedTreePostProcessor.OnPostprocessAllAssets 0.076ms
+			ConfigAssetsTracker.OnPostprocessAllAssets 0.061ms
+			ScenarioDriftAssetsTracker.OnPostprocessAllAssets 0.053ms
+	PostAssetChangesProfiler: 2.294ms
+	PersistCurrentRevisions: 0.176ms
+	GenerateScriptTypeHashes: 0.216ms
+	GenerateScriptTypeSerializationHashes: 0.411ms
+	Untracked: 366.554ms
+
+Asset Pipeline Refresh (id=15de57cb93ba94dba86b58d26fc89db4): Total: 0.016 seconds - Initiated by RefreshV2(ForceSynchronousImport)
+Batchmode quit successfully invoked - shutting down!
+Killing ADB server in 0.27947 seconds.
+Input System module state changed to: ShutdownInProgress.
+Input Polling Thread exited.
+Input System module state changed to: Shutdown.
+Shutting down MSBuild server...
+Shutting down VB/C# compiler server...
+VB/C# compiler server shut down successfully.
+[Physics::Module] Cleanup current backend.
+[Physics::Module] Id: 0xf2b8ea05
+[Licensing::IpcConnector] LicenseClient-prashant-notifications channel disconnected successfully.
+[Licensing::IpcConnector] LicenseClient-prashant channel disconnected successfully.
+Thread 0x17c2d3000 may have been prematurely finalized
+Thread 0x17c35f000 may have been prematurely finalized
+MSBuild server shut down successfully.
+Lingering sessions upon destruction of worker manager
+AcceleratorClientConnectionCallback - disconnected - :0
+Thread 0x17de6f000 may have been prematurely finalized
+Cleanup mono
+CodeReloadManager destroyed
+info: Microsoft.Hosting.Lifetime[0]
+      Application is shutting down...
+debugger-agent: Unable to listen on 44
+[usbmuxd] Stop listen thread
+[usbmuxd] Error: 
+[usbmuxd] Listen thread exiting
+Exiting batchmode successfully now!
+[Package Manager] Server process was shutdown

@@ -500,6 +500,8 @@ namespace Emberline.UI
         private bool _loginBusy;
         private TMP_Text _loginStatus;
 
+        private RectTransform _loginErrorCard;
+
         private void BuildLogin()
         {
             _loginBusy = false;
@@ -514,37 +516,151 @@ namespace Emberline.UI
                 AuthManager.Instance.OnAuthError += OnLoginError;
             }
 
-            // Centre column.
+            // ---- atmospheric vignette: full-screen, subtle darkening at the edges
+            var vigRt = UiKit.Stretch(_screenRoot, "LoginVignette", Vector2.zero, Vector2.one);
+            var vigImg = UiKit.Img(vigRt, UiKit.Vignette, new Color(0f, 0f, 0f, 0.45f));
+            vigImg.raycastTarget = false;
+
+            // ================================================================
+            // LEFT WING — game feature showcase (three stacked cards)
+            // ================================================================
+            var leftWing = UiKit.Rect(_screenRoot, "LeftWing", new Vector2(0, 0.5f),
+                new Vector2(80, 0), new Vector2(400, 520), new Vector2(0, 0.5f));
+
+            UiKit.Kicker(leftWing, "WHAT AWAITS YOU", new Vector2(0, 1),
+                new Vector2(14, -4), new Vector2(380, 20), align: TextAnchor.MiddleLeft, size: 11);
+            UiKit.Accent(leftWing, new Vector2(0, 1), new Vector2(14, -28), 32f);
+
+            LoginFeatureCard(leftWing, 0, "sword",  "STORY CAMPAIGN",
+                "30+ hand-crafted missions across five acts. Escort, ambush, " +
+                "siege and duel your way north through a burning country.");
+            LoginFeatureCard(leftWing, 1, "cleave", "BLADE COMBAT",
+                "Four weapon families — blade, daggers, bow, bomb — each with " +
+                "its own combo tree, range and rhythm.");
+            LoginFeatureCard(leftWing, 2, "flicker","ENDLESS MODE",
+                "The Road North: seven countries, no end. Push your score " +
+                "against escalating waves in procedural arenas.");
+
+            // ================================================================
+            // CENTRE — title + sign-in
+            // ================================================================
             var col = UiKit.Rect(_screenRoot, "LoginColumn", new Vector2(0.5f, 0.5f),
-                Vector2.zero, new Vector2(420, 400), new Vector2(0.5f, 0.5f));
+                new Vector2(0, 20), new Vector2(480, 560), new Vector2(0.5f, 0.5f));
+
+            // Decorative sword glyph above the title — the game's identity mark.
+            var glyphRt = UiKit.Rect(col, "Glyph", new Vector2(0.5f, 1),
+                new Vector2(0, 10), new Vector2(56, 56));
+            var glyphImg = UiKit.Img(glyphRt, UiKit.Icon("sword"), UiKit.Ember);
+            glyphImg.raycastTarget = false;
+            glyphImg.color = new Color(UiKit.Ember.r, UiKit.Ember.g, UiKit.Ember.b, 0.7f);
 
             // Title block.
-            UiKit.Label(col, "EMBERLINE", 56, UiKit.Pale, new Vector2(0.5f, 1),
-                new Vector2(0, 0), new Vector2(420, 72), display: true).characterSpacing = 6f;
+            UiKit.Label(col, "EMBERLINE", 62, UiKit.Pale, new Vector2(0.5f, 1),
+                new Vector2(0, -54), new Vector2(480, 76), display: true).characterSpacing = 8f;
             UiKit.Label(col, "3D NINJA ACTION", 16, UiKit.Dim, new Vector2(0.5f, 1),
-                new Vector2(0, -74), new Vector2(420, 24)).characterSpacing = 5f;
-            UiKit.Accent(col, new Vector2(0.5f, 1), new Vector2(0, -104), 48f);
+                new Vector2(0, -132), new Vector2(480, 22)).characterSpacing = 7f;
+            UiKit.Accent(col, new Vector2(0.5f, 1), new Vector2(0, -162), 52f);
+
+            // Lore tagline.
+            UiKit.Label(col, "ONE BLADE. ONE ROAD. NO SECOND LIFE.", 13,
+                new Color(UiKit.Ember.r, UiKit.Ember.g, UiKit.Ember.b, 0.65f),
+                new Vector2(0.5f, 1), new Vector2(0, -182), new Vector2(480, 20)).characterSpacing = 4f;
+            UiKit.Paragraph(col,
+                "Take up the way of Renzo — a wandering blade on the burning road north. " +
+                "Sign in to carry your progress across devices, or walk the road as a guest.",
+                14, UiKit.Dim, new Vector2(0.5f, 1), new Vector2(0, -206), new Vector2(420, 52),
+                TextAnchor.UpperCenter);
+
+            // ---- frosted card surface behind the sign-in buttons
+            var card = UiKit.Rect(col, "LoginCard", new Vector2(0.5f, 0.5f),
+                new Vector2(0, -40), new Vector2(420, 200), new Vector2(0.5f, 0.5f));
+            UiKit.Surface(card, 0.50f);
 
             // Continue with Google — primary button.
-            var googleBtn = UiKit.MakeButton(col, "CONTINUE WITH GOOGLE", new Vector2(0.5f, 0.5f),
-                new Vector2(0, 20), new Vector2(320, 60), OnGoogleClicked, 18, primary: true);
+            UiKit.MakeButton(card, "CONTINUE WITH GOOGLE", new Vector2(0.5f, 0.5f),
+                new Vector2(0, 40), new Vector2(360, 62), OnGoogleClicked, 18, primary: true);
 
-            // OR divider.
-            UiKit.Label(col, "OR", 14, UiKit.Faint, new Vector2(0.5f, 0.5f),
-                new Vector2(0, -30), new Vector2(420, 22)).characterSpacing = 6f;
+            // OR divider with flanking hairlines.
+            UiKit.Separator(card, new Vector2(0.5f, 0.5f), new Vector2(-76, -14), 96f, 0.08f);
+            UiKit.Label(card, "OR", 12, UiKit.Faint, new Vector2(0.5f, 0.5f),
+                new Vector2(0, -14), new Vector2(50, 18)).characterSpacing = 8f;
+            UiKit.Separator(card, new Vector2(0.5f, 0.5f), new Vector2(76, -14), 96f, 0.08f);
 
             // Continue as Guest — secondary button.
-            var guestBtn = UiKit.MakeButton(col, "CONTINUE AS GUEST", new Vector2(0.5f, 0.5f),
-                new Vector2(0, -68), new Vector2(320, 56), OnGuestClicked, 17);
+            UiKit.MakeButton(card, "CONTINUE AS GUEST", new Vector2(0.5f, 0.5f),
+                new Vector2(0, -60), new Vector2(360, 58), OnGuestClicked, 17);
 
-            // Status text for loading/error.
-            _loginStatus = UiKit.Label(col, "", 15, UiKit.Dim, new Vector2(0.5f, 0),
-                new Vector2(0, 24), new Vector2(420, 30));
+            // ---- error / status banner
+            _loginErrorCard = UiKit.Rect(col, "ErrorCard", new Vector2(0.5f, 0),
+                new Vector2(0, 60), new Vector2(420, 0), new Vector2(0.5f, 0));
+            var errGroup = _loginErrorCard.gameObject.AddComponent<CanvasGroup>();
+            errGroup.alpha = 0f;
+            _loginStatus = UiKit.Paragraph(_loginErrorCard, "", 20, UiKit.Dim,
+                new Vector2(0.5f, 0.5f), new Vector2(0, 0), new Vector2(380, 44),
+                TextAnchor.MiddleCenter);
 
-            // Version.
+            // ================================================================
+            // RIGHT WING — more features (three stacked cards)
+            // ================================================================
+            var rightWing = UiKit.Rect(_screenRoot, "RightWing", new Vector2(1, 0.5f),
+                new Vector2(-80, 0), new Vector2(400, 520), new Vector2(1, 0.5f));
+
+            UiKit.Kicker(rightWing, "AND MORE", new Vector2(0, 1),
+                new Vector2(14, -4), new Vector2(380, 20), align: TextAnchor.MiddleLeft, size: 11);
+            UiKit.Accent(rightWing, new Vector2(0, 1), new Vector2(14, -28), 32f);
+
+            LoginFeatureCard(rightWing, 0, "surge",  "SKILL TREE",
+                "Earn ember shards in battle. Unlock combat moves, defence " +
+                "techniques, traversal abilities and ember powers.");
+            LoginFeatureCard(rightWing, 1, "kunai",  "ARMOURY",
+                "Collect blades, daggers, bows and bombs. Each weapon changes " +
+                "your moveset, range and combo rhythm.");
+            LoginFeatureCard(rightWing, 2, "skull",  "LORE CODEX",
+                "Defeat an enemy to learn its story. Six lore entries, " +
+                "feats of mastery, and the tale of the burning road.");
+
+            // Version — bottom-right corner.
             UiKit.Label(_screenRoot, "v" + Application.version, 13, UiKit.Faint,
                 new Vector2(1, 0), new Vector2(-40, 30), new Vector2(200, 18),
                 align: TextAnchor.MiddleRight);
+        }
+
+        /// <summary>
+        /// A feature highlight card for the login screen wings. Stacks vertically
+        /// inside the parent: slot 0 starts below the kicker, each slot is 150px tall
+        /// with a 10px gap. Contains an icon, a title, and a one-paragraph blurb.
+        /// </summary>
+        private static void LoginFeatureCard(RectTransform parent, int slot, string icon,
+            string title, string blurb)
+        {
+            const float cardH = 148f, gap = 10f, topOffset = 44f;
+            var y = -topOffset - slot * (cardH + gap);
+            var rt = UiKit.Rect(parent, "Feature_" + icon, new Vector2(0, 1),
+                new Vector2(0, y), new Vector2(400, cardH), new Vector2(0, 1));
+            UiKit.Surface(rt, 0.42f);
+
+            // Ember accent tick on the left — the house signature.
+            UiKit.Img(UiKit.Rect(rt, "Tick", new Vector2(0, 1), new Vector2(0, -14),
+                new Vector2(3, 22), new Vector2(0, 1)), UiKit.White, UiKit.Ember);
+
+            // Icon glyph — small, ember-tinted, top-left.
+            var iconRt = UiKit.Rect(rt, "Icon", new Vector2(0, 1),
+                new Vector2(28, -16), new Vector2(36, 36));
+            var iconImg = UiKit.Img(iconRt, UiKit.Icon(icon),
+                new Color(UiKit.EmberBright.r, UiKit.EmberBright.g, UiKit.EmberBright.b, 0.8f));
+            iconImg.raycastTarget = false;
+
+            // Title — right of the icon.
+            UiKit.Label(rt, title, 17, UiKit.Pale, new Vector2(0, 1),
+                new Vector2(72, -18), new Vector2(310, 24),
+                align: TextAnchor.MiddleLeft).characterSpacing = 3f;
+
+            // Short separator under the title.
+            UiKit.Accent(rt, new Vector2(0, 1), new Vector2(72, -48), 24f);
+
+            // Blurb — wrapping body text.
+            UiKit.Paragraph(rt, blurb, 13, UiKit.Dim, new Vector2(0, 1),
+                new Vector2(16, -58), new Vector2(368, 80), TextAnchor.UpperLeft);
         }
 
         private void OnGoogleClicked()
@@ -583,11 +699,67 @@ namespace Emberline.UI
 
         private void SetLoginStatus(string text, Color color)
         {
-            if (_loginStatus != null)
+            if (_loginStatus == null || _loginErrorCard == null) return;
+
+            _loginStatus.text = text;
+            _loginStatus.color = color;
+
+            var hasText = !string.IsNullOrEmpty(text);
+            var isError = color == UiKit.Blood;
+
+            // Expand/collapse the error card.
+            _loginErrorCard.sizeDelta = hasText ? new Vector2(440, isError ? 80 : 52) : Vector2.zero;
+
+            // Ensure a CanvasGroup exists for fading.
+            if (!_loginErrorCard.TryGetComponent<CanvasGroup>(out var cg))
+                cg = _loginErrorCard.gameObject.AddComponent<CanvasGroup>();
+            cg.alpha = hasText ? 1f : 0f;
+
+            // Rebuild the card's visuals: clear old surface/accent children, re-add.
+            // (The status TMP_Text is always child 0 from BuildLogin.)
+            for (var i = _loginErrorCard.childCount - 1; i >= 1; i--)
+                Destroy(_loginErrorCard.GetChild(i).gameObject);
+
+            if (hasText)
             {
-                _loginStatus.text = text;
-                _loginStatus.color = color;
+                // Surface behind the text.
+                var bg = UiKit.Stretch(_loginErrorCard, "ErrBg", Vector2.zero, Vector2.one);
+                bg.SetAsFirstSibling(); // behind the text
+                UiKit.Img(bg, null,
+                    isError ? new Color(0.22f, 0.08f, 0.06f, 0.85f)
+                            : new Color(UiKit.Panel.r, UiKit.Panel.g, UiKit.Panel.b, 0.65f));
+                UiKit.Hairline(bg, new Vector2(0, 1), isError ? 0.25f : 0.09f);
+                UiKit.Hairline(bg, new Vector2(0, 0), 0.06f);
+
+                // Ember accent bar on the left edge for errors — unmissable.
+                if (isError)
+                {
+                    var accent = UiKit.Rect(_loginErrorCard, "ErrAccent", new Vector2(0, 0.5f),
+                        new Vector2(0, 0), new Vector2(3, _loginErrorCard.sizeDelta.y - 8),
+                        new Vector2(0, 0.5f));
+                    UiKit.Img(accent, UiKit.White, UiKit.Ember);
+                }
             }
+
+            // Attention shake for errors — a short horizontal jitter.
+            if (isError && Application.isPlaying)
+                StartCoroutine(ShakeCard(_loginErrorCard));
+        }
+
+        private IEnumerator ShakeCard(RectTransform rt)
+        {
+            var origin = rt.anchoredPosition;
+            var elapsed = 0f;
+            const float duration = 0.35f;
+            while (elapsed < duration && rt != null)
+            {
+                elapsed += Time.unscaledDeltaTime;
+                var intensity = 8f * (1f - elapsed / duration);
+                var offset = Mathf.Sin(elapsed * 55f) * intensity;
+                rt.anchoredPosition = origin + new Vector2(offset, 0f);
+                yield return null;
+            }
+            if (rt != null) rt.anchoredPosition = origin;
         }
 
         /// <summary>One mode: a plate, a large name, two live lines, a hairline.</summary>
