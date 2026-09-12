@@ -34,18 +34,8 @@ namespace Emberline.Story
 
             Sfx3D.Init(gameObject);
 
-            // Already seen: go straight to the menu. Offering a skip button is not
-            // enough — a returning player should not have to dismiss the opening
-            // every single launch to reach their save.
-            if (!_wasFirstRun) { Advance(); return; }
-
-            // The very first launch opens on the intro video, then the cinematic.
-            // The video keeps its own flag: a player who quit during the opening
-            // sees the opening again next launch, not the video again.
-            if (introVideo && !StoryFlags.IntroVideoSeen)
-                IntroVideo.Play(BeginBeat);
-            else
-                BeginBeat();
+            // We no longer play the intro cinematic. Go straight to the next scene.
+            Advance();
         }
 
         private void BeginBeat()
