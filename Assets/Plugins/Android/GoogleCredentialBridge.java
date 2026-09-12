@@ -9,6 +9,8 @@ import androidx.credentials.CredentialManagerCallback;
 import androidx.credentials.GetCredentialRequest;
 import androidx.credentials.GetCredentialResponse;
 import androidx.credentials.exceptions.GetCredentialException;
+import androidx.credentials.CustomCredential;
+import androidx.credentials.Credential;
 
 import com.google.android.libraries.identity.googleid.GetSignInWithGoogleOption;
 import com.google.android.libraries.identity.googleid.GoogleIdTokenCredential;
@@ -33,7 +35,7 @@ public class GoogleCredentialBridge {
 
     // TODO: Replace with your Firebase Web Client ID.
     // Firebase Console → Authentication → Sign-in method → Google → Web client ID.
-    private static final String WEB_CLIENT_ID = "YOUR_WEB_CLIENT_ID.apps.googleusercontent.com";
+    private static final String WEB_CLIENT_ID = "925675040622-f5g654n6dkvfhjupeau2q4sdkpfj8g8c.apps.googleusercontent.com";
 
     private static final String UNITY_GAME_OBJECT = "AuthManager";
 
@@ -66,8 +68,8 @@ public class GoogleCredentialBridge {
 
                         @Override
                         public void onError(GetCredentialException e) {
-                            Log.w(TAG, "Credential Manager error", e);
-                            sendFailure(e.getType() + ": " + e.getMessage());
+                            Log.w(TAG, "Credential Manager error: " + e.getType() + " - " + e.getMessage(), e);
+                            sendFailure("Google sign-in failed. Error: " + e.getType() + " - " + e.getMessage());
                         }
                     }
             );
@@ -79,9 +81,13 @@ public class GoogleCredentialBridge {
 
     private static void handleSignInResponse(GetCredentialResponse response) {
         try {
-            if (response.getCredential() instanceof GoogleIdTokenCredential) {
-                GoogleIdTokenCredential googleCredential =
-                        (GoogleIdTokenCredential) response.getCredential();
+            Credential credential = response.getCredential();
+
+            if (credential instanceof CustomCredential &&
+                credential.getType().equals(GoogleIdTokenCredential.TYPE_GOOGLE_ID_TOKEN_CREDENTIAL)) {
+
+                CustomCredential customCredential = (CustomCredential) credential;
+                GoogleIdTokenCredential googleCredential = GoogleIdTokenCredential.createFrom(customCredential.getData());
                 String idToken = googleCredential.getIdToken();
 
                 if (idToken != null && !idToken.isEmpty()) {
@@ -91,7 +97,7 @@ public class GoogleCredentialBridge {
                     sendFailure("Empty ID token from Google");
                 }
             } else {
-                sendFailure("Unexpected credential type: " + response.getCredential().getClass().getName());
+                sendFailure("Unexpected credential type: " + credential.getClass().getName());
             }
         } catch (Exception e) {
             Log.e(TAG, "Error processing credential response", e);

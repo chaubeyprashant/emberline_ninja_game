@@ -12,7 +12,6 @@
 *.glb   binary
 *.gltf  binary
 *.stl   binary
-
 *.png   binary
 *.jpg   binary
 *.jpeg  binary
@@ -20,11 +19,11 @@
 *.psd   binary
 *.exr   binary
 *.hdr   binary
-
 *.ogg   binary
 *.wav   binary
 *.mp3   binary
 *.mp4   binary
-
 *.ttf   binary
 *.otf   binary
+*.bundle filter=lfs diff=lfs merge=lfs -text
+*.so filter=lfs diff=lfs merge=lfs -text

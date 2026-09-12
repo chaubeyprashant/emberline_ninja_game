@@ -106,6 +106,7 @@ namespace Emberline.EditorTools
             // upload must always exceed the highest code already published.
             PlayerSettings.bundleVersion = "1.2.0";
             PlayerSettings.Android.bundleVersionCode = 8;
+            EditorUserBuildSettings.buildAppBundle = false;
 
             Directory.CreateDirectory("Builds");
             var report = UnityEditor.BuildPipeline.BuildPlayer(
@@ -113,7 +114,39 @@ namespace Emberline.EditorTools
                 BuildTarget.Android, BuildOptions.None);
 
             var ok = report.summary.result == UnityEditor.Build.Reporting.BuildResult.Succeeded;
-            Debug.Log($"[Emberline] Android build {(ok ? "SUCCEEDED" : "FAILED")}: " +
+            Debug.Log($"[Emberline] Android APK build {(ok ? "SUCCEEDED" : "FAILED")}: " +
+                      $"{report.summary.totalErrors} errors, {report.summary.outputPath}");
+            if (Application.isBatchMode) EditorApplication.Exit(ok ? 0 : 1);
+        }
+
+        [MenuItem("Emberline/Build Android App Bundle")]
+        public static void BuildAndroidBundle()
+        {
+            ConfigureAndroidPlayerSettings();
+            PlayerSettings.Android.targetArchitectures = AndroidArchitecture.ARM64;
+            PlayerSettings.bundleVersion = "1.2.2";
+            PlayerSettings.Android.bundleVersionCode = 10;
+            EditorUserBuildSettings.buildAppBundle = true;
+
+            var keystorePass = System.Environment.GetEnvironmentVariable("KEYSTORE_PASS");
+            var keyaliasPass = System.Environment.GetEnvironmentVariable("KEYALIAS_PASS");
+            
+            if (!string.IsNullOrEmpty(keystorePass) && !string.IsNullOrEmpty(keyaliasPass))
+            {
+                PlayerSettings.Android.useCustomKeystore = true;
+                PlayerSettings.Android.keystoreName = "/Users/prashant/StudioProjects/emberline-unity/signing/upload-keystore.jks";
+                PlayerSettings.Android.keystorePass = keystorePass;
+                PlayerSettings.Android.keyaliasName = "emberline";
+                PlayerSettings.Android.keyaliasPass = keyaliasPass;
+            }
+
+            Directory.CreateDirectory("Builds");
+            var report = UnityEditor.BuildPipeline.BuildPlayer(
+                ShippedScenes, "Builds/emberline3d.aab",
+                BuildTarget.Android, BuildOptions.None);
+
+            var ok = report.summary.result == UnityEditor.Build.Reporting.BuildResult.Succeeded;
+            Debug.Log($"[Emberline] Android AAB build {(ok ? "SUCCEEDED" : "FAILED")}: " +
                       $"{report.summary.totalErrors} errors, {report.summary.outputPath}");
             if (Application.isBatchMode) EditorApplication.Exit(ok ? 0 : 1);
         }

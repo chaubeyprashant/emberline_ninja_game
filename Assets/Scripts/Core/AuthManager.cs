@@ -4,7 +4,9 @@ using UnityEngine;
 #if FIREBASE_AUTH
 using Firebase;
 using Firebase.Auth;
+using Firebase.Firestore;
 using Firebase.Extensions;
+using System.Threading.Tasks;
 #endif
 
 namespace Emberline.Core
@@ -24,9 +26,24 @@ namespace Emberline.Core
     /// </summary>
     public class AuthManager : MonoBehaviour
     {
-        // ---------------------------------------------------------------- singleton
-        public static AuthManager Instance { get; private set; }
-
+        private static AuthManager _instance;
+        public static AuthManager Instance
+        {
+            get
+            {
+                if (_instance == null)
+                {
+                    _instance = FindFirstObjectByType<AuthManager>();
+                    if (_instance == null)
+                    {
+                        var go = new GameObject("AuthManager");
+                        _instance = go.AddComponent<AuthManager>();
+                    }
+                }
+                return _instance;
+            }
+            private set => _instance = value;
+        }
         // ---------------------------------------------------------------- public state
         public bool IsInitialised { get; private set; }
         public bool IsAuthenticated { get; private set; }
@@ -102,7 +119,19 @@ namespace Emberline.Core
                 }
             });
 #else
-            Debug.Log("[Auth] Stub mode — Firebase SDK not imported.");
+            var existingUid = PlayerPrefs.GetString(PrefKeyUid, "");
+            if (!string.IsNullOrEmpty(existingUid))
+            {
+                FirebaseUid = existingUid;
+                IsGuest = PlayerPrefs.GetString(PrefKeyAuthMethod, "") == "guest";
+                IsGoogleUser = !IsGuest;
+                IsAuthenticated = true;
+                Debug.Log($"[Auth] Stub session restored: {FirebaseUid} (guest={IsGuest})");
+            }
+            else
+            {
+                Debug.Log("[Auth] Stub mode — Firebase SDK not imported. Waiting for user action.");
+            }
             IsInitialised = true;
 #endif
         }
@@ -140,7 +169,32 @@ namespace Emberline.Core
             PlayerPrefs.SetString(PrefKeyAuthMethod, IsGoogleUser ? "google" : "guest");
             PlayerPrefs.Save();
 
+            SaveUserToFirestore(user);
+
             OnAuthStateChanged?.Invoke(FirebaseUid);
+        }
+
+        private void SaveUserToFirestore(FirebaseUser user)
+        {
+            try
+            {
+                var db = FirebaseFirestore.DefaultInstance;
+                var docRef = db.Collection("users").Document(user.UserId);
+                var userData = new System.Collections.Generic.Dictionary<string, object>
+                {
+                    { "uid", user.UserId },
+                    { "displayName", string.IsNullOrEmpty(user.DisplayName) ? "Guest" : user.DisplayName },
+                    { "email", user.Email ?? "" },
+                    { "photoUrl", user.PhotoUrl != null ? user.PhotoUrl.ToString() : "" },
+                    { "isGuest", user.IsAnonymous },
+                    { "lastLogin", FieldValue.ServerTimestamp }
+                };
+                docRef.SetAsync(userData, SetOptions.MergeAll);
+            }
+            catch (Exception ex)
+            {
+                Debug.LogError($"[Auth] Failed to save user to Firestore: {ex.Message}");
+            }
         }
 #endif
 
@@ -178,7 +232,8 @@ namespace Emberline.Core
                     RaiseError(FriendlyError(task.Exception));
                     return;
                 }
-                ApplyUser(task.Result.User);
+                var userTask = (Task<FirebaseUser>)task;
+                ApplyUser(userTask.Result);
                 Debug.Log($"[Auth] Guest sign-in: {FirebaseUid}");
             });
 #else
@@ -208,7 +263,7 @@ namespace Emberline.Core
             if (!IsInitialised) { RaiseError("Firebase is still loading."); return; }
 #endif
 
-#if UNITY_ANDROID && !UNITY_EDITOR
+#if UNITY_ANDROID && !UNITY_EDITOR && FIREBASE_AUTH
             try
             {
                 using var bridge = new AndroidJavaClass("com.ergebins.emberline3d.GoogleCredentialBridge");
@@ -222,7 +277,7 @@ namespace Emberline.Core
 #elif UNITY_EDITOR
             RaiseError("Google sign-in is only available on Android device builds.");
 #else
-            RaiseError("Google sign-in is not supported on this platform.");
+            RaiseError("Google sign-in requires the Firebase SDK to be imported first.");
 #endif
         }
 
@@ -248,7 +303,8 @@ namespace Emberline.Core
                     RaiseError(FriendlyError(task.Exception));
                     return;
                 }
-                ApplyUser(task.Result.User);
+                var userTask = (Task<FirebaseUser>)task;
+                ApplyUser(userTask.Result);
                 Debug.Log($"[Auth] Google sign-in: {FirebaseUid}");
             });
 #else
@@ -271,7 +327,7 @@ namespace Emberline.Core
                                              || error.Contains("CANCELED", StringComparison.OrdinalIgnoreCase))
                 RaiseError("Google sign-in was cancelled.");
             else
-                RaiseError("Google sign-in failed. Check your connection and try again.");
+                RaiseError($"Google sign-in failed: {error}");
         }
 
         // ================================================================ guest → google linking
@@ -295,7 +351,8 @@ namespace Emberline.Core
                     return;
                 }
                 // UID stays the same — progress preserved.
-                ApplyUser(task.Result.User);
+                var userTask = (Task<FirebaseUser>)task;
+                ApplyUser(userTask.Result);
                 Debug.Log($"[Auth] Guest linked to Google. UID unchanged: {FirebaseUid}");
             });
         }
