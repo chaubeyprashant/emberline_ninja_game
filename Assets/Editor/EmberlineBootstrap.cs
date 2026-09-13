@@ -451,47 +451,28 @@ namespace Emberline.EditorTools
         private static void House(Transform parent, Vector3 at, float yaw,
             Material wall, Material roof)
         {
-            var go = new GameObject("House");
-            go.transform.SetParent(parent);
-            go.transform.SetPositionAndRotation(at, Quaternion.Euler(0, yaw, 0));
-
-            var body = GameObject.CreatePrimitive(PrimitiveType.Cube);
-            body.transform.SetParent(go.transform, false);
-            body.transform.localScale = new Vector3(4.2f, 2.8f, 4.6f);
-            body.transform.localPosition = new Vector3(0, 1.4f, 0);
-            body.GetComponent<Renderer>().sharedMaterial = wall;
-
-            // Gable roof from two leaning slabs. Each is tilted 55 degrees off
-            // vertical so the pair meets at the ridge and its feet land on the
-            // wall line — a single rotated cube reads as debris, not a roof.
-            for (var i = 0; i < 2; i++)
+            var prefab = Resources.Load<GameObject>("Props/Dressing/house");
+            if (prefab == null) 
             {
-                var side = i == 0 ? -1f : 1f;
-                var slab = GameObject.CreatePrimitive(PrimitiveType.Cube);
-                slab.transform.SetParent(go.transform, false);
-                slab.transform.localScale = new Vector3(0.32f, 2.6f, 5.4f);
-                slab.transform.localPosition = new Vector3(side * 1.06f, 3.35f, 0);
-                slab.transform.localRotation = Quaternion.Euler(0, 0, side * 55f);
-                slab.GetComponent<Renderer>().sharedMaterial = roof;
+                Debug.LogWarning("[Emberline] Missing house prefab. Run Emberline > Generate Props Prefabs");
+                return;
             }
+            
+            var go = GameObject.Instantiate(prefab, at, Quaternion.Euler(0, yaw, 0), parent);
+            go.name = "House";
         }
 
         private static void Ruin(Transform parent, Vector3 at, float yaw, Material wall)
         {
-            var go = new GameObject("Ruin");
-            go.transform.SetParent(parent);
-            go.transform.SetPositionAndRotation(at, Quaternion.Euler(0, yaw, 0));
-
-            // Two leaning stubs where four walls were. The gap is the point.
-            for (var i = 0; i < 2; i++)
+            var prefab = Resources.Load<GameObject>("Props/Dressing/ruin");
+            if (prefab == null)
             {
-                var stub = GameObject.CreatePrimitive(PrimitiveType.Cube);
-                stub.transform.SetParent(go.transform, false);
-                stub.transform.localScale = new Vector3(3.4f, 1.1f + i * 0.5f, 0.5f);
-                stub.transform.localPosition = new Vector3(i == 0 ? -1.6f : 1.5f, 0.6f, i == 0 ? -1.9f : 2f);
-                stub.transform.localRotation = Quaternion.Euler(i == 0 ? 6f : -9f, i * 90f, i == 0 ? -4f : 7f);
-                stub.GetComponent<Renderer>().sharedMaterial = wall;
+                Debug.LogWarning("[Setup] ruin.prefab not found in Resources/Props/Dressing/");
+                return;
             }
+            
+            var go = GameObject.Instantiate(prefab, at, Quaternion.Euler(0, yaw, 0), parent);
+            go.name = "Ruin";
         }
 
         /// <summary>

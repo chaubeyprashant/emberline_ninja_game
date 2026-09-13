@@ -98,8 +98,7 @@ namespace Emberline.Missions
             switch (spec.shape)
             {
                 case StoryPropShape.Shrine:
-                    Dress("column", Vector3.zero, 0f, 0.9f);
-                    Dress("torch_lit", new Vector3(0.9f, 0f, 0.2f), 20f, 1f, doused: true);
+                    Dress("shrine", Vector3.zero, 0f, 1f);
                     Glow(new Vector3(0f, 1.5f, 0f), new Color(0.82f, 0.86f, 1f), 0.22f);
                     break;
 
@@ -170,11 +169,8 @@ namespace Emberline.Missions
                 case StoryPropShape.Homestead:
                     // A home, not a ruin in general: the things people owned are
                     // still lying where the roof came down on them.
-                    Dress("rubble_large", new Vector3(-1.6f, 0f, 0.9f), 25f, 1.1f);
-                    Dress("column", new Vector3(1.8f, 0f, 1.2f), 0f, 0.8f);
-                    Dress("table_small", new Vector3(0.2f, 0f, -0.9f), 40f);
+                    Dress("house", Vector3.zero, 0f, 1f);
                     Dress("chest", new Vector3(-2.2f, 0f, -1.3f), -20f);
-                    Dress("barrel_small", new Vector3(2.4f, 0f, -1.6f), 60f);
                     Patch(new Vector3(0f, 0.03f, 0f), 2.4f, new Color(0.10f, 0.09f, 0.08f));
                     Glow(new Vector3(0f, 1f, 0f), new Color(0.9f, 0.86f, 0.72f), 0.22f);
                     break;

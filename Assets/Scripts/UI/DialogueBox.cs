@@ -107,6 +107,25 @@ namespace Emberline.UI
                 "JIN" => 0.95f,
                 _ => 1f,
             };
+
+            // Attempt to load and play full TTS voice line
+            using (var md5 = System.Security.Cryptography.MD5.Create())
+            {
+                var inputBytes = System.Text.Encoding.UTF8.GetBytes(_lines[_index]);
+                var hashBytes = md5.ComputeHash(inputBytes);
+                var sb = new System.Text.StringBuilder();
+                for (int j = 0; j < hashBytes.Length; j++) sb.Append(hashBytes[j].ToString("x2"));
+                var hashStr = sb.ToString();
+
+                var clip = Resources.Load<AudioClip>($"Voices/{hashStr}");
+                if (clip != null)
+                {
+                    var source = GetComponent<AudioSource>();
+                    if (source == null) source = gameObject.AddComponent<AudioSource>();
+                    source.clip = clip;
+                    source.Play();
+                }
+            }
         }
 
         private string Body(int i)
@@ -136,7 +155,11 @@ namespace Emberline.UI
                 // Play blip every 2 printable characters
                 if (char.IsLetterOrDigit(c) && currentChars % 2 == 0)
                 {
-                    Sfx3D.VoiceBlip(_voicePitch);
+                    var source = GetComponent<AudioSource>();
+                    if (source == null || !source.isPlaying)
+                    {
+                        Sfx3D.VoiceBlip(_voicePitch);
+                    }
                 }
                 _lastVoiceChar = currentChars;
             }

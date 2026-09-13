@@ -62,7 +62,10 @@ namespace Emberline.Core
 
         private float _swordLag;
         private float _swordLagVel;
+        private float _swordLagY;
+        private float _swordLagYVel;
         private float _lastArmX;
+        private float _lastTorsoY;
 
         private bool _oneActive;
         private RigPose _onePose;
@@ -319,8 +322,9 @@ namespace Emberline.Core
         /// <summary>Fast-out easing so attacks snap to extension early.</summary>
         private static float Snap(float p)
         {
-            var t = Mathf.Min(1f, p * 2.6f);
-            return t * t * (3f - 2f * t);
+            var t = Mathf.Min(1f, p * 2.8f);
+            var inv = 1f - t;
+            return 1f - (inv * inv * inv * inv); // Quartic ease-out for a sharp snap
         }
 
         private void Apply(RigPose pose, float phase, float dt)
@@ -343,6 +347,7 @@ namespace Emberline.Core
             // Target angles: X = forward swing (negative lifts limb forward),
             // torsoYaw sweeps sword strikes, pitch leans the torso.
             float armL = 8, armR = 8, foreL = 25, foreR = 25;
+            float armL_y = 0, foreL_y = 0;
             float legL = 3, legR = -3, shinL = 5, shinR = 5;
             float pitch = 0, yaw = 0, bodyPitch = 0, pelvisY = 0.95f;
 
@@ -356,13 +361,15 @@ namespace Emberline.Core
                     break;
 
                 case RigPose.Run:
-                    legL = 42 * run; legR = -42 * run;
-                    shinL = 30 + 22 * Mathf.Max(0, -run);
-                    shinR = 30 + 22 * Mathf.Max(0, run);
-                    armL = -34 * run; armR = 34 * run;
-                    foreL = 55; foreR = 55;
-                    pitch = 10;
-                    pelvisY = 0.95f + Mathf.Abs(run) * 0.035f;
+                    legL = 45 * run; legR = -45 * run;
+                    shinL = 30 + 26 * Mathf.Max(0, -run);
+                    shinR = 30 + 26 * Mathf.Max(0, run);
+                    armL = -38 * run; armR = 38 * run;
+                    foreL = 55 + Mathf.Sin(_cycle * 2f) * 5f; 
+                    foreR = 55 - Mathf.Sin(_cycle * 2f) * 5f;
+                    pitch = 12 + Mathf.Abs(run) * 4f; // Torso leans and bounces
+                    yaw = 15 * run; // Shoulders twist opposite to legs
+                    pelvisY = 0.95f + Mathf.Abs(run) * 0.045f;
                     break;
 
                 case RigPose.Strike1:
@@ -392,6 +399,8 @@ namespace Emberline.Core
                     var slam = phase < 0.5f ? 0f : Snap((phase - 0.5f) * 2f);
                     armR = Mathf.Lerp(35, 155, p) - slam * 135;
                     armL = Mathf.Lerp(10, 140, p) - slam * 120;
+                    armL_y = 35; // Fake two-handed grip by bringing left arm across
+                    foreL_y = 20;
                     foreR = 12; foreL = 20;
                     pitch = Mathf.Lerp(-6, -14, p) + slam * 34;
                     pelvisY = 0.95f - slam * 0.08f;
@@ -426,8 +435,8 @@ namespace Emberline.Core
             }
 
             var s = 1f - Mathf.Exp(-22f * dt);
-            Slerp(_armL, -armL, s); Slerp(_armR, -armR, s);
-            Slerp(_foreL, -foreL, s); Slerp(_foreR, -foreR, s);
+            Slerp3(_armL, -armL, armL_y, 0, s); Slerp(_armR, -armR, s);
+            Slerp3(_foreL, -foreL, foreL_y, 0, s); Slerp(_foreR, -foreR, s);
             Slerp(_legL, -legL, s); Slerp(_legR, -legR, s);
             Slerp(_shinL, shinL, s); Slerp(_shinR, shinR, s); // knees bend backward
             _torso.localRotation = Quaternion.Slerp(_torso.localRotation,
@@ -447,22 +456,32 @@ namespace Emberline.Core
             if (_swordJoint != null && dt > 0.001f)
             {
                 float currentArmX = _armR.localEulerAngles.x + _foreR.localEulerAngles.x;
+                float currentYaw = _torso.localEulerAngles.y;
+                
                 float deltaX = Mathf.DeltaAngle(_lastArmX, currentArmX);
+                float deltaY = Mathf.DeltaAngle(_lastTorsoY, currentYaw);
+                
                 _lastArmX = currentArmX;
+                _lastTorsoY = currentYaw;
 
-                // Inject inertia: when arm rotates fast, sword lags behind
+                // Inject inertia: when arm rotates fast, sword lags behind vertically. When torso twists, sword lags horizontally.
                 _swordLag -= deltaX * 0.85f;
+                _swordLagY -= deltaY * 0.85f;
 
                 // Hooke's law spring physics with damping
                 float freq = 18f;
                 float damp = 0.45f; // Slight underdamping for follow-through bounce
                 _swordLagVel += (-freq * freq * _swordLag - 2f * damp * freq * _swordLagVel) * dt;
                 _swordLag += _swordLagVel * dt;
+                
+                _swordLagYVel += (-freq * freq * _swordLagY - 2f * damp * freq * _swordLagYVel) * dt;
+                _swordLagY += _swordLagYVel * dt;
 
                 // Clamp to prevent wrist breaking
                 _swordLag = Mathf.Clamp(_swordLag, -90f, 90f);
+                _swordLagY = Mathf.Clamp(_swordLagY, -90f, 90f);
 
-                _swordJoint.localRotation = Quaternion.Euler(-15f + _swordLag, 0, 0);
+                _swordJoint.localRotation = Quaternion.Euler(-15f + _swordLag, _swordLagY, 0);
             }
         }
 
@@ -470,6 +489,12 @@ namespace Emberline.Core
         {
             if (joint == null) return;
             joint.localRotation = Quaternion.Slerp(joint.localRotation, Quaternion.Euler(xDeg, 0, 0), s);
+        }
+
+        private static void Slerp3(Transform joint, float xDeg, float yDeg, float zDeg, float s)
+        {
+            if (joint == null) return;
+            joint.localRotation = Quaternion.Slerp(joint.localRotation, Quaternion.Euler(xDeg, yDeg, zDeg), s);
         }
     }
 
