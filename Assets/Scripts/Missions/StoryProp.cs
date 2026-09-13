@@ -263,15 +263,20 @@ namespace Emberline.Missions
             Paint(q, c, glow: false);
         }
 
-        /// <summary>The read: a small pulse so the eye finds it without a waypoint.</summary>
+        private Vector3 _baseGlowScale;
+
+        /// <summary>The read: a tall pillar of light so the eye finds it across the map.</summary>
         private void Glow(Vector3 offset, Color c, float size)
         {
-            var go = GameObject.CreatePrimitive(PrimitiveType.Sphere);
+            var go = GameObject.CreatePrimitive(PrimitiveType.Cylinder);
             Destroy(go.GetComponent<Collider>());
-            go.name = "Read";
+            go.name = "Read_Pillar";
             go.transform.SetParent(transform, false);
-            go.transform.localPosition = offset;
-            go.transform.localScale = Vector3.one * size;
+            // Move it up so it stands on the offset rather than being centered on it.
+            // A primitive cylinder is 2 units tall, so half its scaled height is (size * 12) / 2 = size * 6.
+            go.transform.localPosition = offset + new Vector3(0, size * 6f, 0);
+            _baseGlowScale = new Vector3(size * 0.75f, size * 6f, size * 0.75f);
+            go.transform.localScale = _baseGlowScale;
             Paint(go, c, glow: true);
             _label = go.transform;
         }
@@ -291,8 +296,9 @@ namespace Emberline.Missions
         {
             if (_label != null)
             {
-                var s = 1f + 0.12f * Mathf.Sin(Time.time * 2.4f);
-                _label.localScale = Vector3.one * (_label.localScale.x > 0f ? s * 0.24f : 0.24f);
+                // Pulse the width of the pillar for a breathing effect
+                var pulse = 1f + 0.15f * Mathf.Sin(Time.time * 3f);
+                _label.localScale = new Vector3(_baseGlowScale.x * pulse, _baseGlowScale.y, _baseGlowScale.z * pulse);
             }
             if (_taken) return;
 

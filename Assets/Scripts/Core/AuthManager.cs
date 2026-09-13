@@ -171,7 +171,17 @@ namespace Emberline.Core
 
             SaveUserToFirestore(user);
 
-            OnAuthStateChanged?.Invoke(FirebaseUid);
+            if (CloudSaveManager.Instance != null)
+            {
+                CloudSaveManager.Instance.LoadFromCloud(() => 
+                {
+                    OnAuthStateChanged?.Invoke(FirebaseUid);
+                });
+            }
+            else
+            {
+                OnAuthStateChanged?.Invoke(FirebaseUid);
+            }
         }
 
         private void SaveUserToFirestore(FirebaseUser user)
@@ -246,7 +256,17 @@ namespace Emberline.Core
             PlayerPrefs.SetString(PrefKeyUid, FirebaseUid);
             PlayerPrefs.SetString(PrefKeyAuthMethod, "guest");
             PlayerPrefs.Save();
-            OnAuthStateChanged?.Invoke(FirebaseUid);
+            if (CloudSaveManager.Instance != null)
+            {
+                CloudSaveManager.Instance.LoadFromCloud(() => 
+                {
+                    OnAuthStateChanged?.Invoke(FirebaseUid);
+                });
+            }
+            else
+            {
+                OnAuthStateChanged?.Invoke(FirebaseUid);
+            }
 #endif
         }
 

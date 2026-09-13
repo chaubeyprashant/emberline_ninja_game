@@ -1948,6 +1948,23 @@ namespace Emberline.EditorTools
             if (Application.isBatchMode) EditorApplication.Exit(ok ? 0 : 1);
         }
 
+        [MenuItem("Emberline/Build APK")]
+        public static void BuildApk()
+        {
+            ApplyReleaseIdentity();
+            PlayerSettings.Android.useCustomKeystore = false;
+
+            EditorUserBuildSettings.buildAppBundle = false;
+            Directory.CreateDirectory("Builds");
+            var report = UnityEditor.BuildPipeline.BuildPlayer(
+                ShippedScenes, "Builds/emberline.apk",
+                BuildTarget.Android, BuildOptions.None);
+
+            var ok = report.summary.result == UnityEditor.Build.Reporting.BuildResult.Succeeded;
+            Debug.Log($"[Emberline] APK build {(ok ? "SUCCEEDED" : "FAILED")}: {report.summary.outputPath}");
+            if (Application.isBatchMode) EditorApplication.Exit(ok ? 0 : 1);
+        }
+
         private static void ApplyReleaseIdentity()
         {
             ConfigureAndroidPlayerSettings();

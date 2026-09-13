@@ -68,6 +68,9 @@ namespace Emberline.Missions
         [Tooltip("Banner shown when the stage begins. Empty for no announcement.")]
         public string banner = "";
 
+        [Tooltip("Hint shown to the player during this stage. Helps guide confused players.")]
+        public string hint = "";
+
         [Tooltip("Meaning depends on the goal: kill count, clue count, wave index.")]
         public int count = 1;
 

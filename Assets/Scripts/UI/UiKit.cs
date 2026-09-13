@@ -447,7 +447,7 @@ namespace Emberline.UI
             var text = rt.gameObject.AddComponent<TextMeshProUGUI>();
             text.text = Clean(content);
             text.font = display ? DisplayFont : HeadingFont;
-            text.fontSize = size;
+            text.fontSize = size * 1.35f;
             text.color = color;
             text.alignment = Align(align);
             text.enableWordWrapping = false;

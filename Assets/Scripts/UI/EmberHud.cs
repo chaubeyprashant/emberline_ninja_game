@@ -288,10 +288,14 @@ namespace Emberline.UI
 
         private void UpdateScreenRouting()
         {
-            if (AuthManager.Instance != null && !AuthManager.Instance.IsAuthenticated)
+            if (AuthManager.Instance != null)
             {
-                if (_screen != Screen.Login) SetScreen(Screen.Login);
-                return;
+                if (!AuthManager.Instance.IsInitialised) return;
+                if (!AuthManager.Instance.IsAuthenticated)
+                {
+                    if (_screen != Screen.Login) SetScreen(Screen.Login);
+                    return;
+                }
             }
 
             var wanted = _gm.State switch
@@ -573,7 +577,7 @@ namespace Emberline.UI
 
             // ---- frosted card surface behind the sign-in buttons
             var card = UiKit.Rect(col, "LoginCard", new Vector2(0.5f, 0.5f),
-                new Vector2(0, -40), new Vector2(420, 200), new Vector2(0.5f, 0.5f));
+                new Vector2(0, -100), new Vector2(420, 200), new Vector2(0.5f, 0.5f));
             UiKit.Surface(card, 0.50f);
 
             // Continue with Google — primary button.
@@ -1961,11 +1965,11 @@ namespace Emberline.UI
             _objectiveText.characterSpacing = 3f;
             _objectiveText.lineSpacing = 12f; // room for the optional condition under it
             var bannerRt = UiKit.Rect(_screenRoot, "Banner", new Vector2(0.5f, 1f),
-                new Vector2(0, -150), new Vector2(900, 44));
+                new Vector2(0, -150), new Vector2(900, 64));
             _bannerGroup = bannerRt.gameObject.AddComponent<CanvasGroup>();
-            _bannerText = UiKit.Label(bannerRt, "", 20, UiKit.Pale, new Vector2(0.5f, 0.5f),
-                Vector2.zero, new Vector2(900, 44), display: true);
-            _hintText = UiKit.Label(_screenRoot, "", 13, UiKit.Dim, new Vector2(0.5f, 0f),
+            _bannerText = UiKit.Label(bannerRt, "", 32, UiKit.Pale, new Vector2(0.5f, 0.5f),
+                Vector2.zero, new Vector2(900, 64), display: true);
+            _hintText = UiKit.Label(_screenRoot, "", 13, UiKit.EmberBright, new Vector2(0.5f, 0f),
                 new Vector2(0, 230), new Vector2(900, 20));
             _hintText.characterSpacing = 3f;
 
@@ -2269,12 +2273,21 @@ namespace Emberline.UI
             // First-run hints, story level 1 only.
             if (_gm.ModeNow == LaunchMode.Story && Session.LevelIndex == 0
                 && _gm.MissionTime < 30f && (!_movedOnce || !_struckOnce || !_jumpedOnce))
+            {
                 _hintText.text = !_movedOnce
                     ? "DRAG THE LEFT SIDE OF THE SCREEN TO MOVE"
                     : !_struckOnce
                         ? "TAP STRIKE WHEN AN ENEMY IS CLOSE"
                         : "TAP JUMP TO VAULT COVER — OR LEAP AT A WALL TO RUN IT";
-            else _hintText.text = "";
+            }
+            else if (Missions.MissionDirector.Active != null && Missions.MissionDirector.Active.Stage != null && !string.IsNullOrEmpty(Missions.MissionDirector.Active.Stage.hint))
+            {
+                _hintText.text = Missions.MissionDirector.Active.Stage.hint.ToUpperInvariant();
+            }
+            else
+            {
+                _hintText.text = "";
+            }
         }
 
         private void UpdateMarkers()
