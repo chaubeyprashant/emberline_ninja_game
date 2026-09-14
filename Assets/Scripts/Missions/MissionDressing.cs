@@ -8,7 +8,7 @@ namespace Emberline.Missions
     {
         None,
         BurnedHome,        // rubble and scorch where a house stood
-        EmptyHome,         // a doused torch, an open chest, nobody home
+        EmptyHome,         // a cold lantern, an open tansu, nobody home
         DestroyedCart,     // a tipped cart and its spilled load
         AbandonedWeapons,  // blades left in the ground where people dropped them
         BloodTrail,        // used sparingly: one trail, going somewhere
@@ -77,22 +77,22 @@ namespace Emberline.Missions
                     break;
 
                 case DressingKind.EmptyHome:
-                    Prop("torch_lit", at, yaw, 1.1f, doused: true);
-                    Prop("chest", at + Off(1.4f), yaw - 30f);
-                    Prop("box_small", at + Off(2.2f), yaw + 70f);
+                    Prop("jp_lantern_stand", at, yaw, 1f, doused: true);
+                    Prop("jp_tansu", at + Off(1.4f), yaw - 30f);
+                    Prop("jp_ricebag", at + Off(2.2f), yaw + 70f);
                     break;
 
                 case DressingKind.DestroyedCart:
                     // Tipped onto its side: the load went with it.
                     var cart = Prop("table_small", at, yaw, 1.15f);
                     if (cart != null) cart.transform.rotation = Quaternion.Euler(0f, yaw, 74f);
-                    Prop("barrel_large", at + Off(1.5f), yaw + 20f);
-                    Prop("box_small", at + Off(2.3f), yaw - 55f);
-                    Prop("keg", at + Off(1.1f), yaw + 120f);
+                    Prop("jp_barrel_a", at + Off(1.5f), yaw + 20f);
+                    Prop("jp_ricebag", at + Off(2.3f), yaw - 55f);
+                    Prop("jp_tub_b", at + Off(1.1f), yaw + 120f);
                     break;
 
                 case DressingKind.AbandonedWeapons:
-                    Prop("crates_stacked", at, yaw, 0.9f);
+                    Prop("jp_ricebale_stack", at, yaw, 0.9f);
                     for (var i = 0; i < 4; i++) DroppedBlade(at + Off(1.6f + i * 0.5f));
                     break;
 
@@ -109,7 +109,7 @@ namespace Emberline.Missions
                     break;
 
                 case DressingKind.HidingVillagers:
-                    Prop("crates_stacked", at, yaw, 1f);
+                    Prop("jp_ricebale_stack", at, yaw, 1f);
                     Villager.Spawn(at + Off(1.3f), new Color(0.34f, 0.30f, 0.26f));
                     Villager.Spawn(at + Off(2.1f), new Color(0.40f, 0.33f, 0.28f));
                     break;
@@ -150,7 +150,9 @@ namespace Emberline.Missions
         private static GameObject Prop(string name, Vector3 at, float yaw, float scale = 1f,
             bool doused = false)
         {
-            var prefab = Resources.Load<GameObject>("Props/Dressing/" + name);
+            // The Japanese props live with the zone kits (EmberJapanProps).
+            var prefab = Resources.Load<GameObject>("Props/Dressing/" + name)
+                         ?? Resources.Load<GameObject>("Props/Zone/" + name);
             if (prefab == null) return null;
             var go = Object.Instantiate(prefab, at, Quaternion.Euler(0f, yaw, 0f), _root.transform);
             go.transform.localScale = Vector3.one * scale;
@@ -241,7 +243,7 @@ namespace Emberline.Missions
                 Prop("column", at + new Vector3(Mathf.Cos(a) * 2.3f, 0f, Mathf.Sin(a) * 2.3f),
                     yaw, 0.55f);
             }
-            Prop("torch_lit", at + Off(3.2f), yaw, 1.1f);
+            Prop("jp_lantern_stand", at + Off(3.2f), yaw);
             Prisoner.Spawn(at + new Vector3(0.7f, 0f, 0.3f));
             Prisoner.Spawn(at + new Vector3(-0.6f, 0f, -0.5f));
             Prisoner.Spawn(at + new Vector3(0.1f, 0f, 0.9f));

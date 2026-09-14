@@ -19,8 +19,9 @@ namespace Emberline.EditorTools
         /// <summary>Props a mission may place. Names match the source FBX files.</summary>
         public static readonly string[] Props =
         {
-            "rubble_large", "rubble_half", "crates_stacked", "box_large", "box_small",
-            "barrel_large", "barrel_small", "keg", "chest", "table_small",
+            // No crates, barrels, keg or chest: they read as a European dungeon.
+            // EmberJapanProps supplies rice bales, sake barrels and a tansu instead.
+            "rubble_large", "rubble_half", "table_small",
             "banner_red", "banner_thin_red", "column", "torch_lit",
         };
 

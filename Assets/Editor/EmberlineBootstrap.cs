@@ -381,13 +381,13 @@ namespace Emberline.EditorTools
             // training ground, the well. Parented to the set, not to a state.
             // Dressing sits off the playing area. The middle of the street is the
             // stage: father and son train there, and the camera works there.
-            DungeonProp("crates_stacked", new Vector3(-6.4f, 0, -5.8f), 25f, 1.1f)
+            ZoneProp("jp_ricebale_stack", new Vector3(-6.4f, 0, -5.8f), 25f)
                 ?.transform.SetParent(root.transform, true);
-            DungeonProp("barrel_large", new Vector3(6.2f, 0, -4.6f), -15f, 1f)
+            ZoneProp("jp_barrel_a", new Vector3(6.2f, 0, -4.6f), -15f)
                 ?.transform.SetParent(root.transform, true);
             // The cart the child hides under — placed clear of the training ground
             // but inside the shot the over-the-shoulder uses.
-            DungeonProp("crates_stacked", new Vector3(-4.6f, 0, 2.6f), 70f, 1f)
+            ZoneProp("jp_ricebale_stack", new Vector3(-4.6f, 0, 2.6f), 70f)
                 ?.transform.SetParent(root.transform, true);
             DungeonProp("rubble_large", new Vector3(-2.6f, 0, -3.4f), 0f, 1.2f)
                 ?.transform.SetParent(ruin.transform, true);
@@ -587,6 +587,22 @@ namespace Emberline.EditorTools
         }
 
         /// <summary>Place a KayKit Dungeon prop with the shared toon atlas material.</summary>
+        /// <summary>
+        /// Place one of the Japanese props built by <see cref="EmberJapanProps"/>.
+        /// They are already sized in metres, stand on their origin and carry their
+        /// own material, so none of the KayKit fix-up below applies.
+        /// </summary>
+        private static GameObject ZoneProp(string prefabName, Vector3 pos, float yaw, float scale = 1f)
+        {
+            var asset = AssetDatabase.LoadAssetAtPath<GameObject>(
+                $"Assets/Resources/Props/Zone/{prefabName}.prefab");
+            if (asset == null) return null;
+            var go = (GameObject)PrefabUtility.InstantiatePrefab(asset);
+            go.transform.SetPositionAndRotation(pos, Quaternion.Euler(0, yaw, 0));
+            go.transform.localScale = Vector3.one * scale;
+            return go;
+        }
+
         /// <summary>
         /// Place a KayKit prop. A prop given a collider also registers itself as
         /// an arena obstacle: a solid object that navigation does not know about

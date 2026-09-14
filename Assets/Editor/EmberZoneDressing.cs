@@ -403,12 +403,16 @@ namespace Emberline.EditorTools
 
             var clutter = new List<Spec>
             {
-                P(L("survival_barrel"), 2f, Cell, Cell),
-                P(L("survival_box"), 1.6f, Cell, Cell),
-                P(L("survival_box-large"), 1f, Cell, Cell),
+                // Village stores: sake barrels, rice and baskets (EmberJapanProps).
+                // Those are sized in metres, so they take no Cell scale.
+                P(L("jp_barrel_a"), 1.2f),
+                P(L("jp_barrel_b"), 0.8f),
+                P(L("jp_ricebag"), 1f),
+                P(L("jp_basket"), 0.6f),
+                P(L("jp_ricebale_stack"), 1f),
                 P(L("survival_resource-planks"), 1f, Cell, Cell),
                 P(L("survival_resource-wood"), 1f, Cell, Cell),
-                P(L("survival_bucket"), 1f, Cell, Cell),
+                P(L("jp_bucket"), 1f),
                 P(L("town_wheel"), 0.5f, Cell, Cell),
             };
             Scatter(parent, clutter, 240, 313,
@@ -512,11 +516,13 @@ namespace Emberline.EditorTools
             // Supply dump at the back: what sabotage burns.
             var supply = new List<Spec>
             {
-                P(L("survival_box-large"), 2f, Cell, Cell),
-                P(L("survival_box"), 2f, Cell, Cell),
-                P(L("survival_barrel"), 2f, Cell, Cell),
-                P(L("survival_barrel-open"), 1f, Cell, Cell),
-                P(L("survival_chest"), 0.8f, Cell, Cell),
+                P(L("jp_ricebale_stack"), 2f),
+                P(L("jp_ricebag"), 1.2f),
+                P(L("jp_basket_tall"), 0.8f),
+                P(L("jp_barrel_a"), 1f),
+                P(L("jp_barrel_b"), 1f),
+                P(L("jp_tub_a"), 1f),
+                P(L("jp_tansu"), 0.8f),
                 P(L("survival_resource-planks"), 1.2f, Cell, Cell),
                 P(L("survival_resource-stone"), 1f, Cell, Cell),
                 P(L("survival_resource-wood"), 1.2f, Cell, Cell),
