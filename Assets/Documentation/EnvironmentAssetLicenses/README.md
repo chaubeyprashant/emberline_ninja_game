@@ -22,7 +22,7 @@ models under `Assets/Art/Environments/`, unmodified.
 | **Commercial use** | Yes |
 | **Attribution** | Not required. Stated verbatim: *"Support me by crediting Kay Lousberg, www.kaylousberg.com (this is not mandatory)"* |
 | **Formats** | FBX (Unity-axis variant), GLTF, OBJ; one 1024 gradient atlas |
-| **In project** | `Assets/Art/Environments/Hexagon/` — 64 FBX + `hexagons_medieval.png` |
+| **In project** | `Assets/Art/Environments/Hexagon/` — 6 FBX + `hexagons_medieval.png` |
 
 **Used for:** archery targets, weapon racks, arrow buckets and the village well.
 
@@ -49,7 +49,7 @@ architecture, so Kenney's Fantasy Town Kit provides the buildings instead.
 | **Commercial use** | Yes |
 | **Attribution** | Not required. *"Support us by crediting Kenney or www.kenney.nl (this is not mandatory)"* |
 | **Formats** | FBX, OBJ, GLB, DAE, STL |
-| **In project** | `Assets/Art/Environments/Kenney/nature/` — 81 FBX |
+| **In project** | `Assets/Art/Environments/Kenney/nature/` — 66 FBX |
 
 **Used for:** the forest (pines, broadleaf, stumps, logs), rocks and boulders,
 bushes, grass, flowers, mushrooms, bamboo, crop rows, wooden bridge decking.
@@ -68,7 +68,7 @@ repaint the whole forest by mapping those names to its own palette. See
 | **Source** | https://kenney.nl/assets/survival-kit |
 | **Licence** | CC0 1.0 Universal · commercial yes · attribution not required |
 | **Licence text** | `Assets/Art/Environments/Kenney/survival/License.txt` |
-| **In project** | `Assets/Art/Environments/Kenney/survival/` — 34 FBX + `colormap_survival.png` |
+| **In project** | `Assets/Art/Environments/Kenney/survival/` — 15 FBX + `colormap_survival.png` |
 
 **Used for:** the enemy camp (tents, campfires, fortified fencing, the prisoner
 pen), supply crates and barrels, the blacksmith's workbench and anvil, resource
@@ -83,7 +83,7 @@ piles, signposts.
 | **Source** | https://kenney.nl/assets/fantasy-town-kit |
 | **Licence** | CC0 1.0 Universal · commercial yes · attribution not required |
 | **Licence text** | `Assets/Art/Environments/Kenney/town/License.txt` |
-| **In project** | `Assets/Art/Environments/Kenney/town/` — 80 FBX + `colormap_town.png` |
+| **In project** | `Assets/Art/Environments/Kenney/town/` — 29 FBX + `colormap_town.png` |
 
 **Used for:** every village building, assembled from modular wall, door, window,
 roof and chimney pieces; market stalls, carts, lantern posts, fences, hedges, the
@@ -99,7 +99,7 @@ kitbashed from.
 | **Source** | https://kenney.nl/assets/castle-kit |
 | **Licence** | CC0 1.0 Universal · commercial yes · attribution not required |
 | **Licence text** | `Assets/Art/Environments/Kenney/castle/License.txt` |
-| **In project** | `Assets/Art/Environments/Kenney/castle/` — 34 FBX + `colormap_castle.png` |
+| **In project** | `Assets/Art/Environments/Kenney/castle/` — 11 FBX + `colormap_castle.png` |
 
 **Used for:** the enemy camp's palisade and gateway, the stacked modular
 watchtowers, and camp banners.
