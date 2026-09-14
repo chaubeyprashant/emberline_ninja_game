@@ -28,13 +28,14 @@ MonoBehaviour:
   theme: 1
   missionRadius: 0
   missionRadiusZ: 0
-  nextReason: Goro is dead and he was not the one in charge. What the father refused
-    is somewhere on the mountain.
+  nextReason: Goro is beaten, not finished, and he was not the one in charge. What
+    the father refused is somewhere on the mountain.
   region: FOREST
   stages:
   - goal: 17
     objective: 
     banner: 
+    hint: 
     count: 1
     duration: 0
     point: {x: 0, y: 0, z: 0}
@@ -52,6 +53,7 @@ MonoBehaviour:
   - goal: 19
     objective: FOLLOW GORO'S ROUTE
     banner: THE TOLL ROAD
+    hint: 
     count: 1
     duration: 0
     point: {x: 0, y: 0, z: 0}
@@ -89,6 +91,7 @@ MonoBehaviour:
   - goal: 7
     objective: GET INTO THE CHECKPOINT
     banner: THEY HOLD THE ROAD
+    hint: 
     count: 1
     duration: 0
     point: {x: 0, y: 0, z: 0}
@@ -106,6 +109,7 @@ MonoBehaviour:
   - goal: 19
     objective: SEARCH THE POST
     banner: HIS PAPERWORK
+    hint: 
     count: 1
     duration: 0
     point: {x: 0, y: 0, z: 0}
@@ -145,6 +149,7 @@ MonoBehaviour:
   - goal: 17
     objective: 
     banner: 
+    hint: 
     count: 1
     duration: 0
     point: {x: 0, y: 0, z: 0}
@@ -162,6 +167,7 @@ MonoBehaviour:
   - goal: 14
     objective: GORO
     banner: THE TOLL-CAPTAIN
+    hint: 
     count: 1
     duration: 0
     point: {x: 0, y: 0, z: 0}
@@ -179,6 +185,7 @@ MonoBehaviour:
   - goal: 17
     objective: 
     banner: 
+    hint: 
     count: 1
     duration: 0
     point: {x: 0, y: 0, z: 0}
@@ -196,6 +203,7 @@ MonoBehaviour:
   - goal: 14
     objective: HE IS NOT TIRING
     banner: PRESSURE
+    hint: 
     count: 1
     duration: 0
     point: {x: 0, y: 0, z: 0}
@@ -213,6 +221,7 @@ MonoBehaviour:
   - goal: 17
     objective: 
     banner: 
+    hint: 
     count: 1
     duration: 0
     point: {x: 0, y: 0, z: 0}
@@ -227,9 +236,10 @@ MonoBehaviour:
     optional: 0
     bonusShards: 1
     checkpoint: 0
-  - goal: 11
-    objective: FINISH IT
+  - goal: 14
+    objective: BRING HIM DOWN
     banner: ON ONE KNEE
+    hint: 
     count: 1
     duration: 0
     point: {x: 0, y: 0, z: 0}
@@ -239,14 +249,15 @@ MonoBehaviour:
     foeDef: 
     beatId: 
     props: []
-    bossHealthGate: 0.6
-    onComplete: 0
+    bossHealthGate: 0.08
+    onComplete: 13
     optional: 0
     bonusShards: 1
     checkpoint: 1
   - goal: 17
     objective: 
     banner: 
+    hint: 
     count: 1
     duration: 0
     point: {x: 0, y: 0, z: 0}
@@ -262,8 +273,9 @@ MonoBehaviour:
     bonusShards: 1
     checkpoint: 0
   - goal: 19
-    objective: SEARCH HIM
+    objective: SEARCH WHERE HE FELL
     banner: 
+    hint: 
     count: 1
     duration: 0
     point: {x: 0, y: 0, z: 0}
@@ -292,6 +304,7 @@ MonoBehaviour:
   - goal: 17
     objective: 
     banner: 
+    hint: 
     count: 1
     duration: 0
     point: {x: 0, y: 0, z: 0}

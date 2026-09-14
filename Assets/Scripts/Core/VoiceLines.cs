@@ -8,10 +8,10 @@ namespace Emberline.Core
     /// <para>
     /// A voice file is named by the MD5 of the exact string the game shows —
     /// "SPEAKER|text", or the bare text when there is no speaker — and lives in
-    /// Resources/Voices. The name is the whole contract: the briefing dialogue
-    /// box, mid-mission story props and cinematic shots all ask here, and
-    /// <c>EmberVoiceLines</c> exports every such string so
-    /// <c>Tools/generate_voices.py</c> can speak them.
+    /// Resources/Voices. The name is the whole contract: cinematic shots ask
+    /// here, and <c>EmberVoiceLines</c> exports every shot line so
+    /// <c>Tools/generate_voices.py</c> can speak them. Briefings and mid-mission
+    /// lines are deliberately text only.
     /// </para>
     /// </summary>
     public static class VoiceLines

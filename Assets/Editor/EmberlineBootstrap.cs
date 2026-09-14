@@ -213,6 +213,8 @@ namespace Emberline.EditorTools
             gm.mission = mission;
             gm.enemyPrefabs = prefabs;
             var named = BuildNamedFoePrefabs(prefabs);
+            // Real characters for mission cutscenes (CastStandIn loads these).
+            EmberCastPrefabs.Build();
             gm.namedVisualIds = named.ids;
             gm.namedVisualPrefabs = named.prefabs;
             gm.arenaHalfExtents = new Vector2(13f, 8f);
@@ -1723,6 +1725,7 @@ namespace Emberline.EditorTools
             var codeStr = System.Environment.GetEnvironmentVariable("EMBERLINE_VERSION_CODE");
             PlayerSettings.Android.bundleVersionCode = int.TryParse(codeStr, out var code) ? code : 7;
             EnsureIcon();
+            EmberSplash.Apply();
         }
 
         private static void ApplySigningFromEnv()

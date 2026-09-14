@@ -97,7 +97,10 @@ namespace Emberline.Story
             foreach (var shot in _beat.shots)
             {
                 if (_skipped) break;
-                subject = Cast.Find(shot.subject) ?? subject;
+                // A shot with no subject frames whoever is speaking, so a soldier's
+                // line is not played over the back of Renzo's head.
+                var who = string.IsNullOrWhiteSpace(shot.subject) ? shot.speaker : shot.subject;
+                subject = Cast.Find(who) ?? subject;
                 ApplyWorld(shot);
                 FrameShot(shot, subject);
                 _subs.Show(shot.speaker, shot.line);

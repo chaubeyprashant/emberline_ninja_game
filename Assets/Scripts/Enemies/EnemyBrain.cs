@@ -2242,7 +2242,7 @@ namespace Emberline.Enemies
                 transform.position = p;
                 return;
             }
-            var q = Core.MissionBounds.Clamp(transform.position);
+            var q = Core.MissionBounds.ClampEnemy(transform.position);
             q.y = y;
             transform.position = q;
             StickToGround();

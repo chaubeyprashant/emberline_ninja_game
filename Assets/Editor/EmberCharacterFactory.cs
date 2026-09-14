@@ -549,7 +549,12 @@ namespace Emberline.EditorTools
             propRight = "katana",
         }, "MixamoKachujin", "Kachujin_diffuse.png", propScale: 0.7f);
 
-        /// <summary>Rogue Ninja: Renzo's body gone cold — the mirror, deliberately.</summary>
+        /// <summary>
+        /// Rogue Ninja: a hooded wraith in dark slate with a kunai. It used to be
+        /// Renzo's own ninja body in a colder tint — "the mirror, deliberately" —
+        /// and in a fight that read as Renzo attacking the player, so it has a
+        /// silhouette of its own now.
+        /// </summary>
         public static Spec RogueNinja()
         {
             var clips = MixamoClips();
@@ -558,10 +563,11 @@ namespace Emberline.EditorTools
             {
                 name = "RogueNinjaModel",
                 height = 1.78f,
-                tint = new Color(0.70f, 0.88f, 1.25f),   // moonlit steel: lighter and colder than Renzo's navy
+                tint = new Color(0.46f, 0.52f, 0.62f),   // night slate, far from Three Blades' pale red
+                slotTextures = VampireSlots(),
                 propRight = "kunai",
                 clips = clips,
-            }, "MixamoNinja", "Ch24_1001_Diffuse.png");
+            }, "MixamoVampire", "Vampire_diffuse.png");
         }
 
         /// <summary>Elite Warrior: ornate gilded plate — the captain's kit, unique body.</summary>
@@ -572,6 +578,80 @@ namespace Emberline.EditorTools
             trail = true,
             propRight = "axe_2handed",
         }, "MixamoUriel", "Uriel_diffuse.png", propScale: 0.78f);
+
+        // --------------------------------------------------- mission story cast
+        //
+        // The chibi KayKit story specs above stood out as cartoons next to the
+        // Mixamo cast in mission cutscenes. These put the same people on the
+        // realistic bodies, told apart from the enemies that share them by tint,
+        // height and an empty hand.
+
+        /// <summary>
+        /// Renzo's father: a cloaked swordmaster in warm brown, carrying the sword.
+        /// Not the ninja body — on Renzo's mesh he read as Renzo standing opposite himself.
+        /// </summary>
+        public static Spec MixamoFather() => Mixamo(new Spec
+        {
+            name = "MixamoFatherModel",
+            height = 1.84f,
+            tint = new Color(1.02f, 0.80f, 0.62f),
+            propRight = "katana",
+        }, "MixamoPirate", "void_diffuse.png");
+
+        /// <summary>Aiko grown: the rogue body in drained red, unarmed.</summary>
+        public static Spec MixamoAiko() => Mixamo(new Spec
+        {
+            name = "MixamoAikoModel",
+            height = 1.64f,
+            tint = new Color(1.15f, 0.74f, 0.70f),   // the red thread, gone muted
+            hideRenderers = new[] { "Weapons_Geo" },
+        }, "MixamoArissa", "Arissa_DIFF_diffuse.png");
+
+        /// <summary>Renzo's mother: the archer body, pale and unarmed.</summary>
+        public static Spec MixamoMother() => Mixamo(new Spec
+        {
+            name = "MixamoMotherModel",
+            height = 1.66f,
+            tint = new Color(1.05f, 0.98f, 0.90f),
+            slotTextures = ErikaSlots(),
+        }, "MixamoErika", "Erika_Archer_Clothes_diffuse.png");
+
+        /// <summary>A visitor at the Kawai house: the archer body in cool travelling grey, unarmed.</summary>
+        public static Spec MixamoVisitor() => Mixamo(new Spec
+        {
+            name = "MixamoVisitorModel",
+            height = 1.70f,
+            tint = new Color(0.74f, 0.80f, 0.92f),
+            slotTextures = ErikaSlots(),
+        }, "MixamoErika", "Erika_Archer_Clothes_diffuse.png");
+
+        /// <summary>Suzu: the scout who steals badly — the rogue body in river-grey, a tanto.</summary>
+        public static Spec MixamoSuzu() => Mixamo(new Spec
+        {
+            name = "MixamoSuzuModel",
+            height = 1.60f,
+            tint = new Color(0.62f, 0.80f, 0.84f),
+            hideRenderers = new[] { "Weapons_Geo" },
+            propRight = "tanto",
+        }, "MixamoArissa", "Arissa_DIFF_diffuse.png");
+
+        /// <summary>Fumi: the informant from Ashfall's cellar — the archer body in ink-stained brown, unarmed.</summary>
+        public static Spec MixamoFumi() => Mixamo(new Spec
+        {
+            name = "MixamoFumiModel",
+            height = 1.58f,
+            tint = new Color(1.08f, 0.92f, 0.76f),
+            slotTextures = ErikaSlots(),
+        }, "MixamoErika", "Erika_Archer_Clothes_diffuse.png");
+
+        /// <summary>Tsuru: the conscript archer who walked off a wall — hooded leather in moss green, a bow.</summary>
+        public static Spec MixamoTsuru() => Mixamo(new Spec
+        {
+            name = "MixamoTsuruModel",
+            height = 1.76f,
+            tint = new Color(0.70f, 0.86f, 0.62f),
+            propLeft = "yumi",
+        }, "MixamoAkai", "akai_diffuse.png");
 
         /// <summary>Shade: the hooded rogue as a ghost — unarmed, translucent, pale blue.</summary>
         public static Spec Shade()

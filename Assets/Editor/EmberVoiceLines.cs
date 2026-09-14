@@ -53,31 +53,10 @@ namespace Emberline.EditorTools
                 entries[hash] = e;
             }
 
-            // "SPEAKER|text" strings, split exactly as DialogueBox splits them.
-            void AddRaw(string raw, string source)
-            {
-                if (string.IsNullOrWhiteSpace(raw)) return;
-                var parts = raw.Split('|');
-                if (parts.Length > 1) Add(parts[0], parts[1], raw, source);
-                else Add("", parts[0], raw, source);
-            }
-
-            foreach (var m in Emberline.Campaign.Campaign.Missions)
-                foreach (var d in m.dialogue) AddRaw(d, $"briefing M{m.id:D2}");
-
-            foreach (var duel in Session.Duels)
-            {
-                foreach (var d in duel.intro) AddRaw(d, $"duel {duel.name} intro");
-                foreach (var d in duel.defeat) AddRaw(d, $"duel {duel.name} defeat");
-            }
-
-            // Story props speak through EmberHud.SayLine, which builds the key.
-            foreach (var plan in Resources.LoadAll<MissionPlan>("Missions"))
-                foreach (var stage in plan.stages)
-                    if (stage.props != null)
-                        foreach (var p in stage.props)
-                            Add(p.speaker, p.line, VoiceLines.Key(p.speaker, p.line), $"prop {plan.name}/{p.id}");
-
+            // Cinematics only. Briefings, duel lines and mid-mission story-prop lines
+            // are text: voiced, they interrupted play and the text-to-speech read as
+            // robotic. DialogueBox no longer plays voice, so exporting them would
+            // only ship clips nothing loads.
             foreach (var beat in Resources.LoadAll<StoryBeat>("Story"))
                 foreach (var s in beat.shots)
                     if (s.voice == null)

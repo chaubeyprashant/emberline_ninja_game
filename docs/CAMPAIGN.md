@@ -28,15 +28,15 @@ The first type on a mission is its primary and is what the campaign validator ho
 
 | Type | Brief target | Missions carrying it | As primary |
 |---|---|---|---|
-| Combat | ~20 | 17 | 13 |
-| Stealth | ~15 | 16 | 9 |
-| Investigation | ~10 | 17 | 13 |
-| Rescue | ~10 | 10 | 5 |
+| Combat | ~20 | 18 | 12 |
+| Stealth | ~15 | 16 | 8 |
+| Investigation | ~10 | 22 | 15 |
+| Rescue | ~10 | 8 | 4 |
 | Defense | ~8 | 10 | 5 |
 | Escort | ~7 | 5 | 5 |
-| Chase | ~7 | 9 | 4 |
-| Exploration | ~8 | 20 | 8 |
-| Survival | ~5 | 12 | 7 |
+| Chase | ~7 | 7 | 4 |
+| Exploration | ~8 | 21 | 10 |
+| Survival | ~5 | 11 | 6 |
 | Boss | ~10 | 13 | 12 |
 | Sabotage | — | 6 | 5 |
 | Memory | — | 6 | 2 |
@@ -45,7 +45,7 @@ The first type on a mission is its primary and is what the campaign validator ho
 
 ## Boss cadence
 
-- **5 — GORO'S TOLL**: Chief
+- **5 — THE TOLL-CAPTAIN**: Chief
 - **30 — PALE SHADE**: paleshade
 - **40 — GORO'S END**: Chief
 - **70 — KUROGANE**: Jin
@@ -61,12 +61,11 @@ Two arena geometries exist (rooftop deck, marsh). Every region is carried on the
 |---|---|---|---|---|
 | 1 | Ruins | Rooftop | BurningVillage | clear |
 | 2–3 | Ruins | Rooftop | Village | night/rain |
-| 4–5 | Mountains | Rooftop | Castle | clear |
-| 6 | Forest | Rooftop | Village | clear |
-| 7 | Forest | Rooftop | Forest | clear |
-| 8 | Forest | Rooftop | Bamboo | clear |
-| 9 | Marsh | Marsh | Graveyard | fog |
-| 10 | Temples | Marsh | Temple | clear |
+| 4–5 | Forest | Rooftop | Forest | night |
+| 6 | Forest | Rooftop | VillageDawn | clear |
+| 7 | Ruins | Rooftop | BurningVillage | clear |
+| 8–9 | Mountains | Rooftop | Mountain | fog |
+| 10 | Mountains | Rooftop | Fortress | night/fog |
 | 11–12 | Villages | Rooftop | Village | night |
 | 13 | Villages | Rooftop | BurningVillage | clear |
 | 14 | Villages | Rooftop | Village | clear |
@@ -180,85 +179,85 @@ A camp is a place with a garrison, not a level. Each is watched, prepared for, t
 
 *Return, mystery, first clues.*
 
-#### 01 — FIRST BLOOD
+#### 01 — ASHES
 
-- **Story purpose:** Renzo comes home to a village that no longer exists, and learns the people who burned it never left.
-- **Primary objective:** Search the ruins of Yorune for any sign of who is still here.
-- **Gameplay type:** Stealth + Exploration
-- **Unique event:** The first enemy has not noticed you: the game teaches the silent kill by giving you one for free, then takes the option away.
-- **Story discovery:** Kagehira's forces are still operating around Yorune. This was not a raid that ended.
-- **Climax:** A masked assassin drops from the burned watchtower and attacks Renzo in the open.
-- **Ending:** In the assassin's coat: a map with one road marked in red. LANTERN ROAD.
-- **Next mission reason:** The map is the only lead there is. Renzo follows it before whoever drew it comes looking.
-- *Staging:* Ruins, rooftop arena, BurningVillage · enemies: Bandit, Bandit, Assassin · bespoke plan `S01_FirstBlood`
+- **Story purpose:** Renzo comes home. Yorune is ash, his sister died in it, and someone has been here since.
+- **Primary objective:** Walk into Yorune and find what is left of your house.
+- **Gameplay type:** Exploration + Combat
+- **Unique event:** The village is the tutorial: no enemy at all until the ash itself says somebody has been walking on it.
+- **Story discovery:** The tracks in the ash are days old, not years. Somebody came back to a village with nothing left to take.
+- **Climax:** A masked assassin, waiting where the tracks end.
+- **Ending:** In the assassin's coat: a map, drawn this season, with one road inked red.
+- **Next mission reason:** The map is the only thing in Yorune that was made recently. Renzo follows the road before whoever drew it comes back.
+- *Staging:* Ruins, rooftop arena, BurningVillage · enemies: Assassin · bespoke plan `S01_Ashes`
 - **Role:** Discovery · village: YORUNE
 - **Approach:** the mission has one shape.
 - **What it remembers:** `yorune_seen`
 - **Consequence:** Yorune is on the map now, and it is the only place on it.
 - **Ends on:** "I want to know who is still here."
 
-#### 02 — THE LANTERN ROAD
+#### 02 — RED THREAD
 
-- **Story purpose:** The road on the map carries an enemy convoy, and the convoy carries people.
-- **Primary objective:** Shadow the convoy along the Lantern Road without being seen, and free whoever is in the wagons.
-- **Gameplay type:** Rescue + Stealth + Chase
-- **Unique event:** A moving patrol: the guards walk a route rather than stand a post, and the wagons stop where the lanterns are.
-- **Story discovery:** The prisoners were being taken north, toward the marsh. Nobody has said why.
-- **Climax:** The Convoy Captain turns back for his cargo and meets Renzo on the road.
-- **Ending:** A document in the captain's saddlebag names something called the Black Seal.
-- **Next mission reason:** Kagehira is spending soldiers and wagons on a seal. Renzo needs to know why, and the camp the convoy came from will.
-- *Staging:* Ruins, rooftop arena, Village, night · enemies: Bandit, PikeGuard, Ranged · named foe `convoycaptain`
+- **Story purpose:** The red mark on the map leads out of Yorune, and what it leads to has been there a while.
+- **Primary objective:** Follow the red mark out of Yorune and find who is working the valley.
+- **Gameplay type:** Investigation + Stealth
+- **Unique event:** Tracking, not fighting: the trail is disturbed ash and cart ruts, and the patrol at the end of it can be walked past.
+- **Story discovery:** They are organised — routes, watch posts, supply, and a signal line of lanterns — and they know the Kurogawa name.
+- **Climax:** Two of them talking at the watch post, close enough to hear.
+- **Ending:** Their regional map: the red road runs far past this valley, and the operation is much larger than the patrol Renzo followed.
+- **Next mission reason:** Somebody is directing this. Renzo goes looking for whoever gives these men their orders.
+- *Staging:* Ruins, rooftop arena, Village · enemies: Bandit, Bandit, Ranged · bespoke plan `S02_RedThread`
 - **Role:** Assault
 - **Approach:** Assault / Ambush / Stealth — open from the start
 - **What it remembers:** `convoy_broken`
 - **Consequence:** The Lantern Road carries merchants again within the chapter. The first supply run is possible.
 - **Ends on:** "I want to know what a Black Seal is."
 
-#### 03 — EYES IN THE DARK
+#### 03 — THE LANTERNS
 
-- **Story purpose:** The camp the convoy came from is where the orders come from.
-- **Primary objective:** Get into the enemy camp, read what they are looking for, and get out.
+- **Story purpose:** The signal line runs back to whoever lights the first lantern.
+- **Primary objective:** Follow the lantern chain to the command post and take what is written there.
 - **Gameplay type:** Stealth + Investigation
-- **Unique event:** Vision is short and the rain covers you; archers on the roofs are the threat, not the men on the ground.
-- **Story discovery:** Someone named Goro is commanding the search. Every order carries his mark.
-- **Climax:** The alarm goes up. The way out is a run through a camp that is now awake.
-- **Ending:** The last order on the table: Goro is closing the northern pass tonight.
-- **Next mission reason:** If the pass closes, the prisoners' trail closes with it. Renzo goes north before Goro can shut the door.
-- *Staging:* Ruins, rooftop arena, Village, night, rain · enemies: Assassin, Ranged, Ranged, Bandit · bespoke plan `S03_EyesInTheDark`
+- **Unique event:** The lanterns are the level: a light goes up and the patrol below changes where it walks, so reading the signal is how the player moves.
+- **Story discovery:** There is a chain of command, and the men at the bottom of it were told to expect a Kurogawa.
+- **Climax:** A masked officer taking a report, watched from cover — and the alarm going up as the orders leave the table.
+- **Ending:** Written orders: priority Kurogawa, report the moment he appears, signed with a mark nobody in Yorune has seen.
+- **Next mission reason:** Somebody above these men gave that order. Renzo goes looking for whoever they report to.
+- *Staging:* Ruins, rooftop arena, Village, night, rain · enemies: Ranged, Bandit, PikeGuard · bespoke plan `S03_Lanterns`
 - **Role:** Recon · camp: THE TOLL POST
 - **Approach:** the mission has one shape.
 - **What it remembers:** `toll_watched`
 - **Consequence:** The toll post's card is filled in as far as Renzo got: the bell, the pen, the rotation.
 - **Ends on:** "I want to get inside that post before the pass closes."
 
-#### 04 — THE BROKEN GATE
+#### 04 — THE SILENT FOREST
 
-- **Story purpose:** The road north runs through a checkpoint that was built to stop exactly one man.
-- **Primary objective:** Reach the northern checkpoint and break through the gate.
-- **Gameplay type:** Combat
-- **Unique event:** The soldiers say Renzo's family name before he has said a word. They were told to expect a Kurogawa.
-- **Story discovery:** Kagehira's soldiers know the name Kurogawa. They have known it for years.
-- **Climax:** An elite guard holds the gate alone and does not need help.
-- **Ending:** The gate falls. On the far side, a man in a toll-captain's armour is waiting and unhurried. Goro.
-- **Next mission reason:** Goro has come himself. There is no road around him, only through.
-- *Staging:* Mountains, rooftop arena, Castle · enemies: PikeGuard, PikeGuard, RaiderAxe, EliteWarrior
+- **Story purpose:** The investigation acquires consequences: they stop being men Renzo watches and start being men who are looking for him.
+- **Primary objective:** Follow the trail out of the command post and find out who these men report to.
+- **Gameplay type:** Combat + Investigation
+- **Unique event:** The lantern line goes dark behind him on the way out — someone counted the lights and found one missing.
+- **Story discovery:** Goro, the Toll-Captain, is who they report to, and he knew the Kurogawa name before Renzo said a word.
+- **Climax:** Goro, at the far side of the crossing, who stops his own soldier from saying the name out loud.
+- **Ending:** A stamped token off a dead runner carrying the toll-captain's mark, and four words Goro would not explain: ask your father.
+- **Next mission reason:** Goro walked away rather than finish it. Renzo goes after him.
+- *Staging:* Forest, rooftop arena, Forest, night · enemies: RogueNinja, RogueNinja, Assassin, Bandit · bespoke plan `S04_SilentForest`
 - **Role:** Assault · camp: THE TOLL POST
 - **Approach:** Assault / Stealth / Sabotage — everything past the first opens with `toll_watched`
 - **Preparation it reads:** `toll_watched`
 - **What it remembers:** `toll_open`
 - **Ends on:** "I want the man whose mark is on every order."
 
-#### 05 — GORO'S TOLL
+#### 05 — THE TOLL-CAPTAIN
 
-- **Story purpose:** The first named enemy, and the first proof that the search has a purpose.
-- **Primary objective:** Defeat Goro.
-- **Gameplay type:** Boss + Rescue
-- **Unique event:** A boss who talks while he fights: every phase break, Goro says one more thing he should not.
-- **Story discovery:** Goro says Renzo's sister may have survived the night Yorune burned.
-- **Climax:** Goro, in a barricaded post, with nowhere for either of them to go.
-- **Ending:** The prisoner ledger at the post carries a name Renzo has not heard spoken in ten years. AIKO KUROGAWA.
-- **Next mission reason:** Aiko is alive, or was. The trail the prisoners took is the only way to find out which.
-- *Staging:* Mountains, rooftop arena, Castle · enemies: PikeGuard, RaiderAxe, Ranged, Bandit, Bandit · boss Chief · bespoke plan `S04_GorosToll`
+- **Story purpose:** The first real answer about Renzo's father, and it is a small one, given by a man who is beaten and dragged off before he finishes it.
+- **Primary objective:** Walk Goro's road to its checkpoint and take the Toll-Captain.
+- **Gameplay type:** Boss + Investigation
+- **Unique event:** A boss who talks between phases: every health gate, Goro gives up one more thing he did not mean to.
+- **Story discovery:** Renzo's father knew what was coming and refused something — and Goro, who was at Yorune, was following somebody else's orders.
+- **Climax:** Goro on the road he keeps, unhurried, with nowhere for either of them to go.
+- **Ending:** A sealed report addressed to no one Renzo can name, and a burned page that says only that a Kurogawa refused.
+- **Next mission reason:** Goro is beaten, not finished, and he was not the one in charge. What the father refused is somewhere on the mountain.
+- *Staging:* Forest, rooftop arena, Forest, night · enemies: PikeGuard, Ranged, Bandit · boss Chief · bespoke plan `S05_TollCaptain`
 - **Role:** Story · camp: THE TOLL POST
 - **Approach:** the mission has one shape.
 - **Preparation it reads:** `toll_open`
@@ -266,80 +265,80 @@ A camp is a place with a garrison, not a level. Each is watched, prepared for, t
 - **Consequence:** Goro is beaten and not dead. The valley knows a Kurogawa is walking it.
 - **Ends on:** "I want to know if my sister is alive."
 
-#### 06 — THE MISSING GIRL
+#### 06 — THE HOUSE OF KAWAI
 
-- **Story purpose:** The first mission with no enemies for its opening minute: Renzo is reading the ground, not clearing it.
-- **Primary objective:** Find and follow the prisoner trail north from Goro's post.
-- **Gameplay type:** Investigation + Chase
-- **Unique event:** Tracking: drag marks, a dropped lantern, a scrap of cloth, each one further from the road than the last.
-- **Story discovery:** Aiko was transported north with a smaller group, split off from the rest.
-- **Climax:** An enemy patrol finds Renzo on the trail and the hunt reverses.
-- **Ending:** The trail leaves the road and enters the black pines.
-- **Next mission reason:** The forest is where the trail goes. Renzo follows it in.
-- *Staging:* Forest, rooftop arena, Village · enemies: Assassin, RogueNinja, Ranged · bespoke plan `S05_SerpentsTrail`
+- **Story purpose:** The mission after the boss fight, and deliberately slow: the first time Renzo's father is a person rather than a failure.
+- **Primary objective:** Search the House of Kawai for whatever Renzo's father left behind.
+- **Gameplay type:** Investigation + Exploration
+- **Unique event:** No boss and one avoidable patrol: five things to find, and none of them are about the enemy.
+- **Story discovery:** His father spent the last year of his life emptying Yorune — and refused a man who wanted him to open something.
+- **Climax:** A search party returning to a house they have already been through, looking for the Kurogawa records.
+- **Ending:** A letter in his father's hand that stops mid-sentence, and a map marking a place on the old family road.
+- **Next mission reason:** The map points back toward the ruins. Whatever his father left, it is on that road.
+- *Staging:* Forest, rooftop arena, VillageDawn · enemies: RogueNinja, RogueNinja, Assassin, Bandit · bespoke plan `S06_HouseOfKawai`
 - **Role:** Discovery
 - **Approach:** the mission has one shape.
 - **Preparation it reads:** `aiko_named`
 - **Ends on:** "I want to follow her."
 
-#### 07 — BLACK PINES
+#### 07 — THE BROKEN HOUSE
 
-- **Story purpose:** The forest belongs to the rogues, and it is thick enough to hide either side.
-- **Primary objective:** Cross the black pines without being caught.
-- **Gameplay type:** Stealth
-- **Unique event:** Dense cover cuts both ways: enemies lose you at twelve paces, and you lose them at the same.
-- **Story discovery:** Enemy camps in the forest are not looking for Renzo. They are searching for the Black Seal.
-- **Climax:** An ambush in the thickest of the pines, from three sides.
-- **Ending:** Cut into a trunk at the forest's edge: an old symbol. Renzo knows it. It was on his father's blade.
-- **Next mission reason:** A Yorune mark in a forest Yorune never reached. Renzo needs to know who cut it and when.
-- *Staging:* Forest, rooftop arena, Forest · enemies: RogueNinja, RogueNinja, Ranged, Ranged, Bomber
+- **Story purpose:** Renzo searches the place he grew up, and it stops being the place Yorune burned.
+- **Primary objective:** Search the Kurogawa ruins for what Renzo's father hid there.
+- **Gameplay type:** Exploration + Investigation
+- **Unique event:** Two memories of a life rather than of the fire, and an arrangement of stone and beam that did not fall that way.
+- **Story discovery:** Three things that must never be brought together. One is already taken, one was entrusted to his family, and the third his father would not name.
+- **Climax:** A search party in the ruins of his own house, reporting to the Toll-Captain's officers while he heals.
+- **Ending:** Worked metal with three grooves and a section missing, and a road drawn by hand going up the mountain.
+- **Next mission reason:** His father left a path as well as a warning. Renzo follows it up.
+- *Staging:* Ruins, rooftop arena, BurningVillage · enemies: RogueNinja, RogueNinja, Assassin, Assassin, Bandit · bespoke plan `S07_BrokenHouse`
 - **Role:** Story
 - **Approach:** the mission has one shape.
 - **Ends on:** "I want to know who cut my father's mark into that tree."
 
 #### 08 — FATHER'S MARK
 
-- **Story purpose:** The first time the story turns from Kagehira to Renzo's own family.
-- **Primary objective:** Follow the old marks and find out what Renzo's father was doing here.
+- **Story purpose:** The name arrives, and only the name: what the Kurogawa were guarding finally has one.
+- **Primary objective:** Follow the marks up the old mountain path and find what Renzo's father hid there.
 - **Gameplay type:** Exploration + Investigation
-- **Unique event:** Environmental clues only: no document tells you anything, the marks do.
-- **Story discovery:** Renzo's father knew about the Black Seal, years before Yorune burned.
-- **Climax:** A samurai patrol, disciplined and patient, on the one path the marks lead down.
-- **Ending:** The marks end at a cairn. Under it, a route drawn by a hand Renzo recognises, pointing into the marsh.
-- **Next mission reason:** His father walked into the marsh on purpose. Renzo takes the same route.
-- *Staging:* Forest, rooftop arena, Bamboo · enemies: Samurai, Samurai, Ranged
+- **Unique event:** The lock is three marked stones read in turn — a thing to notice rather than a thing to solve.
+- **Story discovery:** The Black Seal takes three keys, entrusted to three hands, and the Kurogawa held one of them.
+- **Climax:** A search party on the path outside the chamber, looking for the family mark and the key.
+- **Ending:** A second fitting that sits against the first, and a burned page that mentions Kurogawa blood.
+- **Next mission reason:** Two pieces, and no idea where the third is. Renzo goes looking for it.
+- *Staging:* Mountains, rooftop arena, Mountain, fog · enemies: RogueNinja, RogueNinja, Assassin, Bandit · bespoke plan `S08_FathersMark`
 - **Role:** Discovery
 - **Approach:** the mission has one shape.
 - **What it remembers:** `father_route`
 - **Ends on:** "I want to know what my father was doing out here."
 
-#### 09 — INTO THE FOG
+#### 09 — THE GIRL IN RED
 
-- **Story purpose:** The marsh is where the story stops being about soldiers.
-- **Primary objective:** Cross the marsh entrance and survive what lives in it.
-- **Gameplay type:** Survival
-- **Unique event:** You cannot see. Standing still and listening is a mechanic, not a mood.
-- **Story discovery:** Enemy soldiers in the marsh talk about an old temple, and about not going near it after dark.
-- **Climax:** An attack on the enemy camp at the edge of the fog, with things that are not soldiers joining in.
-- **Ending:** Through the fog, lanterns. Dozens of them. A temple.
-- **Next mission reason:** The temple is what the soldiers fear and what his father's route pointed to. Renzo goes to it.
-- *Staging:* Marsh, marsh arena, Graveyard, fog · enemies: Assassin, Ranged, Bomber, Shade, Shade · bespoke plan `S06_IntoTheReeds`
+- **Story purpose:** The turn of the act: the first evidence that the sister Renzo buried ten years ago may not have died.
+- **Primary objective:** Follow the red thread along the ridge and find who left it.
+- **Gameplay type:** Investigation + Stealth
+- **Unique event:** The soldiers are not hunting Renzo on this ridge. They are hunting a girl, and they say so.
+- **Story discovery:** Someone has been living on the mountain, someone the enemy is searching for, and the bracelet in her shelter is Aiko's.
+- **Climax:** A figure on the path ahead who does not wait, and is gone around the bend before Renzo can reach her.
+- **Ending:** Two marks cut at the overlook: the Kurogawa mark, and a newer one by a hand Renzo does not know.
+- **Next mission reason:** Somebody has been keeping her hidden. Renzo goes looking for where she was taken.
+- *Staging:* Mountains, rooftop arena, Mountain, fog · enemies: RogueNinja, RogueNinja, Assassin, Assassin, Bandit · bespoke plan `S09_GirlInRed`
 - **Role:** Story
 - **Approach:** the mission has one shape.
 - **Preparation it reads:** `father_route`
 - **Ends on:** "I want to see what all those lanterns are for."
 
-#### 10 — THE OLD TEMPLE
+#### 10 — THE SERPENT
 
-- **Story purpose:** The chapter's payoff: the Seal is not Kagehira's. It is Renzo's.
-- **Primary objective:** Enter the ruined temple and find what Kagehira's men are afraid of.
-- **Gameplay type:** Combat + Exploration
-- **Unique event:** The temple comes down around the fight: the last stage is an escape through a collapsing hall.
-- **Story discovery:** The Black Seal is bound to Renzo's family. The temple carvings show a Kurogawa holding it.
-- **Climax:** Elite warriors in the temple's heart, then the ceiling.
-- **Ending:** Renzo walks out of the dust with a fragment of the seal in his hand.
-- **Next mission reason:** One fragment means there are others, and Kagehira is collecting. Renzo follows his supply lines to find where.
-- *Staging:* Temples, marsh arena, Temple · enemies: Samurai, EliteWarrior, EliteWarrior, Shade
+- **Story purpose:** The act closes: the sister Renzo buried is alive, and the man who burned Yorune has been waiting for him.
+- **Primary objective:** Follow the lantern line to the mountain outpost and find where they took her.
+- **Gameplay type:** Stealth + Combat
+- **Unique event:** The reveal is their own paperwork: Aiko is confirmed alive by a holding order before anyone says it out loud.
+- **Story discovery:** Aiko was kept alive deliberately, Kagehira signed the orders, and the Black Seal needs a Kurogawa to open it.
+- **Climax:** A convoy on the road below the ridge, and a man at the head of it who does not turn round.
+- **Ending:** Kagehira, unreachable, telling Renzo to come to the mountain if he wants his sister.
+- **Next mission reason:** Aiko is alive and held. Renzo goes after her.
+- *Staging:* Mountains, rooftop arena, Fortress, night, fog · enemies: RogueNinja, RogueNinja, Assassin, Ranged, Bandit · bespoke plan `S10_Serpent`
 - **Role:** Consequence
 - **Approach:** the mission has one shape.
 - **What it remembers:** `seal_fragment`
@@ -360,7 +359,7 @@ A camp is a place with a garrison, not a level. Each is watched, prepared for, t
 - **Climax:** The supply wagon burns and its escort arrives to find it burning.
 - **Ending:** Three soldiers survive and run. Renzo lets them.
 - **Next mission reason:** Running men go home. Renzo follows them to wherever that is.
-- *Staging:* Villages, rooftop arena, Village · enemies: Bandit, Bandit, Ranged, PikeGuard
+- *Staging:* Villages, rooftop arena, Village · enemies: Bandit, Bandit, Ranged, PikeGuard · bespoke plan `S11_SupplyRoute`
 - **Role:** Prepare · camp: THE BROKEN BANNER
 - **Approach:** Sabotage / Stealth — open from the start
 - **What it remembers:** `supply_burned`
@@ -377,7 +376,7 @@ A camp is a place with a garrison, not a level. Each is watched, prepared for, t
 - **Climax:** The last guard is awake, armed, and standing on the crate.
 - **Ending:** A bill of lading with a supplier's name and a village Renzo has never heard of.
 - **Next mission reason:** Somebody is selling Kagehira steel by the wagon. The village on the bill is the supplier.
-- *Staging:* Villages, rooftop arena, Village, night · enemies: Assassin, Assassin, Bandit, Ranged
+- *Staging:* Villages, rooftop arena, Village, night · enemies: Assassin, Assassin, Bandit, Ranged · bespoke plan `S12_SilentCargo`
 - **Role:** Story
 - **Approach:** Stealth / Ambush — open from the start
 - **Companions:** SUZU
@@ -395,7 +394,7 @@ A camp is a place with a garrison, not a level. Each is watched, prepared for, t
 - **Climax:** The Scavenger King, who has made the ruin his own.
 - **Ending:** Under the elder's floor: a second map, older than the first, with the marsh temple marked.
 - **Next mission reason:** The elder's house held more than a map. Someone who lived there is still alive.
-- *Staging:* Villages, rooftop arena, BurningVillage · enemies: Bandit, Bandit, RaiderAxe, Ranged · named foe `raiderleader`
+- *Staging:* Villages, rooftop arena, BurningVillage · enemies: Bandit, Bandit, RaiderAxe, Ranged · named foe `raiderleader` · bespoke plan `S13_BrokenVillage`
 - **Role:** Assault · camp: THE BROKEN BANNER · village: ASHFALL
 - **Approach:** Assault / Stealth / Ambush / Sabotage — everything past the first opens with `supply_burned`
 - **Companions:** SUZU
@@ -414,7 +413,7 @@ A camp is a place with a garrison, not a level. Each is watched, prepared for, t
 - **Climax:** An enemy elite arrives to finish the village.
 - **Ending:** Safe, the survivor tells Renzo about a road that does not appear on any map.
 - **Next mission reason:** A hidden road is how the enemy moves unseen. Renzo takes it.
-- *Staging:* Villages, rooftop arena, Village · enemies: Bandit, PikeGuard, Ranged, Bandit, EliteWarrior
+- *Staging:* Villages, rooftop arena, Village · enemies: Bandit, PikeGuard, Ranged, Bandit, EliteWarrior · bespoke plan `S14_Survivor`
 - **Role:** Story · village: ASHFALL
 - **Approach:** Assault / Allied — open from the start
 - **Companions:** SUZU
@@ -433,7 +432,7 @@ A camp is a place with a garrison, not a level. Each is watched, prepared for, t
 - **Climax:** Getting into the tower's shadow without a shot being fired.
 - **Ending:** The tower is lit. Someone is on the top of it.
 - **Next mission reason:** The tower watches every road Renzo could take. It has to come down.
-- *Staging:* Forest, rooftop arena, Forest · enemies: Assassin, Assassin, Ranged, Ranged
+- *Staging:* Forest, rooftop arena, Forest · enemies: Assassin, Assassin, Ranged, Ranged · bespoke plan `S15_HiddenRoad`
 - **Role:** Recon · camp: THE BROKEN BANNER
 - **Approach:** the mission has one shape.
 - **Companions:** SUZU
@@ -450,7 +449,7 @@ A camp is a place with a garrison, not a level. Each is watched, prepared for, t
 - **Climax:** Holding the tower against its own reinforcements.
 - **Ending:** The signal fire is Renzo's now. He lets it burn, so they will come to him.
 - **Next mission reason:** Three territories, and the marsh route between them. A messenger will know which one matters.
-- *Staging:* Forest, rooftop arena, Castle · enemies: Ranged, Ranged, Samurai, PikeGuard, Bandit
+- *Staging:* Forest, rooftop arena, Castle · enemies: Ranged, Ranged, Samurai, PikeGuard, Bandit · bespoke plan `S16_Watchfire`
 - **Role:** Assault · camp: THE BROKEN BANNER · village: ASHFALL
 - **Approach:** Assault / Ambush / Allied — everything past the first opens with `banner_watched`
 - **Companions:** SUZU, FUMI
@@ -469,7 +468,7 @@ A camp is a place with a garrison, not a level. Each is watched, prepared for, t
 - **Climax:** The last stretch, where the messenger stops running and turns.
 - **Ending:** The orders are in a cipher Renzo does not know. Yet.
 - **Next mission reason:** A cipher needs a key, and the messenger came from a post that has one.
-- *Staging:* Forest, rooftop arena, Forest · enemies: Bandit, Bandit, RogueNinja, Ranged
+- *Staging:* Forest, rooftop arena, Forest · enemies: Bandit, Bandit, RogueNinja, Ranged · bespoke plan `S17_Messenger`
 - **Role:** Personal · camp: THE BROKEN BANNER
 - **Approach:** Assault / Ambush — open from the start
 - **Companions:** SUZU
@@ -485,7 +484,7 @@ A camp is a place with a garrison, not a level. Each is watched, prepared for, t
 - **Climax:** Assassins between Renzo and the last piece of the key.
 - **Ending:** 'Find the daughter. She knows where he hid it.' There is only one daughter this could mean.
 - **Next mission reason:** If Kagehira has been searching for Aiko, his prisoner records will say where he looked.
-- *Staging:* Villages, rooftop arena, Village, night · enemies: Assassin, Assassin, Assassin, Ranged
+- *Staging:* Villages, rooftop arena, Village, night · enemies: Assassin, Assassin, Assassin, Ranged · bespoke plan `S18_DeadLetter`
 - **Role:** Story
 - **Approach:** Stealth / Assault — open from the start
 - **Companions:** FUMI
@@ -503,7 +502,7 @@ A camp is a place with a garrison, not a level. Each is watched, prepared for, t
 - **Climax:** The escape after the alarm, with the roll under Renzo's coat.
 - **Ending:** The roll says where she was held. It does not say where she is.
 - **Next mission reason:** The enemy's communication towers pass every transfer order. The second tower has hers.
-- *Staging:* Villages, rooftop arena, Castle · enemies: PikeGuard, PikeGuard, Ranged, Bandit, Assassin
+- *Staging:* Villages, rooftop arena, Castle · enemies: PikeGuard, PikeGuard, Ranged, Bandit, Assassin · bespoke plan `S19_Daughter`
 - **Role:** Personal
 - **Approach:** Stealth / Assault / Ambush — open from the start
 - **Companions:** FUMI, SUZU
@@ -522,7 +521,7 @@ A camp is a place with a garrison, not a level. Each is watched, prepared for, t
 - **Climax:** Tower destruction, then the elite squad sent to keep it standing.
 - **Ending:** As the tower burns, a rider brings its last message: 'KUROGAWA IS COMING.' They know.
 - **Next mission reason:** Kagehira knows Renzo's name and where he is. The forest is between them.
-- *Staging:* Villages, rooftop arena, Castle, night · enemies: Ranged, Ranged, PikeGuard, Assassin, RogueNinja, EliteWarrior · bespoke plan `S08_TwinLanterns`
+- *Staging:* Villages, rooftop arena, Castle, night · enemies: Ranged, Ranged, PikeGuard, Assassin, RogueNinja, EliteWarrior · bespoke plan `S20_SecondLantern`
 - **Role:** Consequence · village: ASHFALL
 - **Approach:** Sabotage / Stealth / Allied — open from the start
 - **Companions:** SUZU, FUMI
@@ -545,7 +544,7 @@ A camp is a place with a garrison, not a level. Each is watched, prepared for, t
 - **Climax:** The hunter circles closer with every minute, and the forest goes silent around it.
 - **Ending:** It withdraws. It was measuring him.
 - **Next mission reason:** Something in the forest is hunting Renzo for its own reasons. The only way through is to leave no trail.
-- *Staging:* Forest, rooftop arena, Forest, night, fog · enemies: Assassin, RogueNinja, Shade · named foe `paleshade`
+- *Staging:* Forest, rooftop arena, Forest, night, fog · enemies: Assassin, RogueNinja, Shade · named foe `paleshade` · bespoke plan `S21_Hunter`
 - **Role:** Story
 - **Approach:** the mission has one shape.
 - **Preparation it reads:** `named_by_enemy`
@@ -561,7 +560,7 @@ A camp is a place with a garrison, not a level. Each is watched, prepared for, t
 - **Climax:** The last patrol crosses the only exit as the clock runs down.
 - **Ending:** Renzo leaves the camp exactly as he found it, minus one document.
 - **Next mission reason:** The orders route Aiko through a clearing to the north. Somebody died there.
-- *Staging:* Forest, rooftop arena, Bamboo · enemies: Assassin, Ranged, Ranged, RogueNinja
+- *Staging:* Forest, rooftop arena, Bamboo · enemies: Assassin, Ranged, Ranged, RogueNinja · bespoke plan `S22_NoFootprints`
 - **Role:** Recon · camp: THE SILENT CAMP
 - **Approach:** the mission has one shape.
 - **Companions:** SUZU
@@ -578,7 +577,7 @@ A camp is a place with a garrison, not a level. Each is watched, prepared for, t
 - **Climax:** The killers return to clean the scene and find Renzo in it.
 - **Ending:** The officer's last letter: he had refused to take a child north.
 - **Next mission reason:** Three assassins did this, and they are between Renzo and the road north.
-- *Staging:* Snow, rooftop arena, Mountain, snow · enemies: Assassin, Assassin, RaiderAxe, PikeGuard
+- *Staging:* Snow, rooftop arena, Mountain, snow · enemies: Assassin, Assassin, RaiderAxe, PikeGuard · bespoke plan `S23_BloodOnSnow`
 - **Role:** Discovery
 - **Approach:** the mission has one shape.
 - **Companions:** SUZU
@@ -594,7 +593,7 @@ A camp is a place with a garrison, not a level. Each is watched, prepared for, t
 - **Climax:** The last Blade, alone, faster than the other two together.
 - **Ending:** A silk cord from the last Blade's wrist: the mark of the forest camp's master.
 - **Next mission reason:** The camp that sent them is the camp that has the rest of the orders.
-- *Staging:* Forest, rooftop arena, Forest · enemies: Assassin, Assassin, Assassin, RogueNinja · named foe `threeblades`
+- *Staging:* Forest, rooftop arena, Forest · enemies: Assassin, Assassin, Assassin, RogueNinja · named foe `threeblades` · bespoke plan `S24_ThreeBlades`
 - **Role:** Story · camp: THE SILENT CAMP
 - **Approach:** Assault / Ambush — open from the start
 - **Companions:** SUZU
@@ -612,7 +611,7 @@ A camp is a place with a garrison, not a level. Each is watched, prepared for, t
 - **Climax:** The third fire, in the commander's own tent.
 - **Ending:** The camp burns without a bell rung. Renzo watches it from the trees.
 - **Next mission reason:** The commander's route led into a fog-bound forest path. Renzo takes it before dawn.
-- *Staging:* Forest, rooftop arena, Bamboo, night · enemies: Assassin, RogueNinja, Ranged, Bandit, Bandit
+- *Staging:* Forest, rooftop arena, Bamboo, night · enemies: Assassin, RogueNinja, Ranged, Bandit, Bandit · bespoke plan `S25_SilentCamp`
 - **Role:** Assault · camp: THE SILENT CAMP
 - **Approach:** Sabotage / Stealth / Assault — everything past the first opens with `forest_watched`
 - **Companions:** SUZU
@@ -629,7 +628,7 @@ A camp is a place with a garrison, not a level. Each is watched, prepared for, t
 - **Climax:** Everything that was following in the fog arrives at once.
 - **Ending:** The thread runs out at a clearing. Someone tied it here on purpose.
 - **Next mission reason:** Red thread. Aiko's bracelet was red thread. Renzo follows it.
-- *Staging:* Forest, rooftop arena, Forest, fog · enemies: Shade, Shade, Assassin, RogueNinja
+- *Staging:* Forest, rooftop arena, Forest, fog · enemies: Shade, Shade, Assassin, RogueNinja · bespoke plan `S26_BlindPath`
 - **Role:** Story
 - **Approach:** Assault / Ambush — open from the start
 - **Companions:** SUZU, TSURU
@@ -647,7 +646,7 @@ A camp is a place with a garrison, not a level. Each is watched, prepared for, t
 - **Climax:** The bead, in his hand, in a wood with nobody else in it.
 - **Ending:** Renzo ties the bead into his own wrist. Suzu watches him do it and says nothing, which is the most she has ever not said.
 - **Next mission reason:** Aiko was leaving a trail. Where it points next is where she was taken.
-- *Staging:* Forest, rooftop arena, Bamboo · enemies: none
+- *Staging:* Forest, rooftop arena, Bamboo · enemies: none · bespoke plan `S27_RedThread`
 - **Role:** Downtime
 - **Approach:** the mission has one shape.
 - **Companions:** SUZU, TSURU
@@ -665,7 +664,7 @@ A camp is a place with a garrison, not a level. Each is watched, prepared for, t
 - **Climax:** The trap springs: the pen's walls were the ambush.
 - **Ending:** The girl in the pen has never heard of Aiko. Renzo frees her anyway.
 - **Next mission reason:** Whoever laid the trap will lay another. Renzo turns the hunt around.
-- *Staging:* Forest, rooftop arena, Forest · enemies: Assassin, Assassin, Ranged, RogueNinja, PikeGuard
+- *Staging:* Forest, rooftop arena, Forest · enemies: Assassin, Assassin, Ranged, RogueNinja, PikeGuard · bespoke plan `S28_Decoy`
 - **Role:** Assault · camp: THE SILENT CAMP
 - **Approach:** Stealth / Assault / Allied — everything past the first opens with `forest_watched`
 - **Companions:** SUZU, TSURU
@@ -683,7 +682,7 @@ A camp is a place with a garrison, not a level. Each is watched, prepared for, t
 - **Climax:** The last exit, and the thing standing in it.
 - **Ending:** The forest goes quiet. It has arrived.
 - **Next mission reason:** There is no leaving the forest without going through what owns it.
-- *Staging:* Forest, rooftop arena, Forest · enemies: Assassin, RogueNinja, Shade, Shade, Bomber, PikeGuard
+- *Staging:* Forest, rooftop arena, Forest · enemies: Assassin, RogueNinja, Shade, Shade, Bomber, PikeGuard · bespoke plan `S29_HuntersTrap`
 - **Role:** Story · camp: THE SILENT CAMP
 - **Approach:** the mission has one shape.
 - **Preparation it reads:** `red_thread`
@@ -699,7 +698,7 @@ A camp is a place with a garrison, not a level. Each is watched, prepared for, t
 - **Climax:** The Shade at its full form, in the dark.
 - **Ending:** Dying, it tells him: 'She was moved. To the toll-captain's country.'
 - **Next mission reason:** Aiko was transferred to Goro's territory. Renzo goes to war with Goro.
-- *Staging:* Forest, rooftop arena, Graveyard, night, fog · enemies: Shade, Shade, Assassin · named foe `paleshade`
+- *Staging:* Forest, rooftop arena, Graveyard, night, fog · enemies: Shade, Shade, Assassin · named foe `paleshade` · bespoke plan `S30_PaleShade`
 - **Role:** Consequence
 - **Approach:** the mission has one shape.
 - **Companions:** TSURU

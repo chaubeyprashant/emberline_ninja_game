@@ -215,7 +215,11 @@ namespace Emberline.Missions
                     }
                     CastStandIn.EnsureFor(beat); // adult Aiko, Jin: marked stand-ins
                     var rig = SceneRefs.Cam != null ? SceneRefs.Cam.GetComponent<CameraRig>() : null;
-                    _beat = CinematicDirector.Play(beat, _gm, rig, () => _beatDone = true);
+                    _beat = CinematicDirector.Play(beat, _gm, rig, () =>
+                    {
+                        CastStandIn.ReleaseAll();   // nobody from the scene is left standing in the level
+                        _beatDone = true;
+                    });
                     break;
                 }
 
@@ -597,7 +601,11 @@ namespace Emberline.Missions
             _beatDone = false;
             CastStandIn.EnsureFor(beat);
             var rig = SceneRefs.Cam != null ? SceneRefs.Cam.GetComponent<CameraRig>() : null;
-            _beat = CinematicDirector.Play(beat, _gm, rig, () => _beatDone = true);
+            _beat = CinematicDirector.Play(beat, _gm, rig, () =>
+            {
+                CastStandIn.ReleaseAll();
+                _beatDone = true;
+            });
         }
 
         /// <summary>Called by a clue pickup when the player walks over it.</summary>

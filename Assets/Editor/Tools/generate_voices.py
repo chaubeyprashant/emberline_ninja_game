@@ -41,6 +41,10 @@ VOICES = {
     "SEARCHER": "Reed (English (UK))",
     "RUNNER": "Rocko (English (US))",
     "VISITOR": "Moira",
+    "FUMI": "Shelley (English (UK))",
+    "SCAVENGER KING": "Rocko (English (US))",
+    "BLADE": "Karen",
+    "TSURU": "Rishi",
 }
 DEFAULT_VOICE = "Alex"
 

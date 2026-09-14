@@ -28,6 +28,9 @@ public class EmberBuild
             PlayerSettings.SetIcons(UnityEditor.Build.NamedBuildTarget.Unknown, new[] { icon }, IconKind.Any);
         }
 
+        // Our logo on navy, never the "Made with Unity" card.
+        Emberline.EditorTools.EmberSplash.Apply();
+
         Debug.Log("[Emberline] Starting Android Build...");
         UnityEditor.Build.Reporting.BuildReport report = BuildPipeline.BuildPlayer(buildPlayerOptions);
         UnityEditor.Build.Reporting.BuildSummary summary = report.summary;

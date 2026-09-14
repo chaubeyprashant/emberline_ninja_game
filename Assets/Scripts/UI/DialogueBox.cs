@@ -108,20 +108,9 @@ namespace Emberline.UI
                 _ => 1f,
             };
 
-            // The generated voice for this exact line, if there is one.
-            var clip = VoiceLines.Clip(_lines[_index]);
-            var source = GetComponent<AudioSource>();
-            if (clip != null)
-            {
-                if (source == null) source = gameObject.AddComponent<AudioSource>();
-                source.clip = clip;
-                source.Play();
-            }
-            else if (source != null)
-            {
-                // Advancing onto an unvoiced line must not leave the last speaker talking.
-                source.Stop();
-            }
+            // Text only. Voiced briefings and mid-mission lines interrupted play and
+            // the text-to-speech read as robotic, so voice is kept for cinematics
+            // (CinematicDirector), where the player is watching rather than playing.
         }
 
         private string Body(int i)

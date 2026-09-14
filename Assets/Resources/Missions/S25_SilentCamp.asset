@@ -1,0 +1,241 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 814b8fc7fb4eb427480893eff898b203, type: 3}
+  m_Name: S25_SilentCamp
+  m_EditorClassIdentifier: Assembly-CSharp::Emberline.Missions.MissionPlan
+  id: 25
+  missionName: THE SILENT CAMP
+  missionType: SABOTAGE
+  briefing: 'The silk cord leads to the Silent Camp. Three fires, while it sleeps:
+    the stores, the archers'' scaffold, and the commander''s own tent. Not one bell.'
+  debrief: The camp burns without a bell rung. Renzo watches it from the trees.
+  marsh: 0
+  nightOverride: 1
+  rain: 0
+  snow: 0
+  fog: 0
+  applyTheme: 1
+  theme: 2
+  missionRadius: 0
+  missionRadiusZ: 0
+  nextReason: The commander's route led into a fog-bound forest path. Renzo takes
+    it before dawn.
+  region: FOREST
+  stages:
+  - goal: 17
+    objective: 
+    banner: 
+    hint: 
+    count: 1
+    duration: 0
+    point: {x: 0, y: 0, z: 0}
+    spawn: 
+    pointB: {x: 0, y: 0, z: 0}
+    spawnB: 
+    foeDef: 
+    beatId: camp_open
+    props: []
+    bossHealthGate: 0.6
+    onComplete: 0
+    optional: 0
+    bonusShards: 1
+    checkpoint: 0
+  - goal: 13
+    objective: INTO THE SILENT CAMP
+    banner: THE CULVERT, OR THE WALL
+    hint: 
+    count: 1
+    duration: 0
+    point: {x: 11, y: 0, z: 10}
+    spawn: 00000000
+    pointB: {x: -11, y: 0, z: 10}
+    spawnB: 01000000
+    foeDef: 
+    beatId: 
+    props: []
+    bossHealthGate: 0.6
+    onComplete: 0
+    optional: 0
+    bonusShards: 1
+    checkpoint: 1
+  - goal: 7
+    objective: TO THE STORES
+    banner: THE CAMP IS ASLEEP
+    hint: 
+    count: 1
+    duration: 0
+    point: {x: 0, y: 0, z: 0}
+    spawn: 0000000000000000
+    pointB: {x: 0, y: 0, z: 0}
+    spawnB: 
+    foeDef: 
+    beatId: 
+    props: []
+    bossHealthGate: 0.6
+    onComplete: 0
+    optional: 0
+    bonusShards: 1
+    checkpoint: 1
+  - goal: 19
+    objective: 'FIRST FIRE: THE STORES'
+    banner: ONE
+    hint: 
+    count: 1
+    duration: 0
+    point: {x: 0, y: 0, z: 0}
+    spawn: 
+    pointB: {x: 0, y: 0, z: 0}
+    spawnB: 
+    foeDef: 
+    beatId: 
+    props:
+    - id: stores
+      label: OIL AND RICE
+      point: {x: 12, y: 0, z: 14}
+      shape: 7
+      speaker: RENZO
+      line: Oil jars stacked against the rice. This goes up fast.
+      beatId: 
+      radius: 2.2
+      figurePath: []
+      lanternLine: []
+    bossHealthGate: 0.6
+    onComplete: 0
+    optional: 0
+    bonusShards: 1
+    checkpoint: 1
+  - goal: 7
+    objective: TO THE ARCHERS' SCAFFOLD
+    banner: THE LAMPS BURN DOWN
+    hint: 
+    count: 1
+    duration: 0
+    point: {x: 0, y: 0, z: 0}
+    spawn: 010000000b000000
+    pointB: {x: 0, y: 0, z: 0}
+    spawnB: 
+    foeDef: 
+    beatId: 
+    props: []
+    bossHealthGate: 0.6
+    onComplete: 4
+    optional: 0
+    bonusShards: 1
+    checkpoint: 1
+  - goal: 19
+    objective: 'SECOND FIRE: THE SCAFFOLD'
+    banner: TWO
+    hint: 
+    count: 1
+    duration: 0
+    point: {x: 0, y: 0, z: 0}
+    spawn: 
+    pointB: {x: 0, y: 0, z: 0}
+    spawnB: 
+    foeDef: 
+    beatId: 
+    props:
+    - id: signals
+      label: SIGNAL FIRES, LAID AND UNLIT
+      point: {x: -10, y: 0, z: 16}
+      shape: 7
+      speaker: RENZO
+      line: Three signal fires, laid and never lit. They're lit now.
+      beatId: 
+      radius: 2.2
+      figurePath: []
+      lanternLine: []
+    bossHealthGate: 0.6
+    onComplete: 0
+    optional: 0
+    bonusShards: 1
+    checkpoint: 1
+  - goal: 19
+    objective: 'THIRD FIRE: HIS TENT'
+    banner: THREE
+    hint: 
+    count: 1
+    duration: 0
+    point: {x: 0, y: 0, z: 0}
+    spawn: 
+    pointB: {x: 0, y: 0, z: 0}
+    spawnB: 
+    foeDef: 
+    beatId: 
+    props:
+    - id: maps
+      label: THE COMMANDER'S MAPS
+      point: {x: 0, y: 0, z: 20}
+      shape: 9
+      speaker: RENZO
+      line: Every old road, every shrine marked. He was hunting the Seal, not me.
+      beatId: 
+      radius: 2.2
+      figurePath: []
+      lanternLine: []
+    - id: cords
+      label: A BOX OF SILK CORDS
+      point: {x: 3, y: 0, z: 21}
+      shape: 3
+      speaker: RENZO
+      line: He marked every killer he sent. There are a lot of cords.
+      beatId: 
+      radius: 2.2
+      figurePath: []
+      lanternLine: []
+    bossHealthGate: 0.6
+    onComplete: 0
+    optional: 0
+    bonusShards: 1
+    checkpoint: 1
+  - goal: 12
+    objective: INTO THE TREES BEFORE IT CATCHES
+    banner: IT'S CATCHING
+    hint: 
+    count: 1
+    duration: 45
+    point: {x: 0, y: 0, z: -16}
+    spawn: 09000000
+    pointB: {x: 0, y: 0, z: 0}
+    spawnB: 
+    foeDef: 
+    beatId: 
+    props: []
+    bossHealthGate: 0.6
+    onComplete: 0
+    optional: 0
+    bonusShards: 1
+    checkpoint: 0
+  - goal: 17
+    objective: 
+    banner: 
+    hint: 
+    count: 1
+    duration: 0
+    point: {x: 0, y: 0, z: 0}
+    spawn: 
+    pointB: {x: 0, y: 0, z: 0}
+    spawnB: 
+    foeDef: 
+    beatId: camp_end
+    props: []
+    bossHealthGate: 0.6
+    onComplete: 0
+    optional: 0
+    bonusShards: 1
+    checkpoint: 0
+  dressing: 090000000300000004000000
+  ruinedVillage: 0
+  challenge: 1
+  challengeSeconds: 240
+  challengeShards: 4
+  baseShards: 5
