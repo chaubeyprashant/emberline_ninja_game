@@ -72,17 +72,21 @@ namespace Emberline.UI
             UiKit.MakeButton(rt, "SKIP", new Vector2(1f, 1f), new Vector2(-58, -28),
                 new Vector2(88, 44), () =>
                 {
+                    if (_done) return;
                     _done = true;
-                    SetLine(_lines.Length - 1);
-                    _chars = float.MaxValue;
                     _onDone?.Invoke();
+                    Destroy(gameObject);
                 }, 15);
         }
+
+        private int _lastVoiceChar;
+        private float _voicePitch = 1f;
 
         private void SetLine(int i)
         {
             _index = Mathf.Clamp(i, 0, _lines.Length - 1);
             _chars = 0f;
+            _lastVoiceChar = 0;
             var parts = _lines[_index].Split('|');
             var speaker = parts.Length > 1 ? parts[0] : "";
             _nameText.text = speaker;
@@ -91,6 +95,22 @@ namespace Emberline.UI
             _portraitInitial.color = SpeakerColor(speaker);
             _portraitFrame.color = Color.Lerp(UiKit.Panel, SpeakerColor(speaker), 0.25f);
             _counter.text = $"{_index + 1}/{_lines.Length}";
+
+            // Pitch voice up or down depending on the character
+            _voicePitch = speaker switch
+            {
+                "RENZO" => 0.9f,
+                "YOTSU" => 1.2f,
+                "GORO" => 0.7f,
+                "WHISPER" => 1.1f,
+                "KAGACHI" => 0.8f,
+                "JIN" => 0.95f,
+                _ => 1f,
+            };
+
+            // Text only. Voiced briefings and mid-mission lines interrupted play and
+            // the text-to-speech read as robotic, so voice is kept for cinematics
+            // (CinematicDirector), where the player is watching rather than playing.
         }
 
         private string Body(int i)
@@ -105,14 +125,31 @@ namespace Emberline.UI
             var body = Body(_index);
             if (_chars < body.Length) { _chars = body.Length; return; } // finish typing
             if (_index < _lines.Length - 1) { SetLine(_index + 1); return; }
-            if (!_done) { _done = true; _onDone?.Invoke(); }
+            if (!_done) { _done = true; _onDone?.Invoke(); Destroy(gameObject); }
         }
 
         private void Update()
         {
             var body = Body(_index);
             _chars = Mathf.Min(body.Length, _chars + Time.deltaTime * 40f);
-            _bodyText.text = body.Substring(0, Mathf.Min(body.Length, Mathf.FloorToInt(_chars)));
+            int currentChars = Mathf.FloorToInt(_chars);
+
+            if (currentChars > _lastVoiceChar && currentChars <= body.Length)
+            {
+                char c = body[currentChars - 1];
+                // Play blip every 2 printable characters
+                if (char.IsLetterOrDigit(c) && currentChars % 2 == 0)
+                {
+                    var source = GetComponent<AudioSource>();
+                    if (source == null || !source.isPlaying)
+                    {
+                        Sfx3D.VoiceBlip(_voicePitch);
+                    }
+                }
+                _lastVoiceChar = currentChars;
+            }
+
+            _bodyText.text = body.Substring(0, currentChars);
         }
     }
 }

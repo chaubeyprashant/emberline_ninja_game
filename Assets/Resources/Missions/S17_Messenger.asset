@@ -1,0 +1,249 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 814b8fc7fb4eb427480893eff898b203, type: 3}
+  m_Name: S17_Messenger
+  m_EditorClassIdentifier: Assembly-CSharp::Emberline.Missions.MissionPlan
+  id: 17
+  missionName: THE MESSENGER
+  missionType: CHASE
+  briefing: A runner left the Broken Banner at dawn with a sealed pouch. If he reaches
+    the border, whatever he carries is gone.
+  debrief: The orders are in a cipher Renzo does not know. Yet.
+  marsh: 0
+  nightOverride: 0
+  rain: 0
+  snow: 0
+  fog: 0
+  applyTheme: 1
+  theme: 1
+  missionRadius: 0
+  missionRadiusZ: 0
+  nextReason: A cipher needs a key, and the messenger came from a post that has one.
+  region: FOREST
+  stages:
+  - goal: 17
+    objective: 
+    banner: 
+    hint: 
+    count: 1
+    duration: 0
+    point: {x: 0, y: 0, z: 0}
+    spawn: 
+    pointB: {x: 0, y: 0, z: 0}
+    spawnB: 
+    foeDef: 
+    beatId: messenger_open
+    props: []
+    bossHealthGate: 0.6
+    onComplete: 0
+    optional: 0
+    bonusShards: 1
+    checkpoint: 0
+  - goal: 19
+    objective: PICK UP HIS TRAIL
+    banner: BOOTS, NOT HOOVES
+    hint: 
+    count: 1
+    duration: 0
+    point: {x: 0, y: 0, z: 0}
+    spawn: 
+    pointB: {x: 0, y: 0, z: 0}
+    spawnB: 
+    foeDef: 
+    beatId: 
+    props:
+    - id: boots
+      label: RUNNING FOOTPRINTS
+      point: {x: -5, y: 0, z: 11}
+      shape: 5
+      speaker: RENZO
+      line: Boots, not hooves. He's taking the forest paths.
+      beatId: 
+      radius: 2.2
+      figurePath: []
+      lanternLine: []
+    - id: waterskin
+      label: A DROPPED WATERSKIN
+      point: {x: 5, y: 0, z: 14}
+      shape: 6
+      speaker: RENZO
+      line: He didn't stop to pick it up. Whatever he carries matters more.
+      beatId: 
+      radius: 2.2
+      figurePath: []
+      lanternLine: []
+    bossHealthGate: 0.6
+    onComplete: 0
+    optional: 0
+    bonusShards: 1
+    checkpoint: 1
+  - goal: 9
+    objective: CATCH THE MESSENGER
+    banner: THERE HE IS
+    hint: 
+    count: 1
+    duration: 45
+    point: {x: 0, y: 0, z: 0}
+    spawn: 0b000000
+    pointB: {x: 0, y: 0, z: 0}
+    spawnB: 
+    foeDef: 
+    beatId: 
+    props: []
+    bossHealthGate: 0.6
+    onComplete: 7
+    optional: 0
+    bonusShards: 1
+    checkpoint: 1
+  - goal: 1
+    objective: HIS ESCORT DOUBLES BACK
+    banner: YOU'RE NOT THE ONLY ONE RUNNING
+    hint: 
+    count: 1
+    duration: 0
+    point: {x: 0, y: 0, z: 0}
+    spawn: 0000000000000000
+    pointB: {x: 0, y: 0, z: 0}
+    spawnB: 
+    foeDef: 
+    beatId: 
+    props: []
+    bossHealthGate: 0.6
+    onComplete: 0
+    optional: 0
+    bonusShards: 1
+    checkpoint: 0
+  - goal: 0
+    objective: CUT HIM OFF AT THE STREAM
+    banner: THE SHORT WAY
+    hint: 
+    count: 1
+    duration: 0
+    point: {x: 12, y: 0, z: -8}
+    spawn: 
+    pointB: {x: 0, y: 0, z: 0}
+    spawnB: 
+    foeDef: 
+    beatId: 
+    props: []
+    bossHealthGate: 0.6
+    onComplete: 0
+    optional: 0
+    bonusShards: 1
+    checkpoint: 1
+  - goal: 9
+    objective: DON'T LET HIM REACH THE BORDER
+    banner: THE LAST STRETCH
+    hint: 
+    count: 1
+    duration: 35
+    point: {x: 0, y: 0, z: 0}
+    spawn: 0b000000
+    pointB: {x: 0, y: 0, z: 0}
+    spawnB: 
+    foeDef: 
+    beatId: 
+    props: []
+    bossHealthGate: 0.6
+    onComplete: 0
+    optional: 0
+    bonusShards: 1
+    checkpoint: 0
+  - goal: 17
+    objective: 
+    banner: 
+    hint: 
+    count: 1
+    duration: 0
+    point: {x: 0, y: 0, z: 0}
+    spawn: 
+    pointB: {x: 0, y: 0, z: 0}
+    spawnB: 
+    foeDef: 
+    beatId: messenger_turn
+    props: []
+    bossHealthGate: 0.6
+    onComplete: 0
+    optional: 0
+    bonusShards: 1
+    checkpoint: 0
+  - goal: 1
+    objective: HE STOPS RUNNING
+    banner: HE TURNS
+    hint: 
+    count: 1
+    duration: 0
+    point: {x: 0, y: 0, z: 0}
+    spawn: 0b00000001000000
+    pointB: {x: 0, y: 0, z: 0}
+    spawnB: 
+    foeDef: 
+    beatId: 
+    props: []
+    bossHealthGate: 0.6
+    onComplete: 0
+    optional: 0
+    bonusShards: 1
+    checkpoint: 1
+  - goal: 19
+    objective: TAKE THE POUCH
+    banner: KAGEHIRA'S SEAL
+    hint: 
+    count: 1
+    duration: 0
+    point: {x: 0, y: 0, z: 0}
+    spawn: 
+    pointB: {x: 0, y: 0, z: 0}
+    spawnB: 
+    foeDef: 
+    beatId: 
+    props:
+    - id: pouch
+      label: A SEALED POUCH
+      point: {x: 0, y: 0, z: 0}
+      shape: 4
+      speaker: RENZO
+      line: The serpent seal, Kagehira's own. And every word in a cipher I can't
+        read.
+      beatId: 
+      radius: 2.2
+      figurePath: []
+      lanternLine: []
+    bossHealthGate: 0.6
+    onComplete: 0
+    optional: 0
+    bonusShards: 1
+    checkpoint: 0
+  - goal: 17
+    objective: 
+    banner: 
+    hint: 
+    count: 1
+    duration: 0
+    point: {x: 0, y: 0, z: 0}
+    spawn: 
+    pointB: {x: 0, y: 0, z: 0}
+    spawnB: 
+    foeDef: 
+    beatId: messenger_end
+    props: []
+    bossHealthGate: 0.6
+    onComplete: 0
+    optional: 0
+    bonusShards: 1
+    checkpoint: 0
+  dressing: 050000000400000006000000
+  ruinedVillage: 0
+  challenge: 5
+  challengeSeconds: 240
+  challengeShards: 3
+  baseShards: 4

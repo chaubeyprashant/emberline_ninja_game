@@ -71,9 +71,37 @@ MonoBehaviour:
     card: 
     fadeOutAfter: 0
     blackAfter: 0
+  - subject: SOLDIER
+    camera: 7
+    duration: 2.4
+    letterbox: 1
+    speaker: SOLDIER
+    line: Get the captain out! Now!
+    voice: {fileID: 0}
+    applyTheme: 0
+    theme: 0
+    audio: 10
+    setState: 0
+    card: 
+    fadeOutAfter: 0
+    blackAfter: 0
+  - subject: GORO
+    camera: 0
+    duration: 2.8
+    letterbox: 1
+    speaker: GORO
+    line: Not today, boy.
+    voice: {fileID: 0}
+    applyTheme: 0
+    theme: 0
+    audio: 0
+    setState: 0
+    card: 
+    fadeOutAfter: 0
+    blackAfter: 0
   - subject: 
     camera: 0
-    duration: 3
+    duration: 2
     letterbox: 1
     speaker: 
     line: 
@@ -84,4 +112,4 @@ MonoBehaviour:
     setState: 0
     card: 
     fadeOutAfter: 1
-    blackAfter: 1.2
+    blackAfter: 1

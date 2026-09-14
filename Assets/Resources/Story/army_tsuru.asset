@@ -1,0 +1,101 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9f3b1ee5018f440738f3a40a8004f072, type: 3}
+  m_Name: army_tsuru
+  m_EditorClassIdentifier: Assembly-CSharp::Emberline.Story.StoryBeat
+  id: army_tsuru
+  title: MY OLD WALL
+  shots:
+  - subject: TSURU
+    camera: 2
+    duration: 3.2
+    letterbox: 1
+    speaker: 
+    line: 
+    voice: {fileID: 0}
+    applyTheme: 0
+    theme: 0
+    audio: 1
+    setState: 0
+    card: 
+    fadeOutAfter: 0
+    blackAfter: 0
+  - subject: TSURU
+    camera: 0
+    duration: 2.8
+    letterbox: 1
+    speaker: TSURU
+    line: That's my old wall's banner.
+    voice: {fileID: 0}
+    applyTheme: 0
+    theme: 0
+    audio: 0
+    setState: 0
+    card: 
+    fadeOutAfter: 0
+    blackAfter: 0
+  - subject: RENZO
+    camera: 5
+    duration: 2.4
+    letterbox: 1
+    speaker: RENZO
+    line: You can stay back.
+    voice: {fileID: 0}
+    applyTheme: 0
+    theme: 0
+    audio: 0
+    setState: 0
+    card: 
+    fadeOutAfter: 0
+    blackAfter: 0
+  - subject: TSURU
+    camera: 0
+    duration: 3.8
+    letterbox: 1
+    speaker: TSURU
+    line: No. I counted every arrow I didn't fire at men like you.
+    voice: {fileID: 0}
+    applyTheme: 0
+    theme: 0
+    audio: 0
+    setState: 0
+    card: 
+    fadeOutAfter: 0
+    blackAfter: 0
+  - subject: TSURU
+    camera: 2
+    duration: 2.8
+    letterbox: 1
+    speaker: TSURU
+    line: I'll fire these.
+    voice: {fileID: 0}
+    applyTheme: 0
+    theme: 0
+    audio: 13
+    setState: 0
+    card: 
+    fadeOutAfter: 0
+    blackAfter: 0
+  - subject: 
+    camera: 0
+    duration: 0.5
+    letterbox: 1
+    speaker: 
+    line: 
+    voice: {fileID: 0}
+    applyTheme: 0
+    theme: 0
+    audio: 0
+    setState: 0
+    card: 
+    fadeOutAfter: 1
+    blackAfter: 0.3

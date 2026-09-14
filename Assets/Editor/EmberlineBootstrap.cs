@@ -213,6 +213,8 @@ namespace Emberline.EditorTools
             gm.mission = mission;
             gm.enemyPrefabs = prefabs;
             var named = BuildNamedFoePrefabs(prefabs);
+            // Real characters for mission cutscenes (CastStandIn loads these).
+            EmberCastPrefabs.Build();
             gm.namedVisualIds = named.ids;
             gm.namedVisualPrefabs = named.prefabs;
             gm.arenaHalfExtents = new Vector2(13f, 8f);
@@ -381,13 +383,13 @@ namespace Emberline.EditorTools
             // training ground, the well. Parented to the set, not to a state.
             // Dressing sits off the playing area. The middle of the street is the
             // stage: father and son train there, and the camera works there.
-            DungeonProp("crates_stacked", new Vector3(-6.4f, 0, -5.8f), 25f, 1.1f)
+            ZoneProp("jp_ricebale_stack", new Vector3(-6.4f, 0, -5.8f), 25f)
                 ?.transform.SetParent(root.transform, true);
-            DungeonProp("barrel_large", new Vector3(6.2f, 0, -4.6f), -15f, 1f)
+            ZoneProp("jp_barrel_a", new Vector3(6.2f, 0, -4.6f), -15f)
                 ?.transform.SetParent(root.transform, true);
             // The cart the child hides under — placed clear of the training ground
             // but inside the shot the over-the-shoulder uses.
-            DungeonProp("crates_stacked", new Vector3(-4.6f, 0, 2.6f), 70f, 1f)
+            ZoneProp("jp_ricebale_stack", new Vector3(-4.6f, 0, 2.6f), 70f)
                 ?.transform.SetParent(root.transform, true);
             DungeonProp("rubble_large", new Vector3(-2.6f, 0, -3.4f), 0f, 1.2f)
                 ?.transform.SetParent(ruin.transform, true);
@@ -451,47 +453,28 @@ namespace Emberline.EditorTools
         private static void House(Transform parent, Vector3 at, float yaw,
             Material wall, Material roof)
         {
-            var go = new GameObject("House");
-            go.transform.SetParent(parent);
-            go.transform.SetPositionAndRotation(at, Quaternion.Euler(0, yaw, 0));
-
-            var body = GameObject.CreatePrimitive(PrimitiveType.Cube);
-            body.transform.SetParent(go.transform, false);
-            body.transform.localScale = new Vector3(4.2f, 2.8f, 4.6f);
-            body.transform.localPosition = new Vector3(0, 1.4f, 0);
-            body.GetComponent<Renderer>().sharedMaterial = wall;
-
-            // Gable roof from two leaning slabs. Each is tilted 55 degrees off
-            // vertical so the pair meets at the ridge and its feet land on the
-            // wall line — a single rotated cube reads as debris, not a roof.
-            for (var i = 0; i < 2; i++)
+            var prefab = Resources.Load<GameObject>("Props/Dressing/house");
+            if (prefab == null) 
             {
-                var side = i == 0 ? -1f : 1f;
-                var slab = GameObject.CreatePrimitive(PrimitiveType.Cube);
-                slab.transform.SetParent(go.transform, false);
-                slab.transform.localScale = new Vector3(0.32f, 2.6f, 5.4f);
-                slab.transform.localPosition = new Vector3(side * 1.06f, 3.35f, 0);
-                slab.transform.localRotation = Quaternion.Euler(0, 0, side * 55f);
-                slab.GetComponent<Renderer>().sharedMaterial = roof;
+                Debug.LogWarning("[Emberline] Missing house prefab. Run Emberline > Generate Props Prefabs");
+                return;
             }
+            
+            var go = GameObject.Instantiate(prefab, at, Quaternion.Euler(0, yaw, 0), parent);
+            go.name = "House";
         }
 
         private static void Ruin(Transform parent, Vector3 at, float yaw, Material wall)
         {
-            var go = new GameObject("Ruin");
-            go.transform.SetParent(parent);
-            go.transform.SetPositionAndRotation(at, Quaternion.Euler(0, yaw, 0));
-
-            // Two leaning stubs where four walls were. The gap is the point.
-            for (var i = 0; i < 2; i++)
+            var prefab = Resources.Load<GameObject>("Props/Dressing/ruin");
+            if (prefab == null)
             {
-                var stub = GameObject.CreatePrimitive(PrimitiveType.Cube);
-                stub.transform.SetParent(go.transform, false);
-                stub.transform.localScale = new Vector3(3.4f, 1.1f + i * 0.5f, 0.5f);
-                stub.transform.localPosition = new Vector3(i == 0 ? -1.6f : 1.5f, 0.6f, i == 0 ? -1.9f : 2f);
-                stub.transform.localRotation = Quaternion.Euler(i == 0 ? 6f : -9f, i * 90f, i == 0 ? -4f : 7f);
-                stub.GetComponent<Renderer>().sharedMaterial = wall;
+                Debug.LogWarning("[Setup] ruin.prefab not found in Resources/Props/Dressing/");
+                return;
             }
+            
+            var go = GameObject.Instantiate(prefab, at, Quaternion.Euler(0, yaw, 0), parent);
+            go.name = "Ruin";
         }
 
         /// <summary>
@@ -607,6 +590,22 @@ namespace Emberline.EditorTools
 
         /// <summary>Place a KayKit Dungeon prop with the shared toon atlas material.</summary>
         /// <summary>
+        /// Place one of the Japanese props built by <see cref="EmberJapanProps"/>.
+        /// They are already sized in metres, stand on their origin and carry their
+        /// own material, so none of the KayKit fix-up below applies.
+        /// </summary>
+        private static GameObject ZoneProp(string prefabName, Vector3 pos, float yaw, float scale = 1f)
+        {
+            var asset = AssetDatabase.LoadAssetAtPath<GameObject>(
+                $"Assets/Resources/Props/Zone/{prefabName}.prefab");
+            if (asset == null) return null;
+            var go = (GameObject)PrefabUtility.InstantiatePrefab(asset);
+            go.transform.SetPositionAndRotation(pos, Quaternion.Euler(0, yaw, 0));
+            go.transform.localScale = Vector3.one * scale;
+            return go;
+        }
+
+        /// <summary>
         /// Place a KayKit prop. A prop given a collider also registers itself as
         /// an arena obstacle: a solid object that navigation does not know about
         /// blocks enemies and players against something no code can steer around,
@@ -665,254 +664,6 @@ namespace Emberline.EditorTools
                 box.size = bounds.size / Mathf.Max(0.001f, scale);
             }
             return go;
-        }
-
-        private static void BuildArena(Theme theme)
-        {
-            var night = theme == Theme.Rooftop;
-            var deckCol = night ? new Color(0.15f, 0.18f, 0.23f) : new Color(0.13f, 0.18f, 0.15f);
-            var trimCol = night ? new Color(0.2f, 0.24f, 0.3f) : new Color(0.17f, 0.23f, 0.19f);
-
-            var ground = GameObject.CreatePrimitive(PrimitiveType.Cube);
-            ground.name = "Deck";
-            ground.transform.position = new Vector3(0, -0.25f, 0);
-            ground.transform.localScale = new Vector3(130f, 0.5f, 130f);
-            ground.GetComponent<Renderer>().sharedMaterial = Mat($"Deck{theme}", deckCol, night ? Surface.WetStone : Surface.Stone);
-
-            foreach (var (pos, scale) in new[]
-            {
-                (new Vector3(0, 0.4f, 64.6f), new Vector3(130f, 0.8f, 0.6f)),
-                (new Vector3(0, 0.4f, -64.6f), new Vector3(130f, 0.8f, 0.6f)),
-                (new Vector3(64.6f, 0.4f, 0), new Vector3(0.6f, 0.8f, 130f)),
-                (new Vector3(-64.6f, 0.4f, 0), new Vector3(0.6f, 0.8f, 130f)),
-            })
-            {
-                var wall = GameObject.CreatePrimitive(PrimitiveType.Cube);
-                wall.name = "Parapet";
-                wall.transform.position = pos;
-                wall.transform.localScale = scale;
-                wall.GetComponent<Renderer>().sharedMaterial = Mat($"Parapet{theme}", trimCol, Surface.Stone);
-            }
-
-            var markers = new GameObject("ArenaMarkers").AddComponent<ArenaMarkers>();
-
-            if (theme == Theme.Rooftop)
-            {
-                // Roof-tile ridge bars give the deck visual rhythm.
-                var ridgeMat = Mat("Ridge", new Color(0.12f, 0.15f, 0.2f), Surface.WetStone);
-                for (var x = -12f; x <= 12f; x += 3f)
-                {
-                    var ridge = GameObject.CreatePrimitive(PrimitiveType.Cube);
-                    Object.DestroyImmediate(ridge.GetComponent<Collider>());
-                    ridge.name = "Ridge";
-                    ridge.transform.position = new Vector3(x, 0.015f, 0);
-                    ridge.transform.localScale = new Vector3(0.12f, 0.04f, 16.4f);
-                    ridge.GetComponent<Renderer>().sharedMaterial = ridgeMat;
-                }
-
-                // Chimney clusters: real cover — they block archer bolts (ArenaMarkers),
-                // steer melee AI around, and the player can vault their lips mid-Flicker.
-                var brickMat = Mat("Chimney", new Color(0.21f, 0.17f, 0.19f), Surface.Stone);
-                var capMat = Mat("ChimneyCap", new Color(0.13f, 0.11f, 0.13f), Surface.DarkMetal);
-                foreach (var (cx, cz) in new[] { (-6f, 3.2f), (5.5f, -3.4f), (0.5f, 0.6f) })
-                {
-                    var body = GameObject.CreatePrimitive(PrimitiveType.Cube);
-                    body.name = "Chimney";
-                    body.transform.position = new Vector3(cx, 0.8f, cz);
-                    body.transform.localScale = new Vector3(1.5f, 1.6f, 1.5f);
-                    body.GetComponent<Renderer>().sharedMaterial = brickMat;
-                    var cap = GameObject.CreatePrimitive(PrimitiveType.Cube);
-                    Object.DestroyImmediate(cap.GetComponent<Collider>());
-                    cap.name = "ChimneyCap";
-                    cap.transform.position = new Vector3(cx, 1.7f, cz);
-                    cap.transform.localScale = new Vector3(1.8f, 0.22f, 1.8f);
-                    cap.GetComponent<Renderer>().sharedMaterial = capMat;
-                    markers.obstacles.Add(new Vector4(cx, 0, cz, 1.15f));
-                }
-
-                // KayKit props: crate cover, supply boxes, banners on the parapet.
-                DungeonProp("crates_stacked", new Vector3(-9.5f, 0, -4.5f), 20f, 1.15f, collider: true,
-                    markers: markers, obstacleRadius: 1.1f);
-                DungeonProp("box_large", new Vector3(9f, 0, 4.8f), -35f, 1.1f, collider: true,
-                    markers: markers, obstacleRadius: 0.9f);
-                DungeonProp("box_small", new Vector3(-5f, 0, -3.9f), 65f, 1f);
-                DungeonProp("keg", new Vector3(0.6f, 0, 1.9f), 10f, 1f);
-                DungeonProp("banner_red", new Vector3(-6f, 1.55f, 8.45f), 180f, 1.2f);
-                DungeonProp("banner_thin_red", new Vector3(6f, 1.55f, 8.45f), 180f, 1.2f);
-                DungeonProp("torch_lit", new Vector3(-12.9f, 0.8f, 0f), 90f, 1.3f);
-                DungeonProp("torch_lit", new Vector3(12.9f, 0.8f, 0f), -90f, 1.3f);
-                // Wall torches carry their own small flame lights so the parapets
-                // aren't silhouettes against nothing.
-                TorchLight(new Vector3(-12.4f, 1.6f, 0f));
-                TorchLight(new Vector3(12.4f, 1.6f, 0f));
-
-                // Dressing: the deck read as an empty grey box, so it now carries
-                // the debris of a place people actually use.
-                DungeonProp("barrel_large", new Vector3(-11.2f, 0, 6.2f), 15f, 1.05f, collider: true,
-                    markers: markers, obstacleRadius: 0.8f);
-                DungeonProp("barrel_small", new Vector3(-10.2f, 0, 5.2f), -40f, 1f);
-                DungeonProp("barrel_small", new Vector3(11.4f, 0, -5.6f), 60f, 1f);
-                DungeonProp("crates_stacked", new Vector3(10.6f, 0, 1.4f), -15f, 1f, collider: true,
-                    markers: markers, obstacleRadius: 1f);
-                DungeonProp("box_small", new Vector3(3.4f, 0, -6.4f), 25f, 1f);
-                DungeonProp("keg", new Vector3(-3.2f, 0, 5.4f), -30f, 1f);
-                DungeonProp("chest", new Vector3(-8.4f, 0, 0.4f), 55f, 1f);
-                DungeonProp("table_small", new Vector3(6.8f, 0, 6.6f), 10f, 1f);
-                DungeonProp("torch_lit", new Vector3(-6f, 0.8f, -8.3f), 0f, 1.15f);
-                DungeonProp("torch_lit", new Vector3(6f, 0.8f, -8.3f), 0f, 1.15f);
-                TorchLight(new Vector3(-6f, 1.7f, -7.9f));
-                TorchLight(new Vector3(6f, 1.7f, -7.9f));
-
-                // Distant skyline silhouettes beyond the parapet — depth, no colliders.
-                var skylineMat = Mat("Skyline", new Color(0.08f, 0.10f, 0.15f), Surface.Stone);
-                var rng2 = new System.Random(11);
-                for (var i = 0; i < 10; i++)
-                {
-                    var roof = GameObject.CreatePrimitive(PrimitiveType.Cube);
-                    Object.DestroyImmediate(roof.GetComponent<Collider>());
-                    roof.name = "SkylineRoof";
-                    var side = i % 2 == 0 ? 1f : -1f;
-                    roof.transform.position = new Vector3(
-                        (float)(rng2.NextDouble() * 44 - 22),
-                        (float)(rng2.NextDouble() * 2.5 - 2.5),
-                        side * (12f + (float)rng2.NextDouble() * 8f));
-                    roof.transform.localScale = new Vector3(
-                        3.5f + (float)rng2.NextDouble() * 5f, 2.5f + (float)rng2.NextDouble() * 3f,
-                        3f + (float)rng2.NextDouble() * 3f);
-                    roof.transform.rotation = Quaternion.Euler(0, (float)rng2.NextDouble() * 20 - 10, 0);
-                    var roofR = roof.GetComponent<Renderer>();
-                    roofR.sharedMaterial = skylineMat;
-                    roofR.shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.Off;
-                }
-            }
-            else
-            {
-                // Still-water pools + reed clumps for the Ashfen crossing.
-                var poolMat = Mat("MarshPool", new Color(0.16f, 0.26f, 0.24f), Surface.Water);
-                var reedMat = Mat("Reed", new Color(0.2f, 0.32f, 0.22f), Surface.Foliage);
-                var rng = new System.Random(7);
-                for (var i = 0; i < 6; i++)
-                {
-                    var pool = GameObject.CreatePrimitive(PrimitiveType.Cylinder);
-                    Object.DestroyImmediate(pool.GetComponent<Collider>());
-                    pool.name = "Pool";
-                    var px = (float)(rng.NextDouble() * 22 - 11);
-                    var pz = (float)(rng.NextDouble() * 13 - 6.5);
-                    var sx = 2.2f + (float)rng.NextDouble() * 1.6f;
-                    pool.transform.position = new Vector3(px, 0.012f, pz);
-                    pool.transform.localScale = new Vector3(sx, 0.01f, 1.4f + (float)rng.NextDouble() * 1.2f);
-                    pool.GetComponent<Renderer>().sharedMaterial = poolMat;
-                    // Knee-deep water: slows anyone wading through it.
-                    markers.waters.Add(new Vector4(px, 0, pz, sx * 0.5f));
-                }
-                for (var i = 0; i < 14; i++)
-                {
-                    var reed = GameObject.CreatePrimitive(PrimitiveType.Cube);
-                    Object.DestroyImmediate(reed.GetComponent<Collider>());
-                    reed.name = "Reed";
-                    var x = (float)(rng.NextDouble() * 25 - 12.5);
-                    var z = (float)(rng.NextDouble() < 0.5 ? -7.6 + rng.NextDouble() * 1.5 : 6.1 + rng.NextDouble() * 1.5);
-                    reed.transform.position = new Vector3(x, 0.45f, z);
-                    reed.transform.localScale = new Vector3(0.06f, 0.9f, 0.06f);
-                    reed.transform.rotation = Quaternion.Euler(
-                        (float)(rng.NextDouble() * 10 - 5), 0, (float)(rng.NextDouble() * 10 - 5));
-                    var reedR = reed.GetComponent<Renderer>();
-                    reedR.sharedMaterial = reedMat;
-                    reedR.shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.Off;
-                    // Reed clumps are where shades come from.
-                    if (i % 2 == 0) markers.shadeSpawns.Add(new Vector3(x, 0, Mathf.Clamp(z, -7.4f, 7.4f)));
-                }
-
-                // Sunken merchant carts — environmental storytelling from Act II.
-                var cartMat = Mat("Cart", new Color(0.23f, 0.18f, 0.13f), Surface.Wood);
-                var wheelMat = Mat("CartWheel", new Color(0.15f, 0.12f, 0.09f), Surface.Wood);
-                foreach (var (cx, cz, angle) in new[] { (-7f, 2.5f, 24f), (6.5f, -2f, -18f) })
-                {
-                    var bed = GameObject.CreatePrimitive(PrimitiveType.Cube);
-                    bed.name = "SunkenCart";
-                    bed.transform.position = new Vector3(cx, 0.28f, cz);
-                    bed.transform.localScale = new Vector3(2.4f, 0.5f, 1.3f);
-                    bed.transform.rotation = Quaternion.Euler(-7f, angle, 6f);
-                    bed.GetComponent<Renderer>().sharedMaterial = cartMat;
-                    var wheel = GameObject.CreatePrimitive(PrimitiveType.Cylinder);
-                    Object.DestroyImmediate(wheel.GetComponent<Collider>());
-                    wheel.name = "CartWheel";
-                    wheel.transform.position = new Vector3(cx + 1.1f, 0.5f, cz + 0.6f);
-                    wheel.transform.localScale = new Vector3(1.1f, 0.06f, 1.1f);
-                    wheel.transform.rotation = Quaternion.Euler(80f, angle, 0);
-                    wheel.GetComponent<Renderer>().sharedMaterial = wheelMat;
-                    markers.obstacles.Add(new Vector4(cx, 0, cz, 1.5f));
-                }
-
-                // KayKit props: drowned cargo — barrels, a chest, toppled ruins.
-                DungeonProp("barrel_large", new Vector3(-6.2f, -0.18f, 3.1f), 30f, 1.1f, collider: true,
-                    markers: markers, obstacleRadius: 0.9f);
-                DungeonProp("barrel_small", new Vector3(-5.3f, 0, 2.2f), 70f, 1f);
-                DungeonProp("barrel_small", new Vector3(7.4f, -0.1f, -2.8f), -15f, 1f);
-                DungeonProp("chest", new Vector3(6.0f, 0, -1.6f), -140f, 1.05f);
-                DungeonProp("rubble_large", new Vector3(-10.5f, 0, -5f), 45f, 1.3f, collider: true,
-                    markers: markers, obstacleRadius: 1.3f);
-                DungeonProp("rubble_half", new Vector3(10.8f, 0, 5.4f), -70f, 1.2f);
-                DungeonProp("column", new Vector3(11.6f, 0, -6.2f), 15f, 1.1f, collider: true,
-                    markers: markers, obstacleRadius: 0.8f);
-
-                // Ghost lanterns drifting over the reeds (emissive quads, no lights).
-                var ghostGlow = Mat("GhostLantern", new Color(0.5f, 0.95f, 0.75f));
-                for (var i = 0; i < 5; i++)
-                {
-                    var wisp = GameObject.CreatePrimitive(PrimitiveType.Sphere);
-                    Object.DestroyImmediate(wisp.GetComponent<Collider>());
-                    wisp.name = "GhostLantern";
-                    wisp.transform.position = new Vector3(
-                        (float)(rng.NextDouble() * 22 - 11), 1.6f + (float)rng.NextDouble(),
-                        (float)(rng.NextDouble() < 0.5 ? -7.9 : 7.9));
-                    wisp.transform.localScale = Vector3.one * 0.22f;
-                    var wispR = wisp.GetComponent<Renderer>();
-                    wispR.sharedMaterial = ghostGlow;
-                    wispR.shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.Off;
-                }
-            }
-
-            // Corner lanterns: warm (rooftop) or cool (marsh) glow.
-            var flame = night ? new Color(1f, 0.62f, 0.35f) : new Color(0.55f, 0.9f, 0.75f);
-            var lightCol = night ? new Color(1f, 0.55f, 0.3f) : new Color(0.45f, 0.85f, 0.65f);
-            foreach (var corner in new[]
-            {
-                new Vector3(12f, 0, 7f), new Vector3(-12f, 0, 7f),
-                new Vector3(12f, 0, -7f), new Vector3(-12f, 0, -7f),
-            })
-            {
-                var post = GameObject.CreatePrimitive(PrimitiveType.Cube);
-                post.name = "LanternPost";
-                post.transform.position = corner + Vector3.up * 0.9f;
-                post.transform.localScale = new Vector3(0.15f, 1.8f, 0.15f);
-                post.GetComponent<Renderer>().sharedMaterial = Mat($"Post{theme}", trimCol, Surface.Wood);
-
-                var bulb = GameObject.CreatePrimitive(PrimitiveType.Cube);
-                Object.DestroyImmediate(bulb.GetComponent<Collider>());
-                bulb.name = "Lantern";
-                bulb.transform.position = corner + Vector3.up * 1.9f;
-                bulb.transform.localScale = Vector3.one * 0.35f;
-                bulb.GetComponent<Renderer>().sharedMaterial = Mat($"Lantern{theme}", flame);
-
-                var light = new GameObject("LanternLight").AddComponent<Light>();
-                light.transform.position = corner + Vector3.up * 2.1f;
-                light.type = LightType.Point;
-                light.color = lightCol;
-                // Warmer and further-reaching now that the toon shader actually
-                // receives point lights; these are what give the deck its pools
-                // of firelight instead of an even grey wash.
-                light.intensity = 2.9f;
-                light.range = 12f;
-                light.renderMode = LightRenderMode.ForcePixel;
-
-                // Destructible: break for a health pickup at the cost of the light.
-                // Lit ground makes the player easier to spot.
-                Visibility.RegisterLight(corner);
-                var postComp = post.AddComponent<LanternPost>();
-                postComp.bulb = bulb;
-                postComp.glow = light;
-            }
         }
 
         internal static GameObject BuildPlayer()
@@ -1730,6 +1481,16 @@ namespace Emberline.EditorTools
                 "“He said you would reach this door. He did not say you would open it.”", 1.9f, 1.25f, EnemyRank.MiniBoss);
             Named("threeblades", assassin, "THE THREE BLADES", "SISTERS OF THE SILENT FOREST",
                 "“One for the throat. One for the heart. One to watch.”", 2.2f, 1.2f, EnemyRank.Elite);
+            // Met at 34, so he must not out-guard Goro at 40: a heavy's swing and a
+            // boss's health, but he walks through blows instead of hiding behind them.
+            {
+                var exe = Named("executioner", heavy, "THE EXECUTIONER", "HE WALKS THE LINE",
+                    "“Six this morning. Seven, now.”", 1.5f, 1.0f, EnemyRank.MiniBoss);
+                exe.blockChance = 0.15f;
+                exe.guardsWhenPostureLow = false;
+                exe.maxPosture = 45f;
+                EditorUtility.SetDirty(exe);
+            }
 
             // The named foes exist now: their own kits and personalities.
             EmberCombatKits.ApplyNamed();
@@ -1948,6 +1709,23 @@ namespace Emberline.EditorTools
             if (Application.isBatchMode) EditorApplication.Exit(ok ? 0 : 1);
         }
 
+        [MenuItem("Emberline/Build APK")]
+        public static void BuildApk()
+        {
+            ApplyReleaseIdentity();
+            PlayerSettings.Android.useCustomKeystore = false;
+
+            EditorUserBuildSettings.buildAppBundle = false;
+            Directory.CreateDirectory("Builds");
+            var report = UnityEditor.BuildPipeline.BuildPlayer(
+                ShippedScenes, "Builds/emberline.apk",
+                BuildTarget.Android, BuildOptions.None);
+
+            var ok = report.summary.result == UnityEditor.Build.Reporting.BuildResult.Succeeded;
+            Debug.Log($"[Emberline] APK build {(ok ? "SUCCEEDED" : "FAILED")}: {report.summary.outputPath}");
+            if (Application.isBatchMode) EditorApplication.Exit(ok ? 0 : 1);
+        }
+
         private static void ApplyReleaseIdentity()
         {
             ConfigureAndroidPlayerSettings();
@@ -1957,6 +1735,7 @@ namespace Emberline.EditorTools
             var codeStr = System.Environment.GetEnvironmentVariable("EMBERLINE_VERSION_CODE");
             PlayerSettings.Android.bundleVersionCode = int.TryParse(codeStr, out var code) ? code : 7;
             EnsureIcon();
+            EmberSplash.Apply();
         }
 
         private static void ApplySigningFromEnv()

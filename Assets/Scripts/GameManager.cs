@@ -453,9 +453,16 @@ namespace Emberline
 
         public void NextDuel()
         {
-            var next = Session.DuelIndex + 1;
-            if (next < Session.Duels.Length && next < Session.DuelsUnlocked) LaunchDuel(next);
-            else OpenMenu();
+            // The next opponent the story has introduced, in story order.
+            var order = Session.DuelsInStoryOrder;
+            var at = System.Array.IndexOf(order, CurrentDuel);
+            for (var i = at + 1; i < order.Length; i++)
+            {
+                if (!Session.IsDuelUnlocked(order[i])) continue;
+                LaunchDuel(System.Array.IndexOf(Session.Duels, order[i]));
+                return;
+            }
+            OpenMenu();
         }
 
         public void BeginMission()
@@ -767,7 +774,6 @@ namespace Emberline
                 if (CurrentLevel.id == Campaign.Campaign.Count && !Session.NewGamePlus)
                 {
                     Session.NewGamePlus = true;
-                    Session.DuelsUnlocked = Session.Duels.Length;
                     Announce("NEW GAME+ · DUELS · INFINITE MARCH — UNLOCKED");
                 }
             }
@@ -776,7 +782,6 @@ namespace Emberline
                 ShardsEarned = (Session.DuelWon(CurrentDuel.id) ? 1 : 3)
                                + Session.CurrentDuelModifier.bonusShards;
                 Session.SaveDuelWin(CurrentDuel.id);
-                Session.DuelsUnlocked = CurrentDuel.id + 1;
             }
             // Optional objectives banked by the director pay on top.
             if (_director != null) ShardsEarned += _director.BonusShards;

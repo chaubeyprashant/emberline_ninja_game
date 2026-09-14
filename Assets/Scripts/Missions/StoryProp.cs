@@ -14,7 +14,7 @@ namespace Emberline.Missions
         Body,          // a corpse and what it was carrying
         Tracks,        // disturbed ash going somewhere
         Camp,          // a fire ring, bedding and the things people leave out
-        Supply,        // stacked crates, kegs, and a lantern to work by
+        Supply,        // rice bales, sake barrels, and a lantern to work by
         Lookout,       // the high post: a ladder, a rail, a signal lantern
         CommandPost,   // a table someone works at: orders, a banner, lamplight
         Homestead,     // what is left of a house: beams, a doorway, household things
@@ -98,8 +98,7 @@ namespace Emberline.Missions
             switch (spec.shape)
             {
                 case StoryPropShape.Shrine:
-                    Dress("column", Vector3.zero, 0f, 0.9f);
-                    Dress("torch_lit", new Vector3(0.9f, 0f, 0.2f), 20f, 1f, doused: true);
+                    Dress("shrine", Vector3.zero, 0f, 1f);
                     Glow(new Vector3(0f, 1.5f, 0f), new Color(0.82f, 0.86f, 1f), 0.22f);
                     break;
 
@@ -107,7 +106,7 @@ namespace Emberline.Missions
                     // A post, not rubble: the weather took it, not the fire.
                     Bar(new Vector3(0f, 0.85f, 0f), new Vector3(0.16f, 1.7f, 0.16f),
                         new Color(0.24f, 0.20f, 0.16f));
-                    Dress("box_small", new Vector3(-0.9f, 0f, 0.5f), 35f);
+                    Dress("jp_bucket", new Vector3(-0.9f, 0f, 0.5f), 35f);
                     Glow(new Vector3(0f, 1.75f, 0f), new Color(0.9f, 0.84f, 0.7f), 0.18f);
                     break;
 
@@ -121,15 +120,15 @@ namespace Emberline.Missions
                 case StoryPropShape.Body:
                     Bar(new Vector3(0f, 0.16f, 0f), new Vector3(0.55f, 0.28f, 1.5f),
                         new Color(0.12f, 0.12f, 0.15f));
-                    Dress("box_small", new Vector3(1.0f, 0f, -0.4f), 60f, 0.8f);
+                    Dress("jp_ricebag", new Vector3(1.0f, 0f, -0.4f), 60f);
                     Glow(new Vector3(0f, 0.6f, 0f), new Color(0.85f, 0.9f, 1f), 0.22f);
                     break;
 
                 case StoryPropShape.Camp:
                     // Slept in, cooked in, worked in — and only just left.
-                    Dress("keg", new Vector3(-1.3f, 0f, 0.7f), 15f);
-                    Dress("box_small", new Vector3(1.2f, 0f, 0.9f), 70f);
-                    Dress("torch_lit", new Vector3(0f, 0f, -1.4f), 0f);
+                    Dress("jp_tub_a", new Vector3(-1.3f, 0f, 0.7f), 15f);
+                    Dress("jp_basket", new Vector3(1.2f, 0f, 0.9f), 70f);
+                    Dress("jp_lantern_stand", new Vector3(0f, 0f, -1.4f), 0f);
                     Patch(new Vector3(0f, 0.03f, 0f), 1.5f, new Color(0.09f, 0.08f, 0.075f));
                     Bar(new Vector3(0.9f, 0.09f, -0.5f), new Vector3(1.5f, 0.16f, 0.6f),
                         new Color(0.30f, 0.27f, 0.21f));   // bedroll
@@ -137,17 +136,17 @@ namespace Emberline.Missions
                     break;
 
                 case StoryPropShape.Supply:
-                    // Identical crates, stacked by someone who expects to come back.
-                    Dress("crates_stacked", Vector3.zero, 20f, 1.05f);
-                    Dress("box_large", new Vector3(1.9f, 0f, 0.4f), -25f);
-                    Dress("barrel_large", new Vector3(-1.7f, 0f, 0.8f), 40f);
-                    Dress("torch_lit", new Vector3(0.4f, 0f, -1.8f), 0f);
+                    // Rice bales and sake barrels, stacked by someone who expects to come back.
+                    Dress("jp_ricebale_stack", Vector3.zero, 20f);
+                    Dress("jp_basket_tall", new Vector3(1.9f, 0f, 0.4f), -25f);
+                    Dress("jp_barrel_a", new Vector3(-1.7f, 0f, 0.8f), 40f);
+                    Dress("jp_lantern_stand", new Vector3(0.4f, 0f, -1.8f), 0f);
                     Glow(new Vector3(0f, 1.4f, 0f), new Color(0.85f, 0.9f, 1f), 0.22f);
                     break;
 
                 case StoryPropShape.Lookout:
                     // A post to see the valley from, and a lantern to answer with.
-                    Dress("crates_stacked", new Vector3(0.9f, 0f, 0.6f), 0f, 1.1f);
+                    Dress("jp_ricebale_stack", new Vector3(0.9f, 0f, 0.6f), 0f);
                     Bar(new Vector3(0f, 1.3f, 0f), new Vector3(0.18f, 2.6f, 0.18f),
                         new Color(0.22f, 0.19f, 0.16f));
                     Bar(new Vector3(0f, 2.5f, 0f), new Vector3(1.6f, 0.12f, 0.12f),
@@ -159,31 +158,28 @@ namespace Emberline.Missions
                     // Not a camp. Somebody works here: a table, light to read by,
                     // and a banner hung where the men can see whose orders these are.
                     Dress("table_small", Vector3.zero, 12f, 1.15f);
-                    Dress("torch_lit", new Vector3(-1.5f, 0f, 0.6f), 0f);
-                    Dress("torch_lit", new Vector3(1.6f, 0f, 0.5f), 0f);
+                    Dress("jp_lantern_stand", new Vector3(-1.5f, 0f, 0.6f), 0f);
+                    Dress("jp_lantern_stand", new Vector3(1.6f, 0f, 0.5f), 0f);
                     Dress("banner_red", new Vector3(0f, 1.55f, -2.2f), 180f, 1.2f);
-                    Dress("chest", new Vector3(2.2f, 0f, -1.2f), -40f);
-                    Dress("crates_stacked", new Vector3(-2.6f, 0f, -1.4f), 25f, 0.95f);
+                    Dress("jp_tansu", new Vector3(2.2f, 0f, -1.2f), -40f);
+                    Dress("jp_barrel_b", new Vector3(-2.6f, 0f, -1.4f), 25f);
                     Glow(new Vector3(0f, 1.05f, 0f), new Color(0.95f, 0.88f, 0.6f), 0.24f);
                     break;
 
                 case StoryPropShape.Homestead:
                     // A home, not a ruin in general: the things people owned are
                     // still lying where the roof came down on them.
-                    Dress("rubble_large", new Vector3(-1.6f, 0f, 0.9f), 25f, 1.1f);
-                    Dress("column", new Vector3(1.8f, 0f, 1.2f), 0f, 0.8f);
-                    Dress("table_small", new Vector3(0.2f, 0f, -0.9f), 40f);
-                    Dress("chest", new Vector3(-2.2f, 0f, -1.3f), -20f);
-                    Dress("barrel_small", new Vector3(2.4f, 0f, -1.6f), 60f);
+                    Dress("house", Vector3.zero, 0f, 1f);
+                    Dress("jp_tansu", new Vector3(-2.2f, 0f, -1.3f), -20f);
                     Patch(new Vector3(0f, 0.03f, 0f), 2.4f, new Color(0.10f, 0.09f, 0.08f));
                     Glow(new Vector3(0f, 1f, 0f), new Color(0.9f, 0.86f, 0.72f), 0.22f);
                     break;
 
                 case StoryPropShape.Cache:
-                    // A stone nobody would think to move, and a box under it.
+                    // A stone nobody would think to move, and a basket under it.
                     Bar(new Vector3(0f, 0.14f, 0f), new Vector3(1.5f, 0.28f, 1.1f),
                         new Color(0.29f, 0.28f, 0.26f));
-                    Dress("box_small", new Vector3(0.7f, 0f, -0.9f), 30f, 0.9f);
+                    Dress("jp_basket", new Vector3(0.7f, 0f, -0.9f), 30f);
                     Glow(new Vector3(0f, 0.5f, 0f), new Color(0.95f, 0.45f, 0.38f), 0.26f);
                     break;
 
@@ -209,7 +205,7 @@ namespace Emberline.Missions
                     Bar(new Vector3(0f, 1.05f, 0f), new Vector3(1.7f, 2.1f, 0.35f),
                         new Color(0.26f, 0.25f, 0.24f));
                     Dress("rubble_half", new Vector3(-1.5f, 0f, 0.4f), 30f, 0.9f);
-                    Dress("torch_lit", new Vector3(1.4f, 0f, 0.3f), 0f, 1f, doused: true);
+                    Dress("jp_lantern_stand", new Vector3(1.4f, 0f, 0.3f), 0f, 1f, doused: true);
                     Glow(new Vector3(0f, 1.3f, 0.3f), new Color(0.9f, 0.84f, 0.66f), 0.26f);
                     break;
 
@@ -231,7 +227,9 @@ namespace Emberline.Missions
         private void Dress(string propName, Vector3 offset, float yaw, float scale = 1f,
             bool doused = false)
         {
-            var prefab = Resources.Load<GameObject>("Props/Dressing/" + propName);
+            // The Japanese props live with the zone kits (EmberJapanProps).
+            var prefab = Resources.Load<GameObject>("Props/Dressing/" + propName)
+                         ?? Resources.Load<GameObject>("Props/Zone/" + propName);
             if (prefab == null) return;
             var go = Instantiate(prefab, transform.position + offset,
                 Quaternion.Euler(0f, yaw, 0f), transform);
@@ -263,15 +261,20 @@ namespace Emberline.Missions
             Paint(q, c, glow: false);
         }
 
-        /// <summary>The read: a small pulse so the eye finds it without a waypoint.</summary>
+        private Vector3 _baseGlowScale;
+
+        /// <summary>The read: a tall pillar of light so the eye finds it across the map.</summary>
         private void Glow(Vector3 offset, Color c, float size)
         {
-            var go = GameObject.CreatePrimitive(PrimitiveType.Sphere);
+            var go = GameObject.CreatePrimitive(PrimitiveType.Cylinder);
             Destroy(go.GetComponent<Collider>());
-            go.name = "Read";
+            go.name = "Read_Pillar";
             go.transform.SetParent(transform, false);
-            go.transform.localPosition = offset;
-            go.transform.localScale = Vector3.one * size;
+            // Move it up so it stands on the offset rather than being centered on it.
+            // A primitive cylinder is 2 units tall, so half its scaled height is (size * 12) / 2 = size * 6.
+            go.transform.localPosition = offset + new Vector3(0, size * 6f, 0);
+            _baseGlowScale = new Vector3(size * 0.75f, size * 6f, size * 0.75f);
+            go.transform.localScale = _baseGlowScale;
             Paint(go, c, glow: true);
             _label = go.transform;
         }
@@ -291,8 +294,9 @@ namespace Emberline.Missions
         {
             if (_label != null)
             {
-                var s = 1f + 0.12f * Mathf.Sin(Time.time * 2.4f);
-                _label.localScale = Vector3.one * (_label.localScale.x > 0f ? s * 0.24f : 0.24f);
+                // Pulse the width of the pillar for a breathing effect
+                var pulse = 1f + 0.15f * Mathf.Sin(Time.time * 3f);
+                _label.localScale = new Vector3(_baseGlowScale.x * pulse, _baseGlowScale.y, _baseGlowScale.z * pulse);
             }
             if (_taken) return;
 

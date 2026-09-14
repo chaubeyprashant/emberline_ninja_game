@@ -99,13 +99,13 @@ namespace Emberline.Campaign
                 K(N, N, A, B), night: true, plan: "S04_SilentForest"),
 
             M(5, "THE TOLL-CAPTAIN", T(Boss, Investigation), Region.Forest, Forest,
-                "The first real answer about Renzo's father, and it is a small one, given by a man who dies without finishing it.",
+                "The first real answer about Renzo's father, and it is a small one, given by a man who is beaten and dragged off before he finishes it.",
                 "Walk Goro's road to its checkpoint and take the Toll-Captain.",
                 "A boss who talks between phases: every health gate, Goro gives up one more thing he did not mean to.",
                 "Renzo's father knew what was coming and refused something — and Goro, who was at Yorune, was following somebody else's orders.",
                 "Goro on the road he keeps, unhurried, with nowhere for either of them to go.",
                 "A sealed report addressed to no one Renzo can name, and a burned page that says only that a Kurogawa refused.",
-                "Goro is dead and he was not the one in charge. What the father refused is somewhere on the mountain.",
+                "Goro is beaten, not finished, and he was not the one in charge. What the father refused is somewhere on the mountain.",
                 K(P, R, B), boss: C, plan: "S05_TollCaptain", night: true,
                 dialogue: L("GORO|The Kurogawa boy. You have your father's stance and none of his sense.",
                             "RENZO|You knew him.",
@@ -126,7 +126,7 @@ namespace Emberline.Campaign
                 "Search the Kurogawa ruins for what Renzo's father hid there.",
                 "Two memories of a life rather than of the fire, and an arrangement of stone and beam that did not fall that way.",
                 "Three things that must never be brought together. One is already taken, one was entrusted to his family, and the third his father would not name.",
-                "A search party in the ruins of his own house, reporting to whoever replaced the Toll-Captain.",
+                "A search party in the ruins of his own house, reporting to the Toll-Captain's officers while he heals.",
                 "Worked metal with three grooves and a section missing, and a road drawn by hand going up the mountain.",
                 "His father left a path as well as a warning. Renzo follows it up.",
                 K(N, N, A, A, B), plan: "S07_BrokenHouse"),
@@ -172,17 +172,17 @@ namespace Emberline.Campaign
                 "The supply wagon burns and its escort arrives to find it burning.",
                 "Three soldiers survive and run. Renzo lets them.",
                 "Running men go home. Renzo follows them to wherever that is.",
-                K(B, B, R, P)),
+                K(B, B, R, P), plan: "S11_SupplyRoute"),
 
             M(12, "SILENT CARGO", T(Stealth), Region.Villages, Village,
                 "A shipment moving at night has something to hide.",
                 "Intercept the night shipment without waking the escort.",
                 "A silent elimination challenge: every guard can be taken unseen, and every alarm costs the objective.",
                 "The cargo is weapons, from four different provinces. Kagehira is buying from everyone.",
-                "The last guard is awake, armed, and standing on the crate.",
+                "The convoy's captain is awake, armed, and standing on the crate with his ledger.",
                 "A bill of lading with a supplier's name and a village Renzo has never heard of.",
                 "Somebody is selling Kagehira steel by the wagon. The village on the bill is the supplier.",
-                K(A, A, B, R), night: true),
+                K(A, A, B, R), foe: "convoycaptain", night: true, plan: "S12_SilentCargo"),
 
             M(13, "THE BROKEN VILLAGE", T(Investigation, Exploration), Region.Villages, Burning,
                 "Yorune was not the only village that burned.",
@@ -192,7 +192,7 @@ namespace Emberline.Campaign
                 "The Scavenger King, who has made the ruin his own.",
                 "Under the elder's floor: a second map, older than the first, with the marsh temple marked.",
                 "The elder's house held more than a map. Someone who lived there is still alive.",
-                K(B, B, H, R), foe: "raiderleader"),
+                K(B, B, H, R), foe: "raiderleader", plan: "S13_BrokenVillage"),
 
             M(14, "THE SURVIVOR", T(Escort, Defense), Region.Villages, Village,
                 "The first living person who remembers Aiko.",
@@ -202,7 +202,7 @@ namespace Emberline.Campaign
                 "An enemy elite arrives to finish the village.",
                 "Safe, the survivor tells Renzo about a road that does not appear on any map.",
                 "A hidden road is how the enemy moves unseen. Renzo takes it.",
-                K(B, P, R, B, E)),
+                K(B, P, R, B, E), plan: "S14_Survivor"),
 
             M(15, "HIDDEN ROAD", T(Stealth), Region.Forest, Forest,
                 "The secret route is watched, which is how Renzo knows it matters.",
@@ -212,7 +212,7 @@ namespace Emberline.Campaign
                 "Getting into the tower's shadow without a shot being fired.",
                 "The tower is lit. Someone is on the top of it.",
                 "The tower watches every road Renzo could take. It has to come down.",
-                K(A, A, R, R)),
+                K(A, A, R, R), plan: "S15_HiddenRoad"),
 
             M(16, "WATCHFIRE", T(Combat, Defense), Region.Forest, Castle,
                 "Taking the enemy's eyes.",
@@ -222,7 +222,7 @@ namespace Emberline.Campaign
                 "Holding the tower against its own reinforcements.",
                 "The signal fire is Renzo's now. He lets it burn, so they will come to him.",
                 "Three territories, and the marsh route between them. A messenger will know which one matters.",
-                K(R, R, M_, P, B)),
+                K(R, R, M_, P, B), plan: "S16_Watchfire"),
 
             M(17, "THE MESSENGER", T(Chase), Region.Forest, Forest,
                 "The enemy's words travel on foot.",
@@ -232,7 +232,7 @@ namespace Emberline.Campaign
                 "The last stretch, where the messenger stops running and turns.",
                 "The orders are in a cipher Renzo does not know. Yet.",
                 "A cipher needs a key, and the messenger came from a post that has one.",
-                K(B, B, N, R)),
+                K(B, B, N, R), plan: "S17_Messenger"),
 
             M(18, "DEAD LETTER", T(Investigation, Stealth), Region.Villages, Village,
                 "What Kagehira wants, in his own words.",
@@ -242,7 +242,7 @@ namespace Emberline.Campaign
                 "Assassins between Renzo and the last piece of the key.",
                 "'Find the daughter. She knows where he hid it.' There is only one daughter this could mean.",
                 "If Kagehira has been searching for Aiko, his prisoner records will say where he looked.",
-                K(A, A, A, R), night: true),
+                K(A, A, A, R), night: true, plan: "S18_DeadLetter"),
 
             M(19, "THE DAUGHTER", T(Stealth, Investigation), Region.Villages, Castle,
                 "Confirmation.",
@@ -252,7 +252,7 @@ namespace Emberline.Campaign
                 "The escape after the alarm, with the roll under Renzo's coat.",
                 "The roll says where she was held. It does not say where she is.",
                 "The enemy's communication towers pass every transfer order. The second tower has hers.",
-                K(P, P, R, B, A)),
+                K(P, P, R, B, A), plan: "S19_Daughter"),
 
             M(20, "THE SECOND LANTERN", T(Sabotage, Defense), Region.Villages, Castle,
                 "The enemy's second signal tower, and the first time Kagehira hears Renzo's name.",
@@ -262,7 +262,7 @@ namespace Emberline.Campaign
                 "Tower destruction, then the elite squad sent to keep it standing.",
                 "As the tower burns, a rider brings its last message: 'KUROGAWA IS COMING.' They know.",
                 "Kagehira knows Renzo's name and where he is. The forest is between them.",
-                K(R, R, P, A, N, E), plan: "S08_TwinLanterns", night: true),
+                K(R, R, P, A, N, E), plan: "S20_SecondLantern", night: true),
 
             // =============================================================
             // CHAPTER 3 — THE SILENT FOREST
@@ -275,7 +275,7 @@ namespace Emberline.Campaign
                 "The hunter circles closer with every minute, and the forest goes silent around it.",
                 "It withdraws. It was measuring him.",
                 "Something in the forest is hunting Renzo for its own reasons. The only way through is to leave no trail.",
-                K(A, N, S), foe: "paleshade", night: true, fog: true),
+                K(A, N, S), foe: "paleshade", night: true, fog: true, plan: "S21_Hunter"),
 
             M(22, "NO FOOTPRINTS", T(Stealth), Region.Forest, Bamboo,
                 "Pure stealth: the mission the alarm ends.",
@@ -285,7 +285,7 @@ namespace Emberline.Campaign
                 "The last patrol crosses the only exit as the clock runs down.",
                 "Renzo leaves the camp exactly as he found it, minus one document.",
                 "The orders route Aiko through a clearing to the north. Somebody died there.",
-                K(A, R, R, N)),
+                K(A, R, R, N), plan: "S22_NoFootprints"),
 
             M(23, "BLOOD ON SNOW", T(Investigation), Region.Snow, Mountain,
                 "An assassination Renzo did not commit.",
@@ -295,7 +295,7 @@ namespace Emberline.Campaign
                 "The killers return to clean the scene and find Renzo in it.",
                 "The officer's last letter: he had refused to take a child north.",
                 "Three assassins did this, and they are between Renzo and the road north.",
-                K(A, A, H, P), snow: true),
+                K(A, A, H, P), snow: true, plan: "S23_BloodOnSnow"),
 
             M(24, "THE THREE BLADES", T(Boss, Combat), Region.Forest, Forest,
                 "Three elite assassins who fight as one.",
@@ -305,7 +305,7 @@ namespace Emberline.Campaign
                 "The last Blade, alone, faster than the other two together.",
                 "A silk cord from the last Blade's wrist: the mark of the forest camp's master.",
                 "The camp that sent them is the camp that has the rest of the orders.",
-                K(A, A, A, N), foe: "threeblades"),
+                K(A, A, A, N), foe: "threeblades", plan: "S24_ThreeBlades"),
 
             M(25, "THE SILENT CAMP", T(Sabotage, Stealth), Region.Forest, Bamboo,
                 "The perfect infiltration.",
@@ -315,7 +315,7 @@ namespace Emberline.Campaign
                 "The third fire, in the commander's own tent.",
                 "The camp burns without a bell rung. Renzo watches it from the trees.",
                 "The commander's route led into a fog-bound forest path. Renzo takes it before dawn.",
-                K(A, N, R, B, B), night: true),
+                K(A, N, R, B, B), night: true, plan: "S25_SilentCamp"),
 
             M(26, "THE BLIND PATH", T(Survival), Region.Forest, Forest,
                 "The forest at its worst.",
@@ -325,7 +325,7 @@ namespace Emberline.Campaign
                 "Everything that was following in the fog arrives at once.",
                 "The thread runs out at a clearing. Someone tied it here on purpose.",
                 "Red thread. Aiko's bracelet was red thread. Renzo follows it.",
-                K(S, S, A, N), fog: true),
+                K(S, S, A, N), fog: true, plan: "S26_BlindPath"),
 
             M(27, "THE RED THREAD", T(Investigation, Exploration), Region.Forest, Bamboo,
                 "The first thing of Aiko's that Renzo touches in ten years, and the campaign's first mission with nothing in it to fight.",
@@ -335,7 +335,7 @@ namespace Emberline.Campaign
                 "The bead, in his hand, in a wood with nobody else in it.",
                 "Renzo ties the bead into his own wrist. Suzu watches him do it and says nothing, which is the most she has ever not said.",
                 "Aiko was leaving a trail. Where it points next is where she was taken.",
-                dialogue: L("SUZU|That's not a snag. Somebody tied that.",
+                plan: "S27_RedThread", dialogue: L("SUZU|That's not a snag. Somebody tied that.",
                             "SUZU|At that height? That's a child's reach.",
                             "RENZO|She was counting on somebody looking up.")),
 
@@ -347,7 +347,7 @@ namespace Emberline.Campaign
                 "The trap springs: the pen's walls were the ambush.",
                 "The girl in the pen has never heard of Aiko. Renzo frees her anyway.",
                 "Whoever laid the trap will lay another. Renzo turns the hunt around.",
-                K(A, A, R, N, P)),
+                K(A, A, R, N, P), plan: "S28_Decoy"),
 
             M(29, "THE HUNTER'S TRAP", T(Survival), Region.Forest, Forest,
                 "Surrounded.",
@@ -357,7 +357,7 @@ namespace Emberline.Campaign
                 "The last exit, and the thing standing in it.",
                 "The forest goes quiet. It has arrived.",
                 "There is no leaving the forest without going through what owns it.",
-                K(A, N, S, S, O, P)),
+                K(A, N, S, S, O, P), plan: "S29_HuntersTrap"),
 
             M(30, "PALE SHADE", T(Boss), Region.Forest, Graveyard,
                 "The chapter boss, and the thing that hunted Renzo in mission 21.",
@@ -368,7 +368,7 @@ namespace Emberline.Campaign
                 "Dying, it tells him: 'She was moved. To the toll-captain's country.'",
                 "Aiko was transferred to Goro's territory. Renzo goes to war with Goro.",
                 K(S, S, A), foe: "paleshade", night: true, fog: true,
-                dialogue: L("PALE SHADE|…you carry her thread… she carried yours…",
+                plan: "S30_PaleShade", dialogue: L("PALE SHADE|…you carry her thread… she carried yours…",
                             "RENZO|Where is she.",
                             "PALE SHADE|…where the toll is paid…")),
 
@@ -384,7 +384,7 @@ namespace Emberline.Campaign
                 "The road's first garrison, which does not intend to let anyone pass.",
                 "From the ridge: prisoner wagons, moving in a line toward the fortress.",
                 "The wagons carry people. Renzo goes down to them.",
-                K(P, P, H, R)),
+                K(P, P, H, R), fog: true, plan: "S31_FortressRoad"),
 
             M(32, "PRISONER WAGONS", T(Rescue, Chase), Region.Mountains, Castle,
                 "The first rescue that is about more than one person.",
@@ -394,17 +394,17 @@ namespace Emberline.Campaign
                 "The last wagon, the escort's captain, and a road that is running out.",
                 "The freed villagers speak of the camps: not prisons, pens.",
                 "There are camps. Renzo has the location of the nearest.",
-                K(B, P, R, H, A)),
+                K(B, P, R, H, A), rain: true, plan: "S32_PrisonerWagons"),
 
             M(33, "BROKEN CHAINS", T(Sabotage, Rescue), Region.Mountains, Fortress,
                 "Destroy the machine, not just its output.",
                 "Free the prisoner camp and burn it.",
                 "Two pens, two guard rotations: the second wakes when the first goes quiet.",
                 "A camp record lists Aiko's transfer out, two months ago, to 'the execution ground.'",
-                "The camp commander, an axe raider, in the burning yard.",
+                "The camp commander, an axe raider, in the burning yard at night.",
                 "The camp is ash and the prisoners are gone into the hills.",
                 "'Execution ground' is not a place Renzo can leave for tomorrow.",
-                K(P, H, H, R, B)),
+                K(P, H, H, R, B, O), night: true, plan: "S33_BrokenChains"),
 
             M(34, "THE EXECUTION GROUND", T(Defense, Rescue), Region.Mountains, Fortress,
                 "The chapter's most urgent mission.",
@@ -414,9 +414,9 @@ namespace Emberline.Campaign
                 "Holding the platform against Goro's men while the last prisoners are cut loose.",
                 "Everyone on the platform lives. None of them is her.",
                 "Goro moved her. Goro's army knows where. Renzo goes through it.",
-                K(H, R, A, M_, E)),
+                K(H, R, A, M_), foe: "executioner", night: true, plan: "S34_ExecutionGround"),
 
-            M(35, "GORO'S ARMY", T(Combat), Region.Mountains, Castle,
+            M(35, "GORO'S ARMY", T(Combat), Region.Mountains, Rainy,
                 "The first large, organised force.",
                 "Break the squad Goro has sent to end this.",
                 "A real formation: pikes in front, archers behind, and an officer who calls the changes.",
@@ -424,7 +424,7 @@ namespace Emberline.Campaign
                 "The officer's last stand when the formation breaks.",
                 "The squad is finished. Its officer will not say who wanted Renzo alive, but the seal on the order is a serpent.",
                 "An army needs a smith. Renzo finds where Goro's steel is made.",
-                K(P, P, P, R, R, M_)),
+                K(P, P, P, R, R, M_, O), plan: "S35_GorosArmy"),
 
             M(36, "THE BLACKSMITH", T(Escort, Rescue), Region.Mountains, Village,
                 "The man who made the enemy's weapons was never on their side.",
@@ -434,7 +434,7 @@ namespace Emberline.Campaign
                 "Goro's riders reach the road before the smith does.",
                 "Safe, the smith gives Renzo the mark: every blade he made for them can be told from an honest one.",
                 "Goro will answer the loss of his smith by burning the village that hid him.",
-                K(B, B, R, H, A)),
+                K(B, B, R, H, A), plan: "S36_Blacksmith"),
 
             M(37, "THE SIEGE", T(Defense), Region.Villages, Burning,
                 "The one time the player defends a place that matters.",
@@ -444,7 +444,7 @@ namespace Emberline.Campaign
                 "The last gate, the last wave, and Goro's banner in the field beyond.",
                 "The village stands. Goro's banner does not advance. It waits.",
                 "Goro has stopped sending men. He is coming himself.",
-                K(B, B, P, R, H, A, E)),
+                K(B, B, P, R, H, A, E, N, O), night: true, plan: "S37_Siege"),
 
             M(38, "THE HUNTER RETURNS", T(Endure, Chase), Region.Mountains, Mountain,
                 "Goro, unleashed.",
@@ -454,7 +454,7 @@ namespace Emberline.Campaign
                 "Goro at the ridge, and the drop behind Renzo.",
                 "Goro lets him run. He wants the fight on his own ground.",
                 "Goro's ground is the mountain gate. Renzo goes to it.",
-                K(H, P, R), foe: "goro"),
+                K(H, P, R), foe: "goro", snow: true, fog: true, plan: "S38_HunterReturns"),
 
             M(39, "THE MOUNTAIN GATE", T(Combat, Sabotage), Region.Mountains, Fortress,
                 "Goro's last wall.",
@@ -464,7 +464,7 @@ namespace Emberline.Campaign
                 "The gatehouse garrison, then the gate.",
                 "The gate falls. Goro is waiting in the yard, alone, sword drawn.",
                 "There is nothing between Renzo and Goro now.",
-                K(P, P, R, R, H, E)),
+                K(P, P, R, R, H, E, O), fog: true, plan: "S39_MountainGate"),
 
             M(40, "GORO'S END", T(Boss), Region.Mountains, Fortress,
                 "The final duel with the first enemy.",
@@ -475,7 +475,7 @@ namespace Emberline.Campaign
                 "Goro dies on his own gate. 'The marsh,' he says. 'She's under it.'",
                 "Under the marsh. Renzo goes back into the fog.",
                 K(P, H, R), boss: C, night: true,
-                dialogue: L("GORO|Twice, Kurogawa. Nobody gets me twice.",
+                plan: "S40_GorosEnd", dialogue: L("GORO|Twice, Kurogawa. Nobody gets me twice.",
                             "RENZO|Then tell me where she is, and it will only be once.")),
 
             // =============================================================
@@ -489,7 +489,7 @@ namespace Emberline.Campaign
                 "The last stretch, in rising water.",
                 "The far bank, and voices in the fog that are not soldiers.",
                 "The voices are coming from the fog ahead. Renzo goes to find who is making them.",
-                K(P, P, R, A, B, S), marsh: true, plan: "S07_DrownedRoad"),
+                K(P, P, R, A, B, S), marsh: true, rain: true, plan: "S41_DrownedRoad"),
 
             M(42, "VOICES IN THE FOG", T(Investigation), Region.Marsh, Graveyard,
                 "The marsh speaks.",
@@ -499,7 +499,7 @@ namespace Emberline.Campaign
                 "The shades that have been answering the voices.",
                 "The camp is under the water line. So are its records.",
                 "Sunken records mean sunken answers. Renzo goes into the camp.",
-                K(S, S, S, A), marsh: true, fog: true),
+                K(S, S, S, A), marsh: true, fog: true, plan: "S42_VoicesInTheFog"),
 
             M(43, "THE SUNKEN CAMP", T(Investigation, Survival), Region.Marsh, Graveyard,
                 "What the water kept.",
@@ -509,7 +509,7 @@ namespace Emberline.Campaign
                 "The thing in the deep water that has been watching the search.",
                 "A key. Aiko is not a prisoner. She is a lock.",
                 "The temple wants her for something. The marsh hunters between here and it want Renzo.",
-                K(S, S, O, A), marsh: true),
+                K(S, S, O, A), marsh: true, plan: "S43_SunkenCamp"),
 
             M(44, "MARSH HUNTERS", T(Survival), Region.Marsh, Graveyard,
                 "The assassins have followed Renzo into the fog.",
@@ -519,7 +519,7 @@ namespace Emberline.Campaign
                 "The last assassins, when the fog thins and both sides can see.",
                 "A Kurogane crest on the last body. Renzo has heard the name. He does not know why it stings.",
                 "An enemy patrol went into the fog before Renzo and did not come out. What stopped them might stop him.",
-                K(A, A, A, N, R), marsh: true, fog: true),
+                K(A, A, A, N, R), marsh: true, fog: true, plan: "S44_MarshHunters"),
 
             M(45, "THE MISSING PATROL", T(Exploration, Investigation), Region.Marsh, Graveyard,
                 "Even the enemy is afraid of the marsh.",
@@ -529,7 +529,7 @@ namespace Emberline.Campaign
                 "The thing that killed the patrol, when Renzo reaches the last of them.",
                 "Reed smoke on the wind. Somebody lives out here.",
                 "Someone survives in this marsh. They will know how to reach the temple.",
-                K(S, S, S, S), marsh: true, fog: true),
+                K(S, S, S, S), marsh: true, fog: true, plan: "S45_MissingPatrol"),
 
             M(46, "THE REED VILLAGE", T(Defense, Exploration), Region.Marsh, Village,
                 "People who chose the marsh over Kagehira.",
@@ -539,7 +539,7 @@ namespace Emberline.Campaign
                 "The village attacked by shades, with Renzo the only blade.",
                 "The guide agrees to take him. She does not agree to like it.",
                 "The guide knows the way. The way is not safe, and she is not fast.",
-                K(S, S, A, R), marsh: true),
+                K(S, S, A, R), marsh: true, plan: "S46_ReedVillage", night: true),
 
             M(47, "THE OLD GUIDE", T(Escort), Region.Marsh, Graveyard,
                 "Someone else's life in Renzo's hands, on ground that wants both of them.",
@@ -549,7 +549,7 @@ namespace Emberline.Campaign
                 "The temple stair, and everything in the marsh that does not want it climbed.",
                 "The guide sits down on the stair and will go no further. 'Below,' she says. 'It's all below.'",
                 "The ruin is under the water. Renzo goes down.",
-                K(S, S, B, R, A), marsh: true, fog: true, plan: "S02_LanternRoad"),
+                K(S, S, B, R, A), marsh: true, fog: true, plan: "S47_OldGuide"),
 
             M(48, "BENEATH THE WATER", T(Survival, Exploration), Region.Temples, Temple,
                 "Under the marsh.",
@@ -559,7 +559,7 @@ namespace Emberline.Campaign
                 "The flood reaches the chamber door as the last guardian falls.",
                 "The door. Sealed. Marked with the symbol from his father's blade.",
                 "The chamber is the Seal's. Renzo has the fragment that opens it.",
-                K(S, S, S, E), marsh: true),
+                K(S, S, S, E), marsh: true, plan: "S48_BeneathTheWater", fog: true),
 
             M(49, "THE SEAL CHAMBER", T(Investigation, Exploration), Region.Temples, Temple,
                 "The chapter's revelation, found rather than told.",
@@ -569,7 +569,7 @@ namespace Emberline.Campaign
                 "The chamber's guardians wake when the first key is lifted.",
                 "The first key, in Renzo's hand, and the chamber going dark.",
                 "One key of three. The second is wherever his father hid it, and his father's journal will say.",
-                K(E, M_, S, O), marsh: true, night: true),
+                K(E, M_, S, O), marsh: true, night: true, plan: "S49_SealChamber"),
 
             M(50, "THE FIRST KEY", T(Combat, Survival), Region.Temples, Temple,
                 "Kagehira's men arrive for what Renzo already holds.",
@@ -580,7 +580,7 @@ namespace Emberline.Campaign
                 "Renzo surfaces with the key. Behind him, the temple closes.",
                 "His father's journal is the map to the second key. It is in the drowned temple's upper halls.",
                 K(E, M_, A, A, R), marsh: true,
-                dialogue: L("RENZO|He hid it. He hid it and they burned the village for it.",
+                plan: "S50_FirstKey", night: true, dialogue: L("RENZO|He hid it. He hid it and they burned the village for it.",
                             "RENZO|Father. What did you do.")),
 
             // =============================================================

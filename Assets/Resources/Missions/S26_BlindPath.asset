@@ -1,0 +1,202 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 814b8fc7fb4eb427480893eff898b203, type: 3}
+  m_Name: S26_BlindPath
+  m_EditorClassIdentifier: Assembly-CSharp::Emberline.Missions.MissionPlan
+  id: 26
+  missionName: THE BLIND PATH
+  missionType: SURVIVAL
+  briefing: The commander's route runs into a fog-bound path before dawn. Nothing
+    on it makes a sound until it's close.
+  debrief: The thread runs out at a clearing. Someone tied it here on purpose.
+  marsh: 0
+  nightOverride: 0
+  rain: 0
+  snow: 0
+  fog: 1
+  applyTheme: 1
+  theme: 1
+  missionRadius: 0
+  missionRadiusZ: 0
+  nextReason: Red thread. Aiko's bracelet was red thread. Renzo follows it.
+  region: FOREST
+  stages:
+  - goal: 17
+    objective: 
+    banner: 
+    hint: 
+    count: 1
+    duration: 0
+    point: {x: 0, y: 0, z: 0}
+    spawn: 
+    pointB: {x: 0, y: 0, z: 0}
+    spawnB: 
+    foeDef: 
+    beatId: blind_open
+    props: []
+    bossHealthGate: 0.6
+    onComplete: 0
+    optional: 0
+    bonusShards: 1
+    checkpoint: 0
+  - goal: 0
+    objective: INTO THE FOG
+    banner: TEN PACES
+    hint: 
+    count: 1
+    duration: 0
+    point: {x: -8, y: 0, z: 10}
+    spawn: 
+    pointB: {x: 0, y: 0, z: 0}
+    spawnB: 
+    foeDef: 
+    beatId: 
+    props: []
+    bossHealthGate: 0.6
+    onComplete: 8
+    optional: 0
+    bonusShards: 1
+    checkpoint: 1
+  - goal: 15
+    objective: LISTEN FOR WHAT'S CLOSE
+    banner: SILENT UNTIL CLOSE
+    hint: 
+    count: 1
+    duration: 0
+    point: {x: 0, y: 0, z: 0}
+    spawn: 03000000
+    pointB: {x: 0, y: 0, z: 0}
+    spawnB: 
+    foeDef: 
+    beatId: 
+    props: []
+    bossHealthGate: 0.6
+    onComplete: 0
+    optional: 0
+    bonusShards: 1
+    checkpoint: 1
+  - goal: 19
+    objective: READ THE BRANCHES
+    banner: RED THREAD
+    hint: 
+    count: 1
+    duration: 0
+    point: {x: 0, y: 0, z: 0}
+    spawn: 
+    pointB: {x: 0, y: 0, z: 0}
+    spawnB: 
+    foeDef: 
+    beatId: 
+    props:
+    - id: thread
+      label: RED THREAD ON A BRANCH
+      point: {x: -4, y: 0, z: 14}
+      shape: 3
+      speaker: RENZO
+      line: Red thread, tied off. At a child's height.
+      beatId: 
+      radius: 2.2
+      figurePath: []
+      lanternLine: []
+    - id: knot
+      label: ANOTHER KNOT
+      point: {x: 4, y: 0, z: 17}
+      shape: 5
+      speaker: RENZO
+      line: Another, twenty paces on. Someone was marking a way.
+      beatId: 
+      radius: 2.2
+      figurePath: []
+      lanternLine: []
+    bossHealthGate: 0.6
+    onComplete: 0
+    optional: 0
+    bonusShards: 1
+    checkpoint: 1
+  - goal: 17
+    objective: 
+    banner: 
+    hint: 
+    count: 1
+    duration: 0
+    point: {x: 0, y: 0, z: 0}
+    spawn: 
+    pointB: {x: 0, y: 0, z: 0}
+    spawnB: 
+    foeDef: 
+    beatId: blind_archer
+    props: []
+    bossHealthGate: 0.6
+    onComplete: 0
+    optional: 0
+    bonusShards: 1
+    checkpoint: 0
+  - goal: 4
+    objective: THEY ARRIVE AT ONCE
+    banner: EVERYTHING THAT FOLLOWED
+    hint: 
+    count: 1
+    duration: 40
+    point: {x: 0, y: 0, z: 0}
+    spawn: 03000000090000000b000000
+    pointB: {x: 0, y: 0, z: 0}
+    spawnB: 
+    foeDef: 
+    beatId: 
+    props: []
+    bossHealthGate: 0.6
+    onComplete: 9
+    optional: 0
+    bonusShards: 1
+    checkpoint: 1
+  - goal: 0
+    objective: FOLLOW THE THREAD
+    banner: WHERE IT LEADS
+    hint: 
+    count: 1
+    duration: 0
+    point: {x: 0, y: 0, z: 18}
+    spawn: 
+    pointB: {x: 0, y: 0, z: 0}
+    spawnB: 
+    foeDef: 
+    beatId: 
+    props: []
+    bossHealthGate: 0.6
+    onComplete: 0
+    optional: 0
+    bonusShards: 1
+    checkpoint: 0
+  - goal: 17
+    objective: 
+    banner: 
+    hint: 
+    count: 1
+    duration: 0
+    point: {x: 0, y: 0, z: 0}
+    spawn: 
+    pointB: {x: 0, y: 0, z: 0}
+    spawnB: 
+    foeDef: 
+    beatId: blind_end
+    props: []
+    bossHealthGate: 0.6
+    onComplete: 0
+    optional: 0
+    bonusShards: 1
+    checkpoint: 0
+  dressing: 050000000400000006000000
+  ruinedVillage: 0
+  challenge: 5
+  challengeSeconds: 240
+  challengeShards: 3
+  baseShards: 4

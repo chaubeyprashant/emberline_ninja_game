@@ -30,7 +30,7 @@ namespace Emberline.EditorTools
     /// escalation → climax → resolution: it opens on a stage that spawns nothing,
     /// keeps a no-combat beat past its midpoint, and does not end on a fight.
     /// </summary>
-    public static class EmberMissions
+    public static partial class EmberMissions
     {
         private const EnemyKind B = EnemyKind.Bandit;
         private const EnemyKind R = EnemyKind.Ranged;
@@ -81,6 +81,14 @@ namespace Emberline.EditorTools
         {
             Directory.CreateDirectory("Assets/Resources/Missions");
             BuildBespoke();
+            BuildChapter2();
+            BuildChapter2B();
+            BuildChapter3();
+            BuildChapter3B();
+            BuildChapter4();
+            BuildChapter4B();
+            BuildChapter5();
+            BuildChapter5B();
             var generated = 0;
             foreach (var m in Campaign.Campaign.Missions)
             {
@@ -1755,7 +1763,7 @@ namespace Emberline.EditorTools
             m5t.marsh = false; m5t.nightOverride = true; m5t.baseShards = 5;
             m5t.applyTheme = true; m5t.theme = Core.EnvThemeId.Forest;
             m5t.briefing = "The token off the runner carries a toll mark. Goro keeps a road, and a road can be walked to.";
-            m5t.debrief = "Goro is dead and he was not the one giving orders — the sealed message in his coat reports to somebody it does not name. The burned page says only that a Kurogawa refused.";
+            m5t.debrief = "Goro is beaten, not finished — his men dragged him off the road — and he was not the one giving orders: the sealed message he dropped reports to somebody it does not name. The burned page says only that a Kurogawa refused.";
             m5t.dressing = new[] { DressingKind.KagehiraBanners, DressingKind.DestroyedCart,
                 DressingKind.AbandonedWeapons, DressingKind.BloodTrail };
             m5t.challenge = MissionChallenge.NoAlarm; m5t.challengeShards = 3;
@@ -1844,8 +1852,18 @@ namespace Emberline.EditorTools
 
                 St(StageGoal.Cinematic, "", "", beatId: "toll_last"),
 
-                // PHASE 3 — he dies here, and only here.
-                St(StageGoal.BossFight, "FINISH IT", "ON ONE KNEE", checkpoint: true),
+                // PHASE 3 — he goes down, and his men drag him out. Goro has to
+                // survive this: chapter 4 is his war, and mission 40 opens on
+                // "Nobody gets me twice."
+                new MissionStage
+                {
+                    goal = StageGoal.BossPhase,
+                    objective = "BRING HIM DOWN",
+                    banner = "ON ONE KNEE",
+                    bossHealthGate = 0.08f,
+                    onComplete = StageEvent.FoeWithdraws,
+                    checkpoint = true,
+                },
 
                 St(StageGoal.Cinematic, "", "", beatId: "toll_death"),
 
@@ -1853,7 +1871,7 @@ namespace Emberline.EditorTools
                 new MissionStage
                 {
                     goal = StageGoal.Examine,
-                    objective = "SEARCH HIM",
+                    objective = "SEARCH WHERE HE FELL",
                     props = new[]
                     {
                         new StoryPropSpec

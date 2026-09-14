@@ -40,7 +40,7 @@ namespace Emberline.Missions
             f._path = path;
 
             // The marked stand-in, moved out to the first waypoint and turned away.
-            var t = CastStandIn.Ensure("AIKO");
+            var t = CastStandIn.EnsurePrimitive("AIKO");
             if (t == null) { Destroy(go); return null; }
             f._body = t;
             t.position = Ground.Snap(path[0]);

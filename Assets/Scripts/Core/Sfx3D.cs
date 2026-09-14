@@ -281,6 +281,12 @@ namespace Emberline.Core
             if (!PlayFromBank(UiBank, 0.6f)) Play(_ui, 0.6f);
         }
 
+        public static void VoiceBlip(float pitch)
+        {
+            var clip = UiBank.Count > 0 ? UiBank[0] : _ui;
+            Play(clip, 0.4f, pitch);
+        }
+
         public static void Confirm() => PlayOrFallback(_confirm, _ui, 0.7f);
         public static void Back() => PlayOrFallback(_back, _ui, 0.6f);
         public static void Error() => PlayOrFallback(_error, _ui, 0.6f);

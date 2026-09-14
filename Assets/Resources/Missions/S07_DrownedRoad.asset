@@ -12,12 +12,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 814b8fc7fb4eb427480893eff898b203, type: 3}
   m_Name: S07_DrownedRoad
   m_EditorClassIdentifier: Assembly-CSharp::Emberline.Missions.MissionPlan
-  id: 41
+  id: 7
   missionName: THE DROWNED ROAD
-  missionType: SURVIVAL
+  missionType: CROSSING
   briefing: The causeway floods twice a night. Between the tides it is the only road
     east. Cross it.
-  debrief: The far bank, and voices in the fog that are not soldiers.
+  debrief: Every cart on the road is untouched except the lanterns. A hundred of
+    them, gone, and nothing else taken.
   marsh: 1
   nightOverride: 0
   rain: 0
@@ -34,6 +35,7 @@ MonoBehaviour:
   - goal: 0
     objective: GET ON THE CAUSEWAY
     banner: THE TIDE IS OUT
+    hint: 
     count: 1
     duration: 0
     point: {x: 10, y: 0, z: 0}
@@ -51,6 +53,7 @@ MonoBehaviour:
   - goal: 8
     objective: SEARCH THE CARTS
     banner: NOTHING TAKEN BUT LIGHT
+    hint: 
     count: 2
     duration: 0
     point: {x: 0, y: 0, z: 0}
@@ -68,6 +71,7 @@ MonoBehaviour:
   - goal: 1
     objective: THE ROAD IS HELD
     banner: PIKES ON THE CROSSING
+    hint: 
     count: 1
     duration: 0
     point: {x: 0, y: 0, z: 0}
@@ -85,6 +89,7 @@ MonoBehaviour:
   - goal: 1
     objective: OUT OF THE WATER
     banner: THEY WERE UNDER IT
+    hint: 
     count: 1
     duration: 0
     point: {x: 0, y: 0, z: 0}
@@ -102,6 +107,7 @@ MonoBehaviour:
   - goal: 12
     objective: BEFORE THE SECOND TIDE
     banner: IT IS COMING BACK
+    hint: 
     count: 1
     duration: 45
     point: {x: -10, y: 0, z: 0}
@@ -119,6 +125,7 @@ MonoBehaviour:
   - goal: 0
     objective: THE FAR BANK
     banner: ACROSS
+    hint: 
     count: 1
     duration: 0
     point: {x: 0, y: 0, z: -6.5}

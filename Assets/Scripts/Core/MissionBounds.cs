@@ -142,6 +142,26 @@ namespace Emberline.Core
         }
 
         /// <summary>
+        /// How far out an enemy may stand: just inside where the player's push-back
+        /// begins, the same line spawns already respect. Enemies used to be clamped
+        /// to the hard edge, so one could kite into the band the player is shoved
+        /// out of and stand two metres past Renzo's reach; the wave could then never
+        /// be finished (mission 14's last fight stalled exactly there).
+        /// </summary>
+        public const float EnemyReach = SoftStart - 0.03f;
+
+        /// <summary>Clamp for enemies: never further out than the player can freely go. Preserves Y.</summary>
+        public static Vector3 ClampEnemy(Vector3 pos)
+        {
+            var nd = NormalisedDist(pos);
+            if (nd <= EnemyReach) return pos;
+            var scale = EnemyReach / nd;
+            pos.x = _center.x + (pos.x - _center.x) * scale;
+            pos.z = _center.z + (pos.z - _center.z) * scale;
+            return pos;
+        }
+
+        /// <summary>
         /// Clamp for safety net: if far out of bounds, bring back to the boundary
         /// with a small inset. Returns the fixed position and true if a teleport occurred.
         /// </summary>

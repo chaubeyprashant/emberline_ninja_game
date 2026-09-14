@@ -447,13 +447,15 @@ namespace Emberline.UI
             var text = rt.gameObject.AddComponent<TextMeshProUGUI>();
             text.text = Clean(content);
             text.font = display ? DisplayFont : HeadingFont;
-            text.fontSize = size;
+            text.fontSize = size * 1.35f;
             text.color = color;
             text.alignment = Align(align);
             text.enableWordWrapping = false;
             text.overflowMode = TextOverflowModes.Overflow;
             text.raycastTarget = false;
             text.characterSpacing = display ? 4f : 1.5f;
+            // Never spill into the next card: shrink into the box, then ellipsis.
+            rt.gameObject.AddComponent<FitText>();
             return text;
         }
 

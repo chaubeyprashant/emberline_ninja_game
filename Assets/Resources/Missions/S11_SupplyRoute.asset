@@ -1,0 +1,222 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 814b8fc7fb4eb427480893eff898b203, type: 3}
+  m_Name: S11_SupplyRoute
+  m_EditorClassIdentifier: Assembly-CSharp::Emberline.Missions.MissionPlan
+  id: 11
+  missionName: THE SUPPLY ROUTE
+  missionType: SABOTAGE
+  briefing: Wagon ruts cut deep into the old village road, more of them than a raiding
+    party needs. Follow them to the depot and burn what they carry.
+  debrief: Three soldiers survive and run. Renzo lets them.
+  marsh: 0
+  nightOverride: 0
+  rain: 0
+  snow: 0
+  fog: 0
+  applyTheme: 1
+  theme: 0
+  missionRadius: 0
+  missionRadiusZ: 0
+  nextReason: Running men go home. Renzo follows them to wherever that is.
+  region: VILLAGES
+  stages:
+  - goal: 17
+    objective: 
+    banner: 
+    hint: 
+    count: 1
+    duration: 0
+    point: {x: 0, y: 0, z: 0}
+    spawn: 
+    pointB: {x: 0, y: 0, z: 0}
+    spawnB: 
+    foeDef: 
+    beatId: supply_open
+    props: []
+    bossHealthGate: 0.6
+    onComplete: 0
+    optional: 0
+    bonusShards: 1
+    checkpoint: 0
+  - goal: 19
+    objective: READ THE ROAD
+    banner: WAGON RUTS
+    hint: 
+    count: 1
+    duration: 0
+    point: {x: 0, y: 0, z: 0}
+    spawn: 
+    pointB: {x: 0, y: 0, z: 0}
+    spawnB: 
+    foeDef: 
+    beatId: 
+    props:
+    - id: ruts
+      label: DEEP WAGON RUTS
+      point: {x: -6, y: 0, z: 12}
+      shape: 5
+      speaker: RENZO
+      line: Axle-deep. That's iron in those wagons, not grain.
+      beatId: 
+      radius: 2.2
+      figurePath: []
+      lanternLine: []
+    - id: tally
+      label: A QUARTERMASTER'S TALLY
+      point: {x: 4, y: 0, z: 15}
+      shape: 7
+      speaker: RENZO
+      line: Rice for three hundred men. This isn't a raiding party.
+      beatId: 
+      radius: 2.2
+      figurePath: []
+      lanternLine: []
+    bossHealthGate: 0.6
+    onComplete: 0
+    optional: 0
+    bonusShards: 1
+    checkpoint: 1
+  - goal: 13
+    objective: REACH THE DEPOT
+    banner: BURN IT, OR GO IN QUIET
+    hint: 
+    count: 1
+    duration: 0
+    point: {x: 12, y: 0, z: 10}
+    spawn: 0000000000000000
+    pointB: {x: -12, y: 0, z: 10}
+    spawnB: 01000000
+    foeDef: 
+    beatId: 
+    props: []
+    bossHealthGate: 0.6
+    onComplete: 0
+    optional: 0
+    bonusShards: 1
+    checkpoint: 1
+  - goal: 7
+    objective: CROSS THE WAGON YARD UNSEEN
+    banner: THE YARD IS AWAKE
+    hint: 
+    count: 1
+    duration: 0
+    point: {x: 0, y: 0, z: 0}
+    spawn: 070000000000000001000000
+    pointB: {x: 0, y: 0, z: 0}
+    spawnB: 
+    foeDef: 
+    beatId: 
+    props: []
+    bossHealthGate: 0.6
+    onComplete: 0
+    optional: 0
+    bonusShards: 1
+    checkpoint: 1
+  - goal: 19
+    objective: FIND WHAT BURNS
+    banner: THE DEPOT
+    hint: 
+    count: 1
+    duration: 0
+    point: {x: 0, y: 0, z: 0}
+    spawn: 
+    pointB: {x: 0, y: 0, z: 0}
+    spawnB: 
+    foeDef: 
+    beatId: 
+    props:
+    - id: oil
+      label: JARS OF LAMP OIL
+      point: {x: 13, y: 0, z: 6}
+      shape: 7
+      speaker: RENZO
+      line: Lamp oil, enough to light a fortress. Or burn one.
+      beatId: 
+      radius: 2.2
+      figurePath: []
+      lanternLine: []
+    - id: manifest
+      label: A LOADING MANIFEST
+      point: {x: 9, y: 0, z: 1}
+      shape: 9
+      speaker: RENZO
+      line: 'Spears, rope, rice. Destination: the Broken Banner. He''s arming a camp.'
+      beatId: 
+      radius: 2.2
+      figurePath: []
+      lanternLine: []
+    bossHealthGate: 0.6
+    onComplete: 0
+    optional: 0
+    bonusShards: 1
+    checkpoint: 1
+  - goal: 5
+    objective: SET THE FIRE
+    banner: THE FIRE TAKES TIME
+    hint: 
+    count: 1
+    duration: 30
+    point: {x: 11, y: 0, z: 4}
+    spawn: 000000000000000007000000
+    pointB: {x: 0, y: 0, z: 0}
+    spawnB: 
+    foeDef: 
+    beatId: 
+    props: []
+    bossHealthGate: 0.6
+    onComplete: 2
+    optional: 0
+    bonusShards: 1
+    checkpoint: 1
+  - goal: 17
+    objective: 
+    banner: 
+    hint: 
+    count: 1
+    duration: 0
+    point: {x: 0, y: 0, z: 0}
+    spawn: 
+    pointB: {x: 0, y: 0, z: 0}
+    spawnB: 
+    foeDef: 
+    beatId: supply_burn
+    props: []
+    bossHealthGate: 0.6
+    onComplete: 0
+    optional: 0
+    bonusShards: 1
+    checkpoint: 0
+  - goal: 0
+    objective: FOLLOW THE RUNNERS
+    banner: RUNNING MEN GO HOME
+    hint: 
+    count: 1
+    duration: 0
+    point: {x: 0, y: 0, z: -14}
+    spawn: 
+    pointB: {x: 0, y: 0, z: 0}
+    spawnB: 
+    foeDef: 
+    beatId: 
+    props: []
+    bossHealthGate: 0.6
+    onComplete: 0
+    optional: 0
+    bonusShards: 1
+    checkpoint: 0
+  dressing: 030000000900000004000000
+  ruinedVillage: 0
+  challenge: 1
+  challengeSeconds: 240
+  challengeShards: 3
+  baseShards: 4

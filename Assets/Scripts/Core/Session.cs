@@ -1,3 +1,4 @@
+using System.Linq;
 using UnityEngine;
 using Emberline.Enemies;
 
@@ -68,6 +69,12 @@ namespace Emberline.Core
         public EnemyKind kind;
         /// <summary>Named foe def (Resources/Enemies) on `kind`'s body; empty for the kind itself.</summary>
         public string defId = "";
+        /// <summary>
+        /// The campaign mission where this villain is first met. The duel stays
+        /// locked until that mission is cleared: a duel against someone the
+        /// player has never seen is a menu entry, not a grudge.
+        /// </summary>
+        public int storyMission;
 
         // ---- Duel identity (Duel overhaul). 0 = fall back to the generic floor.
         [System.Serializable] public class Tuning { }
@@ -121,133 +128,6 @@ namespace Emberline.Core
         /// </summary>
         public static LevelDef[] Story => Campaign.Campaign.Levels;
 
-        /// <summary>Kept for the endless and duel catalogues that still read it.</summary>
-        public static readonly LevelDef[] LegacyStory =
-        {
-            new() { id = 1, name = "FIRST BLOOD", marsh = false,
-                story = "Raiders hit the Yorune terraces at dusk. Renzo is the only blade on the roof.",
-                dialogue = new[]
-                {
-                    "YOTSU|Renzo! Raiders on the east terraces — they're climbing the lantern lines!",
-                    "RENZO|They picked the one road in Yorune that's mine to keep.",
-                    "YOTSU|Keep it, then. But come back whole, boy. The night is long.",
-                },
-                debrief = "The raiders carried nothing away. Whatever they came for… they did not find it. Yet.",
-                waves = new[] { W(B, B), W(B, B, B) },
-                planAsset = "S01_FirstBlood" },
-
-            new() { id = 2, name = "THE LANTERN ROAD", marsh = false,
-                story = "Old Yotsu carries the flame to the temple. The road is yours to keep open.",
-                dialogue = new[]
-                {
-                    "YOTSU|They're cutting the posts. Without light, the road belongs to them.",
-                    "RENZO|Then walk. I'll keep the dark off your shoulders.",
-                    "YOTSU|Slow old legs, boy. Don't let them reach me — this flame doesn't relight.",
-                },
-                debrief = "Yotsu reached the temple with the flame still lit. Among the ashes behind them, a raider's note: 'The old flame hangs at the guard's belt.'",
-                objective = MissionObjective.Escort,
-                escortSeconds = 62f,
-                waves = new[] { W(B, B), W(B, P), W(B, R, P) },
-                planAsset = "S02_LanternRoad" },
-
-            new() { id = 3, name = "EYES IN THE DARK", marsh = false,
-                story = "Something moves between the chimneys, and it has not seen you yet. Keep it that way.",
-                dialogue = new[]
-                {
-                    "RENZO|Something's moving between the chimneys. Faster than any bandit.",
-                    "YOTSU|Old stories say the marsh sends its drowned to fetch what it wants. Don't let them see the flame, boy.",
-                    "RENZO|Then I'll put them out before they turn around.",
-                },
-                debrief = "The shades dissolved without a sound — reaching, until the very end, for the lantern.",
-                objective = MissionObjective.Stealth,
-                waves = new[] { W(S, S), W(B, B, S, R) },
-                planAsset = "S03_EyesInTheDark" },
-
-            new() { id = 4, name = "GORO'S TOLL", marsh = false,
-                story = "The raiders have a captain. Tonight Goro collects from you.",
-                dialogue = new[]
-                {
-                    "GORO|Every roof pays, little lantern. Tonight I collect.",
-                    "RENZO|The flame was my father's. Come take his sword-arm too.",
-                    "GORO|I take what the Serpent asks. Nothing personal.",
-                },
-                debrief = "Beaten, Goro laughed through broken teeth: 'It was never me who wanted it. Ashfen calls.'",
-                waves = new[] { W(B, A, R), W(C, A, B) },
-                planAsset = "S04_GorosToll" },
-
-            new() { id = 5, name = "THE SERPENT'S TRAIL", marsh = true,
-                story = "No merchant returns from Ashfen since the drownings. The trail leads in anyway.",
-                dialogue = new[]
-                {
-                    "YOTSU|Ashfen marsh. No one returns from that road since the drownings.",
-                    "RENZO|Goro said a serpent calls. A serpent can be cut.",
-                    "YOTSU|Carry the lantern low. In the marsh, light draws more than moths.",
-                },
-                debrief = "Glowing footprints wind through the mud — lantern-bearers, marching somewhere unseen.",
-                waves = new[] { W(B, P, S, R), W(S, O, B, B, R) },
-                planAsset = "S05_SerpentsTrail" },
-
-            new() { id = 6, name = "INTO THE REEDS", marsh = true,
-                story = "The marsh swallows sound. The reeds are full of shades that were people once.",
-                dialogue = new[]
-                {
-                    "WHISPER|…warm… so warm… give it to the water…",
-                    "RENZO|These were people. Merchants. Someone drowned them all.",
-                    "WHISPER|…the Serpent gathers the lights… come… be gathered…",
-                },
-                debrief = "Each shade fell reaching for the flame — not with hunger. With longing.",
-                waves = new[] { W(S, S, S), W(S, S, O) },
-                planAsset = "S06_IntoTheReeds" },
-
-            new() { id = 7, name = "THE DROWNED ROAD", marsh = true,
-                story = "Merchants' carts sit sunk to the axle. Every lantern is gone — nothing else was touched.",
-                dialogue = new[]
-                {
-                    "RENZO|Carts sunk to the axle. Cargo untouched — except the lanterns. All gone.",
-                    "WHISPER|…a hundred lights below the water… the gate must burn…",
-                    "RENZO|Then I'm one light short of understanding. Show me.",
-                },
-                debrief = "Beneath the black water, a hundred stolen lanterns glow — arranged in a spiral.",
-                waves = new[] { W(B, P, S, S), W(A, S, R, O) },
-                planAsset = "S07_DrownedRoad" },
-
-            new() { id = 8, name = "TWIN LANTERNS", marsh = true,
-                story = "Two toll-captains guard the crossing. Their lanterns burn a color fire should not be.",
-                dialogue = new[]
-                {
-                    "RENZO|Two captains. Their lanterns burn green — that's not oil-fire.",
-                    "KAGACHI|Closer, little bearer. My lieutenants will weigh your flame.",
-                    "RENZO|It's not for sale, and it's not for the water.",
-                },
-                debrief = "The twin flames guttered out — and somewhere deep in the marsh, something vast exhaled.",
-                waves = new[] { W(S, P, O), W(C, C) },
-                planAsset = "S08_TwinLanterns" },
-
-            new() { id = 9, name = "THE SERPENT'S GUARD", marsh = true,
-                story = "The serpent's chosen bar the last bridge. Behind them, the water is perfectly still.",
-                dialogue = new[]
-                {
-                    "KAGACHI|Your family kept the oldest light, and never asked what it was for.",
-                    "RENZO|It guided people home.",
-                    "KAGACHI|It guided something else. Bring it. The door is nearly open.",
-                },
-                debrief = "Past the last bridge, the water lies perfectly still — like a held breath.",
-                waves = new[] { W(S, P, S, R, O), W(C, A, S, P, B) },
-                planAsset = "S09_SerpentsGuard" },
-
-            new() { id = 10, name = "KAGACHI", marsh = true,
-                story = "The Marsh Serpent rises. Three lives, they say — the duel, the mirrors, the desperation.",
-                dialogue = new[]
-                {
-                    "KAGACHI|Three lives, ninja. The duel. The mirrors. The desperation.",
-                    "RENZO|One lantern. And it goes home with me.",
-                    "KAGACHI|Then feed it to the gate yourself, lantern-bearer.",
-                },
-                debrief = "The gate closed. The marsh began, at last, to drain. In Yorune, every lantern burns a little brighter.",
-                waves = new[] { W(K) },
-                planAsset = "S10_Kagachi" },
-        };
-
         // ------------------------------------------------------- duel catalog
 
         public static readonly DuelDef[] Duels =
@@ -255,7 +135,7 @@ namespace Emberline.Core
             new() { id = 1, name = "GORO", title = "THE TOLL-CAPTAIN", kind = EnemyKind.Chief, marsh = false,
                 taunt = "“Every roof pays. Even yours, little lantern.”",
                 philosophy = "POWER · PRESSURE · COMMITMENT",
-                hp = 360f, posture = 120f, postureRegen = 10f, dmgResist = 0.32f,
+                storyMission = 5, hp = 320f, posture = 110f, postureRegen = 9f, dmgResist = 0.30f,
                 theme = EnvThemeId.BurningVillage, night = true,
                 intro = new[] {
                     "GORO|You came up the toll road on your own feet. Brave. Stupid.",
@@ -267,7 +147,7 @@ namespace Emberline.Core
             new() { id = 2, name = "THE PALE SHADE", title = "WHAT THE MARSH KEPT", kind = EnemyKind.Shade, marsh = true,
                 defId = "paleshade", taunt = "“…come closer…”",
                 philosophy = "SPEED · DECEPTION · POSITIONING",
-                hp = 280f, posture = 140f, postureRegen = 12f, dmgResist = 0.30f,
+                storyMission = 21, hp = 350f, posture = 140f, postureRegen = 13f, dmgResist = 0.28f,
                 theme = EnvThemeId.Graveyard, fog = true, night = true,
                 intro = new[] {
                     "PALE SHADE|…you carry her thread… the girl who tied it still breathes…",
@@ -279,7 +159,7 @@ namespace Emberline.Core
             new() { id = 3, name = "JIN KUROGANE", title = "THE STORM BLADE", kind = EnemyKind.Jin, marsh = false,
                 taunt = "“Attachments slow the sword. I cut mine away. Show me why you keep yours.”",
                 philosophy = "TECHNIQUE · COUNTERS · ADAPTATION",
-                hp = 340f, posture = 160f, postureRegen = 11f, dmgResist = 0.28f,
+                storyMission = 61, hp = 440f, posture = 175f, postureRegen = 12f, dmgResist = 0.28f,
                 theme = EnvThemeId.RainyBattlefield, rain = true,
                 intro = new[] {
                     "JIN|I have watched you fight. You repeat yourself.",
@@ -291,7 +171,7 @@ namespace Emberline.Core
             new() { id = 4, name = "KAGACHI", title = "THE SERPENT, KAGEHIRA", kind = EnemyKind.Kagachi, marsh = true,
                 taunt = "“Three lives, ninja. How many do you have?”",
                 philosophy = "MASTERY · EVERYTHING YOU HAVE LEARNED",
-                hp = 480f, posture = 190f, postureRegen = 10f, dmgResist = 0.26f,
+                storyMission = 88, hp = 560f, posture = 210f, postureRegen = 11f, dmgResist = 0.26f,
                 theme = EnvThemeId.Temple, night = true, fog = true,
                 intro = new[] {
                     "KAGACHI|The Kurogawa boy. You have your father's eyes. I closed his.",
@@ -304,19 +184,64 @@ namespace Emberline.Core
             // from the hundred missions, on the bodies they used there.
             new() { id = 5, name = "THE CONVOY CAPTAIN", title = "KEEPER OF THE LANTERN ROAD", kind = EnemyKind.Samurai,
                 defId = "convoycaptain", marsh = false, taunt = "“Everything on this road is counted. You were not.”",
-                philosophy = "DISCIPLINE · FORMATION · ATTRITION" },
+                philosophy = "DISCIPLINE · FORMATION · ATTRITION",
+                storyMission = 12, hp = 340f, posture = 125f, postureRegen = 10f, dmgResist = 0.30f,
+                theme = EnvThemeId.Village, night = true,
+                intro = new[] {
+                    "CONVOY CAPTAIN|Four provinces of steel, and one thief on the crate.",
+                    "RENZO|Not a thief. A reader. Your ledger names a village.",
+                    "CONVOY CAPTAIN|Then you have read your last page." },
+                defeat = new[] {
+                    "CONVOY CAPTAIN|Counted… every wagon… never counted you.",
+                    "RENZO|Nobody does." } },
             new() { id = 6, name = "THE THREE BLADES", title = "SISTERS OF THE SILENT FOREST", kind = EnemyKind.Assassin,
                 defId = "threeblades", marsh = false, taunt = "“One for the throat. One for the heart. One to watch.”",
-                philosophy = "AMBUSH · ROTATION · PATIENCE" },
+                philosophy = "AMBUSH · ROTATION · PATIENCE",
+                storyMission = 24, hp = 370f, posture = 150f, postureRegen = 12f, dmgResist = 0.30f,
+                theme = EnvThemeId.Forest, night = true, fog = true,
+                intro = new[] {
+                    "BLADE|Three of us walked into your forest, Kurogawa.",
+                    "RENZO|One of you walks out. Choose.",
+                    "BLADE|We already did. The one who watches." },
+                defeat = new[] {
+                    "BLADE|…the sisters… will count you… among the trees…",
+                    "RENZO|Let them count." } },
             new() { id = 7, name = "THE DROWNED GUARDIAN", title = "WARDEN OF THE SECOND KEY", kind = EnemyKind.EliteWarrior,
                 defId = "drownedguardian", marsh = true, taunt = "“Your father set me here. He did not say you would come.”",
-                philosophy = "ENDURANCE · REACH · REFUSAL" },
+                philosophy = "ENDURANCE · REACH · REFUSAL",
+                storyMission = 59, hp = 420f, posture = 165f, postureRegen = 9f, dmgResist = 0.34f,
+                theme = EnvThemeId.Graveyard, fog = true, rain = true,
+                intro = new[] {
+                    "DROWNED GUARDIAN|The water keeps what it is given. He gave it a key, and me.",
+                    "RENZO|Then he meant for me to take it back.",
+                    "DROWNED GUARDIAN|He meant for no one to. Come and drown." },
+                defeat = new[] {
+                    "DROWNED GUARDIAN|…the key is yours… so is the water…",
+                    "RENZO|I've been under it before." } },
             new() { id = 8, name = "THE IRON GUARD", title = "KAGEHIRA'S SHIELD", kind = EnemyKind.EliteWarrior,
                 defId = "ironguard", marsh = false, taunt = "“The warlord does not see you. I make sure of it.”",
-                philosophy = "GUARD · PUNISHMENT · NO GROUND GIVEN" },
+                philosophy = "GUARD · PUNISHMENT · NO GROUND GIVEN",
+                storyMission = 74, hp = 500f, posture = 200f, postureRegen = 9f, dmgResist = 0.36f,
+                theme = EnvThemeId.Mountain, night = true,
+                intro = new[] {
+                    "IRON GUARD|Nine gates. Nine men like me. You have found the first.",
+                    "RENZO|Then eight more will hear how this went.",
+                    "IRON GUARD|Nothing behind this shield has ever heard anything." },
+                defeat = new[] {
+                    "IRON GUARD|…the shield… falls… he will not… look up…",
+                    "RENZO|He will." } },
             new() { id = 9, name = "COMMANDER HOSHU", title = "THE INNER GATE", kind = EnemyKind.Samurai,
                 defId = "finalcommander", marsh = false, taunt = "“He said you would reach this door. He did not say you would open it.”",
-                philosophy = "COMMAND · TIMING · THE LAST DOOR" },
+                philosophy = "COMMAND · TIMING · THE LAST DOOR",
+                storyMission = 66, hp = 470f, posture = 185f, postureRegen = 11f, dmgResist = 0.30f,
+                theme = EnvThemeId.Fortress, night = true,
+                intro = new[] {
+                    "COMMANDER HOSHU|I have held this door for eleven years. You are not the first Kurogawa to reach it.",
+                    "RENZO|I'm the last.",
+                    "COMMANDER HOSHU|Then let it end properly. Draw." },
+                defeat = new[] {
+                    "COMMANDER HOSHU|…properly… yes. Go through, then. He is waiting.",
+                    "RENZO|He has been for a long time." } },
         };
 
         // ---------------------------------------------------- duel modifiers
@@ -378,11 +303,19 @@ namespace Emberline.Core
             get { var t = 0; foreach (var l in Story) t += Stars(l.id); return t; }
         }
 
-        public static int DuelsUnlocked
-        {
-            get => Mathf.Clamp(PlayerPrefs.GetInt("duels_unlocked", 1), 1, Duels.Length);
-            set { PlayerPrefs.SetInt("duels_unlocked", Mathf.Max(DuelsUnlocked, value)); PlayerPrefs.Save(); }
-        }
+        /// <summary>
+        /// A duel opens once its villain has been met in the campaign — the
+        /// mission they first appear in is cleared — or once the story is done.
+        /// The roster follows the story; it does not gate itself.
+        /// </summary>
+        public static bool IsDuelUnlocked(DuelDef d) =>
+            d != null && (NewGamePlus || StoryUnlocked > d.storyMission);
+
+        /// <summary>The roster in the order the story introduces them.</summary>
+        public static DuelDef[] DuelsInStoryOrder =>
+            Duels.OrderBy(d => d.storyMission).ThenBy(d => d.id).ToArray();
+
+        public static int DuelsUnlocked => Duels.Count(IsDuelUnlocked);
 
         public static bool DuelWon(int duelId) => PlayerPrefs.GetInt($"duel_won_{duelId}", 0) == 1;
 

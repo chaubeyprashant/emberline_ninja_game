@@ -12,7 +12,7 @@ namespace Emberline.EditorTools
     /// rather than in gameplay code, and re-running regenerates every beat, so a
     /// rewrite is an edit to this file plus one batch run.
     /// </summary>
-    public static class EmberStory
+    public static partial class EmberStory
     {
         [MenuItem("Emberline/Build Story")]
         public static void BuildStory()
@@ -20,6 +20,14 @@ namespace Emberline.EditorTools
             Directory.CreateDirectory("Assets/Resources/Story");
             BuildOpening();
             BuildCampaignBeats();
+            BuildChapter2Beats();
+            BuildChapter2BBeats();
+            BuildChapter3Beats();
+            BuildChapter3BBeats();
+            BuildChapter4Beats();
+            BuildChapter4BBeats();
+            BuildChapter5Beats();
+            BuildChapter5BBeats();
             AssetDatabase.SaveAssets();
             AssetDatabase.Refresh();
             Debug.Log("[Emberline] Story beats written");
@@ -453,7 +461,7 @@ namespace Emberline.EditorTools
                 S("", ShotCamera.Hold, 2f, "SEARCHER", "Nothing."),
                 S("", ShotCamera.Hold, 2.2f, "SEARCHER", "Search again."),
                 S("", ShotCamera.Hold, 3f, "SEARCHER", "The Toll-Captain said the family kept records here."),
-                S("", ShotCamera.Hold, 2.8f, "SEARCHER", "The Toll-Captain is dead."),
+                S("", ShotCamera.Hold, 2.8f, "SEARCHER", "The Toll-Captain can't even stand yet."),
                 S("", ShotCamera.PushIn, 3.2f, "SEARCHER", "Then we report to the next man."),
                 S("RENZO", ShotCamera.Hold, 2.8f, fadeAfter: true, blackAfter: 0.6f));
 
@@ -597,13 +605,16 @@ namespace Emberline.EditorTools
                 S("GORO", ShotCamera.PushIn, 3.6f, "GORO", "Ask the mountain."),
                 S("", ShotCamera.Hold, 1f, fadeAfter: true, blackAfter: 0.5f));
 
-            // Four words, and no speech. He does not explain anything on the way out.
+            // Four words on one knee, and then his men take him. He is beaten,
+            // not finished: chapter 4 is his war, and he remembers this.
             Make("toll_death", "YOU HAVE HIS EYES",
                 S("GORO", ShotCamera.Hold, 3.5f, audio: ShotAudio.Silence),
                 S("GORO", ShotCamera.Hold, 3f, "GORO", "You have his eyes."),
                 S("RENZO", ShotCamera.Hold, 2.6f, "RENZO", "Who?"),
                 S("GORO", ShotCamera.PushIn, 3.5f, "GORO", "Your father."),
-                S("", ShotCamera.Hold, 3f, fadeAfter: true, blackAfter: 1.2f));
+                S("SOLDIER", ShotCamera.Handheld, 2.4f, "SOLDIER", "Get the captain out! Now!", audio: ShotAudio.MusicDark),
+                S("GORO", ShotCamera.Hold, 2.8f, "GORO", "Not today, boy."),
+                S("", ShotCamera.Hold, 2f, fadeAfter: true, blackAfter: 1f));
 
             Make("toll_end", "ASK THE MOUNTAIN",
                 S("", ShotCamera.Wide, 4f, audio: ShotAudio.Wind),

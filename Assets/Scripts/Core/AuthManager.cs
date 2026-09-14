@@ -107,7 +107,7 @@ namespace Emberline.Core
                 _auth.StateChanged += OnFirebaseStateChanged;
                 IsInitialised = true;
 
-                // Restore existing session — do NOT create a new anonymous user.
+                // Restore existing session — do NOT create a new anonymous user unless they previously were one.
                 if (_auth.CurrentUser != null)
                 {
                     ApplyUser(_auth.CurrentUser);
@@ -115,7 +115,21 @@ namespace Emberline.Core
                 }
                 else
                 {
-                    Debug.Log("[Auth] No existing session. Waiting for user action.");
+                    var savedAuthMethod = PlayerPrefs.GetString(PrefKeyAuthMethod, "");
+                    if (savedAuthMethod == "guest")
+                    {
+                        Debug.Log("[Auth] Auto-restoring guest session.");
+                        SignInAsGuest();
+                    }
+                    else if (savedAuthMethod == "google")
+                    {
+                        Debug.Log("[Auth] Auto-restoring Google session.");
+                        SignInWithGoogle();
+                    }
+                    else
+                    {
+                        Debug.Log("[Auth] No existing session. Waiting for user action.");
+                    }
                 }
             });
 #else
@@ -171,7 +185,17 @@ namespace Emberline.Core
 
             SaveUserToFirestore(user);
 
-            OnAuthStateChanged?.Invoke(FirebaseUid);
+            if (CloudSaveManager.Instance != null)
+            {
+                CloudSaveManager.Instance.LoadFromCloud(() => 
+                {
+                    OnAuthStateChanged?.Invoke(FirebaseUid);
+                });
+            }
+            else
+            {
+                OnAuthStateChanged?.Invoke(FirebaseUid);
+            }
         }
 
         private void SaveUserToFirestore(FirebaseUser user)
@@ -246,7 +270,17 @@ namespace Emberline.Core
             PlayerPrefs.SetString(PrefKeyUid, FirebaseUid);
             PlayerPrefs.SetString(PrefKeyAuthMethod, "guest");
             PlayerPrefs.Save();
-            OnAuthStateChanged?.Invoke(FirebaseUid);
+            if (CloudSaveManager.Instance != null)
+            {
+                CloudSaveManager.Instance.LoadFromCloud(() => 
+                {
+                    OnAuthStateChanged?.Invoke(FirebaseUid);
+                });
+            }
+            else
+            {
+                OnAuthStateChanged?.Invoke(FirebaseUid);
+            }
 #endif
         }
 

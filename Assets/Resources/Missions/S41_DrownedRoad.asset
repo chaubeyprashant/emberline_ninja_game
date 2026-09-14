@@ -1,0 +1,222 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 814b8fc7fb4eb427480893eff898b203, type: 3}
+  m_Name: S41_DrownedRoad
+  m_EditorClassIdentifier: Assembly-CSharp::Emberline.Missions.MissionPlan
+  id: 41
+  missionName: THE DROWNED ROAD
+  missionType: SURVIVAL
+  briefing: Under the marsh, Goro said. The causeway floods twice a night, and between
+    the tides it is the only road in.
+  debrief: The far bank, and voices in the fog that are not soldiers.
+  marsh: 1
+  nightOverride: 0
+  rain: 1
+  snow: 0
+  fog: 0
+  applyTheme: 1
+  theme: 7
+  missionRadius: 0
+  missionRadiusZ: 0
+  nextReason: The voices are coming from the fog ahead. Renzo goes to find who is
+    making them.
+  region: MARSH
+  stages:
+  - goal: 17
+    objective: 
+    banner: 
+    hint: 
+    count: 1
+    duration: 0
+    point: {x: 0, y: 0, z: 0}
+    spawn: 
+    pointB: {x: 0, y: 0, z: 0}
+    spawnB: 
+    foeDef: 
+    beatId: road41_open
+    props: []
+    bossHealthGate: 0.6
+    onComplete: 0
+    optional: 0
+    bonusShards: 1
+    checkpoint: 0
+  - goal: 0
+    objective: GET ON THE CAUSEWAY
+    banner: THE TIDE IS OUT
+    hint: 
+    count: 1
+    duration: 0
+    point: {x: -12, y: 0, z: 8}
+    spawn: 
+    pointB: {x: 0, y: 0, z: 0}
+    spawnB: 
+    foeDef: 
+    beatId: 
+    props: []
+    bossHealthGate: 0.6
+    onComplete: 6
+    optional: 0
+    bonusShards: 1
+    checkpoint: 1
+  - goal: 19
+    objective: THE CARTS
+    banner: NOTHING TAKEN BUT LIGHT
+    hint: 
+    count: 1
+    duration: 0
+    point: {x: 0, y: 0, z: 0}
+    spawn: 
+    pointB: {x: 0, y: 0, z: 0}
+    spawnB: 
+    foeDef: 
+    beatId: 
+    props:
+    - id: hooks
+      label: EMPTY LANTERN HOOKS
+      point: {x: -8, y: 0, z: 12}
+      shape: 7
+      speaker: RENZO
+      line: Every lantern gone. The rice is still here. The silver is still here.
+        Only the light.
+      beatId: 
+      radius: 2.2
+      figurePath: []
+      lanternLine: []
+    - id: feet
+      label: BARE FOOTPRINTS
+      point: {x: -3, y: 0, z: 14}
+      shape: 5
+      speaker: RENZO
+      line: Bare feet. Dozens. All walking into the water, none walking out.
+      beatId: 
+      radius: 2.2
+      figurePath: []
+      lanternLine: []
+    bossHealthGate: 0.6
+    onComplete: 0
+    optional: 0
+    bonusShards: 1
+    checkpoint: 1
+  - goal: 1
+    objective: THE ROAD IS HELD
+    banner: PIKES ON THE CROSSING
+    hint: 
+    count: 1
+    duration: 0
+    point: {x: 0, y: 0, z: 0}
+    spawn: 070000000700000001000000
+    pointB: {x: 0, y: 0, z: 0}
+    spawnB: 
+    foeDef: 
+    beatId: 
+    props: []
+    bossHealthGate: 0.6
+    onComplete: 9
+    optional: 0
+    bonusShards: 1
+    checkpoint: 1
+  - goal: 1
+    objective: OUT OF THE WATER
+    banner: THEY WERE UNDER IT
+    hint: 
+    count: 1
+    duration: 0
+    point: {x: 0, y: 0, z: 0}
+    spawn: 0900000000000000
+    pointB: {x: 0, y: 0, z: 0}
+    spawnB: 
+    foeDef: 
+    beatId: 
+    props: []
+    bossHealthGate: 0.6
+    onComplete: 0
+    optional: 0
+    bonusShards: 1
+    checkpoint: 0
+  - goal: 17
+    objective: 
+    banner: 
+    hint: 
+    count: 1
+    duration: 0
+    point: {x: 0, y: 0, z: 0}
+    spawn: 
+    pointB: {x: 0, y: 0, z: 0}
+    spawnB: 
+    foeDef: 
+    beatId: road41_voices
+    props: []
+    bossHealthGate: 0.6
+    onComplete: 0
+    optional: 0
+    bonusShards: 1
+    checkpoint: 0
+  - goal: 12
+    objective: BEFORE THE SECOND TIDE
+    banner: IT IS COMING BACK
+    hint: 
+    count: 1
+    duration: 50
+    point: {x: 10, y: 0, z: -12}
+    spawn: 03000000
+    pointB: {x: 0, y: 0, z: 0}
+    spawnB: 
+    foeDef: 
+    beatId: 
+    props: []
+    bossHealthGate: 0.6
+    onComplete: 6
+    optional: 0
+    bonusShards: 1
+    checkpoint: 1
+  - goal: 0
+    objective: THE FAR BANK
+    banner: VOICES
+    hint: 
+    count: 1
+    duration: 0
+    point: {x: 14, y: 0, z: -15}
+    spawn: 
+    pointB: {x: 0, y: 0, z: 0}
+    spawnB: 
+    foeDef: 
+    beatId: 
+    props: []
+    bossHealthGate: 0.6
+    onComplete: 0
+    optional: 0
+    bonusShards: 1
+    checkpoint: 0
+  - goal: 17
+    objective: 
+    banner: 
+    hint: 
+    count: 1
+    duration: 0
+    point: {x: 0, y: 0, z: 0}
+    spawn: 
+    pointB: {x: 0, y: 0, z: 0}
+    spawnB: 
+    foeDef: 
+    beatId: road41_end
+    props: []
+    bossHealthGate: 0.6
+    onComplete: 0
+    optional: 0
+    bonusShards: 1
+    checkpoint: 0
+  dressing: 03000000020000000400000005000000
+  ruinedVillage: 0
+  challenge: 5
+  challengeSeconds: 240
+  challengeShards: 3
+  baseShards: 4

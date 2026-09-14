@@ -212,6 +212,7 @@ namespace Emberline.Enemies
         private float _flurryT;
         private float _erraticT;
         private float _guardT;   // samurai parry stance
+        private Vector3 _staggerVelocity; // smooth sliding force for directional hits
         private float _guardBreakT, _postureIdleT;
         private bool _spinCleave;   // Goro's enraged 360
         private float _spitCd;      // Kagachi's venom
@@ -509,6 +510,12 @@ namespace Emberline.Enemies
 
                 case State.Stagger:
                     _rig?.ForcePose(RigPose.Hurt, 1f - _t);
+                    if (_staggerVelocity.sqrMagnitude > 0.01f)
+                    {
+                        Move(_staggerVelocity);
+                        // High friction to create a sharp, crunchy slide
+                        _staggerVelocity = Vector3.Lerp(_staggerVelocity, Vector3.zero, Time.deltaTime * 12f);
+                    }
                     if ((_t -= Time.deltaTime) <= 0) _state = State.Chase;
                     break;
 
@@ -1527,9 +1534,8 @@ namespace Emberline.Enemies
                 case Player.HitReaction.Knockback:
                     _state = State.Stagger;
                     _t = StaggerLength(0.55f);
-                    // Directional: shoved along the blow, not away from a point.
-                    transform.position = ArenaMarkers.Resolve(
-                        transform.position + away * 0.95f, BodyRadius);
+                    // Directional: shoved along the blow, applying physical momentum
+                    _staggerVelocity = away * 14f;
                     _rig?.PlayOneShot(RigPose.Hurt, 0.4f);
                     break;
 
@@ -1543,8 +1549,7 @@ namespace Emberline.Enemies
                 default: // Flinch — keeps its feet, loses a beat
                     _state = State.Stagger;
                     _t = StaggerLength(0.38f);
-                    transform.position = ArenaMarkers.Resolve(
-                        transform.position + away * 0.3f, BodyRadius);
+                    _staggerVelocity = away * 6f;
                     break;
             }
         }
@@ -2237,7 +2242,7 @@ namespace Emberline.Enemies
                 transform.position = p;
                 return;
             }
-            var q = Core.MissionBounds.Clamp(transform.position);
+            var q = Core.MissionBounds.ClampEnemy(transform.position);
             q.y = y;
             transform.position = q;
             StickToGround();

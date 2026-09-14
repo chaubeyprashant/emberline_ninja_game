@@ -21,6 +21,7 @@ namespace Emberline.Enemies
         private float _life;
         private ProjectileKind _kind;
         private Renderer _renderer;
+        private TrailRenderer _trail;
         private Transform _player;
         private Player.PlayerLocomotion _motor;
         private Health _health;
@@ -34,20 +35,35 @@ namespace Emberline.Enemies
             while (Pool.Count > 0 && p == null) p = Pool.Dequeue(); // skip destroyed
             if (p == null)
             {
-                var go = GameObject.CreatePrimitive(PrimitiveType.Sphere);
+                var go = GameObject.CreatePrimitive(PrimitiveType.Quad);
                 Object.Destroy(go.GetComponent<Collider>());
                 go.name = "EmberBolt";
-                go.transform.localScale = Vector3.one * 0.35f;
+                go.transform.localScale = Vector3.one * 0.8f;
                 var r = go.GetComponent<Renderer>();
-                r.material.color = new Color(1f, 0.55f, 0.35f);
+                var shader = Shader.Find("Emberline/Glow");
+                var mat = new Material(shader != null ? shader : Shader.Find("Mobile/Particles/Additive"));
+                var tex = Resources.Load<Texture2D>("Art/VFX/flame_01");
+                if (tex != null) mat.mainTexture = tex;
+                r.material = mat;
                 r.shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.Off;
+                
+                var tr = go.AddComponent<TrailRenderer>();
+                tr.time = 0.35f;
+                tr.startWidth = 0.6f;
+                tr.endWidth = 0f;
+                tr.material = mat;
+                tr.minVertexDistance = 0.1f;
+                tr.autodestruct = false;
+
                 p = go.AddComponent<Projectile>();
                 p._renderer = r;
+                p._trail = tr;
                 p.Bind();
             }
             if (p._renderer == null) p._renderer = p.GetComponent<Renderer>();
             p.gameObject.SetActive(true);
             p.transform.position = at;
+            if (p._trail != null) p._trail.Clear();
             p._dir = dir.normalized;
             p._damage = damage;
             p._life = 3f;
@@ -55,10 +71,18 @@ namespace Emberline.Enemies
             p._kind = kind;
             // Venom reads green and travels a touch slower than an ember bolt.
             if (p._renderer != null)
-                p._renderer.material.color = kind == ProjectileKind.PoisonSpit
+            {
+                var c = kind == ProjectileKind.PoisonSpit
                     ? new Color(0.45f, 0.9f, 0.4f)
                     : new Color(1f, 0.55f, 0.35f);
-            p.transform.localScale = Vector3.one * (kind == ProjectileKind.PoisonSpit ? 0.45f : 0.35f);
+                p._renderer.material.color = c;
+                if (p._trail != null)
+                {
+                    p._trail.startColor = c;
+                    p._trail.endColor = new Color(c.r, c.g, c.b, 0f);
+                }
+            }
+            p.transform.localScale = Vector3.one * (kind == ProjectileKind.PoisonSpit ? 0.9f : 0.8f);
         }
 
         private void Bind()
@@ -80,6 +104,10 @@ namespace Emberline.Enemies
 
         private void Update()
         {
+            // Billboard effect so the flame texture always faces the camera
+            if (SceneRefs.Cam != null)
+                transform.rotation = Quaternion.LookRotation(transform.position - SceneRefs.Cam.transform.position);
+
             var prev = transform.position;
             transform.position += _dir * ((_kind == ProjectileKind.PoisonSpit ? 7.5f : 9f)
                                           * Time.deltaTime);
