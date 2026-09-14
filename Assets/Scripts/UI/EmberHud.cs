@@ -137,6 +137,39 @@ namespace Emberline.UI
         }
 
 
+        private AudioSource _voice;
+        private Coroutine _voiceRun;
+
+        /// <summary>
+        /// Speak a run of "SPEAKER|text" lines one after another — a duel
+        /// opponent's last words, which sit on the results card rather than in a
+        /// dialogue box and so had no voice. Restarts if the card is rebuilt.
+        /// </summary>
+        private void PlayVoices(string[] lines)
+        {
+            if (_voiceRun != null) StopCoroutine(_voiceRun);
+            _voiceRun = StartCoroutine(VoiceRun(lines));
+        }
+
+        private System.Collections.IEnumerator VoiceRun(string[] lines)
+        {
+            if (_voice == null)
+            {
+                _voice = gameObject.AddComponent<AudioSource>();
+                _voice.playOnAwake = false;
+            }
+            foreach (var raw in lines)
+            {
+                var clip = VoiceLines.Clip(raw);
+                if (clip == null) continue;
+                _voice.clip = clip;
+                _voice.Play();
+                // Realtime: the results card may be shown with time stopped.
+                yield return new WaitForSecondsRealtime(clip.length + 0.35f);
+            }
+            _voiceRun = null;
+        }
+
         /// <summary>Speak one line in the player's own voice, mid-mission.</summary>
         public void SayLine(string speaker, string text)
         {
@@ -2558,6 +2591,7 @@ namespace Emberline.UI
                 // A duel does not end at HP 0 and a victory card — the opponent
                 // gets a last word, and it moves the story on.
                 var lines = _gm.CurrentDuel.defeat;
+                PlayVoices(lines);
                 var dy = y - 6f;
                 foreach (var raw in lines)
                 {

@@ -62,6 +62,32 @@ namespace Emberline.Story
         /// <summary>Cut to the end. Only offered once the beat has been seen.</summary>
         public void Skip() => _skipped = true;
 
+        private AudioSource _voice;
+
+        /// <summary>
+        /// The shot's own clip if it has one, otherwise its generated line from
+        /// Resources/Voices (<see cref="VoiceLines"/>). Played 2D on the director:
+        /// PlayClipAtPoint at the origin put the voice somewhere in the world, so
+        /// it got quieter the further the shot's camera was from (0, 0, 0).
+        /// </summary>
+        private void PlayVoice(StoryShot shot)
+        {
+            var clip = shot.voice;
+            if (clip == null && !string.IsNullOrEmpty(shot.line))
+                clip = VoiceLines.Clip(VoiceLines.Key(shot.speaker, shot.line));
+            if (clip == null) return;
+
+            if (_voice == null)
+            {
+                _voice = gameObject.AddComponent<AudioSource>();
+                _voice.playOnAwake = false;
+                _voice.spatialBlend = 0f;
+            }
+            _voice.Stop();
+            _voice.clip = clip;
+            _voice.Play();
+        }
+
         private IEnumerator Run()
         {
             _gm?.SetCinematic(true);
@@ -75,7 +101,7 @@ namespace Emberline.Story
                 ApplyWorld(shot);
                 FrameShot(shot, subject);
                 _subs.Show(shot.speaker, shot.line);
-                if (shot.voice != null) AudioSource.PlayClipAtPoint(shot.voice, Vector3.zero);
+                PlayVoice(shot);
                 ShowCard(shot.card);
 
                 var t = 0f;

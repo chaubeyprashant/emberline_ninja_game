@@ -108,23 +108,19 @@ namespace Emberline.UI
                 _ => 1f,
             };
 
-            // Attempt to load and play full TTS voice line
-            using (var md5 = System.Security.Cryptography.MD5.Create())
+            // The generated voice for this exact line, if there is one.
+            var clip = VoiceLines.Clip(_lines[_index]);
+            var source = GetComponent<AudioSource>();
+            if (clip != null)
             {
-                var inputBytes = System.Text.Encoding.UTF8.GetBytes(_lines[_index]);
-                var hashBytes = md5.ComputeHash(inputBytes);
-                var sb = new System.Text.StringBuilder();
-                for (int j = 0; j < hashBytes.Length; j++) sb.Append(hashBytes[j].ToString("x2"));
-                var hashStr = sb.ToString();
-
-                var clip = Resources.Load<AudioClip>($"Voices/{hashStr}");
-                if (clip != null)
-                {
-                    var source = GetComponent<AudioSource>();
-                    if (source == null) source = gameObject.AddComponent<AudioSource>();
-                    source.clip = clip;
-                    source.Play();
-                }
+                if (source == null) source = gameObject.AddComponent<AudioSource>();
+                source.clip = clip;
+                source.Play();
+            }
+            else if (source != null)
+            {
+                // Advancing onto an unvoiced line must not leave the last speaker talking.
+                source.Stop();
             }
         }
 
