@@ -662,24 +662,34 @@ namespace Emberline.EditorTools
             slotTextures = ErikaSlots(),
         }, "MixamoErika", "Erika_Archer_Clothes_diffuse.png");
 
-        /// <summary>Daigo: the giant freed from the pens — Brute body in prison-dirt skin, a two-handed sword.</summary>
+        /// <summary>Daigo: the giant freed from the pens — his own body (Mixamo Survivor): ragged, scarred, bare-armed; a two-handed sword.</summary>
         public static Spec MixamoDaigo() => Mixamo(new Spec
         {
             name = "MixamoDaigoModel",
             height = 2.05f,
-            tint = new Color(1.12f, 1.08f, 0.98f),   // chalk-pale from the pens: brighter than Goro, warmer than the raiders
-            slotTextures = BruteSlots(),
-            hideRenderers = BruteHide,
+            tint = Color.white,   // his own body now: nothing to tell apart from Goro by colour
+            slotTextures = SurvivorSlots(),
             propRight = "sword_2handed",
-        }, "MixamoBrute", "MaleBruteA_Body_diffuse.png", propScale: 0.78f);
+        }, "MixamoSurvivor", "Survivor_diffuse.png", propScale: 0.78f);
 
-        /// <summary>Toku: the smith who marked every blade — the Pirate body gone soot-dark, no weapon.</summary>
+        /// <summary>
+        /// The FBX links both of Survivor's materials to the body sheet for diffuse and
+        /// hangs the second sheet on survivor_MAT as "transparency"; map each material to
+        /// its own sheet. Longest prefix wins, so "survivor_MAT1" is not caught by "survivor_MAT".
+        /// </summary>
+        private static Dictionary<string, string> SurvivorSlots() => new()
+        {
+            ["survivor_MAT1"] = MixTex("MixamoSurvivor", "Survivor_body_diffuse.png"),
+            ["survivor_MAT"] = MixTex("MixamoSurvivor", "Survivor_diffuse.png"),
+        };
+
+        /// <summary>Toku: the smith who marked every blade — his own body (Mixamo Peasant Man): bald, bearded, a work jerkin; no weapon.</summary>
         public static Spec MixamoToku() => Mixamo(new Spec
         {
             name = "MixamoTokuModel",
             height = 1.72f,
-            tint = new Color(0.52f, 0.46f, 0.42f),
-        }, "MixamoPirate", "void_diffuse.png");
+            tint = new Color(0.90f, 0.86f, 0.82f),   // a little forge soot, not a disguise
+        }, "MixamoPeasantMan", "Peasant_Man_diffuse.png");
 
         /// <summary>Shade: the hooded rogue as a ghost — unarmed, translucent, pale blue.</summary>
         public static Spec Shade()
@@ -751,17 +761,15 @@ namespace Emberline.EditorTools
             }, "MixamoPirate", "void_diffuse.png", propScale: 0.78f),
 
             // Sisters of the silent forest: the pale red-hooded wraith.
-            // The man who walks the line: the Brute body in blood-rust, a head
-            // taller than the raiders, the axe held like a tool.
+            // The man who walks the line: his own body (Mixamo Dreyar), dark leather
+            // plate, a head taller than the raiders, the axe held like a tool.
             "executioner" => Mixamo(new Spec
             {
                 name = "ExecutionerModel",
                 height = 2.15f,
-                tint = new Color(0.95f, 0.40f, 0.36f),
-                slotTextures = BruteSlots(),
-                hideRenderers = BruteHide,
+                tint = new Color(1.00f, 0.90f, 0.88f),   // a warm cast on dark plate; blood-rust crushed it to black
                 propRight = "axe_2handed",
-            }, "MixamoBrute", "MaleBruteA_Body_diffuse.png", propScale: 0.85f),
+            }, "MixamoDreyar", "Dreyar_diffuse.png", propScale: 0.85f),
 
             "threeblades" => Mixamo(new Spec
             {

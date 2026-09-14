@@ -1298,10 +1298,15 @@ namespace Emberline.UI
             UiKit.Label(rt, unlocked ? level.name : "LOCKED", 15, unlocked ? UiKit.Pale : UiKit.Faint,
                 new Vector2(0, 1), new Vector2(54, -12), new Vector2(w - 170, 20), align: TextAnchor.MiddleLeft)
                 .characterSpacing = 2f;
+            // One line, ending before the stars and the MASTERED/CLEARED badge
+            // (which start 160 px from the right edge): the old 64-character cut
+            // wrapped onto a second line and ran under the badge.
             var desc = unlocked ? level.story : "Clear the previous mission.";
-            if (desc.Length > 64) desc = desc.Substring(0, 61).TrimEnd() + "…";
-            UiKit.Paragraph(rt, desc, 12, unlocked ? UiKit.Dim : UiKit.Faint,
-                new Vector2(0, 1), new Vector2(54, -34), new Vector2(w - 170, 30), TextAnchor.UpperLeft);
+            var descText = UiKit.Paragraph(rt, desc, 12, unlocked ? UiKit.Dim : UiKit.Faint,
+                new Vector2(0, 1), new Vector2(54, -34), new Vector2(w - 230, 20), TextAnchor.UpperLeft);
+            descText.enableWordWrapping = false;
+            // Body copy never shrinks; it ends in an ellipsis at the box edge.
+            descText.GetComponent<FitText>().minScale = 1f;
             for (var i = 0; i < 3; i++)
             {
                 var sRt = UiKit.Rect(rt, "star", new Vector2(1, 1), new Vector2(-88 + i * 22f, -18),
