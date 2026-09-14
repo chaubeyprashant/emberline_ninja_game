@@ -48,10 +48,21 @@ namespace Emberline.EditorTools
             ("SUZU", EmberCharacterFactory.MixamoSuzu),
             ("FUMI", EmberCharacterFactory.MixamoFumi),
             ("SCAVENGER KING", () => EmberCharacterFactory.NamedFoe("raiderleader")),
+            ("CONVOY CAPTAIN", EmberCharacterFactory.Samurai),
             // Chapter 3: the thing in the trees, and the last of the Three Blades.
             ("PALE SHADE", EmberCharacterFactory.Shade),
             ("BLADE", () => EmberCharacterFactory.NamedFoe("threeblades")),
             ("TSURU", EmberCharacterFactory.MixamoTsuru),
+            // Chapter 4: the man out of the collar, the smith, and the man who walks the line.
+            ("DAIGO", EmberCharacterFactory.MixamoDaigo),
+            ("TOKU", EmberCharacterFactory.MixamoToku),
+            ("EXECUTIONER", () => EmberCharacterFactory.NamedFoe("executioner")),
+            // Chapter 5: the old guide, and the thing in the deep water, seen before it is fought.
+            ("NIRE", EmberCharacterFactory.MixamoNire),
+            ("DROWNED GUARDIAN", () => EmberCharacterFactory.NamedFoe("drownedguardian")),
+            // The voices in the fog are the marsh's shades: seen, pale and half there,
+            // never a box figure standing in for nobody.
+            ("WHISPER", EmberCharacterFactory.Shade),
         };
 
         public static readonly string[] CastNames = System.Array.ConvertAll(Roles, r => r.cast);
@@ -109,6 +120,16 @@ namespace Emberline.EditorTools
                 if (prefab == null) continue;
                 var go = (GameObject)PrefabUtility.InstantiatePrefab(prefab);
                 go.transform.SetPositionAndRotation(new Vector3(x, 0f, 0f), Quaternion.Euler(0f, 180f, 0f));
+                // SkeletalRig pushes its tint in Awake, which never runs in edit mode:
+                // without this, every variant of a shared body renders identical.
+                var rig = go.GetComponentInChildren<SkeletalRig>();
+                if (rig != null)
+                {
+                    var mpb = new MaterialPropertyBlock();
+                    mpb.SetColor("_Color", rig.tint);
+                    foreach (var r in go.GetComponentsInChildren<Renderer>(true))
+                        if (!r.name.StartsWith("Prop_")) r.SetPropertyBlock(mpb);
+                }
                 x += 1.3f;
             }
 

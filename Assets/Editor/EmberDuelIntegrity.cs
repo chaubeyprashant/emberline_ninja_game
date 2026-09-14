@@ -34,7 +34,7 @@ namespace Emberline.EditorTools
             // punish window, and — the thing under test — the boss is NOT
             // executed by an ordinary guard break. Reports the estimated active
             // fight time so the length targets (Part 3) can be read off.
-            foreach (var duel in Session.Duels.Take(4))
+            foreach (var duel in Session.Duels)
             {
                 var def = !string.IsNullOrEmpty(duel.defId)
                     ? EnemyDefs.Find(duel.defId)
@@ -84,7 +84,7 @@ namespace Emberline.EditorTools
                 "rank order Mook<Elite<MiniBoss<Boss holds (execution gate depends on it)");
 
             // Each duel is its own place and has a reason to exist.
-            foreach (var duel in Session.Duels.Take(4))
+            foreach (var duel in Session.Duels)
             {
                 Check(!string.IsNullOrEmpty(duel.philosophy), $"{duel.name}: has a fighting philosophy");
                 Check(duel.intro.Length >= 2 && duel.defeat.Length >= 1, $"{duel.name}: has an intro and a defeat beat");
@@ -99,6 +99,28 @@ namespace Emberline.EditorTools
                 Check(gb != null && gb.postureMultiplier >= 2f && gb.damageMultiplier <= 1.6f,
                     "the guard-break punish is posture, not damage");
             }
+
+            // Every villain is met in the story before their duel can open, at
+            // the mission the roster says, and the roster hardens in story order.
+            var missions = Campaign.Campaign.Missions;
+            bool Fields(Campaign.CampaignMission cm, DuelDef d) =>
+                (!string.IsNullOrEmpty(d.defId) && cm.foe == d.defId)
+                || (cm.boss.HasValue && cm.boss.Value == d.kind)
+                || (string.IsNullOrEmpty(d.defId) && !string.IsNullOrEmpty(cm.foe)
+                    && EnemyDefs.Find(cm.foe) is { } fd && fd.kind == d.kind);
+            foreach (var duel in Session.Duels)
+            {
+                var cm = missions.FirstOrDefault(x => x.id == duel.storyMission);
+                Check(cm != null, $"{duel.name}: story mission {duel.storyMission} exists");
+                if (cm == null) continue;
+                Check(Fields(cm, duel), $"{duel.name}: is fought in mission {cm.id} '{cm.name}'");
+                Check(!missions.Any(x => x.id < duel.storyMission && Fields(x, duel)),
+                    $"{duel.name}: mission {duel.storyMission} is their first appearance");
+            }
+            var order = Session.DuelsInStoryOrder;
+            for (var i = 1; i < order.Length; i++)
+                Check(order[i].hp > order[i - 1].hp,
+                    $"{order[i].name} (mission {order[i].storyMission}) is harder than {order[i - 1].name} ({order[i].hp:0} > {order[i - 1].hp:0} HP)");
 
             Debug.Log(fail == 0 ? "[DUEL] ALL PASSED" : $"[DUEL] {fail} FAILED");
             if (Application.isBatchMode) EditorApplication.Exit(fail == 0 ? 0 : 1);

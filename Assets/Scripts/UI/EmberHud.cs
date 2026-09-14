@@ -1228,9 +1228,14 @@ namespace Emberline.UI
                 UiKit.Kicker(rt, $"ACT {ToRoman(ch.act)}  ·  CHAPTER {ch.number}", new Vector2(0, 1),
                     new Vector2(12, -10), new Vector2(cardW - 24, 16), color: open ? UiKit.Ember : UiKit.Faint,
                     align: TextAnchor.MiddleLeft);
-                UiKit.Label(rt, open ? ch.name : "LOCKED", 17, open ? UiKit.Pale : UiKit.Faint, new Vector2(0, 1),
-                    new Vector2(12, -30), new Vector2(cardW - 24, 44), display: true, align: TextAnchor.UpperLeft)
-                    .characterSpacing = 2f;
+                // Two lines if the name needs them, shrunk if two are not enough:
+                // "ASHES OF YORUNE" ran straight into the next card's LOCKED.
+                var chName = UiKit.Label(rt, open ? ch.name : "LOCKED", 17, open ? UiKit.Pale : UiKit.Faint,
+                    new Vector2(0, 1), new Vector2(12, -30), new Vector2(cardW - 24, 52), display: true,
+                    align: TextAnchor.UpperLeft);
+                chName.characterSpacing = 2f;
+                chName.enableWordWrapping = true;
+                chName.GetComponent<FitText>().fitHeight = true;
                 UiKit.Paragraph(rt, open ? ch.theme : "Finish the chapter before it.", 12,
                     open ? UiKit.Dim : UiKit.Faint, new Vector2(0, 1), new Vector2(12, -84),
                     new Vector2(cardW - 24, 34), TextAnchor.UpperLeft);
@@ -1337,21 +1342,25 @@ namespace Emberline.UI
             // rows of 148 with 14 between end at 630, clear of BACK (649+).
             const float x0 = 104f, cardW = (1496f - x0 - 2f * 24f) / 3f, cardH = 148f, gapX = 24f, gapY = 14f;
             const int perRow = 3;
-            for (var i = 0; i < Session.Duels.Length; i++)
+            // In the order the story introduces them, so the locked cards read
+            // as the road ahead.
+            var order = Session.DuelsInStoryOrder;
+            for (var slot = 0; slot < order.Length; slot++)
             {
-                var col = i % perRow;
-                var row = i / perRow;
-                DuelCard(i, new Vector2(x0 + col * (cardW + gapX), -158f - row * (cardH + gapY)),
+                var col = slot % perRow;
+                var row = slot / perRow;
+                DuelCard(System.Array.IndexOf(Session.Duels, order[slot]), slot,
+                    new Vector2(x0 + col * (cardW + gapX), -158f - row * (cardH + gapY)),
                     new Vector2(cardW, cardH));
             }
             BackButton();
         }
 
         /// <summary>One opponent as a card, matching the home grid's language.</summary>
-        private void DuelCard(int i, Vector2 pos, Vector2 size)
+        private void DuelCard(int i, int slot, Vector2 pos, Vector2 size)
         {
             var duel = Session.Duels[i];
-            var unlocked = duel.id <= Session.DuelsUnlocked;
+            var unlocked = Session.IsDuelUnlocked(duel);
             var won = Session.DuelWon(duel.id);
             var rt = UiKit.Rect(_screenRoot, "Duel" + duel.id, new Vector2(0, 1), pos, size, new Vector2(0, 1));
             var img = UiKit.Img(rt, null, new Color(UiKit.Panel.r, UiKit.Panel.g, UiKit.Panel.b, unlocked ? 0.55f : 0.28f));
@@ -1374,16 +1383,17 @@ namespace Emberline.UI
             UiKit.Hairline(rt, new Vector2(0, 1), unlocked ? 0.14f : 0.06f);
             UiKit.Img(UiKit.Rect(rt, "Tick", new Vector2(0, 1), new Vector2(0, -16), new Vector2(3, 24),
                 new Vector2(0, 1)), UiKit.White, unlocked ? UiKit.Ember : UiKit.Faint);
-            UiKit.Label(rt, (i + 1).ToString("00"), 42,
+            UiKit.Label(rt, (slot + 1).ToString("00"), 42,
                 new Color(UiKit.Pale.r, UiKit.Pale.g, UiKit.Pale.b, unlocked ? 0.06f : 0.03f),
                 new Vector2(1, 1), new Vector2(-14, -8), new Vector2(84, 52), display: true,
                 align: TextAnchor.UpperRight);
 
             // A locked opponent still shows their name, faintly — the roster is
-            // the promise — with the concrete way to reach them.
-            var prev = i > 0 ? Session.Duels[i - 1] : null;
-            var hint = prev == null ? "" : prev.id <= Session.DuelsUnlocked
-                ? $"Defeat {prev.name} to unlock" : $"Defeat opponent {i:00} to unlock";
+            // the promise — with the mission where the story introduces them.
+            var met = duel.storyMission >= 1 && duel.storyMission <= Session.Story.Length
+                ? Session.Story[duel.storyMission - 1] : null;
+            var hint = met == null ? "Meet them in the story to unlock"
+                : $"Meet them in mission {duel.storyMission:00} · {met.name}";
             UiKit.Label(rt, duel.name, 22, unlocked ? UiKit.Pale : UiKit.Faint,
                 new Vector2(0, 1), new Vector2(18, -18), new Vector2(size.x - 40, 28), display: true,
                 align: TextAnchor.MiddleLeft).characterSpacing = 2f;
@@ -2681,10 +2691,15 @@ namespace Emberline.UI
         private void ResultButtons(params (string label, System.Action action)[] buttons)
         {
             DailyLine();
-            var w = 200f;
+            // The primary button carries the next mission's name ("60 THE TRUTH
+            // BENEATH YORUNE"), which at 200 px ran into REPLAY beside it.
+            const float primaryW = 320f, otherW = 180f, gap = 16f;
+            var left = -(primaryW + (buttons.Length - 1) * (otherW + gap)) * 0.5f;
             for (var i = 0; i < buttons.Length; i++)
             {
-                var x = (i - (buttons.Length - 1) * 0.5f) * (w + 16f);
+                var w = i == 0 ? primaryW : otherW;
+                var x = left + w * 0.5f;
+                left += w + gap;
                 var (label, action) = buttons[i];
                 UiKit.MakeButton(_screenRoot, label, new Vector2(0.5f, 0), new Vector2(x, 60),
                     new Vector2(w, 50), () => { Sfx3D.Confirm(); action(); }, 13, primary: i == 0);

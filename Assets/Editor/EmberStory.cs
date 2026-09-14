@@ -24,6 +24,10 @@ namespace Emberline.EditorTools
             BuildChapter2BBeats();
             BuildChapter3Beats();
             BuildChapter3BBeats();
+            BuildChapter4Beats();
+            BuildChapter4BBeats();
+            BuildChapter5Beats();
+            BuildChapter5BBeats();
             AssetDatabase.SaveAssets();
             AssetDatabase.Refresh();
             Debug.Log("[Emberline] Story beats written");

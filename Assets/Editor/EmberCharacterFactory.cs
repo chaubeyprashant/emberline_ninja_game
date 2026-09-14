@@ -653,6 +653,34 @@ namespace Emberline.EditorTools
             propLeft = "yumi",
         }, "MixamoAkai", "akai_diffuse.png");
 
+        /// <summary>Nire: the old guide of the reed village — the archer body gone grey, small, unarmed.</summary>
+        public static Spec MixamoNire() => Mixamo(new Spec
+        {
+            name = "MixamoNireModel",
+            height = 1.54f,
+            tint = new Color(0.72f, 0.74f, 0.70f),
+            slotTextures = ErikaSlots(),
+        }, "MixamoErika", "Erika_Archer_Clothes_diffuse.png");
+
+        /// <summary>Daigo: the giant freed from the pens — Brute body in prison-dirt skin, a two-handed sword.</summary>
+        public static Spec MixamoDaigo() => Mixamo(new Spec
+        {
+            name = "MixamoDaigoModel",
+            height = 2.05f,
+            tint = new Color(1.12f, 1.08f, 0.98f),   // chalk-pale from the pens: brighter than Goro, warmer than the raiders
+            slotTextures = BruteSlots(),
+            hideRenderers = BruteHide,
+            propRight = "sword_2handed",
+        }, "MixamoBrute", "MaleBruteA_Body_diffuse.png", propScale: 0.78f);
+
+        /// <summary>Toku: the smith who marked every blade — the Pirate body gone soot-dark, no weapon.</summary>
+        public static Spec MixamoToku() => Mixamo(new Spec
+        {
+            name = "MixamoTokuModel",
+            height = 1.72f,
+            tint = new Color(0.52f, 0.46f, 0.42f),
+        }, "MixamoPirate", "void_diffuse.png");
+
         /// <summary>Shade: the hooded rogue as a ghost — unarmed, translucent, pale blue.</summary>
         public static Spec Shade()
         {
@@ -723,6 +751,18 @@ namespace Emberline.EditorTools
             }, "MixamoPirate", "void_diffuse.png", propScale: 0.78f),
 
             // Sisters of the silent forest: the pale red-hooded wraith.
+            // The man who walks the line: the Brute body in blood-rust, a head
+            // taller than the raiders, the axe held like a tool.
+            "executioner" => Mixamo(new Spec
+            {
+                name = "ExecutionerModel",
+                height = 2.15f,
+                tint = new Color(0.95f, 0.40f, 0.36f),
+                slotTextures = BruteSlots(),
+                hideRenderers = BruteHide,
+                propRight = "axe_2handed",
+            }, "MixamoBrute", "MaleBruteA_Body_diffuse.png", propScale: 0.85f),
+
             "threeblades" => Mixamo(new Spec
             {
                 name = "ThreeBladesModel",
@@ -737,7 +777,7 @@ namespace Emberline.EditorTools
 
         /// <summary>The named foes that declare a visual of their own.</summary>
         public static readonly string[] NamedFoeIds =
-            { "ironguard", "drownedguardian", "finalcommander", "raiderleader", "threeblades" };
+            { "ironguard", "drownedguardian", "finalcommander", "raiderleader", "threeblades", "executioner" };
 
         /// <summary>Builds the character visual under `root`. False → FBX missing, use NinjaRig.</summary>
         public static bool Build(GameObject root, Spec spec)

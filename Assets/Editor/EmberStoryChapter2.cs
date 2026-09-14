@@ -57,6 +57,14 @@ namespace Emberline.EditorTools
                 S("SUZU", ShotCamera.PushIn, 2.8f, "SUZU", "Suzu. Don't make it weird."),
                 S("", ShotCamera.Hold, 0.7f, fadeAfter: true, blackAfter: 0.3f));
 
+            // The captain, counting. The one man on the road who was awake.
+            Make("cargo_captain", "COUNTED",
+                S("CONVOY CAPTAIN", ShotCamera.Orbit, 3.6f, audio: ShotAudio.Silence),
+                S("CONVOY CAPTAIN", ShotCamera.Hold, 3.4f, "CONVOY CAPTAIN", "Everything on this road is counted."),
+                S("CONVOY CAPTAIN", ShotCamera.PushIn, 2.8f, "CONVOY CAPTAIN", "You were not.", audio: ShotAudio.Sting),
+                S("RENZO", ShotCamera.OverShoulder, 2.4f, "RENZO", "Then count faster."),
+                S("", ShotCamera.Hold, 0.4f, fadeAfter: true, blackAfter: 0.2f));
+
             Make("cargo_end", "KIBA",
                 S("SUZU", ShotCamera.Hold, 3f, "SUZU", "You're going after the supplier.", audio: ShotAudio.MusicSoft),
                 S("RENZO", ShotCamera.Hold, 2.8f, "RENZO", "You're not coming."),

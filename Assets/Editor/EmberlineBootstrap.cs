@@ -1481,6 +1481,16 @@ namespace Emberline.EditorTools
                 "“He said you would reach this door. He did not say you would open it.”", 1.9f, 1.25f, EnemyRank.MiniBoss);
             Named("threeblades", assassin, "THE THREE BLADES", "SISTERS OF THE SILENT FOREST",
                 "“One for the throat. One for the heart. One to watch.”", 2.2f, 1.2f, EnemyRank.Elite);
+            // Met at 34, so he must not out-guard Goro at 40: a heavy's swing and a
+            // boss's health, but he walks through blows instead of hiding behind them.
+            {
+                var exe = Named("executioner", heavy, "THE EXECUTIONER", "HE WALKS THE LINE",
+                    "“Six this morning. Seven, now.”", 1.5f, 1.0f, EnemyRank.MiniBoss);
+                exe.blockChance = 0.15f;
+                exe.guardsWhenPostureLow = false;
+                exe.maxPosture = 45f;
+                EditorUtility.SetDirty(exe);
+            }
 
             // The named foes exist now: their own kits and personalities.
             EmberCombatKits.ApplyNamed();

@@ -118,9 +118,12 @@ namespace Emberline.EditorTools
                     Prop("lading", "A BILL OF LADING", new Vector3(-3f, 0f, 17f), StoryPropShape.CommandPost,
                         "Supplier: Kiba. A village I've never heard of, selling him steel by the wagon.")),
 
-                // The last guard is awake, armed, and standing on the crate.
-                St(StageGoal.Assassinate, "THE GUARD ON THE CRATE", "HE IS AWAKE",
-                    spawn: new[] { A }, onComplete: StageEvent.AlarmTriggered),
+                Scene("cargo_captain"),
+
+                // The last man awake is the convoy's captain, standing on the crate
+                // with his ledger. He is met here so the duel roster can hold him.
+                St(StageGoal.Assassinate, "THE CAPTAIN ON THE CRATE", "HE IS AWAKE",
+                    foeDef: "convoycaptain", spawn: new[] { A }, onComplete: StageEvent.AlarmTriggered),
 
                 St(StageGoal.Escape, "GONE BEFORE THE ESCORT WAKES", "THE ROAD BEHIND YOU",
                     duration: 55f, point: new Vector3(0f, 0f, -15f), spawn: new[] { R, A }, checkpoint: true),

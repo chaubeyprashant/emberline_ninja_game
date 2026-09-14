@@ -454,6 +454,8 @@ namespace Emberline.UI
             text.overflowMode = TextOverflowModes.Overflow;
             text.raycastTarget = false;
             text.characterSpacing = display ? 4f : 1.5f;
+            // Never spill into the next card: shrink into the box, then ellipsis.
+            rt.gameObject.AddComponent<FitText>();
             return text;
         }
 

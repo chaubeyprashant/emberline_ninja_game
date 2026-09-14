@@ -1,3 +1,4 @@
+using System.Linq;
 using UnityEngine;
 using Emberline.Enemies;
 
@@ -68,6 +69,12 @@ namespace Emberline.Core
         public EnemyKind kind;
         /// <summary>Named foe def (Resources/Enemies) on `kind`'s body; empty for the kind itself.</summary>
         public string defId = "";
+        /// <summary>
+        /// The campaign mission where this villain is first met. The duel stays
+        /// locked until that mission is cleared: a duel against someone the
+        /// player has never seen is a menu entry, not a grudge.
+        /// </summary>
+        public int storyMission;
 
         // ---- Duel identity (Duel overhaul). 0 = fall back to the generic floor.
         [System.Serializable] public class Tuning { }
@@ -128,7 +135,7 @@ namespace Emberline.Core
             new() { id = 1, name = "GORO", title = "THE TOLL-CAPTAIN", kind = EnemyKind.Chief, marsh = false,
                 taunt = "“Every roof pays. Even yours, little lantern.”",
                 philosophy = "POWER · PRESSURE · COMMITMENT",
-                hp = 360f, posture = 120f, postureRegen = 10f, dmgResist = 0.32f,
+                storyMission = 5, hp = 320f, posture = 110f, postureRegen = 9f, dmgResist = 0.30f,
                 theme = EnvThemeId.BurningVillage, night = true,
                 intro = new[] {
                     "GORO|You came up the toll road on your own feet. Brave. Stupid.",
@@ -140,7 +147,7 @@ namespace Emberline.Core
             new() { id = 2, name = "THE PALE SHADE", title = "WHAT THE MARSH KEPT", kind = EnemyKind.Shade, marsh = true,
                 defId = "paleshade", taunt = "“…come closer…”",
                 philosophy = "SPEED · DECEPTION · POSITIONING",
-                hp = 280f, posture = 140f, postureRegen = 12f, dmgResist = 0.30f,
+                storyMission = 21, hp = 350f, posture = 140f, postureRegen = 13f, dmgResist = 0.28f,
                 theme = EnvThemeId.Graveyard, fog = true, night = true,
                 intro = new[] {
                     "PALE SHADE|…you carry her thread… the girl who tied it still breathes…",
@@ -152,7 +159,7 @@ namespace Emberline.Core
             new() { id = 3, name = "JIN KUROGANE", title = "THE STORM BLADE", kind = EnemyKind.Jin, marsh = false,
                 taunt = "“Attachments slow the sword. I cut mine away. Show me why you keep yours.”",
                 philosophy = "TECHNIQUE · COUNTERS · ADAPTATION",
-                hp = 340f, posture = 160f, postureRegen = 11f, dmgResist = 0.28f,
+                storyMission = 61, hp = 440f, posture = 175f, postureRegen = 12f, dmgResist = 0.28f,
                 theme = EnvThemeId.RainyBattlefield, rain = true,
                 intro = new[] {
                     "JIN|I have watched you fight. You repeat yourself.",
@@ -164,7 +171,7 @@ namespace Emberline.Core
             new() { id = 4, name = "KAGACHI", title = "THE SERPENT, KAGEHIRA", kind = EnemyKind.Kagachi, marsh = true,
                 taunt = "“Three lives, ninja. How many do you have?”",
                 philosophy = "MASTERY · EVERYTHING YOU HAVE LEARNED",
-                hp = 480f, posture = 190f, postureRegen = 10f, dmgResist = 0.26f,
+                storyMission = 88, hp = 560f, posture = 210f, postureRegen = 11f, dmgResist = 0.26f,
                 theme = EnvThemeId.Temple, night = true, fog = true,
                 intro = new[] {
                     "KAGACHI|The Kurogawa boy. You have your father's eyes. I closed his.",
@@ -177,19 +184,64 @@ namespace Emberline.Core
             // from the hundred missions, on the bodies they used there.
             new() { id = 5, name = "THE CONVOY CAPTAIN", title = "KEEPER OF THE LANTERN ROAD", kind = EnemyKind.Samurai,
                 defId = "convoycaptain", marsh = false, taunt = "“Everything on this road is counted. You were not.”",
-                philosophy = "DISCIPLINE · FORMATION · ATTRITION" },
+                philosophy = "DISCIPLINE · FORMATION · ATTRITION",
+                storyMission = 12, hp = 340f, posture = 125f, postureRegen = 10f, dmgResist = 0.30f,
+                theme = EnvThemeId.Village, night = true,
+                intro = new[] {
+                    "CONVOY CAPTAIN|Four provinces of steel, and one thief on the crate.",
+                    "RENZO|Not a thief. A reader. Your ledger names a village.",
+                    "CONVOY CAPTAIN|Then you have read your last page." },
+                defeat = new[] {
+                    "CONVOY CAPTAIN|Counted… every wagon… never counted you.",
+                    "RENZO|Nobody does." } },
             new() { id = 6, name = "THE THREE BLADES", title = "SISTERS OF THE SILENT FOREST", kind = EnemyKind.Assassin,
                 defId = "threeblades", marsh = false, taunt = "“One for the throat. One for the heart. One to watch.”",
-                philosophy = "AMBUSH · ROTATION · PATIENCE" },
+                philosophy = "AMBUSH · ROTATION · PATIENCE",
+                storyMission = 24, hp = 370f, posture = 150f, postureRegen = 12f, dmgResist = 0.30f,
+                theme = EnvThemeId.Forest, night = true, fog = true,
+                intro = new[] {
+                    "BLADE|Three of us walked into your forest, Kurogawa.",
+                    "RENZO|One of you walks out. Choose.",
+                    "BLADE|We already did. The one who watches." },
+                defeat = new[] {
+                    "BLADE|…the sisters… will count you… among the trees…",
+                    "RENZO|Let them count." } },
             new() { id = 7, name = "THE DROWNED GUARDIAN", title = "WARDEN OF THE SECOND KEY", kind = EnemyKind.EliteWarrior,
                 defId = "drownedguardian", marsh = true, taunt = "“Your father set me here. He did not say you would come.”",
-                philosophy = "ENDURANCE · REACH · REFUSAL" },
+                philosophy = "ENDURANCE · REACH · REFUSAL",
+                storyMission = 59, hp = 420f, posture = 165f, postureRegen = 9f, dmgResist = 0.34f,
+                theme = EnvThemeId.Graveyard, fog = true, rain = true,
+                intro = new[] {
+                    "DROWNED GUARDIAN|The water keeps what it is given. He gave it a key, and me.",
+                    "RENZO|Then he meant for me to take it back.",
+                    "DROWNED GUARDIAN|He meant for no one to. Come and drown." },
+                defeat = new[] {
+                    "DROWNED GUARDIAN|…the key is yours… so is the water…",
+                    "RENZO|I've been under it before." } },
             new() { id = 8, name = "THE IRON GUARD", title = "KAGEHIRA'S SHIELD", kind = EnemyKind.EliteWarrior,
                 defId = "ironguard", marsh = false, taunt = "“The warlord does not see you. I make sure of it.”",
-                philosophy = "GUARD · PUNISHMENT · NO GROUND GIVEN" },
+                philosophy = "GUARD · PUNISHMENT · NO GROUND GIVEN",
+                storyMission = 74, hp = 500f, posture = 200f, postureRegen = 9f, dmgResist = 0.36f,
+                theme = EnvThemeId.Mountain, night = true,
+                intro = new[] {
+                    "IRON GUARD|Nine gates. Nine men like me. You have found the first.",
+                    "RENZO|Then eight more will hear how this went.",
+                    "IRON GUARD|Nothing behind this shield has ever heard anything." },
+                defeat = new[] {
+                    "IRON GUARD|…the shield… falls… he will not… look up…",
+                    "RENZO|He will." } },
             new() { id = 9, name = "COMMANDER HOSHU", title = "THE INNER GATE", kind = EnemyKind.Samurai,
                 defId = "finalcommander", marsh = false, taunt = "“He said you would reach this door. He did not say you would open it.”",
-                philosophy = "COMMAND · TIMING · THE LAST DOOR" },
+                philosophy = "COMMAND · TIMING · THE LAST DOOR",
+                storyMission = 66, hp = 470f, posture = 185f, postureRegen = 11f, dmgResist = 0.30f,
+                theme = EnvThemeId.Fortress, night = true,
+                intro = new[] {
+                    "COMMANDER HOSHU|I have held this door for eleven years. You are not the first Kurogawa to reach it.",
+                    "RENZO|I'm the last.",
+                    "COMMANDER HOSHU|Then let it end properly. Draw." },
+                defeat = new[] {
+                    "COMMANDER HOSHU|…properly… yes. Go through, then. He is waiting.",
+                    "RENZO|He has been for a long time." } },
         };
 
         // ---------------------------------------------------- duel modifiers
@@ -251,11 +303,19 @@ namespace Emberline.Core
             get { var t = 0; foreach (var l in Story) t += Stars(l.id); return t; }
         }
 
-        public static int DuelsUnlocked
-        {
-            get => Mathf.Clamp(PlayerPrefs.GetInt("duels_unlocked", 1), 1, Duels.Length);
-            set { PlayerPrefs.SetInt("duels_unlocked", Mathf.Max(DuelsUnlocked, value)); PlayerPrefs.Save(); }
-        }
+        /// <summary>
+        /// A duel opens once its villain has been met in the campaign — the
+        /// mission they first appear in is cleared — or once the story is done.
+        /// The roster follows the story; it does not gate itself.
+        /// </summary>
+        public static bool IsDuelUnlocked(DuelDef d) =>
+            d != null && (NewGamePlus || StoryUnlocked > d.storyMission);
+
+        /// <summary>The roster in the order the story introduces them.</summary>
+        public static DuelDef[] DuelsInStoryOrder =>
+            Duels.OrderBy(d => d.storyMission).ThenBy(d => d.id).ToArray();
+
+        public static int DuelsUnlocked => Duels.Count(IsDuelUnlocked);
 
         public static bool DuelWon(int duelId) => PlayerPrefs.GetInt($"duel_won_{duelId}", 0) == 1;
 

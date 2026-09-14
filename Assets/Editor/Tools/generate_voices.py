@@ -43,8 +43,16 @@ VOICES = {
     "VISITOR": "Moira",
     "FUMI": "Shelley (English (UK))",
     "SCAVENGER KING": "Rocko (English (US))",
+    "CONVOY CAPTAIN": "Daniel",
+    "DROWNED GUARDIAN": "Ralph",
+    "IRON GUARD": "Grandpa (English (UK))",
+    "COMMANDER HOSHU": "Albert",
     "BLADE": "Karen",
     "TSURU": "Rishi",
+    "DAIGO": "Reed (English (UK))",
+    "TOKU": "Grandpa (English (US))",
+    "EXECUTIONER": "Rocko (English (UK))",
+    "NIRE": "Grandma (English (UK))",
 }
 DEFAULT_VOICE = "Alex"
 

@@ -161,8 +161,26 @@ MonoBehaviour:
     optional: 0
     bonusShards: 1
     checkpoint: 1
+  - goal: 17
+    objective: 
+    banner: 
+    hint: 
+    count: 1
+    duration: 0
+    point: {x: 0, y: 0, z: 0}
+    spawn: 
+    pointB: {x: 0, y: 0, z: 0}
+    spawnB: 
+    foeDef: 
+    beatId: cargo_captain
+    props: []
+    bossHealthGate: 0.6
+    onComplete: 0
+    optional: 0
+    bonusShards: 1
+    checkpoint: 0
   - goal: 3
-    objective: THE GUARD ON THE CRATE
+    objective: THE CAPTAIN ON THE CRATE
     banner: HE IS AWAKE
     hint: 
     count: 1
@@ -171,7 +189,7 @@ MonoBehaviour:
     spawn: 09000000
     pointB: {x: 0, y: 0, z: 0}
     spawnB: 
-    foeDef: 
+    foeDef: convoycaptain
     beatId: 
     props: []
     bossHealthGate: 0.6

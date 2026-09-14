@@ -247,6 +247,23 @@ namespace Emberline.EditorTools
                 Profile("threeblades", "three_blades", ag: .6f, br: .5f, af: .7f, df: .3f, dg: .6f, pa: .2f, rt: .5f, fe: .05f, co: .4f, gb: .1f, tw: .9f,
                     pref: 2.2f, min: 1.3f, max: 3.2f, low: LowHealthBehaviour.Retreat, ally: AllyDeathReaction.Aggress, adapt: .4f, interval: .2f,
                     combos: new[] { C("sisters", "dash_strike", "quick_cut", "backstab") });
+            // The Executioner: patient, then not. He does not dodge and he does not
+            // retreat; he walks, and everything he swings is meant to end it.
+            if (Def("executioner") != null)
+                Profile("executioner", "executioner", ag: .9f, br: 1f, af: .65f, df: .2f, dg: 0f, pa: .05f, rt: 0f, fe: .08f, co: .15f, gb: .7f, tw: .1f,
+                    pref: 2.2f, min: 1.3f, max: 3.5f, low: LowHealthBehaviour.Berserk, ally: AllyDeathReaction.Ignore, adapt: .25f, interval: .28f,
+                    combos: new[] { C("line", "overhead_smash", "horizontal_sweep", "guard_break"), C("ground", "ground_shock", "heavy_slam") });
+            // Goro learned. Below two thirds he feints and guard-breaks instead of
+            // charging; below forty percent he fights dirty: close, fast, no retreat.
+            if (Def("MiniBoss") != null)
+            {
+                Phase("MiniBoss", 2, "goro_learned", ag: .85f, br: 1f, af: .7f, df: .4f, dg: .15f, pa: .25f, rt: 0f, fe: .3f, co: .35f, gb: .7f, tw: .3f,
+                    pref: 2.2f, min: 1.3f, max: 3.6f, low: LowHealthBehaviour.Berserk, adapt: .5f, interval: .24f,
+                    combos: new[] { C("learned", "guard_break", "heavy_slam", "sweep"), C("bait", "sweep", "charge", "overhead_smash") });
+                Phase("MiniBoss", 3, "goro_dirty", ag: 1f, br: 1f, af: .85f, df: .2f, dg: .1f, pa: .1f, rt: 0f, fe: .2f, co: .4f, gb: .8f, tw: .5f,
+                    pref: 1.7f, min: 1.1f, max: 2.8f, low: LowHealthBehaviour.Berserk, adapt: .4f, interval: .18f,
+                    combos: new[] { C("dirty", "ground_shock", "spin", "guard_break"), C("finish", "charge", "delayed_smash", "horizontal_sweep") });
+            }
         }
 
         // ------------------------------------------------------------ helpers

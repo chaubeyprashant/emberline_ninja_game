@@ -169,7 +169,17 @@ namespace Emberline.DebugTools
                 _traceT = 10f;
                 Trace(dir, "…");
             }
-            if (_budget <= 0f && dir != null && !dir.Complete) Trace(dir, "STUCK");
+            if (_budget <= 0f && dir != null && !dir.Complete)
+            {
+                Trace(dir, "STUCK");
+                // Name whoever is still standing: kind, AI state, distance, HP, posture.
+                for (var i = 0; i < EnemyBrain.Active.Count; i++)
+                {
+                    var e = EnemyBrain.Active[i];
+                    if (e != null && !e.Dead)
+                        Debug.Log($"[PLAY]   STUCK-ALIVE {e.name} def={(e.def != null ? e.def.id : "-")} {e.DebugLine}");
+                }
+            }
             if (_budget <= 0f || dir == null || dir.Complete || dir.Failed
                 || _gm.State is GameManager.Phase.Won or GameManager.Phase.Lost)
             {
@@ -311,7 +321,21 @@ namespace Emberline.DebugTools
             to.y = 0f;
             var dir = to.sqrMagnitude > 0.01f ? to.normalized : Vector3.forward;
             _loco.SetFacing(dir);
-            if (dist > 1.9f) WalkTo(target.transform.position, 1.7f);
+            // Archers and bombers run from a melee attacker (panic range 3.2 m) at
+            // 1.4x speed, so chasing one never lands a swing. Throw kunai at them the
+            // way a player would; the cooldown gates the presses. Swing too if one is
+            // actually in reach.
+            if (target.IsRanged)
+            {
+                if (dist < 14f) EmberInput.PressKunai();
+                if (dist <= 2.4f) EmberInput.PressStrike();
+                else WalkTo(target.transform.position, 2.0f);
+                return;
+            }
+            // The katana reaches 2.8 m and lunges; most enemies hold 2.0-2.6 m.
+            // Striking only inside 1.9 m left the bot circling anything that keeps
+            // its distance, and reported healthy missions as stuck.
+            if (dist > 2.4f) WalkTo(target.transform.position, 2.0f);
             else EmberInput.PressStrike();
         }
 

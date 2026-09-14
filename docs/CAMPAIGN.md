@@ -83,17 +83,17 @@ Two arena geometries exist (rooftop deck, marsh). Every region is carried on the
 | 27 | Forest | Rooftop | Bamboo | clear |
 | 28–29 | Forest | Rooftop | Forest | clear |
 | 30 | Forest | Rooftop | Graveyard | night/fog |
-| 31–32 | Mountains | Rooftop | Castle | clear |
-| 33–34 | Mountains | Rooftop | Fortress | clear |
-| 35 | Mountains | Rooftop | Castle | clear |
+| 31–32 | Mountains | Rooftop | Castle | fog/rain |
+| 33–34 | Mountains | Rooftop | Fortress | night |
+| 35 | Mountains | Rooftop | RainyBattlefield | clear |
 | 36 | Mountains | Rooftop | Village | clear |
-| 37 | Villages | Rooftop | BurningVillage | clear |
-| 38 | Mountains | Rooftop | Mountain | clear |
-| 39–40 | Mountains | Rooftop | Fortress | night |
-| 41–45 | Marsh | Marsh | Graveyard | fog |
-| 46 | Marsh | Marsh | Village | clear |
+| 37 | Villages | Rooftop | BurningVillage | night |
+| 38 | Mountains | Rooftop | Mountain | snow/fog |
+| 39–40 | Mountains | Rooftop | Fortress | fog/night |
+| 41–45 | Marsh | Marsh | Graveyard | rain/fog |
+| 46 | Marsh | Marsh | Village | night |
 | 47 | Marsh | Marsh | Graveyard | fog |
-| 48–51 | Temples | Marsh | Temple | night |
+| 48–51 | Temples | Marsh | Temple | fog/night |
 | 52 | Villages | Rooftop | VillageDawn | clear |
 | 53–56 | Villages | Rooftop | BurningVillage | clear |
 | 57–60 | Temples | Marsh | Temple | night |
@@ -373,10 +373,10 @@ A camp is a place with a garrison, not a level. Each is watched, prepared for, t
 - **Gameplay type:** Stealth
 - **Unique event:** A silent elimination challenge: every guard can be taken unseen, and every alarm costs the objective.
 - **Story discovery:** The cargo is weapons, from four different provinces. Kagehira is buying from everyone.
-- **Climax:** The last guard is awake, armed, and standing on the crate.
+- **Climax:** The convoy's captain is awake, armed, and standing on the crate with his ledger.
 - **Ending:** A bill of lading with a supplier's name and a village Renzo has never heard of.
 - **Next mission reason:** Somebody is selling Kagehira steel by the wagon. The village on the bill is the supplier.
-- *Staging:* Villages, rooftop arena, Village, night · enemies: Assassin, Assassin, Bandit, Ranged · bespoke plan `S12_SilentCargo`
+- *Staging:* Villages, rooftop arena, Village, night · enemies: Assassin, Assassin, Bandit, Ranged · named foe `convoycaptain` · bespoke plan `S12_SilentCargo`
 - **Role:** Story
 - **Approach:** Stealth / Ambush — open from the start
 - **Companions:** SUZU
@@ -720,7 +720,7 @@ A camp is a place with a garrison, not a level. Each is watched, prepared for, t
 - **Climax:** The road's first garrison, which does not intend to let anyone pass.
 - **Ending:** From the ridge: prisoner wagons, moving in a line toward the fortress.
 - **Next mission reason:** The wagons carry people. Renzo goes down to them.
-- *Staging:* Mountains, rooftop arena, Castle · enemies: PikeGuard, PikeGuard, RaiderAxe, Ranged
+- *Staging:* Mountains, rooftop arena, Castle, fog · enemies: PikeGuard, PikeGuard, RaiderAxe, Ranged · bespoke plan `S31_FortressRoad`
 - **Role:** Recon · camp: THE PENS
 - **Approach:** the mission has one shape.
 - **Companions:** SUZU, TSURU
@@ -738,7 +738,7 @@ A camp is a place with a garrison, not a level. Each is watched, prepared for, t
 - **Climax:** The last wagon, the escort's captain, and a road that is running out.
 - **Ending:** The freed villagers speak of the camps: not prisons, pens.
 - **Next mission reason:** There are camps. Renzo has the location of the nearest.
-- *Staging:* Mountains, rooftop arena, Castle · enemies: Bandit, PikeGuard, Ranged, RaiderAxe, Assassin
+- *Staging:* Mountains, rooftop arena, Castle, rain · enemies: Bandit, PikeGuard, Ranged, RaiderAxe, Assassin · bespoke plan `S32_PrisonerWagons`
 - **Role:** Assault · camp: THE PENS
 - **Approach:** Ambush / Assault / Stealth — everything past the first opens with `pens_watched`
 - **Companions:** SUZU, TSURU
@@ -754,10 +754,10 @@ A camp is a place with a garrison, not a level. Each is watched, prepared for, t
 - **Gameplay type:** Sabotage + Rescue
 - **Unique event:** Two pens, two guard rotations: the second wakes when the first goes quiet.
 - **Story discovery:** A camp record lists Aiko's transfer out, two months ago, to 'the execution ground.'
-- **Climax:** The camp commander, an axe raider, in the burning yard.
+- **Climax:** The camp commander, an axe raider, in the burning yard at night.
 - **Ending:** The camp is ash and the prisoners are gone into the hills.
 - **Next mission reason:** 'Execution ground' is not a place Renzo can leave for tomorrow.
-- *Staging:* Mountains, rooftop arena, Fortress · enemies: PikeGuard, RaiderAxe, RaiderAxe, Ranged, Bandit
+- *Staging:* Mountains, rooftop arena, Fortress, night · enemies: PikeGuard, RaiderAxe, RaiderAxe, Ranged, Bandit, Bomber · bespoke plan `S33_BrokenChains`
 - **Role:** Assault · camp: THE PENS
 - **Approach:** Assault / Stealth / Sabotage / Allied — everything past the first opens with `pens_watched`
 - **Companions:** SUZU, TSURU
@@ -776,7 +776,7 @@ A camp is a place with a garrison, not a level. Each is watched, prepared for, t
 - **Climax:** Holding the platform against Goro's men while the last prisoners are cut loose.
 - **Ending:** Everyone on the platform lives. None of them is her.
 - **Next mission reason:** Goro moved her. Goro's army knows where. Renzo goes through it.
-- *Staging:* Mountains, rooftop arena, Fortress · enemies: RaiderAxe, Ranged, Assassin, Samurai, EliteWarrior
+- *Staging:* Mountains, rooftop arena, Fortress, night · enemies: RaiderAxe, Ranged, Assassin, Samurai · named foe `executioner` · bespoke plan `S34_ExecutionGround`
 - **Role:** Defend · camp: THE PENS
 - **Approach:** Assault / Allied / Ambush — open from the start
 - **Companions:** DAIGO, TSURU
@@ -795,7 +795,7 @@ A camp is a place with a garrison, not a level. Each is watched, prepared for, t
 - **Climax:** The officer's last stand when the formation breaks.
 - **Ending:** The squad is finished. Its officer will not say who wanted Renzo alive, but the seal on the order is a serpent.
 - **Next mission reason:** An army needs a smith. Renzo finds where Goro's steel is made.
-- *Staging:* Mountains, rooftop arena, Castle · enemies: PikeGuard, PikeGuard, PikeGuard, Ranged, Ranged, Samurai
+- *Staging:* Mountains, rooftop arena, RainyBattlefield · enemies: PikeGuard, PikeGuard, PikeGuard, Ranged, Ranged, Samurai, Bomber · bespoke plan `S35_GorosArmy`
 - **Role:** Personal
 - **Approach:** Assault / Ambush — open from the start
 - **Companions:** TSURU, DAIGO
@@ -814,7 +814,7 @@ A camp is a place with a garrison, not a level. Each is watched, prepared for, t
 - **Climax:** Goro's riders reach the road before the smith does.
 - **Ending:** Safe, the smith gives Renzo the mark: every blade he made for them can be told from an honest one.
 - **Next mission reason:** Goro will answer the loss of his smith by burning the village that hid him.
-- *Staging:* Mountains, rooftop arena, Village · enemies: Bandit, Bandit, Ranged, RaiderAxe, Assassin
+- *Staging:* Mountains, rooftop arena, Village · enemies: Bandit, Bandit, Ranged, RaiderAxe, Assassin · bespoke plan `S36_Blacksmith`
 - **Role:** Story · village: KIBA
 - **Approach:** Assault / Allied — open from the start
 - **Companions:** DAIGO, SUZU
@@ -832,7 +832,7 @@ A camp is a place with a garrison, not a level. Each is watched, prepared for, t
 - **Climax:** The last gate, the last wave, and Goro's banner in the field beyond.
 - **Ending:** The village stands. Goro's banner does not advance. It waits.
 - **Next mission reason:** Goro has stopped sending men. He is coming himself.
-- *Staging:* Villages, rooftop arena, BurningVillage · enemies: Bandit, Bandit, PikeGuard, Ranged, RaiderAxe, Assassin, EliteWarrior
+- *Staging:* Villages, rooftop arena, BurningVillage, night · enemies: Bandit, Bandit, PikeGuard, Ranged, RaiderAxe, Assassin, EliteWarrior, RogueNinja, Bomber · bespoke plan `S37_Siege`
 - **Role:** Defend · village: KIBA
 - **Approach:** Allied / Assault — open from the start
 - **Companions:** DAIGO, TSURU, TOKU
@@ -851,7 +851,7 @@ A camp is a place with a garrison, not a level. Each is watched, prepared for, t
 - **Climax:** Goro at the ridge, and the drop behind Renzo.
 - **Ending:** Goro lets him run. He wants the fight on his own ground.
 - **Next mission reason:** Goro's ground is the mountain gate. Renzo goes to it.
-- *Staging:* Mountains, rooftop arena, Mountain · enemies: RaiderAxe, PikeGuard, Ranged · named foe `goro`
+- *Staging:* Mountains, rooftop arena, Mountain, snow, fog · enemies: RaiderAxe, PikeGuard, Ranged · named foe `goro` · bespoke plan `S38_HunterReturns`
 - **Role:** Story
 - **Approach:** the mission has one shape.
 - **Companions:** DAIGO
@@ -868,7 +868,7 @@ A camp is a place with a garrison, not a level. Each is watched, prepared for, t
 - **Climax:** The gatehouse garrison, then the gate.
 - **Ending:** The gate falls. Goro is waiting in the yard, alone, sword drawn.
 - **Next mission reason:** There is nothing between Renzo and Goro now.
-- *Staging:* Mountains, rooftop arena, Fortress · enemies: PikeGuard, PikeGuard, Ranged, Ranged, RaiderAxe, EliteWarrior
+- *Staging:* Mountains, rooftop arena, Fortress, fog · enemies: PikeGuard, PikeGuard, Ranged, Ranged, RaiderAxe, EliteWarrior, Bomber · bespoke plan `S39_MountainGate`
 - **Role:** Assault
 - **Approach:** Sabotage / Assault / Allied — everything past the first opens with `pens_watched`
 - **Companions:** DAIGO, TSURU, SUZU
@@ -886,7 +886,7 @@ A camp is a place with a garrison, not a level. Each is watched, prepared for, t
 - **Climax:** Goro's last phase, without his guard, without his pride.
 - **Ending:** Goro dies on his own gate. 'The marsh,' he says. 'She's under it.'
 - **Next mission reason:** Under the marsh. Renzo goes back into the fog.
-- *Staging:* Mountains, rooftop arena, Fortress, night · enemies: PikeGuard, RaiderAxe, Ranged · boss Chief
+- *Staging:* Mountains, rooftop arena, Fortress, night · enemies: PikeGuard, RaiderAxe, Ranged · boss Chief · bespoke plan `S40_GorosEnd`
 - **Role:** Consequence
 - **Approach:** the mission has one shape.
 - **Companions:** DAIGO
@@ -909,7 +909,7 @@ A camp is a place with a garrison, not a level. Each is watched, prepared for, t
 - **Climax:** The last stretch, in rising water.
 - **Ending:** The far bank, and voices in the fog that are not soldiers.
 - **Next mission reason:** The voices are coming from the fog ahead. Renzo goes to find who is making them.
-- *Staging:* Marsh, marsh arena, Graveyard · enemies: PikeGuard, PikeGuard, Ranged, Assassin, Bandit, Shade · bespoke plan `S07_DrownedRoad`
+- *Staging:* Marsh, marsh arena, Graveyard, rain · enemies: PikeGuard, PikeGuard, Ranged, Assassin, Bandit, Shade · bespoke plan `S41_DrownedRoad`
 - **Role:** Story
 - **Approach:** the mission has one shape.
 - **Companions:** DAIGO
@@ -926,7 +926,7 @@ A camp is a place with a garrison, not a level. Each is watched, prepared for, t
 - **Climax:** The shades that have been answering the voices.
 - **Ending:** The camp is under the water line. So are its records.
 - **Next mission reason:** Sunken records mean sunken answers. Renzo goes into the camp.
-- *Staging:* Marsh, marsh arena, Graveyard, fog · enemies: Shade, Shade, Shade, Assassin
+- *Staging:* Marsh, marsh arena, Graveyard, fog · enemies: Shade, Shade, Shade, Assassin · bespoke plan `S42_VoicesInTheFog`
 - **Role:** Recon · camp: THE SUNKEN CAMP
 - **Approach:** the mission has one shape.
 - **Companions:** SUZU
@@ -942,7 +942,7 @@ A camp is a place with a garrison, not a level. Each is watched, prepared for, t
 - **Climax:** The thing in the deep water that has been watching the search.
 - **Ending:** A key. Aiko is not a prisoner. She is a lock.
 - **Next mission reason:** The temple wants her for something. The marsh hunters between here and it want Renzo.
-- *Staging:* Marsh, marsh arena, Graveyard · enemies: Shade, Shade, Bomber, Assassin
+- *Staging:* Marsh, marsh arena, Graveyard · enemies: Shade, Shade, Bomber, Assassin · bespoke plan `S43_SunkenCamp`
 - **Role:** Personal · camp: THE SUNKEN CAMP
 - **Approach:** Assault / Ambush — open from the start
 - **Companions:** DAIGO
@@ -960,7 +960,7 @@ A camp is a place with a garrison, not a level. Each is watched, prepared for, t
 - **Climax:** The last assassins, when the fog thins and both sides can see.
 - **Ending:** A Kurogane crest on the last body. Renzo has heard the name. He does not know why it stings.
 - **Next mission reason:** An enemy patrol went into the fog before Renzo and did not come out. What stopped them might stop him.
-- *Staging:* Marsh, marsh arena, Graveyard, fog · enemies: Assassin, Assassin, Assassin, RogueNinja, Ranged
+- *Staging:* Marsh, marsh arena, Graveyard, fog · enemies: Assassin, Assassin, Assassin, RogueNinja, Ranged · bespoke plan `S44_MarshHunters`
 - **Role:** Story · camp: THE SUNKEN CAMP
 - **Approach:** the mission has one shape.
 - **Companions:** TSURU
@@ -978,7 +978,7 @@ A camp is a place with a garrison, not a level. Each is watched, prepared for, t
 - **Climax:** The thing that killed the patrol, when Renzo reaches the last of them.
 - **Ending:** Reed smoke on the wind. Somebody lives out here.
 - **Next mission reason:** Someone survives in this marsh. They will know how to reach the temple.
-- *Staging:* Marsh, marsh arena, Graveyard, fog · enemies: Shade, Shade, Shade, Shade
+- *Staging:* Marsh, marsh arena, Graveyard, fog · enemies: Shade, Shade, Shade, Shade · bespoke plan `S45_MissingPatrol`
 - **Role:** Prepare
 - **Approach:** Stealth / Assault — open from the start
 - **Companions:** SUZU
@@ -996,7 +996,7 @@ A camp is a place with a garrison, not a level. Each is watched, prepared for, t
 - **Climax:** The village attacked by shades, with Renzo the only blade.
 - **Ending:** The guide agrees to take him. She does not agree to like it.
 - **Next mission reason:** The guide knows the way. The way is not safe, and she is not fast.
-- *Staging:* Marsh, marsh arena, Village · enemies: Shade, Shade, Assassin, Ranged
+- *Staging:* Marsh, marsh arena, Village, night · enemies: Shade, Shade, Assassin, Ranged · bespoke plan `S46_ReedVillage`
 - **Role:** Defend · village: THE REED VILLAGE
 - **Approach:** Allied / Assault — open from the start
 - **Companions:** DAIGO, TSURU
@@ -1015,7 +1015,7 @@ A camp is a place with a garrison, not a level. Each is watched, prepared for, t
 - **Climax:** The temple stair, and everything in the marsh that does not want it climbed.
 - **Ending:** The guide sits down on the stair and will go no further. 'Below,' she says. 'It's all below.'
 - **Next mission reason:** The ruin is under the water. Renzo goes down.
-- *Staging:* Marsh, marsh arena, Graveyard, fog · enemies: Shade, Shade, Bandit, Ranged, Assassin · bespoke plan `S02_LanternRoad`
+- *Staging:* Marsh, marsh arena, Graveyard, fog · enemies: Shade, Shade, Bandit, Ranged, Assassin · bespoke plan `S47_OldGuide`
 - **Role:** Personal · village: THE REED VILLAGE
 - **Approach:** Assault / Stealth — open from the start
 - **Companions:** NIRE
@@ -1034,7 +1034,7 @@ A camp is a place with a garrison, not a level. Each is watched, prepared for, t
 - **Climax:** The flood reaches the chamber door as the last guardian falls.
 - **Ending:** The door. Sealed. Marked with the symbol from his father's blade.
 - **Next mission reason:** The chamber is the Seal's. Renzo has the fragment that opens it.
-- *Staging:* Temples, marsh arena, Temple · enemies: Shade, Shade, Shade, EliteWarrior
+- *Staging:* Temples, marsh arena, Temple, fog · enemies: Shade, Shade, Shade, EliteWarrior · bespoke plan `S48_BeneathTheWater`
 - **Role:** Story
 - **Approach:** the mission has one shape.
 - **Preparation it reads:** `marsh_route`
@@ -1050,7 +1050,7 @@ A camp is a place with a garrison, not a level. Each is watched, prepared for, t
 - **Climax:** The chamber's guardians wake when the first key is lifted.
 - **Ending:** The first key, in Renzo's hand, and the chamber going dark.
 - **Next mission reason:** One key of three. The second is wherever his father hid it, and his father's journal will say.
-- *Staging:* Temples, marsh arena, Temple, night · enemies: EliteWarrior, Samurai, Shade, Bomber
+- *Staging:* Temples, marsh arena, Temple, night · enemies: EliteWarrior, Samurai, Shade, Bomber · bespoke plan `S49_SealChamber`
 - **Role:** Discovery
 - **Approach:** the mission has one shape.
 - **What it remembers:** `seal_understood`
@@ -1066,7 +1066,7 @@ A camp is a place with a garrison, not a level. Each is watched, prepared for, t
 - **Climax:** The chamber stair, with the marsh above and Kagehira's elite below.
 - **Ending:** Renzo surfaces with the key. Behind him, the temple closes.
 - **Next mission reason:** His father's journal is the map to the second key. It is in the drowned temple's upper halls.
-- *Staging:* Temples, marsh arena, Temple · enemies: EliteWarrior, Samurai, Assassin, Assassin, Ranged
+- *Staging:* Temples, marsh arena, Temple, night · enemies: EliteWarrior, Samurai, Assassin, Assassin, Ranged · bespoke plan `S50_FirstKey`
 - **Role:** Consequence
 - **Approach:** Assault / Stealth — open from the start
 - **Preparation it reads:** `seal_understood`
