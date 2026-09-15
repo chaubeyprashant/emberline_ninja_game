@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.IO;
 using System.Text;
 using System.Linq;
@@ -77,6 +78,7 @@ namespace Emberline.EditorTools
                 mi.importLights = false;
                 mi.isReadable = false;
                 mi.optimizeGameObjects = false;   // SkeletalRig needs real bone transforms
+                RepairHumanMap(mi);
             }
             else if (assetPath.StartsWith("Assets/Art/Characters"))
             {
@@ -101,6 +103,55 @@ namespace Emberline.EditorTools
                 mi.importLights = false;
                 mi.isReadable = false;
             }
+        }
+
+        /// <summary>The core humanoid bones, by their Mixamo names.</summary>
+        private static readonly (string human, string bone)[] MixamoCore =
+        {
+            ("Hips", "Hips"), ("Spine", "Spine"), ("Chest", "Spine1"), ("Neck", "Neck"), ("Head", "Head"),
+            ("LeftUpperLeg", "LeftUpLeg"), ("RightUpperLeg", "RightUpLeg"),
+            ("LeftLowerLeg", "LeftLeg"), ("RightLowerLeg", "RightLeg"),
+            ("LeftFoot", "LeftFoot"), ("RightFoot", "RightFoot"),
+            ("LeftShoulder", "LeftShoulder"), ("RightShoulder", "RightShoulder"),
+            ("LeftUpperArm", "LeftArm"), ("RightUpperArm", "RightArm"),
+            ("LeftLowerArm", "LeftForeArm"), ("RightLowerArm", "RightForeArm"),
+            ("LeftHand", "LeftHand"), ("RightHand", "RightHand"),
+        };
+
+        /// <summary>
+        /// Unity's automatic humanoid mapping gets some Mixamo exports wrong, and one
+        /// wrong bone makes the whole avatar non-human: it still imports "valid" but
+        /// cannot play the shared humanoid clips, so the character stands in its bind
+        /// T-pose with its weapon floating off the hand. Pirate lost LeftFoot; Survivor
+        /// mapped its LeftEye bone as the Jaw as well. Put back any missing core bone by
+        /// its Mixamo name, and drop a Jaw that reuses an eye bone.
+        /// </summary>
+        private static void RepairHumanMap(ModelImporter mi)
+        {
+            var hd = mi.humanDescription;
+            // A first import has no mapping yet: Unity makes one, and the next
+            // reimport (EmberAvatarAudit.Repair) checks it.
+            if (hd.human == null || hd.human.Length == 0 || hd.skeleton == null) return;
+            var skeleton = new HashSet<string>(hd.skeleton.Select(b => b.name));
+            var human = hd.human.ToList();
+            var changed = human.RemoveAll(h => h.humanName == "Jaw" && h.boneName.Contains("Eye")) > 0;
+            foreach (var (humanName, bone) in MixamoCore)
+            {
+                if (human.Any(h => h.humanName == humanName)) continue;
+                var boneName = "mixamorig:" + bone;
+                if (!skeleton.Contains(boneName) || human.Any(h => h.boneName == boneName)) continue;
+                human.Add(new HumanBone
+                {
+                    humanName = humanName,
+                    boneName = boneName,
+                    limit = new HumanLimit { useDefaultValues = true },
+                });
+                changed = true;
+            }
+            if (!changed) return;
+            hd.human = human.ToArray();
+            mi.humanDescription = hd;
+            Debug.Log($"[ArtImport] repaired the humanoid bone map of {mi.assetPath}");
         }
 
         private void OnPreprocessTexture()

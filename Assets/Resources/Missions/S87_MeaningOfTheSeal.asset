@@ -1,0 +1,217 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 814b8fc7fb4eb427480893eff898b203, type: 3}
+  m_Name: S87_MeaningOfTheSeal
+  m_EditorClassIdentifier: Assembly-CSharp::Emberline.Missions.MissionPlan
+  id: 87
+  missionName: THE MEANING OF THE SEAL
+  missionType: INVESTIGATION
+  briefing: The chamber's carvings are the Seal's instructions, if anyone can put
+    them in order. Fumi says the fortress's lists match them. Kagehira's vanguard
+    is already on the stair.
+  debrief: Kagehira has the third key. He has had it for a year. He needs the door,
+    and the door needs a Kurogawa.
+  marsh: 0
+  nightOverride: 0
+  rain: 0
+  snow: 0
+  fog: 1
+  applyTheme: 1
+  theme: 4
+  missionRadius: 0
+  missionRadiusZ: 0
+  nextReason: Kagehira is coming to the chamber himself, and he is not coming alone.
+  region: SEAL
+  stages:
+  - goal: 17
+    objective: 
+    banner: 
+    hint: 
+    count: 1
+    duration: 0
+    point: {x: 0, y: 0, z: 0}
+    spawn: 
+    pointB: {x: 0, y: 0, z: 0}
+    spawnB: 
+    foeDef: 
+    beatId: meaning_open
+    props: []
+    bossHealthGate: 0.6
+    onComplete: 0
+    optional: 0
+    bonusShards: 1
+    checkpoint: 0
+  - goal: 8
+    objective: THE CARVINGS
+    banner: THE CHAMBER IS THE BOOK
+    hint: 
+    count: 3
+    duration: 0
+    point: {x: 0, y: 0, z: 0}
+    spawn: 
+    pointB: {x: 0, y: 0, z: 0}
+    spawnB: 
+    foeDef: 
+    beatId: 
+    props: []
+    bossHealthGate: 0.6
+    onComplete: 0
+    optional: 0
+    bonusShards: 1
+    checkpoint: 1
+  - goal: 19
+    objective: THE RIVER
+    banner: WHAT IT OPENS
+    hint: 
+    count: 1
+    duration: 0
+    point: {x: 0, y: 0, z: 0}
+    spawn: 
+    pointB: {x: 0, y: 0, z: 0}
+    spawnB: 
+    foeDef: 
+    beatId: 
+    props:
+    - id: river
+      label: THE MOUNTAIN'S WATER, CARVED
+      point: {x: -5, y: 0, z: 12}
+      shape: 1
+      speaker: RENZO
+      line: Every river on the mountain starts behind this door. The Seal is the
+        gate on it.
+      beatId: 
+      radius: 2.2
+      figurePath: []
+      lanternLine: []
+    - id: villages
+      label: EVERY VILLAGE BELOW IT
+      point: {x: 5, y: 0, z: 12}
+      shape: 9
+      speaker: RENZO
+      line: Yorune. The reed village. The garrison. Every village in the valley,
+        drinking from one lock.
+      beatId: 
+      radius: 2.2
+      figurePath: []
+      lanternLine: []
+    bossHealthGate: 0.6
+    onComplete: 0
+    optional: 0
+    bonusShards: 1
+    checkpoint: 1
+  - goal: 17
+    objective: 
+    banner: 
+    hint: 
+    count: 1
+    duration: 0
+    point: {x: 0, y: 0, z: 0}
+    spawn: 
+    pointB: {x: 0, y: 0, z: 0}
+    spawnB: 
+    foeDef: 
+    beatId: meaning_fumi
+    props: []
+    bossHealthGate: 0.6
+    onComplete: 0
+    optional: 0
+    bonusShards: 1
+    checkpoint: 0
+  - goal: 5
+    objective: KEEP THEM OFF AIKO
+    banner: ORDERED TO TAKE HER ALIVE
+    hint: 
+    count: 1
+    duration: 35
+    point: {x: 0, y: 0, z: 8}
+    spawn: 0c00000009000000
+    pointB: {x: 0, y: 0, z: 0}
+    spawnB: 
+    foeDef: 
+    beatId: 
+    props: []
+    bossHealthGate: 0.6
+    onComplete: 2
+    optional: 0
+    bonusShards: 1
+    checkpoint: 1
+  - goal: 1
+    objective: THE VANGUARD
+    banner: HIS BEST, ON THE STAIR
+    hint: 
+    count: 1
+    duration: 0
+    point: {x: 0, y: 0, z: 0}
+    spawn: 0c0000000a00000001000000
+    pointB: {x: 0, y: 0, z: 0}
+    spawnB: 
+    foeDef: 
+    beatId: 
+    props: []
+    bossHealthGate: 0.6
+    onComplete: 0
+    optional: 0
+    bonusShards: 1
+    checkpoint: 0
+  - goal: 19
+    objective: THE THIRD SOCKET
+    banner: HE HAS IT
+    hint: 
+    count: 1
+    duration: 0
+    point: {x: 0, y: 0, z: 0}
+    spawn: 
+    pointB: {x: 0, y: 0, z: 0}
+    spawnB: 
+    foeDef: 
+    beatId: 
+    props:
+    - id: socket
+      label: A SOCKET, SCRATCHED FRESH
+      point: {x: 0, y: 0, z: -12}
+      shape: 12
+      speaker: RENZO
+      line: Fresh scratches. He's tried the third key in it. It won't turn without
+        us.
+      beatId: 
+      radius: 2.2
+      figurePath: []
+      lanternLine: []
+    bossHealthGate: 0.6
+    onComplete: 0
+    optional: 0
+    bonusShards: 1
+    checkpoint: 0
+  - goal: 17
+    objective: 
+    banner: 
+    hint: 
+    count: 1
+    duration: 0
+    point: {x: 0, y: 0, z: 0}
+    spawn: 
+    pointB: {x: 0, y: 0, z: 0}
+    spawnB: 
+    foeDef: 
+    beatId: meaning_end
+    props: []
+    bossHealthGate: 0.6
+    onComplete: 0
+    optional: 0
+    bonusShards: 1
+    checkpoint: 0
+  dressing: 06000000090000000200000005000000
+  ruinedVillage: 0
+  challenge: 5
+  challengeSeconds: 240
+  challengeShards: 3
+  baseShards: 5

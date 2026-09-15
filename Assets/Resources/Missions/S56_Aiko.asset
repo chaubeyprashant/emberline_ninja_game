@@ -1,0 +1,205 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 814b8fc7fb4eb427480893eff898b203, type: 3}
+  m_Name: S56_Aiko
+  m_EditorClassIdentifier: Assembly-CSharp::Emberline.Missions.MissionPlan
+  id: 56
+  missionName: AIKO
+  missionType: STEALTH
+  briefing: The child at the head of the lantern line was Aiko, holding the Seal.
+    The memory follows her back into the fire, and this time Renzo follows too.
+  debrief: The memory ends with a hand over her mouth and a thread snapping.
+  marsh: 0
+  nightOverride: 1
+  rain: 0
+  snow: 0
+  fog: 1
+  applyTheme: 1
+  theme: 8
+  missionRadius: 0
+  missionRadiusZ: 0
+  nextReason: The Seal was never taken. Aiko hid it, and Kagehira has spent ten years
+    asking her where.
+  region: VILLAGES
+  stages:
+  - goal: 17
+    objective: 
+    banner: 
+    hint: 
+    count: 1
+    duration: 0
+    point: {x: 0, y: 0, z: 0}
+    spawn: 
+    pointB: {x: 0, y: 0, z: 0}
+    spawnB: 
+    foeDef: 
+    beatId: aiko_open
+    props: []
+    bossHealthGate: 0.6
+    onComplete: 0
+    optional: 0
+    bonusShards: 1
+    checkpoint: 0
+  - goal: 0
+    objective: AIKO'S WAY
+    banner: THE SMALL PATHS
+    hint: 
+    count: 1
+    duration: 0
+    point: {x: -10, y: 0, z: 8}
+    spawn: 
+    pointB: {x: 0, y: 0, z: 0}
+    spawnB: 
+    foeDef: 
+    beatId: 
+    props: []
+    bossHealthGate: 0.6
+    onComplete: 0
+    optional: 0
+    bonusShards: 1
+    checkpoint: 1
+  - goal: 7
+    objective: UNSEEN, AS SHE WAS
+    banner: SHE KNOWS YORUNE BETTER THAN THEY DO
+    hint: 
+    count: 1
+    duration: 0
+    point: {x: 0, y: 0, z: 0}
+    spawn: 090000000b000000
+    pointB: {x: 0, y: 0, z: 0}
+    spawnB: 
+    foeDef: 
+    beatId: 
+    props: []
+    bossHealthGate: 0.6
+    onComplete: 0
+    optional: 0
+    bonusShards: 1
+    checkpoint: 1
+  - goal: 19
+    objective: WHERE SHE WENT
+    banner: THE SHRINE
+    hint: 
+    count: 1
+    duration: 0
+    point: {x: 0, y: 0, z: 0}
+    spawn: 
+    pointB: {x: 0, y: 0, z: 0}
+    spawnB: 
+    foeDef: 
+    beatId: 
+    props:
+    - id: floor
+      label: A LOOSE SHRINE BOARD
+      point: {x: -5, y: 0, z: 13}
+      shape: 1
+      speaker: RENZO
+      line: Under the shrine floor. He never thinks to look at home. Neither did
+        they.
+      beatId: 
+      radius: 2.2
+      figurePath: []
+      lanternLine: []
+    - id: thread
+      label: RED THREAD ON A NAIL
+      point: {x: 4, y: 0, z: 14}
+      shape: 3
+      speaker: RENZO
+      line: Her thread, caught on the nail as she went under. She left the way back
+        marked.
+      beatId: 
+      radius: 2.2
+      figurePath: []
+      lanternLine: []
+    bossHealthGate: 0.6
+    onComplete: 0
+    optional: 0
+    bonusShards: 1
+    checkpoint: 1
+  - goal: 17
+    objective: 
+    banner: 
+    hint: 
+    count: 1
+    duration: 0
+    point: {x: 0, y: 0, z: 0}
+    spawn: 
+    pointB: {x: 0, y: 0, z: 0}
+    spawnB: 
+    foeDef: 
+    beatId: memory_aiko
+    props: []
+    bossHealthGate: 0.6
+    onComplete: 0
+    optional: 0
+    bonusShards: 1
+    checkpoint: 0
+  - goal: 7
+    objective: THE SEARCHERS AT THE SHRINE
+    banner: THEY HEARD THE BOARD
+    hint: 
+    count: 1
+    duration: 0
+    point: {x: 0, y: 0, z: 0}
+    spawn: 000000000b00000009000000
+    pointB: {x: 0, y: 0, z: 0}
+    spawnB: 
+    foeDef: 
+    beatId: 
+    props: []
+    bossHealthGate: 0.6
+    onComplete: 1
+    optional: 0
+    bonusShards: 1
+    checkpoint: 1
+  - goal: 12
+    objective: RUN, AS SHE RAN
+    banner: THEY HAVE SEEN HER
+    hint: 
+    count: 1
+    duration: 40
+    point: {x: 10, y: 0, z: -12}
+    spawn: 0b000000
+    pointB: {x: 0, y: 0, z: 0}
+    spawnB: 
+    foeDef: 
+    beatId: 
+    props: []
+    bossHealthGate: 0.6
+    onComplete: 0
+    optional: 0
+    bonusShards: 1
+    checkpoint: 0
+  - goal: 17
+    objective: 
+    banner: 
+    hint: 
+    count: 1
+    duration: 0
+    point: {x: 0, y: 0, z: 0}
+    spawn: 
+    pointB: {x: 0, y: 0, z: 0}
+    spawnB: 
+    foeDef: 
+    beatId: aiko_end
+    props: []
+    bossHealthGate: 0.6
+    onComplete: 0
+    optional: 0
+    bonusShards: 1
+    checkpoint: 0
+  dressing: 01000000090000000800000002000000
+  ruinedVillage: 0
+  challenge: 5
+  challengeSeconds: 240
+  challengeShards: 3
+  baseShards: 5

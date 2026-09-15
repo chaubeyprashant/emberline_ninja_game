@@ -95,22 +95,22 @@ Two arena geometries exist (rooftop deck, marsh). Every region is carried on the
 | 47 | Marsh | Marsh | Graveyard | fog |
 | 48–51 | Temples | Marsh | Temple | fog/night |
 | 52 | Villages | Rooftop | VillageDawn | clear |
-| 53–56 | Villages | Rooftop | BurningVillage | clear |
-| 57–60 | Temples | Marsh | Temple | night |
+| 53–56 | Villages | Rooftop | BurningVillage | night/fog |
+| 57–60 | Temples | Marsh | Temple | night/fog |
 | 61–62 | Villages | Rooftop | RainyBattlefield | night/rain |
 | 63 | Villages | Rooftop | Castle | night |
 | 64 | Villages | Rooftop | Village | clear |
-| 65 | Villages | Rooftop | Castle | clear |
+| 65 | Villages | Rooftop | Castle | night |
 | 66–67 | Villages | Rooftop | Village | night |
-| 68 | Villages | Rooftop | RainyBattlefield | rain |
+| 68 | Villages | Rooftop | RainyBattlefield | night/rain |
 | 69 | Villages | Rooftop | Castle | night |
 | 70 | Villages | Rooftop | RainyBattlefield | night/rain |
 | 71–73 | Snow | Rooftop | Mountain | snow/night/fog |
-| 74–79 | Fortresses | Rooftop | Fortress | snow/night |
+| 74–79 | Fortresses | Rooftop | Fortress | snow/night/fog |
 | 80–82 | Stronghold | Rooftop | Castle | night |
-| 83–84 | Stronghold | Rooftop | Fortress | night |
-| 85–87 | Seal | Rooftop | Temple | night |
-| 88–89 | Seal | Rooftop | Fortress | night |
+| 83–84 | Stronghold | Rooftop | Fortress | fog/night |
+| 85–87 | Seal | Rooftop | Temple | night/fog |
+| 88–89 | Seal | Rooftop | Fortress | night/rain |
 | 90 | Seal | Rooftop | Temple | night |
 | 91 | Seal | Rooftop | BurningVillage | night |
 | 92–93 | Snow | Rooftop | Mountain | snow/fog |
@@ -1088,7 +1088,7 @@ A camp is a place with a garrison, not a level. Each is watched, prepared for, t
 - **Climax:** The temple's watchers, when the last page is lifted.
 - **Ending:** The last page is a date. The night Yorune burned. And a place to stand.
 - **Next mission reason:** The journal asks him to remember. The memory is where the truth is.
-- *Staging:* Temples, marsh arena, Temple · enemies: Shade, Shade, Samurai
+- *Staging:* Temples, marsh arena, Temple, fog · enemies: Shade, Shade, Samurai · bespoke plan `S51_FathersJournal`
 - **Role:** Discovery
 - **Approach:** the mission has one shape.
 - **Companions:** NIRE
@@ -1105,7 +1105,7 @@ A camp is a place with a garrison, not a level. Each is watched, prepared for, t
 - **Climax:** The first fire, on the ridge, as the memory ends.
 - **Ending:** Renzo wakes on the temple floor with the journal open to the next page.
 - **Next mission reason:** The memory stopped at the fire. The next page is the fire.
-- *Staging:* Villages, rooftop arena, VillageDawn · enemies: none · beat `memory_lastnight`
+- *Staging:* Villages, rooftop arena, VillageDawn · enemies: none · beat `memory_lastnight` · bespoke plan `S52_TheLastNight`
 - **Role:** Memory
 - **Approach:** the mission has one shape.
 - **Ends on:** "I want to see the village alive."
@@ -1120,7 +1120,7 @@ A camp is a place with a garrison, not a level. Each is watched, prepared for, t
 - **Climax:** The house where his father made his stand.
 - **Ending:** The memory breaks at the door. Renzo could not go in then. He cannot now.
 - **Next mission reason:** His father's stand is the page he has never been able to read.
-- *Staging:* Villages, rooftop arena, BurningVillage · enemies: Bandit, Bandit, RaiderAxe, Ranged · beat `memory_burning`
+- *Staging:* Villages, rooftop arena, BurningVillage, night · enemies: Bandit, Bandit, RaiderAxe, Ranged · beat `memory_burning` · bespoke plan `S53_BurningVillage`
 - **Role:** Memory
 - **Approach:** the mission has one shape.
 - **Ends on:** "I want to reach my father's door."
@@ -1135,7 +1135,7 @@ A camp is a place with a garrison, not a level. Each is watched, prepared for, t
 - **Climax:** The raider captain — a young Goro — at the door.
 - **Ending:** The door holds. The man behind it does not.
 - **Next mission reason:** The Seal was carried out by someone. The journal says who.
-- *Staging:* Villages, rooftop arena, BurningVillage · enemies: Bandit, PikeGuard, Assassin · named foe `goro`
+- *Staging:* Villages, rooftop arena, BurningVillage, night · enemies: Bandit, PikeGuard, Assassin · named foe `goro` · bespoke plan `S54_Swordmaster`
 - **Role:** Memory
 - **Approach:** the mission has one shape.
 - **Ends on:** "I want to hold the door."
@@ -1150,7 +1150,7 @@ A camp is a place with a garrison, not a level. Each is watched, prepared for, t
 - **Climax:** The lantern line, and the raiders waiting at the end of it.
 - **Ending:** The villagers reach the ridge. His mother turns back for the last child.
 - **Next mission reason:** The child at the head of the line was Aiko. The memory follows her.
-- *Staging:* Villages, rooftop arena, BurningVillage · enemies: Bandit, Ranged, Ranged, Bomber
+- *Staging:* Villages, rooftop arena, BurningVillage, night · enemies: Bandit, Ranged, Ranged, Bomber · bespoke plan `S55_MothersChoice`
 - **Role:** Memory
 - **Approach:** the mission has one shape.
 - **Ends on:** "I want to know who carried it out."
@@ -1165,7 +1165,7 @@ A camp is a place with a garrison, not a level. Each is watched, prepared for, t
 - **Climax:** The raiders find her in the shrine. She has already hidden it.
 - **Ending:** The memory ends with a hand over her mouth and a thread snapping.
 - **Next mission reason:** The Seal was never taken. Aiko hid it, and Kagehira has spent ten years asking her where.
-- *Staging:* Villages, rooftop arena, BurningVillage · enemies: Bandit, Assassin, RogueNinja · beat `memory_aiko`
+- *Staging:* Villages, rooftop arena, BurningVillage, night, fog · enemies: Bandit, Assassin, RogueNinja · beat `memory_aiko` · bespoke plan `S56_Aiko`
 - **Role:** Memory
 - **Approach:** the mission has one shape.
 - **What it remembers:** `aiko_hid_it`
@@ -1181,7 +1181,7 @@ A camp is a place with a garrison, not a level. Each is watched, prepared for, t
 - **Climax:** The wardens, who have been told to let no one read the walls.
 - **Ending:** Renzo reads his sister's handwriting for the first time in ten years.
 - **Next mission reason:** The second key is under the temple's guardian. The wall says so.
-- *Staging:* Temples, marsh arena, Temple, night · enemies: PikeGuard, PikeGuard, Ranged, Samurai
+- *Staging:* Temples, marsh arena, Temple, night · enemies: PikeGuard, PikeGuard, Ranged, Samurai · bespoke plan `S57_Prisoner`
 - **Role:** Discovery
 - **Approach:** Stealth / Assault — open from the start
 - **Companions:** NIRE
@@ -1199,7 +1199,7 @@ A camp is a place with a garrison, not a level. Each is watched, prepared for, t
 - **Climax:** The nave's last guard, waist-deep.
 - **Ending:** Two keys. The guardian below is what stands between him and the third.
 - **Next mission reason:** The Drowned Guardian holds the way down. It was put there by his father.
-- *Staging:* Temples, marsh arena, Temple · enemies: Shade, Shade, EliteWarrior, Samurai
+- *Staging:* Temples, marsh arena, Temple · enemies: Shade, Shade, EliteWarrior, Samurai · bespoke plan `S58_SecondKey`
 - **Role:** Assault
 - **Approach:** Stealth / Assault / Ambush — everything past the first opens with `cell_read`
 - **Companions:** SUZU, NIRE
@@ -1218,7 +1218,7 @@ A camp is a place with a garrison, not a level. Each is watched, prepared for, t
 - **Climax:** The guardian's last phase, in the dark, in the water.
 - **Ending:** It falls. Under it: not a key. A message.
 - **Next mission reason:** His father left words instead of a key. The words say why.
-- *Staging:* Temples, marsh arena, Temple, night · enemies: Shade, Shade · named foe `drownedguardian`
+- *Staging:* Temples, marsh arena, Temple, night · enemies: Shade, Shade · named foe `drownedguardian` · bespoke plan `S59_DrownedGuardian`
 - **Role:** Story
 - **Approach:** the mission has one shape.
 - **Companions:** NIRE
@@ -1237,7 +1237,7 @@ A camp is a place with a garrison, not a level. Each is watched, prepared for, t
 - **Climax:** The message ends with a name: the man who told Kagehira where the Seal was. Kurogane.
 - **Ending:** Renzo surfaces. He has stopped looking for answers. He is looking for Kurogane.
 - **Next mission reason:** Jin Kurogane sold Yorune. Renzo goes to find him.
-- *Staging:* Temples, marsh arena, Temple · enemies: none · beat `father_message`
+- *Staging:* Temples, marsh arena, Temple, fog · enemies: none · beat `father_message` · bespoke plan `S60_TruthBeneathYorune`
 - **Role:** Downtime
 - **Approach:** the mission has one shape.
 - **Companions:** NIRE, TOKU, SUZU
@@ -1260,7 +1260,7 @@ A camp is a place with a garrison, not a level. Each is watched, prepared for, t
 - **Climax:** Jin, unhurried, taking the fight apart.
 - **Ending:** Jin steps back into the rain. 'Not yet,' he says.
 - **Next mission reason:** Jin walked away over the rooftops. Renzo does not let him.
-- *Staging:* Villages, rooftop arena, RainyBattlefield, night, rain · enemies: Assassin, Assassin, Ranged · named foe `jin`
+- *Staging:* Villages, rooftop arena, RainyBattlefield, night, rain · enemies: Assassin, Assassin, Ranged · named foe `jin` · bespoke plan `S61_BlackBlade`
 - **Role:** Story
 - **Approach:** the mission has one shape.
 - **Preparation it reads:** `kurogane_named`
@@ -1276,7 +1276,7 @@ A camp is a place with a garrison, not a level. Each is watched, prepared for, t
 - **Climax:** The last roof, the drop, and Jin waiting on the far side of it.
 - **Ending:** Renzo makes the jump. Jin is already sheathing his sword.
 - **Next mission reason:** Jin stopped running because he wanted to fight here. Renzo obliges him.
-- *Staging:* Villages, rooftop arena, RainyBattlefield, rain · enemies: RogueNinja, RogueNinja, Assassin, Ranged
+- *Staging:* Villages, rooftop arena, RainyBattlefield, night, rain · enemies: RogueNinja, RogueNinja, Assassin, Ranged · bespoke plan `S62_Pursuit`
 - **Role:** Discovery · camp: THE GARRISON · village: THE GARRISON TOWN
 - **Approach:** the mission has one shape.
 - **Companions:** SUZU
@@ -1293,7 +1293,7 @@ A camp is a place with a garrison, not a level. Each is watched, prepared for, t
 - **Climax:** Renzo on his knees, and Jin's blade at his throat, withdrawn.
 - **Ending:** 'Go home, Kurogawa. There is nothing up this mountain but me.'
 - **Next mission reason:** Jin let him live, and Renzo does not know why. His past will.
-- *Staging:* Villages, rooftop arena, Castle, night · enemies: Samurai, Assassin · named foe `jin` · beat `jin_mercy`
+- *Staging:* Villages, rooftop arena, Castle, night · enemies: Samurai, Assassin · named foe `jin` · beat `jin_mercy` · bespoke plan `S63_NoHonor`
 - **Role:** Story
 - **Approach:** the mission has one shape.
 - **Preparation it reads:** `garrison_found`
@@ -1309,7 +1309,7 @@ A camp is a place with a garrison, not a level. Each is watched, prepared for, t
 - **Climax:** Jin's old unit, still loyal, when they realise what Renzo is asking.
 - **Ending:** A portrait in the garrison hall: Jin, ten years younger, standing behind Renzo's father.
 - **Next mission reason:** Jin and his father knew each other. Jin's men will know how.
-- *Staging:* Villages, rooftop arena, Village · enemies: Assassin, Assassin, PikeGuard, Ranged
+- *Staging:* Villages, rooftop arena, Village · enemies: Assassin, Assassin, PikeGuard, Ranged · bespoke plan `S64_FallenSoldier`
 - **Role:** Personal · camp: THE GARRISON · village: THE GARRISON TOWN
 - **Approach:** Stealth / Assault — open from the start
 - **Companions:** FUMI
@@ -1327,7 +1327,7 @@ A camp is a place with a garrison, not a level. Each is watched, prepared for, t
 - **Climax:** The unit's captain, who was Jin's second that night.
 - **Ending:** The captain says only: 'He tried to stop it.'
 - **Next mission reason:** A man who fights honestly can be asked honestly. Renzo challenges Jin to a duel with terms.
-- *Staging:* Villages, rooftop arena, Castle · enemies: Samurai, Samurai, EliteWarrior, Assassin, Ranged
+- *Staging:* Villages, rooftop arena, Castle, night · enemies: Samurai, Samurai, EliteWarrior, Assassin, Ranged · bespoke plan `S65_KuroganesMen`
 - **Role:** Assault · camp: THE GARRISON
 - **Approach:** Assault / Ambush / Allied — everything past the first opens with `garrison_watched`
 - **Companions:** DAIGO, TSURU
@@ -1344,7 +1344,7 @@ A camp is a place with a garrison, not a level. Each is watched, prepared for, t
 - **Climax:** The champion, a ronin who fights exactly like Jin.
 - **Ending:** The champion yields. Jin was watching from the roofline.
 - **Next mission reason:** Jin has seen enough. He sends a message: a place, a time, and no guards.
-- *Staging:* Villages, rooftop arena, Village · enemies: Samurai · named foe `finalcommander`
+- *Staging:* Villages, rooftop arena, Village · enemies: Samurai · named foe `finalcommander` · bespoke plan `S66_Duelist`
 - **Role:** Story
 - **Approach:** the mission has one shape.
 - **Companions:** TOKU
@@ -1363,7 +1363,7 @@ A camp is a place with a garrison, not a level. Each is watched, prepared for, t
 - **Climax:** The men Kagehira sent to burn the house before Renzo could read it.
 - **Ending:** In the ashes of the last room: a mask, broken in half, one half missing.
 - **Next mission reason:** Half a mask, and the other half is on Jin's face. He is waiting where he said.
-- *Staging:* Villages, rooftop arena, Village, night · enemies: Assassin, Assassin, RogueNinja, Ranged
+- *Staging:* Villages, rooftop arena, Village, night · enemies: Assassin, Assassin, RogueNinja, Ranged · bespoke plan `S67_BrokenMask`
 - **Role:** Discovery · camp: THE GARRISON
 - **Approach:** the mission has one shape.
 - **Companions:** FUMI
@@ -1381,7 +1381,7 @@ A camp is a place with a garrison, not a level. Each is watched, prepared for, t
 - **Climax:** Kagehira's assassins interrupt the confession.
 - **Ending:** 'I gave him the map. I did not give him the village. He took that himself.'
 - **Next mission reason:** Jin has one more thing to say, and he will only say it with a sword in his hand.
-- *Staging:* Villages, rooftop arena, RainyBattlefield, rain · enemies: Assassin, Assassin, Assassin, Ranged · beat `jin_confession`
+- *Staging:* Villages, rooftop arena, RainyBattlefield, night, rain · enemies: Assassin, Assassin, Assassin, Ranged · beat `jin_confession` · bespoke plan `S68_Confession`
 - **Role:** Downtime
 - **Approach:** the mission has one shape.
 - **Companions:** NIRE, DAIGO, TSURU, SUZU, FUMI
@@ -1400,7 +1400,7 @@ A camp is a place with a garrison, not a level. Each is watched, prepared for, t
 - **Climax:** Jin's final demonstration: Renzo's own rage, used against him.
 - **Ending:** Jin sheathes his sword. 'Tomorrow, then. Properly.'
 - **Next mission reason:** Tomorrow. The duel neither of them can walk away from.
-- *Staging:* Villages, rooftop arena, Castle, night · enemies: Samurai · named foe `jin` · beat `jin_warning`
+- *Staging:* Villages, rooftop arena, Castle, night · enemies: Samurai · named foe `jin` · beat `jin_warning` · bespoke plan `S69_LastWarning`
 - **Role:** Story
 - **Approach:** the mission has one shape.
 - **Companions:** NIRE
@@ -1419,7 +1419,7 @@ A camp is a place with a garrison, not a level. Each is watched, prepared for, t
 - **Climax:** Jin's last phase, all storm.
 - **Ending:** Jin dies with the half mask in his hand. 'Do not become him.'
 - **Next mission reason:** Aiko is in the mountain fortress. Renzo begins the climb.
-- *Staging:* Villages, rooftop arena, RainyBattlefield, night, rain · enemies: none · boss Jin
+- *Staging:* Villages, rooftop arena, RainyBattlefield, night, rain · enemies: none · boss Jin · bespoke plan `S70_Kurogane`
 - **Role:** Consequence
 - **Approach:** the mission has one shape.
 - **Preparation it reads:** `nire_said_it`
@@ -1441,7 +1441,7 @@ A camp is a place with a garrison, not a level. Each is watched, prepared for, t
 - **Climax:** The first garrison of the ascent, in a blizzard.
 - **Ending:** Above, the glow of a camp with artillery in it.
 - **Next mission reason:** The camp above holds the guns that cover the road. They have to fall.
-- *Staging:* Snow, rooftop arena, Mountain, snow · enemies: PikeGuard, RaiderAxe, Ranged, Assassin
+- *Staging:* Snow, rooftop arena, Mountain, snow · enemies: PikeGuard, RaiderAxe, Ranged, Assassin · bespoke plan `S71_MountainRoad`
 - **Role:** Personal · camp: THE FROZEN CAMP
 - **Approach:** the mission has one shape.
 - **Companions:** NIRE
@@ -1460,7 +1460,7 @@ A camp is a place with a garrison, not a level. Each is watched, prepared for, t
 - **Climax:** The magazine, when the last fire reaches it.
 - **Ending:** The camp goes up. The mountain shivers.
 - **Next mission reason:** The explosion has loosened the slope above the road. Renzo has minutes.
-- *Staging:* Snow, rooftop arena, Mountain, night, snow · enemies: Bomber, Bomber, PikeGuard, Ranged, RaiderAxe
+- *Staging:* Snow, rooftop arena, Mountain, night, snow · enemies: Bomber, Bomber, PikeGuard, Ranged, RaiderAxe · bespoke plan `S72_FrozenCamp`
 - **Role:** Prepare · camp: THE FROZEN CAMP
 - **Approach:** Sabotage / Stealth / Assault — open from the start
 - **Companions:** SUZU, TSURU
@@ -1479,7 +1479,7 @@ A camp is a place with a garrison, not a level. Each is watched, prepared for, t
 - **Climax:** The last stretch, with the snow at Renzo's heels.
 - **Ending:** The outer wall, out of the white.
 - **Next mission reason:** The wall is the fortress. There is no more road.
-- *Staging:* Snow, rooftop arena, Mountain, snow, fog · enemies: Assassin, Ranged, Shade
+- *Staging:* Snow, rooftop arena, Mountain, snow, fog · enemies: Assassin, Ranged, Shade · bespoke plan `S73_Avalanche`
 - **Role:** Story · camp: THE FROZEN CAMP
 - **Approach:** the mission has one shape.
 - **Companions:** DAIGO
@@ -1496,7 +1496,7 @@ A camp is a place with a garrison, not a level. Each is watched, prepared for, t
 - **Climax:** The breach held, and the commander in it.
 - **Ending:** The wall is Renzo's. The inner fortress is not.
 - **Next mission reason:** The inner fortress has one silent way in, and the wall's plans show it.
-- *Staging:* Fortresses, rooftop arena, Fortress, snow · enemies: PikeGuard, PikeGuard, Ranged, Ranged, RaiderAxe, EliteWarrior, EliteWarrior · named foe `ironguard`
+- *Staging:* Fortresses, rooftop arena, Fortress, snow · enemies: PikeGuard, PikeGuard, Ranged, Ranged, RaiderAxe, EliteWarrior, EliteWarrior · named foe `ironguard` · bespoke plan `S74_OuterWall`
 - **Role:** Assault · camp: THE IRON FORTRESS
 - **Approach:** Assault / Ambush / Allied — everything past the first opens with `frozen_seen`
 - **Companions:** DAIGO, TSURU, TOKU
@@ -1515,7 +1515,7 @@ A camp is a place with a garrison, not a level. Each is watched, prepared for, t
 - **Climax:** Two elites and archer support at the inner gate.
 - **Ending:** Inside. The prison tower is lit.
 - **Next mission reason:** Aiko is in the tower. Renzo climbs.
-- *Staging:* Fortresses, rooftop arena, Fortress, night, snow · enemies: EliteWarrior, EliteWarrior, PikeGuard, PikeGuard, Ranged · bespoke plan `S09_SerpentsGuard`
+- *Staging:* Fortresses, rooftop arena, Fortress, night, snow · enemies: EliteWarrior, EliteWarrior, PikeGuard, PikeGuard, Ranged · bespoke plan `S75_SilentGate`
 - **Role:** Assault · camp: THE IRON FORTRESS
 - **Approach:** Stealth / Assault / Sabotage — everything past the first opens with `wall_plans`
 - **Companions:** SUZU
@@ -1533,7 +1533,7 @@ A camp is a place with a garrison, not a level. Each is watched, prepared for, t
 - **Climax:** The tower's wardens, and the alarm they are trying to reach.
 - **Ending:** Her cell, at the top, empty. Warm.
 - **Next mission reason:** An empty cell has a record. The record will say where.
-- *Staging:* Fortresses, rooftop arena, Fortress, night · enemies: PikeGuard, PikeGuard, Assassin, Ranged
+- *Staging:* Fortresses, rooftop arena, Fortress, night · enemies: PikeGuard, PikeGuard, Assassin, Ranged · bespoke plan `S76_PrisonTower`
 - **Role:** Personal · camp: THE IRON FORTRESS
 - **Approach:** Stealth / Assault / Allied — open from the start
 - **Companions:** SUZU
@@ -1552,7 +1552,7 @@ A camp is a place with a garrison, not a level. Each is watched, prepared for, t
 - **Climax:** The records room, on fire, with the transfer order in it.
 - **Ending:** The order is in Kagehira's own hand. She is with him.
 - **Next mission reason:** Kagehira's elite guard stands between the outer fortress and the warlord's hall.
-- *Staging:* Fortresses, rooftop arena, Fortress · enemies: Assassin, Assassin, PikeGuard, Ranged, RaiderAxe
+- *Staging:* Fortresses, rooftop arena, Fortress, fog · enemies: Assassin, Assassin, PikeGuard, Ranged, RaiderAxe · bespoke plan `S77_EmptyCell`
 - **Role:** Discovery · camp: THE IRON FORTRESS
 - **Approach:** Assault / Stealth — open from the start
 - **Companions:** FUMI
@@ -1571,7 +1571,7 @@ A camp is a place with a garrison, not a level. Each is watched, prepared for, t
 - **Climax:** The captain of the guard, in the iron hall.
 - **Ending:** The guard is broken. The inner gate is ahead, and the last commander.
 - **Next mission reason:** One commander remains between Renzo and the hall.
-- *Staging:* Fortresses, rooftop arena, Fortress · enemies: EliteWarrior, EliteWarrior, EliteWarrior, Samurai, Ranged · named foe `ironguard`
+- *Staging:* Fortresses, rooftop arena, Fortress, night · enemies: EliteWarrior, EliteWarrior, EliteWarrior, Samurai, Ranged · named foe `ironguard` · bespoke plan `S78_IronGuard`
 - **Role:** Personal · camp: THE IRON FORTRESS
 - **Approach:** Assault / Ambush — open from the start
 - **Companions:** TOKU, DAIGO
@@ -1590,7 +1590,7 @@ A camp is a place with a garrison, not a level. Each is watched, prepared for, t
 - **Climax:** The commander's last stand at the gate itself.
 - **Ending:** The gate opens. The hall beyond is lit, and empty.
 - **Next mission reason:** The throne hall. Whatever is in it is what all of this was for.
-- *Staging:* Fortresses, rooftop arena, Fortress · enemies: Samurai, Samurai, EliteWarrior, Ranged · named foe `finalcommander`
+- *Staging:* Fortresses, rooftop arena, Fortress, snow · enemies: Samurai, Samurai, EliteWarrior, Ranged · named foe `finalcommander` · bespoke plan `S79_InnerGate`
 - **Role:** Story · camp: THE IRON FORTRESS
 - **Approach:** the mission has one shape.
 - **Companions:** DAIGO
@@ -1609,7 +1609,7 @@ A camp is a place with a garrison, not a level. Each is watched, prepared for, t
 - **Climax:** The hall's last defenders, and a figure behind the throne who is not one of them.
 - **Ending:** Aiko. Standing. Older. Alive.
 - **Next mission reason:** She is here, and Kagehira is not. Whatever he wants, he left her to tell it.
-- *Staging:* Stronghold, rooftop arena, Castle, night · enemies: EliteWarrior, EliteWarrior, Assassin, Ranged
+- *Staging:* Stronghold, rooftop arena, Castle, night · enemies: EliteWarrior, EliteWarrior, Assassin, Ranged · bespoke plan `S80_WarlordsHall`
 - **Role:** Consequence
 - **Approach:** the mission has one shape.
 - **Preparation it reads:** `hoshu_dead`
@@ -1631,7 +1631,7 @@ A camp is a place with a garrison, not a level. Each is watched, prepared for, t
 - **Climax:** Aiko turns. 'You came.'
 - **Ending:** Two words, and ten years.
 - **Next mission reason:** Aiko has a story that will take the night to tell. The fortress is not safe to tell it in.
-- *Staging:* Stronghold, rooftop arena, Castle · enemies: none · beat `you_came`
+- *Staging:* Stronghold, rooftop arena, Castle · enemies: none · beat `you_came` · bespoke plan `S81_YouCame`
 - **Role:** Downtime
 - **Approach:** the mission has one shape.
 - **Preparation it reads:** `aiko_found`
@@ -1648,7 +1648,7 @@ A camp is a place with a garrison, not a level. Each is watched, prepared for, t
 - **Climax:** The last wave, and the doors giving.
 - **Ending:** 'It is under the shrine floor. He never thought to look at home.'
 - **Next mission reason:** The Seal is in Yorune, and Kagehira's army stands between here and there. First, Aiko has to survive the fortress.
-- *Staging:* Stronghold, rooftop arena, Castle · enemies: PikeGuard, PikeGuard, Ranged, Assassin, EliteWarrior · beat `long_night`
+- *Staging:* Stronghold, rooftop arena, Castle, night · enemies: PikeGuard, PikeGuard, Ranged, Assassin, EliteWarrior · beat `long_night` · bespoke plan `S82_LongNight`
 - **Role:** Defend
 - **Approach:** Assault / Allied — open from the start
 - **Companions:** DAIGO
@@ -1665,7 +1665,7 @@ A camp is a place with a garrison, not a level. Each is watched, prepared for, t
 - **Climax:** The last courtyard, and the soldiers who did not hesitate.
 - **Ending:** Outside the walls. Behind them, the fortress erupts in its own fighting.
 - **Next mission reason:** The fortress is fighting itself. Renzo needs to know why.
-- *Staging:* Stronghold, rooftop arena, Fortress · enemies: PikeGuard, Assassin, Ranged, Bandit, RaiderAxe, EliteWarrior
+- *Staging:* Stronghold, rooftop arena, Fortress, fog · enemies: PikeGuard, Assassin, Ranged, Bandit, RaiderAxe, EliteWarrior · bespoke plan `S83_AikoOut`
 - **Role:** Story · camp: THE IRON FORTRESS
 - **Approach:** Assault / Allied / Ambush — open from the start
 - **Companions:** DAIGO, TSURU
@@ -1682,7 +1682,7 @@ A camp is a place with a garrison, not a level. Each is watched, prepared for, t
 - **Climax:** The loyalists' last stand, and the mutineers standing down at the sight of Aiko.
 - **Ending:** The mutineers open the way to the ancient chamber under the fortress.
 - **Next mission reason:** The chamber under the fortress is where Kagehira kept the keys. Aiko knows the door.
-- *Staging:* Stronghold, rooftop arena, Fortress, night · enemies: PikeGuard, PikeGuard, RaiderAxe, Ranged, Assassin, EliteWarrior
+- *Staging:* Stronghold, rooftop arena, Fortress, night · enemies: PikeGuard, PikeGuard, RaiderAxe, Ranged, Assassin, EliteWarrior · bespoke plan `S84_Betrayal`
 - **Role:** Assault
 - **Approach:** Allied / Assault — open from the start
 - **Companions:** DAIGO, TSURU
@@ -1701,7 +1701,7 @@ A camp is a place with a garrison, not a level. Each is watched, prepared for, t
 - **Climax:** The chamber's guardians, awake for the first time in a century.
 - **Ending:** The door, and their father's mark on it, and a message beneath the mark.
 - **Next mission reason:** Their father left words at the door. They are for both of them.
-- *Staging:* Seal, rooftop arena, Temple, night · enemies: Shade, Shade, EliteWarrior
+- *Staging:* Seal, rooftop arena, Temple, night · enemies: Shade, Shade, EliteWarrior · bespoke plan `S85_SealsDoor`
 - **Role:** Story
 - **Approach:** the mission has one shape.
 - **Companions:** TSURU
@@ -1718,7 +1718,7 @@ A camp is a place with a garrison, not a level. Each is watched, prepared for, t
 - **Climax:** The message ends: 'Whatever it is you are angry about when you hear this — be less.'
 - **Ending:** Aiko takes Renzo's hand. He lets her.
 - **Next mission reason:** The message says what the Seal is not. Aiko knows what it is.
-- *Staging:* Seal, rooftop arena, Temple · enemies: none · beat `father_final`
+- *Staging:* Seal, rooftop arena, Temple · enemies: none · beat `father_final` · bespoke plan `S86_FathersFinalMessage`
 - **Role:** Memory
 - **Approach:** the mission has one shape.
 - **What it remembers:** `father_heard`
@@ -1734,7 +1734,7 @@ A camp is a place with a garrison, not a level. Each is watched, prepared for, t
 - **Climax:** Kagehira's vanguard in the chamber, ordered to take Aiko alive.
 - **Ending:** Kagehira has the third key. He has had it for a year. He needs the door, and the door needs a Kurogawa.
 - **Next mission reason:** Kagehira is coming to the chamber himself, and he is not coming alone.
-- *Staging:* Seal, rooftop arena, Temple · enemies: EliteWarrior, EliteWarrior, Assassin, Ranged, Samurai
+- *Staging:* Seal, rooftop arena, Temple, fog · enemies: EliteWarrior, EliteWarrior, Assassin, Ranged, Samurai · bespoke plan `S87_MeaningOfTheSeal`
 - **Role:** Prepare
 - **Approach:** Assault / Stealth — open from the start
 - **Companions:** FUMI
@@ -1753,7 +1753,7 @@ A camp is a place with a garrison, not a level. Each is watched, prepared for, t
 - **Climax:** Kagehira's demonstration of what he can do without the Seal.
 - **Ending:** He withdraws to raise his army. 'Open it, or I will burn my way to the summit and open it with your sister's hands.'
 - **Next mission reason:** Kagehira's army is marching on the fortress. There is one night to prepare.
-- *Staging:* Seal, rooftop arena, Fortress, night · enemies: EliteWarrior, EliteWarrior · named foe `kagachi` · beat `kagehira_truth`
+- *Staging:* Seal, rooftop arena, Fortress, night · enemies: EliteWarrior, EliteWarrior · named foe `kagachi` · beat `kagehira_truth` · bespoke plan `S88_KagehirasTruth`
 - **Role:** Story
 - **Approach:** the mission has one shape.
 - **Companions:** DAIGO
@@ -1770,7 +1770,7 @@ A camp is a place with a garrison, not a level. Each is watched, prepared for, t
 - **Climax:** The final wave, and the realisation that Kagehira is already inside.
 - **Ending:** The walls hold. The chamber does not.
 - **Next mission reason:** Kagehira went around the army. He is at the door with the third key.
-- *Staging:* Seal, rooftop arena, Fortress, night · enemies: Bandit, Bandit, PikeGuard, PikeGuard, Ranged, Ranged, RaiderAxe, Assassin, EliteWarrior, EliteWarrior
+- *Staging:* Seal, rooftop arena, Fortress, night, rain · enemies: Bandit, Bandit, PikeGuard, PikeGuard, Ranged, Ranged, RaiderAxe, Assassin, EliteWarrior, EliteWarrior · bespoke plan `S89_FinalMarch`
 - **Role:** Defend
 - **Approach:** Allied / Assault — open from the start
 - **Companions:** DAIGO, TSURU, SUZU
@@ -1789,7 +1789,7 @@ A camp is a place with a garrison, not a level. Each is watched, prepared for, t
 - **Climax:** The door opens as Renzo reaches it. Kagehira takes the final key and goes up.
 - **Ending:** The chamber is open. Kagehira has all three keys and a road to the summit.
 - **Next mission reason:** The summit is where the Seal's lock is. Kagehira is climbing to it.
-- *Staging:* Seal, rooftop arena, Temple, night · enemies: EliteWarrior, EliteWarrior, Samurai, Assassin, Ranged
+- *Staging:* Seal, rooftop arena, Temple, night · enemies: EliteWarrior, EliteWarrior, Samurai, Assassin, Ranged · bespoke plan `S90_DoorOpens`
 - **Role:** Consequence
 - **Approach:** the mission has one shape.
 - **Preparation it reads:** `gate_held`
@@ -1811,7 +1811,7 @@ A camp is a place with a garrison, not a level. Each is watched, prepared for, t
 - **Climax:** The last gate, and the fire reaching it first.
 - **Ending:** Out. The summit road, and Kagehira's rear guard on it.
 - **Next mission reason:** The road to the summit is held by the last of Kagehira's army.
-- *Staging:* Seal, rooftop arena, BurningVillage, night · enemies: Assassin, Ranged, EliteWarrior, Shade
+- *Staging:* Seal, rooftop arena, BurningVillage, night · enemies: Assassin, Ranged, EliteWarrior, Shade · bespoke plan `S91_BurningFortress`
 - **Role:** Story
 - **Approach:** the mission has one shape.
 - **Companions:** DAIGO, TSURU
@@ -1828,7 +1828,7 @@ A camp is a place with a garrison, not a level. Each is watched, prepared for, t
 - **Climax:** The last officer, and the mutineers breaking the line behind him.
 - **Ending:** The road is open. The summit is a day's climb.
 - **Next mission reason:** The summit is where Kagehira is. Renzo climbs.
-- *Staging:* Snow, rooftop arena, Mountain, snow · enemies: PikeGuard, PikeGuard, PikeGuard, Ranged, Ranged, RaiderAxe, RaiderAxe, Assassin, EliteWarrior
+- *Staging:* Snow, rooftop arena, Mountain, snow · enemies: PikeGuard, PikeGuard, PikeGuard, Ranged, Ranged, RaiderAxe, RaiderAxe, Assassin, EliteWarrior · bespoke plan `S92_LastArmy`
 - **Role:** Personal
 - **Approach:** Allied / Assault / Ambush — open from the start
 - **Companions:** TSURU, DAIGO, SUZU
@@ -1847,7 +1847,7 @@ A camp is a place with a garrison, not a level. Each is watched, prepared for, t
 - **Climax:** The final ascent, and the last of the guard turning back to hold it.
 - **Ending:** The summit gate, and Kagehira's strongest warriors in front of it.
 - **Next mission reason:** Kagehira's best are at the gate. They are the last wall.
-- *Staging:* Snow, rooftop arena, Mountain, snow, fog · enemies: Assassin, Ranged, Shade, Shade
+- *Staging:* Snow, rooftop arena, Mountain, snow, fog · enemies: Assassin, Ranged, Shade, Shade · bespoke plan `S93_SummitRoad`
 - **Role:** Discovery · camp: THE SUMMIT ROAD
 - **Approach:** the mission has one shape.
 - **Companions:** TSURU
@@ -1866,7 +1866,7 @@ A camp is a place with a garrison, not a level. Each is watched, prepared for, t
 - **Climax:** The last two, back to back, in the snow.
 - **Ending:** The gate is open. Beyond it, the summit, and nothing on it.
 - **Next mission reason:** Kagehira is on the summit. He has seen Renzo coming for an hour.
-- *Staging:* Snow, rooftop arena, Fortress, snow · enemies: EliteWarrior, EliteWarrior, EliteWarrior, Samurai, Samurai, RogueNinja · named foe `ironguard`
+- *Staging:* Snow, rooftop arena, Fortress, snow · enemies: EliteWarrior, EliteWarrior, EliteWarrior, Samurai, Samurai, RogueNinja · named foe `ironguard` · bespoke plan `S94_FinalGuard`
 - **Role:** Personal · camp: THE SUMMIT ROAD
 - **Approach:** Assault / Ambush — open from the start
 - **Companions:** TOKU
@@ -1885,7 +1885,7 @@ A camp is a place with a garrison, not a level. Each is watched, prepared for, t
 - **Climax:** Kagehira's blade at Renzo's back, and the cut he chooses not to make.
 - **Ending:** 'Alone,' he says. 'Come alone.' Aiko is gone from Renzo's side.
 - **Next mission reason:** Kagehira has Aiko. Renzo goes up alone, as he was told.
-- *Staging:* Seal, rooftop arena, Mountain, night, fog · enemies: Shade, Shade, Assassin · named foe `kagachi`
+- *Staging:* Seal, rooftop arena, Mountain, night, fog · enemies: Shade, Shade, Assassin · named foe `kagachi` · bespoke plan `S95_SerpentsShadow`
 - **Role:** Story · camp: THE SUMMIT ROAD
 - **Approach:** the mission has one shape.
 - **Preparation it reads:** `last_blade`
@@ -1903,7 +1903,7 @@ A camp is a place with a garrison, not a level. Each is watched, prepared for, t
 - **Climax:** The chamber stair, with everything he has left on it.
 - **Ending:** The chamber door, and a voice inside it Renzo knows.
 - **Next mission reason:** Kagehira wants to talk before the end. Renzo lets him.
-- *Staging:* Seal, rooftop arena, Mountain, night · enemies: Shade, Shade, Shade, Shade, Assassin, EliteWarrior
+- *Staging:* Seal, rooftop arena, Mountain, night, fog · enemies: Shade, Shade, Shade, Shade, Assassin, EliteWarrior · bespoke plan `S96_NoWayBack`
 - **Role:** Story · camp: THE SUMMIT ROAD
 - **Approach:** the mission has one shape.
 - **Preparation it reads:** `came_alone`
@@ -1919,7 +1919,7 @@ A camp is a place with a garrison, not a level. Each is watched, prepared for, t
 - **Climax:** Kagehira's guard, when Renzo refuses the offer.
 - **Ending:** 'Your father chose the villages. I chose the future. One of us was right, boy. Let us find out which.'
 - **Next mission reason:** There is nothing left to say. The chamber is open and Kagehira is in it.
-- *Staging:* Seal, rooftop arena, Temple, night · enemies: EliteWarrior, EliteWarrior, Samurai · beat `father_and_son`
+- *Staging:* Seal, rooftop arena, Temple, night · enemies: EliteWarrior, EliteWarrior, Samurai · beat `father_and_son` · bespoke plan `S97_FatherAndSon`
 - **Role:** Story
 - **Approach:** the mission has one shape.
 - **Ends on:** "I want to hear the rest of it."
@@ -1934,7 +1934,7 @@ A camp is a place with a garrison, not a level. Each is watched, prepared for, t
 - **Climax:** The chamber's last guardians, awake, on both sides.
 - **Ending:** Kagehira, at the Seal, waiting. Aiko beside him, unbound. She has not run.
 - **Next mission reason:** Kagehira is standing at the Seal. This is the end of it.
-- *Staging:* Seal, rooftop arena, Temple, night · enemies: Shade, Shade, EliteWarrior, EliteWarrior
+- *Staging:* Seal, rooftop arena, Temple, night · enemies: Shade, Shade, EliteWarrior, EliteWarrior · bespoke plan `S98_BlackSeal`
 - **Role:** Story
 - **Approach:** the mission has one shape.
 - **Ends on:** "I want to know why she has not run."
@@ -1949,7 +1949,7 @@ A camp is a place with a garrison, not a level. Each is watched, prepared for, t
 - **Climax:** Kagehira's last attack, from his knees, and Renzo's answer.
 - **Ending:** Kagehira dies. Renzo's sword is lowered. He did not become him.
 - **Next mission reason:** It is over. The only thing left is to leave.
-- *Staging:* Seal, marsh arena, Temple, night · enemies: Shade, Shade, Shade, Shade · boss Kagachi · beat `lower_the_sword` · bespoke plan `S10_Kagachi`
+- *Staging:* Seal, marsh arena, Temple, night · enemies: Shade, Shade, Shade, Shade · boss Kagachi · beat `lower_the_sword` · bespoke plan `S99_Kagachi`
 - **Role:** Consequence
 - **Approach:** the mission has one shape.
 - **What it remembers:** `kagehira_dead`
@@ -1966,7 +1966,7 @@ A camp is a place with a garrison, not a level. Each is watched, prepared for, t
 - **Climax:** Aiko: 'Where will you go?' Renzo: 'Home.' Aiko: 'There is no home.' Renzo looks toward Yorune. 'Then we'll build one.'
 - **Ending:** Fade to black. END.
 - **Next mission reason:** There is no next mission. There is a home to build.
-- *Staging:* Dawn, rooftop arena, VillageDawn · enemies: none · beat `emberline_dawn`
+- *Staging:* Dawn, rooftop arena, VillageDawn · enemies: none · beat `emberline_dawn` · bespoke plan `S100_Emberline`
 - **Role:** Downtime · village: YORUNE
 - **Approach:** the mission has one shape.
 - **Companions:** SUZU, FUMI, TSURU, DAIGO, TOKU, NIRE

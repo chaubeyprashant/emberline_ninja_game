@@ -187,6 +187,10 @@ namespace Emberline.EditorTools
             Phase("Jin", 2, "jin_storm", ag: .85f, br: 1f, af: .8f, df: .7f, dg: .6f, pa: .9f, rt: .2f, fe: .18f, co: .9f, gb: .4f, tw: 0f,
                 pref: 2.4f, min: 1.4f, max: 4f, low: LowHealthBehaviour.Berserk, adapt: 1f, interval: .15f,
                 combos: new[] { C("storm", "storm_dash", "sweep", "thrust"), C("edge", "feint", "counter_dash") });
+            // Jin: the last phase — fewer moves, every one meant to end it.
+            Phase("Jin", 3, "jin_last", ag: .75f, br: 1f, af: .7f, df: .85f, dg: .45f, pa: 1f, rt: .1f, fe: .25f, co: 1f, gb: .55f, tw: 0f,
+                pref: 2.2f, min: 1.3f, max: 3.4f, low: LowHealthBehaviour.Desperate, adapt: 1f, interval: .14f,
+                combos: new[] { C("breath", "feint", "counter_dash", "quick_slash"), C("end", "thrust", "storm_dash", "retreat_slash") });
 
             AssetDatabase.SaveAssets();
             Debug.Log("[Emberline] Combat 2.0 kits and profiles applied");
@@ -263,6 +267,34 @@ namespace Emberline.EditorTools
                 Phase("MiniBoss", 3, "goro_dirty", ag: 1f, br: 1f, af: .85f, df: .2f, dg: .1f, pa: .1f, rt: 0f, fe: .2f, co: .4f, gb: .8f, tw: .5f,
                     pref: 1.7f, min: 1.1f, max: 2.8f, low: LowHealthBehaviour.Berserk, adapt: .4f, interval: .18f,
                     combos: new[] { C("dirty", "ground_shock", "spin", "guard_break"), C("finish", "charge", "delayed_smash", "horizontal_sweep") });
+            }
+            // The Drowned Guardian does not tire. Below two thirds it drags the fight
+            // into the water and punishes every opening; below a third it stops
+            // guarding and only hunts.
+            if (Def("drownedguardian") != null)
+            {
+                Phase("drownedguardian", 2, "guardian_wrath", ag: .8f, br: 1f, af: .7f, df: .55f, dg: .1f, pa: .8f, rt: 0f, fe: .25f, co: .7f, gb: .7f, tw: 0f,
+                    pref: 2.2f, min: 1.3f, max: 3.4f, low: LowHealthBehaviour.Berserk, adapt: .7f, interval: .2f,
+                    combos: new[] { C("undertow", "guard_break", "slam", "slash"), C("drag", "spin", "slam") });
+                Phase("drownedguardian", 3, "guardian_drowning", ag: 1f, br: 1f, af: .85f, df: .25f, dg: .05f, pa: .6f, rt: 0f, fe: .15f, co: .5f, gb: .85f, tw: 0f,
+                    pref: 1.8f, min: 1.1f, max: 2.8f, low: LowHealthBehaviour.Berserk, adapt: .5f, interval: .16f,
+                    combos: new[] { C("drown", "slam", "slam", "guard_break"), C("last", "spin", "guard_break", "slam") });
+            }
+            // Commander Hoshu holds the door until he is pressed, then comes through it.
+            if (Def("finalcommander") != null)
+                Phase("finalcommander", 2, "hoshu_pressed", ag: .9f, br: 1f, af: .75f, df: .5f, dg: .15f, pa: .8f, rt: 0f, fe: .2f, co: .75f, gb: .75f, tw: 0f,
+                    pref: 2.2f, min: 1.3f, max: 3.2f, low: LowHealthBehaviour.Berserk, adapt: .8f, interval: .18f,
+                    combos: new[] { C("through", "guard_break", "heavy_slash", "thrust"), C("press", "feint", "heavy_slash") });
+            // The Iron Guard give no ground: below two thirds the shield becomes a
+            // wall that punishes every swing; below a third it becomes a hammer.
+            if (Def("ironguard") != null)
+            {
+                Phase("ironguard", 2, "iron_wall", ag: .75f, br: 1f, af: .65f, df: .9f, dg: .1f, pa: .9f, rt: 0f, fe: .15f, co: .85f, gb: .7f, tw: .9f,
+                    pref: 2.2f, min: 1.4f, max: 3f, low: LowHealthBehaviour.Guard, adapt: .9f, interval: .18f,
+                    combos: new[] { C("wall", "guard_break", "slam", "thrust"), C("punish", "feint", "delayed_slash") });
+                Phase("ironguard", 3, "iron_last", ag: 1f, br: 1f, af: .85f, df: .4f, dg: .05f, pa: .7f, rt: 0f, fe: .2f, co: .6f, gb: .85f, tw: 0f,
+                    pref: 1.9f, min: 1.2f, max: 2.8f, low: LowHealthBehaviour.Berserk, adapt: .6f, interval: .15f,
+                    combos: new[] { C("hammer", "slam", "spin", "guard_break"), C("last", "thrust", "slam") });
             }
         }
 

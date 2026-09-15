@@ -1,0 +1,203 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 814b8fc7fb4eb427480893eff898b203, type: 3}
+  m_Name: S62_Pursuit
+  m_EditorClassIdentifier: Assembly-CSharp::Emberline.Missions.MissionPlan
+  id: 62
+  missionName: THE PURSUIT
+  missionType: CHASE
+  briefing: Jin went over the rooftops and did not hurry. Suzu is on the roofline
+    ahead. Every ledge between them has one of his men on it.
+  debrief: Renzo makes the jump. Jin is already sheathing his sword.
+  marsh: 0
+  nightOverride: 1
+  rain: 1
+  snow: 0
+  fog: 0
+  applyTheme: 1
+  theme: 9
+  missionRadius: 0
+  missionRadiusZ: 0
+  nextReason: Jin stopped running because he wanted to fight here. Renzo obliges
+    him.
+  region: VILLAGES
+  stages:
+  - goal: 17
+    objective: 
+    banner: 
+    hint: 
+    count: 1
+    duration: 0
+    point: {x: 0, y: 0, z: 0}
+    spawn: 
+    pointB: {x: 0, y: 0, z: 0}
+    spawnB: 
+    foeDef: 
+    beatId: pursuit_open
+    props: []
+    bossHealthGate: 0.6
+    onComplete: 0
+    optional: 0
+    bonusShards: 1
+    checkpoint: 0
+  - goal: 9
+    objective: THE FIRST ROOF
+    banner: HE IS NOT RUNNING. HE IS LEADING
+    hint: 
+    count: 1
+    duration: 40
+    point: {x: 0, y: 0, z: 0}
+    spawn: 0b000000
+    pointB: {x: 0, y: 0, z: 0}
+    spawnB: 
+    foeDef: 
+    beatId: 
+    props: []
+    bossHealthGate: 0.6
+    onComplete: 0
+    optional: 0
+    bonusShards: 1
+    checkpoint: 1
+  - goal: 19
+    objective: THE TRAIL HE LEFT
+    banner: ON PURPOSE
+    hint: 
+    count: 1
+    duration: 0
+    point: {x: 0, y: 0, z: 0}
+    spawn: 
+    pointB: {x: 0, y: 0, z: 0}
+    spawnB: 
+    foeDef: 
+    beatId: 
+    props:
+    - id: cut
+      label: A CUT ROPE, CLEAN
+      point: {x: -6, y: 0, z: 12}
+      shape: 5
+      speaker: RENZO
+      line: He cut the washing lines as he went. Not to stop me. To show me the way.
+      beatId: 
+      radius: 2.2
+      figurePath: []
+      lanternLine: []
+    - id: tile
+      label: A TILE SET STRAIGHT
+      point: {x: 4, y: 0, z: 13}
+      shape: 13
+      speaker: RENZO
+      line: A loose tile, put back. He had time to put it back.
+      beatId: 
+      radius: 2.2
+      figurePath: []
+      lanternLine: []
+    bossHealthGate: 0.6
+    onComplete: 0
+    optional: 0
+    bonusShards: 1
+    checkpoint: 1
+  - goal: 9
+    objective: HIS MEN AT THE LEDGE
+    banner: THEY FIGHT, THEN THEY RUN
+    hint: 
+    count: 1
+    duration: 40
+    point: {x: 0, y: 0, z: 0}
+    spawn: 0b00000009000000
+    pointB: {x: 0, y: 0, z: 0}
+    spawnB: 
+    foeDef: 
+    beatId: 
+    props: []
+    bossHealthGate: 0.6
+    onComplete: 0
+    optional: 0
+    bonusShards: 1
+    checkpoint: 0
+  - goal: 17
+    objective: 
+    banner: 
+    hint: 
+    count: 1
+    duration: 0
+    point: {x: 0, y: 0, z: 0}
+    spawn: 
+    pointB: {x: 0, y: 0, z: 0}
+    spawnB: 
+    foeDef: 
+    beatId: pursuit_suzu
+    props: []
+    bossHealthGate: 0.6
+    onComplete: 0
+    optional: 0
+    bonusShards: 1
+    checkpoint: 0
+  - goal: 12
+    objective: THE GAP
+    banner: THE ROOF IS GOING
+    hint: 
+    count: 1
+    duration: 35
+    point: {x: 10, y: 0, z: -10}
+    spawn: 01000000
+    pointB: {x: 0, y: 0, z: 0}
+    spawnB: 
+    foeDef: 
+    beatId: 
+    props: []
+    bossHealthGate: 0.6
+    onComplete: 11
+    optional: 0
+    bonusShards: 1
+    checkpoint: 1
+  - goal: 0
+    objective: THE LAST ROOF
+    banner: HE IS WAITING
+    hint: 
+    count: 1
+    duration: 0
+    point: {x: 12, y: 0, z: -14}
+    spawn: 
+    pointB: {x: 0, y: 0, z: 0}
+    spawnB: 
+    foeDef: 
+    beatId: 
+    props: []
+    bossHealthGate: 0.6
+    onComplete: 0
+    optional: 0
+    bonusShards: 1
+    checkpoint: 0
+  - goal: 17
+    objective: 
+    banner: 
+    hint: 
+    count: 1
+    duration: 0
+    point: {x: 0, y: 0, z: 0}
+    spawn: 
+    pointB: {x: 0, y: 0, z: 0}
+    spawnB: 
+    foeDef: 
+    beatId: pursuit_end
+    props: []
+    bossHealthGate: 0.6
+    onComplete: 0
+    optional: 0
+    bonusShards: 1
+    checkpoint: 0
+  dressing: 04000000030000000900000005000000
+  ruinedVillage: 0
+  challenge: 5
+  challengeSeconds: 240
+  challengeShards: 3
+  baseShards: 5

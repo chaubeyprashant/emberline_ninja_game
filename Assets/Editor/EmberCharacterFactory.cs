@@ -594,27 +594,32 @@ namespace Emberline.EditorTools
         {
             name = "MixamoFatherModel",
             height = 1.84f,
-            tint = new Color(1.02f, 0.80f, 0.62f),
+            // His own body (Mixamo Knight): the hooded robe over mail, tinted from
+            // crusader red to a swordmaster's travelling brown. The Pirate body he
+            // wore before was the Bomber's and the Scavenger King's.
+            tint = new Color(0.86f, 0.70f, 0.58f),
             propRight = "katana",
-        }, "MixamoPirate", "void_diffuse.png");
+        }, "MixamoKnight", "Knight_diffuse.png");
 
         /// <summary>Aiko grown: the rogue body in drained red, unarmed.</summary>
         public static Spec MixamoAiko() => Mixamo(new Spec
         {
             name = "MixamoAikoModel",
             height = 1.64f,
-            tint = new Color(1.15f, 0.74f, 0.70f),   // the red thread, gone muted
-            hideRenderers = new[] { "Weapons_Geo" },
-        }, "MixamoArissa", "Arissa_DIFF_diffuse.png");
+            // Her own body (Mixamo Eve): worn dark leather, hair tied back — ten years
+            // a prisoner and never broken. Arissa was the Assassins' and Suzu's.
+            tint = new Color(1.06f, 0.88f, 0.86f),   // the red thread, gone muted
+        }, "MixamoEve", "SpacePirate_diffuse.png");
 
         /// <summary>Renzo's mother: the archer body, pale and unarmed.</summary>
         public static Spec MixamoMother() => Mixamo(new Spec
         {
             name = "MixamoMotherModel",
-            height = 1.66f,
-            tint = new Color(1.05f, 0.98f, 0.90f),
-            slotTextures = ErikaSlots(),
-        }, "MixamoErika", "Erika_Archer_Clothes_diffuse.png");
+            height = 1.62f,
+            // Her own body (Mixamo Peasant Girl): a long village dress and shawl, in
+            // faded indigo. Erika was the Archers' body.
+            tint = new Color(0.88f, 0.90f, 1.02f),
+        }, "MixamoPeasantGirl", "Peasant_Girl_diffuse.png");
 
         /// <summary>A visitor at the Kawai house: the archer body in cool travelling grey, unarmed.</summary>
         public static Spec MixamoVisitor() => Mixamo(new Spec
@@ -651,6 +656,14 @@ namespace Emberline.EditorTools
             height = 1.76f,
             tint = new Color(0.70f, 0.86f, 0.62f),
             propLeft = "yumi",
+        }, "MixamoAkai", "akai_diffuse.png");
+
+        /// <summary>Kanta: Suzu's brother, out of the prison tower — the Akai body gone prison-pale, unarmed.</summary>
+        public static Spec MixamoKanta() => Mixamo(new Spec
+        {
+            name = "MixamoKantaModel",
+            height = 1.70f,
+            tint = new Color(0.80f, 0.78f, 0.74f),
         }, "MixamoAkai", "akai_diffuse.png");
 
         /// <summary>Nire: the old guide of the reed village — the archer body gone grey, small, unarmed.</summary>

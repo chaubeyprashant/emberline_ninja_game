@@ -1,0 +1,223 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 814b8fc7fb4eb427480893eff898b203, type: 3}
+  m_Name: S72_FrozenCamp
+  m_EditorClassIdentifier: Assembly-CSharp::Emberline.Missions.MissionPlan
+  id: 72
+  missionName: THE FROZEN CAMP
+  missionType: SABOTAGE
+  briefing: The artillery camp covers the road. Suzu has a ridge above it and Tsuru
+    has a ravine below. The fires will burn slow in this cold, and the camp will
+    have time to notice.
+  debrief: The camp goes up. The mountain shivers.
+  marsh: 0
+  nightOverride: 1
+  rain: 0
+  snow: 1
+  fog: 0
+  applyTheme: 1
+  theme: 3
+  missionRadius: 0
+  missionRadiusZ: 0
+  nextReason: The explosion has loosened the slope above the road. Renzo has minutes.
+  region: SNOW
+  stages:
+  - goal: 17
+    objective: 
+    banner: 
+    hint: 
+    count: 1
+    duration: 0
+    point: {x: 0, y: 0, z: 0}
+    spawn: 
+    pointB: {x: 0, y: 0, z: 0}
+    spawnB: 
+    foeDef: 
+    beatId: guns_open
+    props: []
+    bossHealthGate: 0.6
+    onComplete: 0
+    optional: 0
+    bonusShards: 1
+    checkpoint: 0
+  - goal: 13
+    objective: INTO THE CAMP
+    banner: SUZU'S RIDGE, OR TSURU'S RAVINE
+    hint: 
+    count: 1
+    duration: 0
+    point: {x: 10, y: 0, z: 12}
+    spawn: 01000000
+    pointB: {x: -10, y: 0, z: 12}
+    spawnB: 07000000
+    foeDef: 
+    beatId: 
+    props: []
+    bossHealthGate: 0.6
+    onComplete: 0
+    optional: 0
+    bonusShards: 1
+    checkpoint: 1
+  - goal: 7
+    objective: THE GUN CREWS
+    banner: THEY ARE CARRYING POWDER
+    hint: 
+    count: 1
+    duration: 0
+    point: {x: 0, y: 0, z: 0}
+    spawn: 0800000007000000
+    pointB: {x: 0, y: 0, z: 0}
+    spawnB: 
+    foeDef: 
+    beatId: 
+    props: []
+    bossHealthGate: 0.6
+    onComplete: 0
+    optional: 0
+    bonusShards: 1
+    checkpoint: 1
+  - goal: 19
+    objective: A SIEGE CAMP
+    banner: HE EXPECTS AN ARMY
+    hint: 
+    count: 1
+    duration: 0
+    point: {x: 0, y: 0, z: 0}
+    spawn: 
+    pointB: {x: 0, y: 0, z: 0}
+    spawnB: 
+    foeDef: 
+    beatId: 
+    props:
+    - id: stores
+      label: SIEGE STORES FOR A MONTH
+      point: {x: -6, y: 0, z: 12}
+      shape: 7
+      speaker: RENZO
+      line: A month of rice and powder. For one road. He's afraid of something coming
+        up it.
+      beatId: 
+      radius: 2.2
+      figurePath: []
+      lanternLine: []
+    - id: orders
+      label: 'ORDERS: "HOLD AGAINST THE ARMY"'
+      point: {x: 6, y: 0, z: 12}
+      shape: 9
+      speaker: RENZO
+      line: An army. He thinks I'm bringing an army. I'm bringing Suzu and a man
+        with a bow.
+      beatId: 
+      radius: 2.2
+      figurePath: []
+      lanternLine: []
+    bossHealthGate: 0.6
+    onComplete: 0
+    optional: 0
+    bonusShards: 1
+    checkpoint: 1
+  - goal: 5
+    objective: SET THE FIRST FIRE
+    banner: IT BURNS SLOW IN THE COLD
+    hint: 
+    count: 1
+    duration: 30
+    point: {x: 0, y: 0, z: 10}
+    spawn: 0800000008000000
+    pointB: {x: 0, y: 0, z: 0}
+    spawnB: 
+    foeDef: 
+    beatId: 
+    props: []
+    bossHealthGate: 0.6
+    onComplete: 1
+    optional: 0
+    bonusShards: 1
+    checkpoint: 1
+  - goal: 17
+    objective: 
+    banner: 
+    hint: 
+    count: 1
+    duration: 0
+    point: {x: 0, y: 0, z: 0}
+    spawn: 
+    pointB: {x: 0, y: 0, z: 0}
+    spawnB: 
+    foeDef: 
+    beatId: guns_alarm
+    props: []
+    bossHealthGate: 0.6
+    onComplete: 0
+    optional: 0
+    bonusShards: 1
+    checkpoint: 0
+  - goal: 1
+    objective: THE POWDER CARRIERS
+    banner: KILL THEM BEFORE THEY REACH YOU
+    hint: 
+    count: 1
+    duration: 0
+    point: {x: 0, y: 0, z: 0}
+    spawn: 0800000006000000
+    pointB: {x: 0, y: 0, z: 0}
+    spawnB: 
+    foeDef: 
+    beatId: 
+    props: []
+    bossHealthGate: 0.6
+    onComplete: 0
+    optional: 0
+    bonusShards: 1
+    checkpoint: 0
+  - goal: 12
+    objective: BEFORE THE MAGAZINE GOES
+    banner: THE FIRE HAS REACHED IT
+    hint: 
+    count: 1
+    duration: 40
+    point: {x: -10, y: 0, z: -12}
+    spawn: 01000000
+    pointB: {x: 0, y: 0, z: 0}
+    spawnB: 
+    foeDef: 
+    beatId: 
+    props: []
+    bossHealthGate: 0.6
+    onComplete: 11
+    optional: 0
+    bonusShards: 1
+    checkpoint: 1
+  - goal: 17
+    objective: 
+    banner: 
+    hint: 
+    count: 1
+    duration: 0
+    point: {x: 0, y: 0, z: 0}
+    spawn: 
+    pointB: {x: 0, y: 0, z: 0}
+    spawnB: 
+    foeDef: 
+    beatId: guns_end
+    props: []
+    bossHealthGate: 0.6
+    onComplete: 0
+    optional: 0
+    bonusShards: 1
+    checkpoint: 0
+  dressing: 03000000090000000400000007000000
+  ruinedVillage: 0
+  challenge: 5
+  challengeSeconds: 240
+  challengeShards: 3
+  baseShards: 5

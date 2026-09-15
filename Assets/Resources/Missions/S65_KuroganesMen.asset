@@ -1,0 +1,222 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 814b8fc7fb4eb427480893eff898b203, type: 3}
+  m_Name: S65_KuroganesMen
+  m_EditorClassIdentifier: Assembly-CSharp::Emberline.Missions.MissionPlan
+  id: 65
+  missionName: KUROGANE'S MEN
+  missionType: COMBAT
+  briefing: Jin's personal unit is quartered in the castle barracks. The ledger says
+    every one of them was at Yorune. Daigo takes the gate. Tsuru takes the wall.
+  debrief: 'The captain says only: ''He tried to stop it.'''
+  marsh: 0
+  nightOverride: 1
+  rain: 0
+  snow: 0
+  fog: 0
+  applyTheme: 1
+  theme: 5
+  missionRadius: 0
+  missionRadiusZ: 0
+  nextReason: A man who fights honestly can be asked honestly. Renzo challenges Jin
+    to a duel with terms.
+  region: VILLAGES
+  stages:
+  - goal: 17
+    objective: 
+    banner: 
+    hint: 
+    count: 1
+    duration: 0
+    point: {x: 0, y: 0, z: 0}
+    spawn: 
+    pointB: {x: 0, y: 0, z: 0}
+    spawnB: 
+    foeDef: 
+    beatId: men_open
+    props: []
+    bossHealthGate: 0.6
+    onComplete: 0
+    optional: 0
+    bonusShards: 1
+    checkpoint: 0
+  - goal: 13
+    objective: INTO THE BARRACKS
+    banner: DAIGO'S GATE, OR TSURU'S WALL
+    hint: 
+    count: 1
+    duration: 0
+    point: {x: 10, y: 0, z: 12}
+    spawn: 09000000
+    pointB: {x: -10, y: 0, z: 12}
+    spawnB: 01000000
+    foeDef: 
+    beatId: 
+    props: []
+    bossHealthGate: 0.6
+    onComplete: 0
+    optional: 0
+    bonusShards: 1
+    checkpoint: 1
+  - goal: 1
+    objective: THEY READ YOUR HEAVIES
+    banner: HE TAUGHT THEM
+    hint: 
+    count: 1
+    duration: 0
+    point: {x: 0, y: 0, z: 0}
+    spawn: 0a0000000c000000
+    pointB: {x: 0, y: 0, z: 0}
+    spawnB: 
+    foeDef: 
+    beatId: 
+    props: []
+    bossHealthGate: 0.6
+    onComplete: 2
+    optional: 0
+    bonusShards: 1
+    checkpoint: 1
+  - goal: 19
+    objective: THE UNIT'S ROLL
+    banner: EVERY NAME
+    hint: 
+    count: 1
+    duration: 0
+    point: {x: 0, y: 0, z: 0}
+    spawn: 
+    pointB: {x: 0, y: 0, z: 0}
+    spawnB: 
+    foeDef: 
+    beatId: 
+    props:
+    - id: roll
+      label: THE UNIT ROLL, YORUNE'S NIGHT
+      point: {x: -6, y: 0, z: 12}
+      shape: 9
+      speaker: RENZO
+      line: Every name on this roll was at Yorune. Every one, marked present.
+      beatId: 
+      radius: 2.2
+      figurePath: []
+      lanternLine: []
+    - id: drill
+      label: A PRACTICE YARD, WORN SMOOTH
+      point: {x: 6, y: 0, z: 12}
+      shape: 2
+      speaker: RENZO
+      line: Worn like Father's post. The same drills. He taught them what Father
+        taught him.
+      beatId: 
+      radius: 2.2
+      figurePath: []
+      lanternLine: []
+    bossHealthGate: 0.6
+    onComplete: 0
+    optional: 0
+    bonusShards: 1
+    checkpoint: 1
+  - goal: 17
+    objective: 
+    banner: 
+    hint: 
+    count: 1
+    duration: 0
+    point: {x: 0, y: 0, z: 0}
+    spawn: 
+    pointB: {x: 0, y: 0, z: 0}
+    spawnB: 
+    foeDef: 
+    beatId: men_ryo
+    props: []
+    bossHealthGate: 0.6
+    onComplete: 0
+    optional: 0
+    bonusShards: 1
+    checkpoint: 0
+  - goal: 4
+    objective: THEY NEVER BLOCK TWICE THE SAME WAY
+    banner: HOLD THE YARD
+    hint: 
+    count: 1
+    duration: 35
+    point: {x: 0, y: 0, z: 0}
+    spawn: 0a0000000900000001000000
+    pointB: {x: 0, y: 0, z: 0}
+    spawnB: 
+    foeDef: 
+    beatId: 
+    props: []
+    bossHealthGate: 0.6
+    onComplete: 0
+    optional: 0
+    bonusShards: 1
+    checkpoint: 1
+  - goal: 0
+    objective: THE CAPTAIN'S QUARTERS
+    banner: JIN'S SECOND
+    hint: 
+    count: 1
+    duration: 0
+    point: {x: 0, y: 0, z: -12}
+    spawn: 
+    pointB: {x: 0, y: 0, z: 0}
+    spawnB: 
+    foeDef: 
+    beatId: 
+    props: []
+    bossHealthGate: 0.6
+    onComplete: 0
+    optional: 0
+    bonusShards: 1
+    checkpoint: 0
+  - goal: 1
+    objective: CAPTAIN RYO
+    banner: HE WAS THERE THAT NIGHT
+    hint: 
+    count: 1
+    duration: 0
+    point: {x: 0, y: 0, z: 0}
+    spawn: 0c0000000a000000
+    pointB: {x: 0, y: 0, z: 0}
+    spawnB: 
+    foeDef: 
+    beatId: 
+    props: []
+    bossHealthGate: 0.6
+    onComplete: 0
+    optional: 0
+    bonusShards: 1
+    checkpoint: 1
+  - goal: 17
+    objective: 
+    banner: 
+    hint: 
+    count: 1
+    duration: 0
+    point: {x: 0, y: 0, z: 0}
+    spawn: 
+    pointB: {x: 0, y: 0, z: 0}
+    spawnB: 
+    foeDef: 
+    beatId: men_end
+    props: []
+    bossHealthGate: 0.6
+    onComplete: 0
+    optional: 0
+    bonusShards: 1
+    checkpoint: 0
+  dressing: 09000000040000000500000003000000
+  ruinedVillage: 0
+  challenge: 5
+  challengeSeconds: 240
+  challengeShards: 3
+  baseShards: 5

@@ -63,6 +63,14 @@ namespace Emberline.EditorTools
             // The voices in the fog are the marsh's shades: seen, pale and half there,
             // never a box figure standing in for nobody.
             ("WHISPER", EmberCharacterFactory.Shade),
+            // Chapter 7: Jin's champion before he is a duel, and Jin's old second.
+            ("COMMANDER HOSHU", () => EmberCharacterFactory.NamedFoe("finalcommander")),
+            ("RYO", EmberCharacterFactory.EliteWarrior),
+            // Chapter 8: the first of the nine behind his shield, and Suzu's brother.
+            ("IRON GUARD", () => EmberCharacterFactory.NamedFoe("ironguard")),
+            ("KANTA", EmberCharacterFactory.MixamoKanta),
+            // Chapter 9: the captain who turns half the army.
+            ("OBA", EmberCharacterFactory.Samurai),
         };
 
         public static readonly string[] CastNames = System.Array.ConvertAll(Roles, r => r.cast);

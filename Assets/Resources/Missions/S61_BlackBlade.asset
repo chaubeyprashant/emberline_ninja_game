@@ -1,0 +1,203 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 814b8fc7fb4eb427480893eff898b203, type: 3}
+  m_Name: S61_BlackBlade
+  m_EditorClassIdentifier: Assembly-CSharp::Emberline.Missions.MissionPlan
+  id: 61
+  missionName: THE BLACK BLADE
+  missionType: ENDURE
+  briefing: The Kurogane crest leads to a garrison town under Kagehira's banner.
+    Renzo came to find the man who drew the map. The man is already looking for him.
+  debrief: Jin steps back into the rain. 'Not yet,' he says.
+  marsh: 0
+  nightOverride: 1
+  rain: 1
+  snow: 0
+  fog: 0
+  applyTheme: 1
+  theme: 9
+  missionRadius: 0
+  missionRadiusZ: 0
+  nextReason: Jin walked away over the rooftops. Renzo does not let him.
+  region: VILLAGES
+  stages:
+  - goal: 17
+    objective: 
+    banner: 
+    hint: 
+    count: 1
+    duration: 0
+    point: {x: 0, y: 0, z: 0}
+    spawn: 
+    pointB: {x: 0, y: 0, z: 0}
+    spawnB: 
+    foeDef: 
+    beatId: blade_open
+    props: []
+    bossHealthGate: 0.6
+    onComplete: 0
+    optional: 0
+    bonusShards: 1
+    checkpoint: 0
+  - goal: 0
+    objective: THE LOWER STREETS
+    banner: UNDER THE SERPENT'S BANNER
+    hint: 
+    count: 1
+    duration: 0
+    point: {x: -8, y: 0, z: 10}
+    spawn: 
+    pointB: {x: 0, y: 0, z: 0}
+    spawnB: 
+    foeDef: 
+    beatId: 
+    props: []
+    bossHealthGate: 0.6
+    onComplete: 0
+    optional: 0
+    bonusShards: 1
+    checkpoint: 1
+  - goal: 19
+    objective: HE KNOWS YOU ARE COMING
+    banner: A LIST OF NAMES
+    hint: 
+    count: 1
+    duration: 0
+    point: {x: 0, y: 0, z: 0}
+    spawn: 
+    pointB: {x: 0, y: 0, z: 0}
+    spawnB: 
+    foeDef: 
+    beatId: 
+    props:
+    - id: notice
+      label: A NOTICE WITH THREE NAMES
+      point: {x: -5, y: 0, z: 13}
+      shape: 9
+      speaker: RENZO
+      line: Kurogawa Renzo. Kurogawa Aiko. Kurogawa Daisuke. Father's name, in fresh
+        ink.
+      beatId: 
+      radius: 2.2
+      figurePath: []
+      lanternLine: []
+    - id: crest
+      label: THE KUROGANE CREST ON A DOOR
+      point: {x: 5, y: 0, z: 14}
+      shape: 13
+      speaker: RENZO
+      line: The crest from the hunters in the fog. Painted on the door, not hidden.
+      beatId: 
+      radius: 2.2
+      figurePath: []
+      lanternLine: []
+    bossHealthGate: 0.6
+    onComplete: 0
+    optional: 0
+    bonusShards: 1
+    checkpoint: 1
+  - goal: 1
+    objective: HIS WATCHERS
+    banner: THEY WERE TOLD TO SLOW YOU
+    hint: 
+    count: 1
+    duration: 0
+    point: {x: 0, y: 0, z: 0}
+    spawn: 0900000001000000
+    pointB: {x: 0, y: 0, z: 0}
+    spawnB: 
+    foeDef: 
+    beatId: 
+    props: []
+    bossHealthGate: 0.6
+    onComplete: 9
+    optional: 0
+    bonusShards: 1
+    checkpoint: 1
+  - goal: 17
+    objective: 
+    banner: 
+    hint: 
+    count: 1
+    duration: 0
+    point: {x: 0, y: 0, z: 0}
+    spawn: 
+    pointB: {x: 0, y: 0, z: 0}
+    spawnB: 
+    foeDef: 
+    beatId: blade_jin
+    props: []
+    bossHealthGate: 0.6
+    onComplete: 0
+    optional: 0
+    bonusShards: 1
+    checkpoint: 0
+  - goal: 16
+    objective: SURVIVE JIN KUROGANE
+    banner: THE STORM BLADE
+    hint: 
+    count: 1
+    duration: 40
+    point: {x: 0, y: 0, z: 0}
+    spawn: 05000000
+    pointB: {x: 0, y: 0, z: 0}
+    spawnB: 
+    foeDef: jin
+    beatId: 
+    props: []
+    bossHealthGate: 0.6
+    onComplete: 13
+    optional: 0
+    bonusShards: 1
+    checkpoint: 1
+  - goal: 0
+    objective: AFTER HIM
+    banner: HE WENT OVER THE ROOFS
+    hint: 
+    count: 1
+    duration: 0
+    point: {x: 10, y: 0, z: -12}
+    spawn: 
+    pointB: {x: 0, y: 0, z: 0}
+    spawnB: 
+    foeDef: 
+    beatId: 
+    props: []
+    bossHealthGate: 0.6
+    onComplete: 0
+    optional: 0
+    bonusShards: 1
+    checkpoint: 0
+  - goal: 17
+    objective: 
+    banner: 
+    hint: 
+    count: 1
+    duration: 0
+    point: {x: 0, y: 0, z: 0}
+    spawn: 
+    pointB: {x: 0, y: 0, z: 0}
+    spawnB: 
+    foeDef: 
+    beatId: blade_end
+    props: []
+    bossHealthGate: 0.6
+    onComplete: 0
+    optional: 0
+    bonusShards: 1
+    checkpoint: 0
+  dressing: 09000000060000000200000004000000
+  ruinedVillage: 0
+  challenge: 5
+  challengeSeconds: 240
+  challengeShards: 3
+  baseShards: 5

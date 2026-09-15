@@ -594,7 +594,7 @@ namespace Emberline.Campaign
                 "The temple's watchers, when the last page is lifted.",
                 "The last page is a date. The night Yorune burned. And a place to stand.",
                 "The journal asks him to remember. The memory is where the truth is.",
-                K(S, S, M_), marsh: true),
+                K(S, S, M_), marsh: true, plan: "S51_FathersJournal", fog: true),
 
             M(52, "THE LAST NIGHT", T(Memory, Exploration), Region.Villages, Dawn,
                 "Renzo walks through the night Yorune burned, as he remembers it.",
@@ -604,7 +604,7 @@ namespace Emberline.Campaign
                 "The first fire, on the ridge, as the memory ends.",
                 "Renzo wakes on the temple floor with the journal open to the next page.",
                 "The memory stopped at the fire. The next page is the fire.",
-                beat: "memory_lastnight"),
+                beat: "memory_lastnight", plan: "S52_TheLastNight"),
 
             M(53, "THE BURNING VILLAGE", T(Combat, Memory), Region.Villages, Burning,
                 "What actually happened.",
@@ -614,7 +614,7 @@ namespace Emberline.Campaign
                 "The house where his father made his stand.",
                 "The memory breaks at the door. Renzo could not go in then. He cannot now.",
                 "His father's stand is the page he has never been able to read.",
-                K(B, B, H, R), beat: "memory_burning"),
+                K(B, B, H, R), beat: "memory_burning", plan: "S53_BurningVillage", night: true),
 
             M(54, "THE SWORDMASTER", T(Boss, Memory), Region.Villages, Burning,
                 "His father's final stand, as the journal tells it.",
@@ -624,7 +624,7 @@ namespace Emberline.Campaign
                 "The raider captain — a young Goro — at the door.",
                 "The door holds. The man behind it does not.",
                 "The Seal was carried out by someone. The journal says who.",
-                K(B, P, A), foe: "goro"),
+                K(B, P, A), foe: "goro", plan: "S54_Swordmaster", night: true),
 
             M(55, "MOTHER'S CHOICE", T(Escort, Memory, Rescue), Region.Villages, Burning,
                 "His mother, and the people she saved.",
@@ -634,7 +634,7 @@ namespace Emberline.Campaign
                 "The lantern line, and the raiders waiting at the end of it.",
                 "The villagers reach the ridge. His mother turns back for the last child.",
                 "The child at the head of the line was Aiko. The memory follows her.",
-                K(B, R, R, O)),
+                K(B, R, R, O), plan: "S55_MothersChoice", night: true),
 
             M(56, "AIKO", T(Stealth, Memory), Region.Villages, Burning,
                 "Aiko's last hour of freedom.",
@@ -644,7 +644,7 @@ namespace Emberline.Campaign
                 "The raiders find her in the shrine. She has already hidden it.",
                 "The memory ends with a hand over her mouth and a thread snapping.",
                 "The Seal was never taken. Aiko hid it, and Kagehira has spent ten years asking her where.",
-                K(B, A, N), beat: "memory_aiko"),
+                K(B, A, N), beat: "memory_aiko", plan: "S56_Aiko", night: true, fog: true),
 
             M(57, "THE PRISONER", T(Investigation), Region.Temples, Temple,
                 "Back in the present: Aiko's cell in the temple.",
@@ -654,7 +654,7 @@ namespace Emberline.Campaign
                 "The wardens, who have been told to let no one read the walls.",
                 "Renzo reads his sister's handwriting for the first time in ten years.",
                 "The second key is under the temple's guardian. The wall says so.",
-                K(P, P, R, M_), marsh: true, night: true),
+                K(P, P, R, M_), marsh: true, night: true, plan: "S57_Prisoner"),
 
             M(58, "THE SECOND KEY", T(Rescue, Combat), Region.Temples, Temple,
                 "The second of three.",
@@ -664,7 +664,7 @@ namespace Emberline.Campaign
                 "The nave's last guard, waist-deep.",
                 "Two keys. The guardian below is what stands between him and the third.",
                 "The Drowned Guardian holds the way down. It was put there by his father.",
-                K(S, S, E, M_), marsh: true),
+                K(S, S, E, M_), marsh: true, plan: "S58_SecondKey"),
 
             M(59, "THE DROWNED GUARDIAN", T(Boss), Region.Temples, Temple,
                 "The elite fight of the chapter, with his father's mark on it.",
@@ -674,7 +674,7 @@ namespace Emberline.Campaign
                 "The guardian's last phase, in the dark, in the water.",
                 "It falls. Under it: not a key. A message.",
                 "His father left words instead of a key. The words say why.",
-                K(S, S), foe: "drownedguardian", marsh: true, night: true),
+                K(S, S), foe: "drownedguardian", marsh: true, night: true, plan: "S59_DrownedGuardian"),
 
             M(60, "THE TRUTH BENEATH YORUNE", T(Conversation, Exploration), Region.Temples, Temple,
                 "The mid-campaign revelation.",
@@ -684,7 +684,7 @@ namespace Emberline.Campaign
                 "The message ends with a name: the man who told Kagehira where the Seal was. Kurogane.",
                 "Renzo surfaces. He has stopped looking for answers. He is looking for Kurogane.",
                 "Jin Kurogane sold Yorune. Renzo goes to find him.",
-                marsh: true, beat: "father_message"),
+                marsh: true, beat: "father_message", plan: "S60_TruthBeneathYorune", fog: true),
 
             // =============================================================
             // CHAPTER 7 — KUROGANE
@@ -698,7 +698,7 @@ namespace Emberline.Campaign
                 "Jin steps back into the rain. 'Not yet,' he says.",
                 "Jin walked away over the rooftops. Renzo does not let him.",
                 K(A, A, R), foe: "jin", rain: true, night: true,
-                dialogue: L("JIN|Kurogawa. You have your father's stance.",
+                plan: "S61_BlackBlade", dialogue: L("JIN|Kurogawa. You have your father's stance.",
                             "RENZO|You are the second man to say that. The first is dead.",
                             "JIN|The first was not me.")),
 
@@ -710,7 +710,7 @@ namespace Emberline.Campaign
                 "The last roof, the drop, and Jin waiting on the far side of it.",
                 "Renzo makes the jump. Jin is already sheathing his sword.",
                 "Jin stopped running because he wanted to fight here. Renzo obliges him.",
-                K(N, N, A, R), rain: true),
+                K(N, N, A, R), rain: true, plan: "S62_Pursuit", night: true),
 
             M(63, "NO HONOR", T(Endure), Region.Villages, Castle,
                 "Renzo loses.",
@@ -720,7 +720,7 @@ namespace Emberline.Campaign
                 "Renzo on his knees, and Jin's blade at his throat, withdrawn.",
                 "'Go home, Kurogawa. There is nothing up this mountain but me.'",
                 "Jin let him live, and Renzo does not know why. His past will.",
-                K(M_, A), foe: "jin", night: true, beat: "jin_mercy"),
+                K(M_, A), foe: "jin", night: true, beat: "jin_mercy", plan: "S63_NoHonor"),
 
             M(64, "THE FALLEN SOLDIER", T(Investigation, Stealth), Region.Villages, Village,
                 "Who Jin was.",
@@ -730,7 +730,7 @@ namespace Emberline.Campaign
                 "Jin's old unit, still loyal, when they realise what Renzo is asking.",
                 "A portrait in the garrison hall: Jin, ten years younger, standing behind Renzo's father.",
                 "Jin and his father knew each other. Jin's men will know how.",
-                K(A, A, P, R)),
+                K(A, A, P, R), plan: "S64_FallenSoldier"),
 
             M(65, "KUROGANE'S MEN", T(Combat), Region.Villages, Castle,
                 "Jin's personal unit.",
@@ -740,7 +740,7 @@ namespace Emberline.Campaign
                 "The unit's captain, who was Jin's second that night.",
                 "The captain says only: 'He tried to stop it.'",
                 "A man who fights honestly can be asked honestly. Renzo challenges Jin to a duel with terms.",
-                K(M_, M_, E, A, R)),
+                K(M_, M_, E, A, R), plan: "S65_KuroganesMen", night: true),
 
             M(66, "THE DUELIST", T(Boss), Region.Villages, Village,
                 "Pure combat, on agreed terms.",
@@ -750,7 +750,7 @@ namespace Emberline.Campaign
                 "The champion, a ronin who fights exactly like Jin.",
                 "The champion yields. Jin was watching from the roofline.",
                 "Jin has seen enough. He sends a message: a place, a time, and no guards.",
-                K(M_), foe: "finalcommander"),
+                K(M_), foe: "finalcommander", plan: "S66_Duelist"),
 
             M(67, "THE BROKEN MASK", T(Exploration), Region.Villages, Village,
                 "Jin's connection to Yorune.",
@@ -760,7 +760,7 @@ namespace Emberline.Campaign
                 "The men Kagehira sent to burn the house before Renzo could read it.",
                 "In the ashes of the last room: a mask, broken in half, one half missing.",
                 "Half a mask, and the other half is on Jin's face. He is waiting where he said.",
-                K(A, A, N, R), night: true),
+                K(A, A, N, R), night: true, plan: "S67_BrokenMask"),
 
             M(68, "THE CONFESSION", T(Conversation, Survival), Region.Villages, Rainy,
                 "Jin tells the truth.",
@@ -770,7 +770,7 @@ namespace Emberline.Campaign
                 "Kagehira's assassins interrupt the confession.",
                 "'I gave him the map. I did not give him the village. He took that himself.'",
                 "Jin has one more thing to say, and he will only say it with a sword in his hand.",
-                K(A, A, A, R), rain: true, beat: "jin_confession"),
+                K(A, A, A, R), rain: true, beat: "jin_confession", plan: "S68_Confession", night: true),
 
             M(69, "LAST WARNING", T(Endure, Conversation), Region.Villages, Castle,
                 "Jin's warning, and the question the last act is built on.",
@@ -780,7 +780,7 @@ namespace Emberline.Campaign
                 "Jin's final demonstration: Renzo's own rage, used against him.",
                 "Jin sheathes his sword. 'Tomorrow, then. Properly.'",
                 "Tomorrow. The duel neither of them can walk away from.",
-                K(M_), foe: "jin", night: true, beat: "jin_warning"),
+                K(M_), foe: "jin", night: true, beat: "jin_warning", plan: "S69_LastWarning"),
 
             M(70, "KUROGANE", T(Boss), Region.Villages, Rainy,
                 "The late-game boss, and the death that changes Renzo.",
@@ -791,7 +791,7 @@ namespace Emberline.Campaign
                 "Jin dies with the half mask in his hand. 'Do not become him.'",
                 "Aiko is in the mountain fortress. Renzo begins the climb.",
                 K(), boss: J, rain: true, night: true,
-                dialogue: L("JIN|You came. Good. I did not want to die in bed.",
+                plan: "S70_Kurogane", dialogue: L("JIN|You came. Good. I did not want to die in bed.",
                             "RENZO|You could walk away.",
                             "JIN|I did that once. It burned a village.")),
 
@@ -807,7 +807,7 @@ namespace Emberline.Campaign
                 "The first garrison of the ascent, in a blizzard.",
                 "Above, the glow of a camp with artillery in it.",
                 "The camp above holds the guns that cover the road. They have to fall.",
-                K(P, H, R, A), snow: true),
+                K(P, H, R, A), snow: true, plan: "S71_MountainRoad"),
 
             M(72, "THE FROZEN CAMP", T(Sabotage), Region.Snow, Mountain,
                 "Taking the guns.",
@@ -817,7 +817,7 @@ namespace Emberline.Campaign
                 "The magazine, when the last fire reaches it.",
                 "The camp goes up. The mountain shivers.",
                 "The explosion has loosened the slope above the road. Renzo has minutes.",
-                K(O, O, P, R, H), snow: true, night: true),
+                K(O, O, P, R, H), snow: true, night: true, plan: "S72_FrozenCamp"),
 
             M(73, "THE AVALANCHE", T(Survival, Chase), Region.Snow, Mountain,
                 "The mountain comes down.",
@@ -827,7 +827,7 @@ namespace Emberline.Campaign
                 "The last stretch, with the snow at Renzo's heels.",
                 "The outer wall, out of the white.",
                 "The wall is the fortress. There is no more road.",
-                K(A, R, S), snow: true, fog: true),
+                K(A, R, S), snow: true, fog: true, plan: "S73_Avalanche"),
 
             M(74, "THE OUTER WALL", T(Combat, Defense, Boss), Region.Fortresses, Fortress,
                 "Assault, defense and a boss in one mission.",
@@ -837,7 +837,7 @@ namespace Emberline.Campaign
                 "The breach held, and the commander in it.",
                 "The wall is Renzo's. The inner fortress is not.",
                 "The inner fortress has one silent way in, and the wall's plans show it.",
-                K(P, P, R, R, H, E, E), foe: "ironguard", snow: true),
+                K(P, P, R, R, H, E, E), foe: "ironguard", snow: true, plan: "S74_OuterWall"),
 
             M(75, "THE SILENT GATE", T(Stealth), Region.Fortresses, Fortress,
                 "The quiet way in.",
@@ -847,7 +847,7 @@ namespace Emberline.Campaign
                 "Two elites and archer support at the inner gate.",
                 "Inside. The prison tower is lit.",
                 "Aiko is in the tower. Renzo climbs.",
-                K(E, E, P, P, R), snow: true, night: true, plan: "S09_SerpentsGuard"),
+                K(E, E, P, P, R), snow: true, night: true, plan: "S75_SilentGate"),
 
             M(76, "THE PRISON TOWER", T(Rescue, Stealth), Region.Fortresses, Fortress,
                 "The rescue that has been ten years coming.",
@@ -857,7 +857,7 @@ namespace Emberline.Campaign
                 "The tower's wardens, and the alarm they are trying to reach.",
                 "Her cell, at the top, empty. Warm.",
                 "An empty cell has a record. The record will say where.",
-                K(P, P, A, R), night: true),
+                K(P, P, A, R), night: true, plan: "S76_PrisonTower"),
 
             M(77, "THE EMPTY CELL", T(Investigation), Region.Fortresses, Fortress,
                 "The near miss.",
@@ -867,7 +867,7 @@ namespace Emberline.Campaign
                 "The records room, on fire, with the transfer order in it.",
                 "The order is in Kagehira's own hand. She is with him.",
                 "Kagehira's elite guard stands between the outer fortress and the warlord's hall.",
-                K(A, A, P, R, H)),
+                K(A, A, P, R, H), plan: "S77_EmptyCell", fog: true),
 
             M(78, "THE IRON GUARD", T(Boss, Combat), Region.Fortresses, Fortress,
                 "Kagehira's shield.",
@@ -877,7 +877,7 @@ namespace Emberline.Campaign
                 "The captain of the guard, in the iron hall.",
                 "The guard is broken. The inner gate is ahead, and the last commander.",
                 "One commander remains between Renzo and the hall.",
-                K(E, E, E, M_, R), foe: "ironguard"),
+                K(E, E, E, M_, R), foe: "ironguard", plan: "S78_IronGuard", night: true),
 
             M(79, "THE INNER GATE", T(Boss), Region.Fortresses, Fortress,
                 "The last commander.",
@@ -887,7 +887,7 @@ namespace Emberline.Campaign
                 "The commander's last stand at the gate itself.",
                 "The gate opens. The hall beyond is lit, and empty.",
                 "The throne hall. Whatever is in it is what all of this was for.",
-                K(M_, M_, E, R), foe: "finalcommander"),
+                K(M_, M_, E, R), foe: "finalcommander", plan: "S79_InnerGate", snow: true),
 
             M(80, "THE WARLORD'S HALL", T(Exploration), Region.Stronghold, Castle,
                 "The end of the approach, and the wrong person on the throne.",
@@ -897,7 +897,7 @@ namespace Emberline.Campaign
                 "The hall's last defenders, and a figure behind the throne who is not one of them.",
                 "Aiko. Standing. Older. Alive.",
                 "She is here, and Kagehira is not. Whatever he wants, he left her to tell it.",
-                K(E, E, A, R), night: true),
+                K(E, E, A, R), night: true, plan: "S80_WarlordsHall"),
 
             // =============================================================
             // CHAPTER 9 — THE BLACK SEAL
@@ -911,7 +911,7 @@ namespace Emberline.Campaign
                 "Two words, and ten years.",
                 "Aiko has a story that will take the night to tell. The fortress is not safe to tell it in.",
                 beat: "you_came",
-                dialogue: L("AIKO|You came.",
+                plan: "S81_YouCame", dialogue: L("AIKO|You came.",
                             "RENZO|I said I would.",
                             "AIKO|You were nine.")),
 
@@ -923,7 +923,7 @@ namespace Emberline.Campaign
                 "The last wave, and the doors giving.",
                 "'It is under the shrine floor. He never thought to look at home.'",
                 "The Seal is in Yorune, and Kagehira's army stands between here and there. First, Aiko has to survive the fortress.",
-                K(P, P, R, A, E), beat: "long_night"),
+                K(P, P, R, A, E), beat: "long_night", plan: "S82_LongNight", night: true),
 
             M(83, "THE PRISONER", T(Escort), Region.Stronghold, Fortress,
                 "Aiko out of the fortress.",
@@ -933,7 +933,7 @@ namespace Emberline.Campaign
                 "The last courtyard, and the soldiers who did not hesitate.",
                 "Outside the walls. Behind them, the fortress erupts in its own fighting.",
                 "The fortress is fighting itself. Renzo needs to know why.",
-                K(P, A, R, B, H, E)),
+                K(P, A, R, B, H, E), plan: "S83_AikoOut", fog: true),
 
             M(84, "THE BETRAYAL", T(Combat), Region.Stronghold, Fortress,
                 "The army turns.",
@@ -943,7 +943,7 @@ namespace Emberline.Campaign
                 "The loyalists' last stand, and the mutineers standing down at the sight of Aiko.",
                 "The mutineers open the way to the ancient chamber under the fortress.",
                 "The chamber under the fortress is where Kagehira kept the keys. Aiko knows the door.",
-                K(P, P, H, R, A, E), night: true),
+                K(P, P, H, R, A, E), night: true, plan: "S84_Betrayal"),
 
             M(85, "THE SEAL'S DOOR", T(Exploration), Region.Seal, Temple,
                 "The door.",
@@ -953,7 +953,7 @@ namespace Emberline.Campaign
                 "The chamber's guardians, awake for the first time in a century.",
                 "The door, and their father's mark on it, and a message beneath the mark.",
                 "Their father left words at the door. They are for both of them.",
-                K(S, S, E), night: true),
+                K(S, S, E), night: true, plan: "S85_SealsDoor"),
 
             M(86, "FATHER'S FINAL MESSAGE", T(Memory, Conversation), Region.Seal, Temple,
                 "His father's last word.",
@@ -963,7 +963,7 @@ namespace Emberline.Campaign
                 "The message ends: 'Whatever it is you are angry about when you hear this — be less.'",
                 "Aiko takes Renzo's hand. He lets her.",
                 "The message says what the Seal is not. Aiko knows what it is.",
-                beat: "father_final"),
+                beat: "father_final", plan: "S86_FathersFinalMessage"),
 
             M(87, "THE MEANING OF THE SEAL", T(Investigation), Region.Seal, Temple,
                 "What it is.",
@@ -973,7 +973,7 @@ namespace Emberline.Campaign
                 "Kagehira's vanguard in the chamber, ordered to take Aiko alive.",
                 "Kagehira has the third key. He has had it for a year. He needs the door, and the door needs a Kurogawa.",
                 "Kagehira is coming to the chamber himself, and he is not coming alone.",
-                K(E, E, A, R, M_)),
+                K(E, E, A, R, M_), plan: "S87_MeaningOfTheSeal", fog: true),
 
             M(88, "KAGEHIRA'S TRUTH", T(Endure, Conversation), Region.Seal, Fortress,
                 "The warlord, in his own words.",
@@ -983,7 +983,7 @@ namespace Emberline.Campaign
                 "Kagehira's demonstration of what he can do without the Seal.",
                 "He withdraws to raise his army. 'Open it, or I will burn my way to the summit and open it with your sister's hands.'",
                 "Kagehira's army is marching on the fortress. There is one night to prepare.",
-                K(E, E), foe: "kagachi", night: true, beat: "kagehira_truth"),
+                K(E, E), foe: "kagachi", night: true, beat: "kagehira_truth", plan: "S88_KagehirasTruth"),
 
             M(89, "THE FINAL MARCH", T(Defense), Region.Seal, Fortress,
                 "The siege of the fortress.",
@@ -993,7 +993,7 @@ namespace Emberline.Campaign
                 "The final wave, and the realisation that Kagehira is already inside.",
                 "The walls hold. The chamber does not.",
                 "Kagehira went around the army. He is at the door with the third key.",
-                K(B, B, P, P, R, R, H, A, E, E), night: true),
+                K(B, B, P, P, R, R, H, A, E, E), night: true, plan: "S89_FinalMarch", rain: true),
 
             M(90, "THE DOOR OPENS", T(Chase), Region.Seal, Temple,
                 "The chamber opens.",
@@ -1003,7 +1003,7 @@ namespace Emberline.Campaign
                 "The door opens as Renzo reaches it. Kagehira takes the final key and goes up.",
                 "The chamber is open. Kagehira has all three keys and a road to the summit.",
                 "The summit is where the Seal's lock is. Kagehira is climbing to it.",
-                K(E, E, M_, A, R), night: true),
+                K(E, E, M_, A, R), night: true, plan: "S90_DoorOpens"),
 
             // =============================================================
             // CHAPTER 10 — THE SERPENT'S END
@@ -1016,7 +1016,7 @@ namespace Emberline.Campaign
                 "The last gate, and the fire reaching it first.",
                 "Out. The summit road, and Kagehira's rear guard on it.",
                 "The road to the summit is held by the last of Kagehira's army.",
-                K(A, R, E, S), night: true),
+                K(A, R, E, S), night: true, plan: "S91_BurningFortress"),
 
             M(92, "THE LAST ARMY", T(Combat), Region.Snow, Mountain,
                 "The remaining forces.",
@@ -1026,7 +1026,7 @@ namespace Emberline.Campaign
                 "The last officer, and the mutineers breaking the line behind him.",
                 "The road is open. The summit is a day's climb.",
                 "The summit is where Kagehira is. Renzo climbs.",
-                K(P, P, P, R, R, H, H, A, E), snow: true),
+                K(P, P, P, R, R, H, H, A, E), snow: true, plan: "S92_LastArmy"),
 
             M(93, "THE SUMMIT ROAD", T(Exploration), Region.Snow, Mountain,
                 "The climb.",
@@ -1036,7 +1036,7 @@ namespace Emberline.Campaign
                 "The final ascent, and the last of the guard turning back to hold it.",
                 "The summit gate, and Kagehira's strongest warriors in front of it.",
                 "Kagehira's best are at the gate. They are the last wall.",
-                K(A, R, S, S), snow: true, fog: true),
+                K(A, R, S, S), snow: true, fog: true, plan: "S93_SummitRoad"),
 
             M(94, "THE FINAL GUARD", T(Boss, Combat), Region.Snow, Fortress,
                 "Kagehira's strongest.",
@@ -1046,7 +1046,7 @@ namespace Emberline.Campaign
                 "The last two, back to back, in the snow.",
                 "The gate is open. Beyond it, the summit, and nothing on it.",
                 "Kagehira is on the summit. He has seen Renzo coming for an hour.",
-                K(E, E, E, M_, M_, N), foe: "ironguard", snow: true),
+                K(E, E, E, M_, M_, N), foe: "ironguard", snow: true, plan: "S94_FinalGuard"),
 
             M(95, "THE SERPENT'S SHADOW", T(Endure), Region.Seal, Mountain,
                 "Kagehira strikes first.",
@@ -1056,7 +1056,7 @@ namespace Emberline.Campaign
                 "Kagehira's blade at Renzo's back, and the cut he chooses not to make.",
                 "'Alone,' he says. 'Come alone.' Aiko is gone from Renzo's side.",
                 "Kagehira has Aiko. Renzo goes up alone, as he was told.",
-                K(S, S, A), foe: "kagachi", fog: true, night: true),
+                K(S, S, A), foe: "kagachi", fog: true, night: true, plan: "S95_SerpentsShadow"),
 
             M(96, "NO WAY BACK", T(Combat, Survival), Region.Seal, Mountain,
                 "Alone.",
@@ -1066,7 +1066,7 @@ namespace Emberline.Campaign
                 "The chamber stair, with everything he has left on it.",
                 "The chamber door, and a voice inside it Renzo knows.",
                 "Kagehira wants to talk before the end. Renzo lets him.",
-                K(S, S, S, S, A, E), night: true),
+                K(S, S, S, S, A, E), night: true, plan: "S96_NoWayBack", fog: true),
 
             M(97, "FATHER AND SON", T(Conversation, Defense), Region.Seal, Temple,
                 "The final truth.",
@@ -1076,7 +1076,7 @@ namespace Emberline.Campaign
                 "Kagehira's guard, when Renzo refuses the offer.",
                 "'Your father chose the villages. I chose the future. One of us was right, boy. Let us find out which.'",
                 "There is nothing left to say. The chamber is open and Kagehira is in it.",
-                K(E, E, M_), night: true, beat: "father_and_son"),
+                K(E, E, M_), night: true, beat: "father_and_son", plan: "S97_FatherAndSon"),
 
             M(98, "THE BLACK SEAL", T(Combat, Exploration), Region.Seal, Temple,
                 "The chamber, opened.",
@@ -1086,7 +1086,7 @@ namespace Emberline.Campaign
                 "The chamber's last guardians, awake, on both sides.",
                 "Kagehira, at the Seal, waiting. Aiko beside him, unbound. She has not run.",
                 "Kagehira is standing at the Seal. This is the end of it.",
-                K(S, S, E, E), night: true),
+                K(S, S, E, E), night: true, plan: "S98_BlackSeal"),
 
             M(99, "KAGACHI", T(Boss), Region.Seal, Temple,
                 "The final boss.",
@@ -1096,7 +1096,7 @@ namespace Emberline.Campaign
                 "Kagehira's last attack, from his knees, and Renzo's answer.",
                 "Kagehira dies. Renzo's sword is lowered. He did not become him.",
                 "It is over. The only thing left is to leave.",
-                K(S, S, S, S), boss: KG, marsh: true, night: true, plan: "S10_Kagachi", beat: "lower_the_sword",
+                K(S, S, S, S), boss: KG, marsh: true, night: true, plan: "S99_Kagachi", beat: "lower_the_sword",
                 dialogue: L("KAGACHI|Three keys. One door. And a Kurogawa to open it. Your father would have been proud of the symmetry.",
                             "RENZO|My father would have cut you down before the first key.",
                             "KAGACHI|He tried.")),
@@ -1110,7 +1110,7 @@ namespace Emberline.Campaign
                 "Fade to black. END.",
                 "There is no next mission. There is a home to build.",
                 beat: "emberline_dawn",
-                dialogue: L("AIKO|Where will you go?",
+                plan: "S100_Emberline", dialogue: L("AIKO|Where will you go?",
                             "RENZO|Home.",
                             "AIKO|There is no home.",
                             "RENZO|Then we'll build one.")),
