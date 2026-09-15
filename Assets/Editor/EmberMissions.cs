@@ -89,6 +89,16 @@ namespace Emberline.EditorTools
             BuildChapter4B();
             BuildChapter5();
             BuildChapter5B();
+            BuildChapter6();
+            BuildChapter6B();
+            BuildChapter7();
+            BuildChapter7B();
+            BuildChapter8();
+            BuildChapter8B();
+            BuildChapter9();
+            BuildChapter9B();
+            BuildChapter10();
+            BuildChapter10B();
             var generated = 0;
             foreach (var m in Campaign.Campaign.Missions)
             {

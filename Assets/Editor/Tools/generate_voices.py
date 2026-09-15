@@ -26,6 +26,7 @@ VOICES = {
     "REN": "Junior",                        # Renzo as a boy, in the memories
     "FATHER": "Reed (English (US))",
     "AIKO": "Samantha",
+    "MOTHER": "Tessa",
     "SUZU": "Kathy",
     "YOTSU": "Grandpa (English (US))",
     "GORO": "Fred",
@@ -53,6 +54,9 @@ VOICES = {
     "TOKU": "Grandpa (English (US))",
     "EXECUTIONER": "Rocko (English (UK))",
     "NIRE": "Grandma (English (UK))",
+    "RYO": "Eddy (English (UK))",
+    "KANTA": "Eddy (English (US))",
+    "OBA": "Rocko (English (US))",
 }
 DEFAULT_VOICE = "Alex"
 

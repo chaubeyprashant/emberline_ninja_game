@@ -1,0 +1,238 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 814b8fc7fb4eb427480893eff898b203, type: 3}
+  m_Name: S95_SerpentsShadow
+  m_EditorClassIdentifier: Assembly-CSharp::Emberline.Missions.MissionPlan
+  id: 95
+  missionName: THE SERPENT'S SHADOW
+  missionType: ENDURE
+  briefing: Aiko came through the gate after him, because she will not wait. The
+    summit is fog, and something in it is faster than the fog.
+  debrief: '''Alone,'' he says. ''Come alone.'' Aiko is gone from Renzo''s side.'
+  marsh: 0
+  nightOverride: 1
+  rain: 0
+  snow: 0
+  fog: 1
+  applyTheme: 1
+  theme: 3
+  missionRadius: 0
+  missionRadiusZ: 0
+  nextReason: Kagehira has Aiko. Renzo goes up alone, as he was told.
+  region: SEAL
+  stages:
+  - goal: 17
+    objective: 
+    banner: 
+    hint: 
+    count: 1
+    duration: 0
+    point: {x: 0, y: 0, z: 0}
+    spawn: 
+    pointB: {x: 0, y: 0, z: 0}
+    spawnB: 
+    foeDef: 
+    beatId: shadow_open
+    props: []
+    bossHealthGate: 0.6
+    onComplete: 0
+    optional: 0
+    bonusShards: 1
+    checkpoint: 0
+  - goal: 0
+    objective: INTO THE FOG
+    banner: THE SUMMIT IS HIS
+    hint: 
+    count: 1
+    duration: 0
+    point: {x: 0, y: 0, z: 10}
+    spawn: 
+    pointB: {x: 0, y: 0, z: 0}
+    spawnB: 
+    foeDef: 
+    beatId: 
+    props: []
+    bossHealthGate: 0.6
+    onComplete: 8
+    optional: 0
+    bonusShards: 1
+    checkpoint: 1
+  - goal: 15
+    objective: SOMETHING CIRCLES
+    banner: FASTER THAN THE FOG
+    hint: 
+    count: 1
+    duration: 0
+    point: {x: 0, y: 0, z: 0}
+    spawn: 0300000003000000
+    pointB: {x: 0, y: 0, z: 0}
+    spawnB: 
+    foeDef: 
+    beatId: 
+    props: []
+    bossHealthGate: 0.6
+    onComplete: 0
+    optional: 0
+    bonusShards: 1
+    checkpoint: 1
+  - goal: 17
+    objective: 
+    banner: 
+    hint: 
+    count: 1
+    duration: 0
+    point: {x: 0, y: 0, z: 0}
+    spawn: 
+    pointB: {x: 0, y: 0, z: 0}
+    spawnB: 
+    foeDef: 
+    beatId: shadow_strike
+    props: []
+    bossHealthGate: 0.6
+    onComplete: 0
+    optional: 0
+    bonusShards: 1
+    checkpoint: 0
+  - goal: 16
+    objective: SURVIVE THE SERPENT
+    banner: OUT OF THE FOG
+    hint: 
+    count: 1
+    duration: 45
+    point: {x: 0, y: 0, z: 0}
+    spawn: 04000000
+    pointB: {x: 0, y: 0, z: 0}
+    spawnB: 
+    foeDef: kagachi
+    beatId: 
+    props: []
+    bossHealthGate: 0.6
+    onComplete: 13
+    optional: 0
+    bonusShards: 1
+    checkpoint: 1
+  - goal: 19
+    objective: WHERE SHE STOOD
+    banner: GONE
+    hint: 
+    count: 1
+    duration: 0
+    point: {x: 0, y: 0, z: 0}
+    spawn: 
+    pointB: {x: 0, y: 0, z: 0}
+    spawnB: 
+    foeDef: 
+    beatId: 
+    props:
+    - id: thread
+      label: HER THREAD, CUT
+      point: {x: -4, y: 0, z: 12}
+      shape: 3
+      speaker: RENZO
+      line: Cut clean. Not broken. He wanted me to find it.
+      beatId: 
+      radius: 2.2
+      figurePath: []
+      lanternLine: []
+    - id: marks
+      label: DRAG MARKS, UPWARD
+      point: {x: 4, y: 0, z: 13}
+      shape: 5
+      speaker: RENZO
+      line: She fought him every step. Up. He took her up.
+      beatId: 
+      radius: 2.2
+      figurePath: []
+      lanternLine: []
+    bossHealthGate: 0.6
+    onComplete: 0
+    optional: 0
+    bonusShards: 1
+    checkpoint: 0
+  - goal: 17
+    objective: 
+    banner: 
+    hint: 
+    count: 1
+    duration: 0
+    point: {x: 0, y: 0, z: 0}
+    spawn: 
+    pointB: {x: 0, y: 0, z: 0}
+    spawnB: 
+    foeDef: 
+    beatId: shadow_alone
+    props: []
+    bossHealthGate: 0.6
+    onComplete: 0
+    optional: 0
+    bonusShards: 1
+    checkpoint: 0
+  - goal: 1
+    objective: WHAT HE LEFT IN THE FOG
+    banner: TO MAKE SURE YOU COME ALONE
+    hint: 
+    count: 1
+    duration: 0
+    point: {x: 0, y: 0, z: 0}
+    spawn: 0900000003000000
+    pointB: {x: 0, y: 0, z: 0}
+    spawnB: 
+    foeDef: 
+    beatId: 
+    props: []
+    bossHealthGate: 0.6
+    onComplete: 0
+    optional: 0
+    bonusShards: 1
+    checkpoint: 0
+  - goal: 0
+    objective: ALONE
+    banner: AS HE SAID
+    hint: 
+    count: 1
+    duration: 0
+    point: {x: 0, y: 0, z: -14}
+    spawn: 
+    pointB: {x: 0, y: 0, z: 0}
+    spawnB: 
+    foeDef: 
+    beatId: 
+    props: []
+    bossHealthGate: 0.6
+    onComplete: 0
+    optional: 0
+    bonusShards: 1
+    checkpoint: 0
+  - goal: 17
+    objective: 
+    banner: 
+    hint: 
+    count: 1
+    duration: 0
+    point: {x: 0, y: 0, z: 0}
+    spawn: 
+    pointB: {x: 0, y: 0, z: 0}
+    spawnB: 
+    foeDef: 
+    beatId: shadow_end
+    props: []
+    bossHealthGate: 0.6
+    onComplete: 0
+    optional: 0
+    bonusShards: 1
+    checkpoint: 0
+  dressing: 050000000400000009000000
+  ruinedVillage: 0
+  challenge: 5
+  challengeSeconds: 240
+  challengeShards: 4
+  baseShards: 6

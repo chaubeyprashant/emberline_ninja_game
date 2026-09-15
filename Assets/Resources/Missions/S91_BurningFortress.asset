@@ -1,0 +1,221 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 814b8fc7fb4eb427480893eff898b203, type: 3}
+  m_Name: S91_BurningFortress
+  m_EditorClassIdentifier: Assembly-CSharp::Emberline.Missions.MissionPlan
+  id: 91
+  missionName: THE BURNING FORTRESS
+  missionType: CHASE
+  briefing: Kagehira went up the summit stair and set the fortress burning behind
+    him. Aiko has a cut hand and no patience. Daigo and Tsuru have the way out, if
+    the fire leaves one.
+  debrief: Out. The summit road, and Kagehira's rear guard on it.
+  marsh: 0
+  nightOverride: 1
+  rain: 0
+  snow: 0
+  fog: 0
+  applyTheme: 1
+  theme: 8
+  missionRadius: 0
+  missionRadiusZ: 0
+  nextReason: The road to the summit is held by the last of Kagehira's army.
+  region: SEAL
+  stages:
+  - goal: 17
+    objective: 
+    banner: 
+    hint: 
+    count: 1
+    duration: 0
+    point: {x: 0, y: 0, z: 0}
+    spawn: 
+    pointB: {x: 0, y: 0, z: 0}
+    spawnB: 
+    foeDef: 
+    beatId: burnfort_open
+    props: []
+    bossHealthGate: 0.6
+    onComplete: 0
+    optional: 0
+    bonusShards: 1
+    checkpoint: 0
+  - goal: 12
+    objective: OUT OF THE CHAMBER WING
+    banner: THE FIRE CHOOSES THE EXITS
+    hint: 
+    count: 1
+    duration: 40
+    point: {x: -10, y: 0, z: 10}
+    spawn: 03000000
+    pointB: {x: 0, y: 0, z: 0}
+    spawnB: 
+    foeDef: 
+    beatId: 
+    props: []
+    bossHealthGate: 0.6
+    onComplete: 11
+    optional: 0
+    bonusShards: 1
+    checkpoint: 1
+  - goal: 19
+    objective: HE SET IT HIMSELF
+    banner: THE BRIDGE BEHIND HIM
+    hint: 
+    count: 1
+    duration: 0
+    point: {x: 0, y: 0, z: 0}
+    spawn: 
+    pointB: {x: 0, y: 0, z: 0}
+    spawnB: 
+    foeDef: 
+    beatId: 
+    props:
+    - id: oil
+      label: OIL JARS, EMPTIED ON THE STAIR
+      point: {x: -6, y: 0, z: 12}
+      shape: 7
+      speaker: RENZO
+      line: Poured on his own stair. He isn't coming back down, and nobody is following.
+      beatId: 
+      radius: 2.2
+      figurePath: []
+      lanternLine: []
+    - id: order
+      label: 'HIS ORDER: "BURN IT BEHIND ME"'
+      point: {x: 5, y: 0, z: 12}
+      shape: 9
+      speaker: RENZO
+      line: His hand again. His own fortress, his own men inside it.
+      beatId: 
+      radius: 2.2
+      figurePath: []
+      lanternLine: []
+    bossHealthGate: 0.6
+    onComplete: 0
+    optional: 0
+    bonusShards: 1
+    checkpoint: 1
+  - goal: 9
+    objective: THE FIRE-SETTERS
+    banner: THEY ARE LIGHTING THE NEXT WING
+    hint: 
+    count: 1
+    duration: 35
+    point: {x: 0, y: 0, z: 0}
+    spawn: 0900000001000000
+    pointB: {x: 0, y: 0, z: 0}
+    spawnB: 
+    foeDef: 
+    beatId: 
+    props: []
+    bossHealthGate: 0.6
+    onComplete: 0
+    optional: 0
+    bonusShards: 1
+    checkpoint: 1
+  - goal: 17
+    objective: 
+    banner: 
+    hint: 
+    count: 1
+    duration: 0
+    point: {x: 0, y: 0, z: 0}
+    spawn: 
+    pointB: {x: 0, y: 0, z: 0}
+    spawnB: 
+    foeDef: 
+    beatId: burnfort_daigo
+    props: []
+    bossHealthGate: 0.6
+    onComplete: 0
+    optional: 0
+    bonusShards: 1
+    checkpoint: 0
+  - goal: 4
+    objective: THE COURTYARD BURNS
+    banner: HOLD ON UNTIL THE ROOF FALLS
+    hint: 
+    count: 1
+    duration: 30
+    point: {x: 0, y: 0, z: 0}
+    spawn: 0c00000003000000
+    pointB: {x: 0, y: 0, z: 0}
+    spawnB: 
+    foeDef: 
+    beatId: 
+    props: []
+    bossHealthGate: 0.6
+    onComplete: 11
+    optional: 0
+    bonusShards: 1
+    checkpoint: 1
+  - goal: 12
+    objective: THE LAST GATE
+    banner: THE FIRE IS FASTER
+    hint: 
+    count: 1
+    duration: 35
+    point: {x: 10, y: 0, z: -12}
+    spawn: 09000000
+    pointB: {x: 0, y: 0, z: 0}
+    spawnB: 
+    foeDef: 
+    beatId: 
+    props: []
+    bossHealthGate: 0.6
+    onComplete: 0
+    optional: 0
+    bonusShards: 1
+    checkpoint: 0
+  - goal: 0
+    objective: THE SUMMIT ROAD
+    banner: OUT
+    hint: 
+    count: 1
+    duration: 0
+    point: {x: 12, y: 0, z: -15}
+    spawn: 
+    pointB: {x: 0, y: 0, z: 0}
+    spawnB: 
+    foeDef: 
+    beatId: 
+    props: []
+    bossHealthGate: 0.6
+    onComplete: 0
+    optional: 0
+    bonusShards: 1
+    checkpoint: 0
+  - goal: 17
+    objective: 
+    banner: 
+    hint: 
+    count: 1
+    duration: 0
+    point: {x: 0, y: 0, z: 0}
+    spawn: 
+    pointB: {x: 0, y: 0, z: 0}
+    spawnB: 
+    foeDef: 
+    beatId: burnfort_end
+    props: []
+    bossHealthGate: 0.6
+    onComplete: 0
+    optional: 0
+    bonusShards: 1
+    checkpoint: 0
+  dressing: 01000000090000000500000004000000
+  ruinedVillage: 0
+  challenge: 5
+  challengeSeconds: 240
+  challengeShards: 4
+  baseShards: 6

@@ -1,0 +1,305 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 814b8fc7fb4eb427480893eff898b203, type: 3}
+  m_Name: S74_OuterWall
+  m_EditorClassIdentifier: Assembly-CSharp::Emberline.Missions.MissionPlan
+  id: 74
+  missionName: THE OUTER WALL
+  missionType: COMBAT
+  briefing: The outer wall of the fortress. Daigo takes the gate, Toku the forge-yard,
+    and Tsuru the wall he once deserted from. Take it, hold it, and hold it again
+    when they come back for it.
+  debrief: The wall is Renzo's. The inner fortress is not.
+  marsh: 0
+  nightOverride: 0
+  rain: 0
+  snow: 1
+  fog: 0
+  applyTheme: 1
+  theme: 6
+  missionRadius: 0
+  missionRadiusZ: 0
+  nextReason: The inner fortress has one silent way in, and the wall's plans show
+    it.
+  region: FORTRESSES
+  stages:
+  - goal: 17
+    objective: 
+    banner: 
+    hint: 
+    count: 1
+    duration: 0
+    point: {x: 0, y: 0, z: 0}
+    spawn: 
+    pointB: {x: 0, y: 0, z: 0}
+    spawnB: 
+    foeDef: 
+    beatId: wall_open
+    props: []
+    bossHealthGate: 0.6
+    onComplete: 0
+    optional: 0
+    bonusShards: 1
+    checkpoint: 0
+  - goal: 0
+    objective: UNDER THE WALL
+    banner: OUT OF THE WHITE
+    hint: 
+    count: 1
+    duration: 0
+    point: {x: 0, y: 0, z: 8}
+    spawn: 
+    pointB: {x: 0, y: 0, z: 0}
+    spawnB: 
+    foeDef: 
+    beatId: 
+    props: []
+    bossHealthGate: 0.6
+    onComplete: 0
+    optional: 0
+    bonusShards: 1
+    checkpoint: 1
+  - goal: 1
+    objective: TAKE THE GATE
+    banner: PIKES ON THE STAIR
+    hint: 
+    count: 1
+    duration: 0
+    point: {x: 0, y: 0, z: 0}
+    spawn: 070000000700000001000000
+    pointB: {x: 0, y: 0, z: 0}
+    spawnB: 
+    foeDef: 
+    beatId: 
+    props: []
+    bossHealthGate: 0.6
+    onComplete: 2
+    optional: 0
+    bonusShards: 1
+    checkpoint: 1
+  - goal: 17
+    objective: 
+    banner: 
+    hint: 
+    count: 1
+    duration: 0
+    point: {x: 0, y: 0, z: 0}
+    spawn: 
+    pointB: {x: 0, y: 0, z: 0}
+    spawnB: 
+    foeDef: 
+    beatId: wall_tsuru
+    props: []
+    bossHealthGate: 0.6
+    onComplete: 0
+    optional: 0
+    bonusShards: 1
+    checkpoint: 0
+  - goal: 5
+    objective: HOLD THE BREACH
+    banner: THEY COME BACK FOR IT
+    hint: 
+    count: 1
+    duration: 40
+    point: {x: 0, y: 0, z: 8}
+    spawn: 060000000c00000001000000
+    pointB: {x: 0, y: 0, z: 0}
+    spawnB: 
+    foeDef: 
+    beatId: 
+    props: []
+    bossHealthGate: 0.6
+    onComplete: 0
+    optional: 0
+    bonusShards: 1
+    checkpoint: 1
+  - goal: 19
+    objective: YORUNE STEEL
+    banner: THE SMITH'S MARK
+    hint: 
+    count: 1
+    duration: 0
+    point: {x: 0, y: 0, z: 0}
+    spawn: 
+    pointB: {x: 0, y: 0, z: 0}
+    spawnB: 
+    foeDef: 
+    beatId: 
+    props:
+    - id: shield
+      label: A SHIELD WITH TOKU'S MARK
+      point: {x: -5, y: 0, z: 11}
+      shape: 12
+      speaker: RENZO
+      line: Toku's mark, on a Kagehira shield. Yorune steel, reforged for the men
+        who burned it.
+      beatId: 
+      radius: 2.2
+      figurePath: []
+      lanternLine: []
+    - id: banner
+      label: NINE BANNERS OVER THE GATE
+      point: {x: 5, y: 0, z: 12}
+      shape: 13
+      speaker: RENZO
+      line: Nine banners. One for each of the warlord's Iron Guard.
+      beatId: 
+      radius: 2.2
+      figurePath: []
+      lanternLine: []
+    bossHealthGate: 0.6
+    onComplete: 0
+    optional: 0
+    bonusShards: 1
+    checkpoint: 1
+  - goal: 17
+    objective: 
+    banner: 
+    hint: 
+    count: 1
+    duration: 0
+    point: {x: 0, y: 0, z: 0}
+    spawn: 
+    pointB: {x: 0, y: 0, z: 0}
+    spawnB: 
+    foeDef: 
+    beatId: wall_ironguard
+    props: []
+    bossHealthGate: 0.6
+    onComplete: 0
+    optional: 0
+    bonusShards: 1
+    checkpoint: 0
+  - goal: 14
+    objective: THE IRON GUARD
+    banner: KAGEHIRA'S SHIELD
+    hint: 
+    count: 1
+    duration: 0
+    point: {x: 0, y: 0, z: 0}
+    spawn: 0c000000
+    pointB: {x: 0, y: 0, z: 0}
+    spawnB: 
+    foeDef: ironguard
+    beatId: 
+    props: []
+    bossHealthGate: 0.6
+    onComplete: 4
+    optional: 0
+    bonusShards: 1
+    checkpoint: 1
+  - goal: 1
+    objective: HIS SHIELD LINE
+    banner: THEY CLOSE AROUND HIM
+    hint: 
+    count: 1
+    duration: 0
+    point: {x: 0, y: 0, z: 0}
+    spawn: 070000000c000000
+    pointB: {x: 0, y: 0, z: 0}
+    spawnB: 
+    foeDef: 
+    beatId: 
+    props: []
+    bossHealthGate: 0.6
+    onComplete: 0
+    optional: 0
+    bonusShards: 1
+    checkpoint: 0
+  - goal: 14
+    objective: NO GROUND GIVEN
+    banner: THE BREACH IS FALLING
+    hint: 
+    count: 1
+    duration: 0
+    point: {x: 0, y: 0, z: 0}
+    spawn: 
+    pointB: {x: 0, y: 0, z: 0}
+    spawnB: 
+    foeDef: 
+    beatId: 
+    props: []
+    bossHealthGate: 0.25
+    onComplete: 11
+    optional: 0
+    bonusShards: 1
+    checkpoint: 0
+  - goal: 11
+    objective: THE FIRST OF NINE
+    banner: IN THE BREACH
+    hint: 
+    count: 1
+    duration: 0
+    point: {x: 0, y: 0, z: 0}
+    spawn: 
+    pointB: {x: 0, y: 0, z: 0}
+    spawnB: 
+    foeDef: 
+    beatId: 
+    props: []
+    bossHealthGate: 0.6
+    onComplete: 0
+    optional: 0
+    bonusShards: 1
+    checkpoint: 1
+  - goal: 19
+    objective: THE WALL'S PLANS
+    banner: A SILENT WAY IN
+    hint: 
+    count: 1
+    duration: 0
+    point: {x: 0, y: 0, z: 0}
+    spawn: 
+    pointB: {x: 0, y: 0, z: 0}
+    spawnB: 
+    foeDef: 
+    beatId: 
+    props:
+    - id: plans
+      label: THE COMMANDER'S PLANS
+      point: {x: 0, y: 0, z: -12}
+      shape: 9
+      speaker: RENZO
+      line: 'The inner fortress, drawn in full. One drain marked in red: "silent".'
+      beatId: 
+      radius: 2.2
+      figurePath: []
+      lanternLine: []
+    bossHealthGate: 0.6
+    onComplete: 0
+    optional: 0
+    bonusShards: 1
+    checkpoint: 0
+  - goal: 17
+    objective: 
+    banner: 
+    hint: 
+    count: 1
+    duration: 0
+    point: {x: 0, y: 0, z: 0}
+    spawn: 
+    pointB: {x: 0, y: 0, z: 0}
+    spawnB: 
+    foeDef: 
+    beatId: wall_end
+    props: []
+    bossHealthGate: 0.6
+    onComplete: 0
+    optional: 0
+    bonusShards: 1
+    checkpoint: 0
+  dressing: 09000000040000000500000003000000
+  ruinedVillage: 0
+  challenge: 5
+  challengeSeconds: 240
+  challengeShards: 4
+  baseShards: 6

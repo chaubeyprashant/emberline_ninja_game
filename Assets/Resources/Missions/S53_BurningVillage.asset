@@ -1,0 +1,203 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 814b8fc7fb4eb427480893eff898b203, type: 3}
+  m_Name: S53_BurningVillage
+  m_EditorClassIdentifier: Assembly-CSharp::Emberline.Missions.MissionPlan
+  id: 53
+  missionName: THE BURNING VILLAGE
+  missionType: COMBAT
+  briefing: The next page is the fire. Renzo has run from this memory for ten years.
+    This time he walks into it, sword drawn, and looks.
+  debrief: The memory breaks at the door. Renzo could not go in then. He cannot now.
+  marsh: 0
+  nightOverride: 1
+  rain: 0
+  snow: 0
+  fog: 0
+  applyTheme: 1
+  theme: 8
+  missionRadius: 0
+  missionRadiusZ: 0
+  nextReason: His father's stand is the page he has never been able to read.
+  region: VILLAGES
+  stages:
+  - goal: 17
+    objective: 
+    banner: 
+    hint: 
+    count: 1
+    duration: 0
+    point: {x: 0, y: 0, z: 0}
+    spawn: 
+    pointB: {x: 0, y: 0, z: 0}
+    spawnB: 
+    foeDef: 
+    beatId: burning_open
+    props: []
+    bossHealthGate: 0.6
+    onComplete: 0
+    optional: 0
+    bonusShards: 1
+    checkpoint: 0
+  - goal: 0
+    objective: THROUGH THE SMOKE
+    banner: YORUNE BURNS
+    hint: 
+    count: 1
+    duration: 0
+    point: {x: -8, y: 0, z: 10}
+    spawn: 
+    pointB: {x: 0, y: 0, z: 0}
+    spawnB: 
+    foeDef: 
+    beatId: 
+    props: []
+    bossHealthGate: 0.6
+    onComplete: 9
+    optional: 0
+    bonusShards: 1
+    checkpoint: 1
+  - goal: 1
+    objective: THE SEARCHERS
+    banner: THEY ARE NOT RAIDING
+    hint: 
+    count: 1
+    duration: 0
+    point: {x: 0, y: 0, z: 0}
+    spawn: 0000000006000000
+    pointB: {x: 0, y: 0, z: 0}
+    spawnB: 
+    foeDef: 
+    beatId: 
+    props: []
+    bossHealthGate: 0.6
+    onComplete: 0
+    optional: 0
+    bonusShards: 1
+    checkpoint: 1
+  - goal: 19
+    objective: EVERY HOUSE OPENED
+    banner: NOTHING TAKEN
+    hint: 
+    count: 1
+    duration: 0
+    point: {x: 0, y: 0, z: 0}
+    spawn: 
+    pointB: {x: 0, y: 0, z: 0}
+    spawnB: 
+    foeDef: 
+    beatId: 
+    props:
+    - id: drawers
+      label: EVERY DRAWER PULLED OUT
+      point: {x: -6, y: 0, z: 13}
+      shape: 10
+      speaker: RENZO
+      line: The rice is still here. The silver. They pulled out every drawer and
+        took nothing.
+      beatId: 
+      radius: 2.2
+      figurePath: []
+      lanternLine: []
+    - id: neighbour
+      label: OLD KENJI, AT HIS DOOR
+      point: {x: 4, y: 0, z: 14}
+      shape: 4
+      speaker: RENZO
+      line: He told them he didn't know. He didn't. They asked anyway.
+      beatId: 
+      radius: 2.2
+      figurePath: []
+      lanternLine: []
+    bossHealthGate: 0.6
+    onComplete: 0
+    optional: 0
+    bonusShards: 1
+    checkpoint: 1
+  - goal: 17
+    objective: 
+    banner: 
+    hint: 
+    count: 1
+    duration: 0
+    point: {x: 0, y: 0, z: 0}
+    spawn: 
+    pointB: {x: 0, y: 0, z: 0}
+    spawnB: 
+    foeDef: 
+    beatId: memory_burning
+    props: []
+    bossHealthGate: 0.6
+    onComplete: 0
+    optional: 0
+    bonusShards: 1
+    checkpoint: 0
+  - goal: 1
+    objective: ARCHERS ON THE ROOFS
+    banner: THE FIRE SPREADS
+    hint: 
+    count: 1
+    duration: 0
+    point: {x: 0, y: 0, z: 0}
+    spawn: 010000000100000000000000
+    pointB: {x: 0, y: 0, z: 0}
+    spawnB: 
+    foeDef: 
+    beatId: 
+    props: []
+    bossHealthGate: 0.6
+    onComplete: 11
+    optional: 0
+    bonusShards: 1
+    checkpoint: 1
+  - goal: 12
+    objective: TO FATHER'S DOOR
+    banner: THE ROOFS ARE COMING DOWN
+    hint: 
+    count: 1
+    duration: 45
+    point: {x: 10, y: 0, z: -12}
+    spawn: 06000000
+    pointB: {x: 0, y: 0, z: 0}
+    spawnB: 
+    foeDef: 
+    beatId: 
+    props: []
+    bossHealthGate: 0.6
+    onComplete: 0
+    optional: 0
+    bonusShards: 1
+    checkpoint: 0
+  - goal: 17
+    objective: 
+    banner: 
+    hint: 
+    count: 1
+    duration: 0
+    point: {x: 0, y: 0, z: 0}
+    spawn: 
+    pointB: {x: 0, y: 0, z: 0}
+    spawnB: 
+    foeDef: 
+    beatId: burning_door
+    props: []
+    bossHealthGate: 0.6
+    onComplete: 0
+    optional: 0
+    bonusShards: 1
+    checkpoint: 0
+  dressing: 01000000080000000400000005000000
+  ruinedVillage: 0
+  challenge: 5
+  challengeSeconds: 240
+  challengeShards: 3
+  baseShards: 5

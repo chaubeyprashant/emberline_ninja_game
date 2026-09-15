@@ -1,0 +1,224 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 814b8fc7fb4eb427480893eff898b203, type: 3}
+  m_Name: S60_TruthBeneathYorune
+  m_EditorClassIdentifier: Assembly-CSharp::Emberline.Missions.MissionPlan
+  id: 60
+  missionName: THE TRUTH BENEATH YORUNE
+  missionType: CONVERSATION
+  briefing: The guardian is dead and the temple is quiet for the first time in ten
+    years. His father's message is below. Nire, Toku and Suzu wait at the stair.
+  debrief: Renzo surfaces. He has stopped looking for answers. He is looking for
+    Kurogane.
+  marsh: 1
+  nightOverride: 0
+  rain: 0
+  snow: 0
+  fog: 1
+  applyTheme: 1
+  theme: 4
+  missionRadius: 0
+  missionRadiusZ: 0
+  nextReason: Jin Kurogane sold Yorune. Renzo goes to find him.
+  region: TEMPLES
+  stages:
+  - goal: 17
+    objective: 
+    banner: 
+    hint: 
+    count: 1
+    duration: 0
+    point: {x: 0, y: 0, z: 0}
+    spawn: 
+    pointB: {x: 0, y: 0, z: 0}
+    spawnB: 
+    foeDef: 
+    beatId: truth_open
+    props: []
+    bossHealthGate: 0.6
+    onComplete: 0
+    optional: 0
+    bonusShards: 1
+    checkpoint: 0
+  - goal: 0
+    objective: THE WALK TO THE MESSAGE
+    banner: BELOW YORUNE
+    hint: 
+    count: 1
+    duration: 0
+    point: {x: 0, y: 0, z: 10}
+    spawn: 
+    pointB: {x: 0, y: 0, z: 0}
+    spawnB: 
+    foeDef: 
+    beatId: 
+    props: []
+    bossHealthGate: 0.6
+    onComplete: 8
+    optional: 0
+    bonusShards: 1
+    checkpoint: 1
+  - goal: 19
+    objective: WHAT HE LEFT
+    banner: HIS LAST WORDS TO US
+    hint: 
+    count: 1
+    duration: 0
+    point: {x: 0, y: 0, z: 0}
+    spawn: 
+    pointB: {x: 0, y: 0, z: 0}
+    spawnB: 
+    foeDef: 
+    beatId: 
+    props:
+    - id: wall
+      label: FATHER'S MESSAGE
+      point: {x: 0, y: 0, z: 14}
+      shape: 9
+      speaker: RENZO
+      line: The whole wall, in his hand. He knew he wouldn't come back to say it.
+      beatId: 
+      radius: 2.2
+      figurePath: []
+      lanternLine: []
+    - id: drawing
+      label: A CHILD'S DRAWING
+      point: {x: -6, y: 0, z: 12}
+      shape: 3
+      speaker: RENZO
+      line: Aiko's. Three people and a small one with a sword. He carried it down
+        here.
+      beatId: 
+      radius: 2.2
+      figurePath: []
+      lanternLine: []
+    - id: nokey
+      label: AN EMPTY THIRD LOCK
+      point: {x: 6, y: 0, z: 12}
+      shape: 12
+      speaker: RENZO
+      line: The third key isn't here. He never made it. Or someone took it first.
+      beatId: 
+      radius: 2.2
+      figurePath: []
+      lanternLine: []
+    bossHealthGate: 0.6
+    onComplete: 0
+    optional: 0
+    bonusShards: 1
+    checkpoint: 1
+  - goal: 17
+    objective: 
+    banner: 
+    hint: 
+    count: 1
+    duration: 0
+    point: {x: 0, y: 0, z: 0}
+    spawn: 
+    pointB: {x: 0, y: 0, z: 0}
+    spawnB: 
+    foeDef: 
+    beatId: father_message
+    props: []
+    bossHealthGate: 0.6
+    onComplete: 0
+    optional: 0
+    bonusShards: 1
+    checkpoint: 0
+  - goal: 19
+    objective: THE NAME
+    banner: THE MAN WHO DREW THE MAP
+    hint: 
+    count: 1
+    duration: 0
+    point: {x: 0, y: 0, z: 0}
+    spawn: 
+    pointB: {x: 0, y: 0, z: 0}
+    spawnB: 
+    foeDef: 
+    beatId: 
+    props:
+    - id: name
+      label: KUROGANE
+      point: {x: 0, y: 0, z: -8}
+      shape: 13
+      speaker: RENZO
+      line: Kurogane. The crest on the hunters in the fog. Father's friend.
+      beatId: 
+      radius: 2.2
+      figurePath: []
+      lanternLine: []
+    bossHealthGate: 0.6
+    onComplete: 0
+    optional: 0
+    bonusShards: 1
+    checkpoint: 0
+  - goal: 17
+    objective: 
+    banner: 
+    hint: 
+    count: 1
+    duration: 0
+    point: {x: 0, y: 0, z: 0}
+    spawn: 
+    pointB: {x: 0, y: 0, z: 0}
+    spawnB: 
+    foeDef: 
+    beatId: truth_changed
+    props: []
+    bossHealthGate: 0.6
+    onComplete: 0
+    optional: 0
+    bonusShards: 1
+    checkpoint: 0
+  - goal: 0
+    objective: THE WALK BACK
+    banner: CHANGED
+    hint: 
+    count: 1
+    duration: 0
+    point: {x: 0, y: 0, z: -14}
+    spawn: 
+    pointB: {x: 0, y: 0, z: 0}
+    spawnB: 
+    foeDef: 
+    beatId: 
+    props: []
+    bossHealthGate: 0.6
+    onComplete: 0
+    optional: 0
+    bonusShards: 1
+    checkpoint: 0
+  - goal: 17
+    objective: 
+    banner: 
+    hint: 
+    count: 1
+    duration: 0
+    point: {x: 0, y: 0, z: 0}
+    spawn: 
+    pointB: {x: 0, y: 0, z: 0}
+    spawnB: 
+    foeDef: 
+    beatId: truth_end
+    props: []
+    bossHealthGate: 0.6
+    onComplete: 0
+    optional: 0
+    bonusShards: 1
+    checkpoint: 0
+  dressing: 020000000600000004000000
+  ruinedVillage: 0
+  challenge: 0
+  challengeSeconds: 240
+  challengeShards: 0
+  baseShards: 4

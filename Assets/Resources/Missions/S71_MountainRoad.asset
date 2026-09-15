@@ -1,0 +1,249 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 814b8fc7fb4eb427480893eff898b203, type: 3}
+  m_Name: S71_MountainRoad
+  m_EditorClassIdentifier: Assembly-CSharp::Emberline.Missions.MissionPlan
+  id: 71
+  missionName: THE MOUNTAIN ROAD
+  missionType: EXPLORATION
+  briefing: Jin said the mountain fortress. The road up it is the only road, and
+    it is cold enough to kill. Nire walked Renzo to the snow line and no further.
+  debrief: Above, the glow of a camp with artillery in it.
+  marsh: 0
+  nightOverride: 0
+  rain: 0
+  snow: 1
+  fog: 0
+  applyTheme: 1
+  theme: 3
+  missionRadius: 0
+  missionRadiusZ: 0
+  nextReason: The camp above holds the guns that cover the road. They have to fall.
+  region: SNOW
+  stages:
+  - goal: 17
+    objective: 
+    banner: 
+    hint: 
+    count: 1
+    duration: 0
+    point: {x: 0, y: 0, z: 0}
+    spawn: 
+    pointB: {x: 0, y: 0, z: 0}
+    spawnB: 
+    foeDef: 
+    beatId: ascent_open
+    props: []
+    bossHealthGate: 0.6
+    onComplete: 0
+    optional: 0
+    bonusShards: 1
+    checkpoint: 0
+  - goal: 0
+    objective: THE FIRST SWITCHBACK
+    banner: THE ROAD IS THE ENEMY
+    hint: 
+    count: 1
+    duration: 0
+    point: {x: -10, y: 0, z: 8}
+    spawn: 
+    pointB: {x: 0, y: 0, z: 0}
+    spawnB: 
+    foeDef: 
+    beatId: 
+    props: []
+    bossHealthGate: 0.6
+    onComplete: 0
+    optional: 0
+    bonusShards: 1
+    checkpoint: 1
+  - goal: 19
+    objective: THEIR OWN DEAD
+    banner: THE MOUNTAIN DID THIS
+    hint: 
+    count: 1
+    duration: 0
+    point: {x: 0, y: 0, z: 0}
+    spawn: 
+    pointB: {x: 0, y: 0, z: 0}
+    spawnB: 
+    foeDef: 
+    beatId: 
+    props:
+    - id: pikeman
+      label: A PIKEMAN, FROZEN AT HIS POST
+      point: {x: -6, y: 0, z: 12}
+      shape: 4
+      speaker: RENZO
+      line: Still standing his watch. Nobody came to relieve him. Nobody came back
+        for him.
+      beatId: 
+      radius: 2.2
+      figurePath: []
+      lanternLine: []
+    - id: rations
+      label: RATIONS, UNOPENED
+      point: {x: 4, y: 0, z: 13}
+      shape: 7
+      speaker: RENZO
+      line: Not hunger. The cold. They were ordered up faster than the mountain allows.
+      beatId: 
+      radius: 2.2
+      figurePath: []
+      lanternLine: []
+    bossHealthGate: 0.6
+    onComplete: 0
+    optional: 0
+    bonusShards: 1
+    checkpoint: 1
+  - goal: 8
+    objective: WHAT IS KILLING THEM
+    banner: FOLLOW THE DEAD UP
+    hint: 
+    count: 2
+    duration: 0
+    point: {x: 0, y: 0, z: 0}
+    spawn: 
+    pointB: {x: 0, y: 0, z: 0}
+    spawnB: 
+    foeDef: 
+    beatId: 
+    props: []
+    bossHealthGate: 0.6
+    onComplete: 0
+    optional: 0
+    bonusShards: 1
+    checkpoint: 0
+  - goal: 17
+    objective: 
+    banner: 
+    hint: 
+    count: 1
+    duration: 0
+    point: {x: 0, y: 0, z: 0}
+    spawn: 
+    pointB: {x: 0, y: 0, z: 0}
+    spawnB: 
+    foeDef: 
+    beatId: ascent_frozen
+    props: []
+    bossHealthGate: 0.6
+    onComplete: 0
+    optional: 0
+    bonusShards: 1
+    checkpoint: 0
+  - goal: 1
+    objective: THE FIRST GARRISON
+    banner: IN THE BLIZZARD
+    hint: 
+    count: 1
+    duration: 0
+    point: {x: 0, y: 0, z: 0}
+    spawn: 0700000006000000
+    pointB: {x: 0, y: 0, z: 0}
+    spawnB: 
+    foeDef: 
+    beatId: 
+    props: []
+    bossHealthGate: 0.6
+    onComplete: 8
+    optional: 0
+    bonusShards: 1
+    checkpoint: 1
+  - goal: 4
+    objective: THE WHITE CLOSES IN
+    banner: HOLD ON TO THE ROAD
+    hint: 
+    count: 1
+    duration: 30
+    point: {x: 0, y: 0, z: 0}
+    spawn: 0100000009000000
+    pointB: {x: 0, y: 0, z: 0}
+    spawnB: 
+    foeDef: 
+    beatId: 
+    props: []
+    bossHealthGate: 0.6
+    onComplete: 0
+    optional: 0
+    bonusShards: 1
+    checkpoint: 0
+  - goal: 0
+    objective: TOWARD THE GLOW
+    banner: SOMETHING WARM UP THERE
+    hint: 
+    count: 1
+    duration: 0
+    point: {x: 10, y: 0, z: -12}
+    spawn: 
+    pointB: {x: 0, y: 0, z: 0}
+    spawnB: 
+    foeDef: 
+    beatId: 
+    props: []
+    bossHealthGate: 0.6
+    onComplete: 0
+    optional: 0
+    bonusShards: 1
+    checkpoint: 1
+  - goal: 19
+    objective: THE CAMP ABOVE
+    banner: GUNS
+    hint: 
+    count: 1
+    duration: 0
+    point: {x: 0, y: 0, z: 0}
+    spawn: 
+    pointB: {x: 0, y: 0, z: 0}
+    spawnB: 
+    foeDef: 
+    beatId: 
+    props:
+    - id: guns
+      label: ARTILLERY GLOW ON THE RIDGE
+      point: {x: 12, y: 0, z: -15}
+      shape: 8
+      speaker: RENZO
+      line: Guns, laid on the road. Nobody walks up this mountain while they stand.
+      beatId: 
+      radius: 2.2
+      figurePath: []
+      lanternLine: []
+    bossHealthGate: 0.6
+    onComplete: 0
+    optional: 0
+    bonusShards: 1
+    checkpoint: 0
+  - goal: 17
+    objective: 
+    banner: 
+    hint: 
+    count: 1
+    duration: 0
+    point: {x: 0, y: 0, z: 0}
+    spawn: 
+    pointB: {x: 0, y: 0, z: 0}
+    spawnB: 
+    foeDef: 
+    beatId: ascent_end
+    props: []
+    bossHealthGate: 0.6
+    onComplete: 0
+    optional: 0
+    bonusShards: 1
+    checkpoint: 0
+  dressing: 04000000050000000300000009000000
+  ruinedVillage: 0
+  challenge: 5
+  challengeSeconds: 240
+  challengeShards: 3
+  baseShards: 5

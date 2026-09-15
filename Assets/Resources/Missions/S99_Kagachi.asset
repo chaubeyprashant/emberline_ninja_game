@@ -1,0 +1,294 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 814b8fc7fb4eb427480893eff898b203, type: 3}
+  m_Name: S99_Kagachi
+  m_EditorClassIdentifier: Assembly-CSharp::Emberline.Missions.MissionPlan
+  id: 99
+  missionName: KAGACHI
+  missionType: BOSS
+  briefing: Kagehira at the Black Seal, with the water rising around it and Aiko
+    beside him. Three keys, one door, and a Kurogawa to open it. There is nothing
+    left to say.
+  debrief: Kagehira dies. Renzo's sword is lowered. He did not become him.
+  marsh: 1
+  nightOverride: 1
+  rain: 0
+  snow: 0
+  fog: 0
+  applyTheme: 1
+  theme: 4
+  missionRadius: 0
+  missionRadiusZ: 0
+  nextReason: It is over. The only thing left is to leave.
+  region: SEAL
+  stages:
+  - goal: 17
+    objective: 
+    banner: 
+    hint: 
+    count: 1
+    duration: 0
+    point: {x: 0, y: 0, z: 0}
+    spawn: 
+    pointB: {x: 0, y: 0, z: 0}
+    spawnB: 
+    foeDef: 
+    beatId: kagachi_open
+    props: []
+    bossHealthGate: 0.6
+    onComplete: 0
+    optional: 0
+    bonusShards: 1
+    checkpoint: 0
+  - goal: 0
+    objective: TO THE SEAL
+    banner: THE WATER IS AT YOUR KNEES
+    hint: 
+    count: 1
+    duration: 0
+    point: {x: 0, y: 0, z: 8}
+    spawn: 
+    pointB: {x: 0, y: 0, z: 0}
+    spawnB: 
+    foeDef: 
+    beatId: 
+    props: []
+    bossHealthGate: 0.6
+    onComplete: 0
+    optional: 0
+    bonusShards: 1
+    checkpoint: 1
+  - goal: 19
+    objective: AT THE SEAL
+    banner: SHE HAS NOT RUN
+    hint: 
+    count: 1
+    duration: 0
+    point: {x: 0, y: 0, z: 0}
+    spawn: 
+    pointB: {x: 0, y: 0, z: 0}
+    spawnB: 
+    foeDef: 
+    beatId: 
+    props:
+    - id: aiko
+      label: AIKO'S HAND ON THE SEAL
+      point: {x: -4, y: 0, z: 11}
+      shape: 3
+      speaker: RENZO
+      line: Her hand flat on the open stone. She's not holding it open. She's holding
+        it back.
+      beatId: 
+      radius: 2.2
+      figurePath: []
+      lanternLine: []
+    - id: keys
+      label: THREE KEYS, TURNED
+      point: {x: 4, y: 0, z: 11}
+      shape: 12
+      speaker: RENZO
+      line: All three turned. Father's keys, and he turned them.
+      beatId: 
+      radius: 2.2
+      figurePath: []
+      lanternLine: []
+    bossHealthGate: 0.6
+    onComplete: 0
+    optional: 0
+    bonusShards: 1
+    checkpoint: 1
+  - goal: 17
+    objective: 
+    banner: 
+    hint: 
+    count: 1
+    duration: 0
+    point: {x: 0, y: 0, z: 0}
+    spawn: 
+    pointB: {x: 0, y: 0, z: 0}
+    spawnB: 
+    foeDef: 
+    beatId: kagachi_draw
+    props: []
+    bossHealthGate: 0.6
+    onComplete: 0
+    optional: 0
+    bonusShards: 1
+    checkpoint: 0
+  - goal: 14
+    objective: THE SWORDSMAN
+    banner: KAGEHIRA, THE SERPENT
+    hint: 
+    count: 1
+    duration: 0
+    point: {x: 0, y: 0, z: 0}
+    spawn: 04000000
+    pointB: {x: 0, y: 0, z: 0}
+    spawnB: 
+    foeDef: kagachi
+    beatId: 
+    props: []
+    bossHealthGate: 0.75
+    onComplete: 6
+    optional: 0
+    bonusShards: 1
+    checkpoint: 1
+  - goal: 1
+    objective: THE WARLORD CALLS
+    banner: EVERYTHING HE COMMANDS
+    hint: 
+    count: 1
+    duration: 0
+    point: {x: 0, y: 0, z: 0}
+    spawn: 0300000003000000
+    pointB: {x: 0, y: 0, z: 0}
+    spawnB: 
+    foeDef: 
+    beatId: 
+    props: []
+    bossHealthGate: 0.6
+    onComplete: 0
+    optional: 0
+    bonusShards: 1
+    checkpoint: 0
+  - goal: 17
+    objective: 
+    banner: 
+    hint: 
+    count: 1
+    duration: 0
+    point: {x: 0, y: 0, z: 0}
+    spawn: 
+    pointB: {x: 0, y: 0, z: 0}
+    spawnB: 
+    foeDef: 
+    beatId: kagachi_warlord
+    props: []
+    bossHealthGate: 0.6
+    onComplete: 0
+    optional: 0
+    bonusShards: 1
+    checkpoint: 0
+  - goal: 14
+    objective: THE WARLORD
+    banner: WITH IT, I AM ORDER
+    hint: 
+    count: 1
+    duration: 0
+    point: {x: 0, y: 0, z: 0}
+    spawn: 
+    pointB: {x: 0, y: 0, z: 0}
+    spawnB: 
+    foeDef: 
+    beatId: 
+    props: []
+    bossHealthGate: 0.5
+    onComplete: 11
+    optional: 0
+    bonusShards: 1
+    checkpoint: 1
+  - goal: 4
+    objective: THE CHAMBER COMES DOWN
+    banner: THE MARSH HE MADE
+    hint: 
+    count: 1
+    duration: 25
+    point: {x: 0, y: 0, z: 0}
+    spawn: 0300000003000000
+    pointB: {x: 0, y: 0, z: 0}
+    spawnB: 
+    foeDef: 
+    beatId: 
+    props: []
+    bossHealthGate: 0.6
+    onComplete: 0
+    optional: 0
+    bonusShards: 1
+    checkpoint: 0
+  - goal: 14
+    objective: THE COLLAPSING CHAMBER
+    banner: HE WILL NOT FALL ALONE
+    hint: 
+    count: 1
+    duration: 0
+    point: {x: 0, y: 0, z: 0}
+    spawn: 
+    pointB: {x: 0, y: 0, z: 0}
+    spawnB: 
+    foeDef: 
+    beatId: 
+    props: []
+    bossHealthGate: 0.2
+    onComplete: 4
+    optional: 0
+    bonusShards: 1
+    checkpoint: 0
+  - goal: 17
+    objective: 
+    banner: 
+    hint: 
+    count: 1
+    duration: 0
+    point: {x: 0, y: 0, z: 0}
+    spawn: 
+    pointB: {x: 0, y: 0, z: 0}
+    spawnB: 
+    foeDef: 
+    beatId: lower_the_sword
+    props: []
+    bossHealthGate: 0.6
+    onComplete: 0
+    optional: 0
+    bonusShards: 1
+    checkpoint: 0
+  - goal: 11
+    objective: HIS LAST ATTACK
+    banner: FROM HIS KNEES
+    hint: 
+    count: 1
+    duration: 0
+    point: {x: 0, y: 0, z: 0}
+    spawn: 
+    pointB: {x: 0, y: 0, z: 0}
+    spawnB: 
+    foeDef: 
+    beatId: 
+    props: []
+    bossHealthGate: 0.6
+    onComplete: 0
+    optional: 0
+    bonusShards: 1
+    checkpoint: 1
+  - goal: 17
+    objective: 
+    banner: 
+    hint: 
+    count: 1
+    duration: 0
+    point: {x: 0, y: 0, z: 0}
+    spawn: 
+    pointB: {x: 0, y: 0, z: 0}
+    spawnB: 
+    foeDef: 
+    beatId: kagachi_death
+    props: []
+    bossHealthGate: 0.6
+    onComplete: 0
+    optional: 0
+    bonusShards: 1
+    checkpoint: 0
+  dressing: 09000000050000000400000002000000
+  ruinedVillage: 0
+  challenge: 5
+  challengeSeconds: 240
+  challengeShards: 5
+  baseShards: 8

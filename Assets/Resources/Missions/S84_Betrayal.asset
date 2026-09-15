@@ -1,0 +1,239 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 814b8fc7fb4eb427480893eff898b203, type: 3}
+  m_Name: S84_Betrayal
+  m_EditorClassIdentifier: Assembly-CSharp::Emberline.Missions.MissionPlan
+  id: 84
+  missionName: THE BETRAYAL
+  missionType: COMBAT
+  briefing: The fortress is fighting itself. Daigo wants to keep walking. Aiko wants
+    to go back in and see who is winning, because whoever it is will want her.
+  debrief: The mutineers open the way to the ancient chamber under the fortress.
+  marsh: 0
+  nightOverride: 1
+  rain: 0
+  snow: 0
+  fog: 0
+  applyTheme: 1
+  theme: 6
+  missionRadius: 0
+  missionRadiusZ: 0
+  nextReason: The chamber under the fortress is where Kagehira kept the keys. Aiko
+    knows the door.
+  region: STRONGHOLD
+  stages:
+  - goal: 17
+    objective: 
+    banner: 
+    hint: 
+    count: 1
+    duration: 0
+    point: {x: 0, y: 0, z: 0}
+    spawn: 
+    pointB: {x: 0, y: 0, z: 0}
+    spawnB: 
+    foeDef: 
+    beatId: mutiny_open
+    props: []
+    bossHealthGate: 0.6
+    onComplete: 0
+    optional: 0
+    bonusShards: 1
+    checkpoint: 0
+  - goal: 0
+    objective: BACK INTO THE FORTRESS
+    banner: EVERYONE IS FIGHTING EVERYONE
+    hint: 
+    count: 1
+    duration: 0
+    point: {x: -8, y: 0, z: 10}
+    spawn: 
+    pointB: {x: 0, y: 0, z: 0}
+    spawnB: 
+    foeDef: 
+    beatId: 
+    props: []
+    bossHealthGate: 0.6
+    onComplete: 0
+    optional: 0
+    bonusShards: 1
+    checkpoint: 1
+  - goal: 1
+    objective: THE LOYALISTS
+    banner: THEY STILL WEAR THE SERPENT
+    hint: 
+    count: 1
+    duration: 0
+    point: {x: 0, y: 0, z: 0}
+    spawn: 0700000006000000
+    pointB: {x: 0, y: 0, z: 0}
+    spawnB: 
+    foeDef: 
+    beatId: 
+    props: []
+    bossHealthGate: 0.6
+    onComplete: 12
+    optional: 0
+    bonusShards: 1
+    checkpoint: 1
+  - goal: 19
+    objective: WHO TURNED
+    banner: HALF HIS ARMY
+    hint: 
+    count: 1
+    duration: 0
+    point: {x: 0, y: 0, z: 0}
+    spawn: 
+    pointB: {x: 0, y: 0, z: 0}
+    spawnB: 
+    foeDef: 
+    beatId: 
+    props:
+    - id: banner
+      label: A SERPENT BANNER, TORN DOWN
+      point: {x: -5, y: 0, z: 12}
+      shape: 9
+      speaker: RENZO
+      line: Torn down by his own men, and walked on.
+      beatId: 
+      radius: 2.2
+      figurePath: []
+      lanternLine: []
+    - id: officer
+      label: A LOYALIST OFFICER
+      point: {x: 5, y: 0, z: 12}
+      shape: 4
+      speaker: RENZO
+      line: Killed by men in the same armour. This wasn't us.
+      beatId: 
+      radius: 2.2
+      figurePath: []
+      lanternLine: []
+    bossHealthGate: 0.6
+    onComplete: 0
+    optional: 0
+    bonusShards: 1
+    checkpoint: 1
+  - goal: 17
+    objective: 
+    banner: 
+    hint: 
+    count: 1
+    duration: 0
+    point: {x: 0, y: 0, z: 0}
+    spawn: 
+    pointB: {x: 0, y: 0, z: 0}
+    spawnB: 
+    foeDef: 
+    beatId: mutiny_oba
+    props: []
+    bossHealthGate: 0.6
+    onComplete: 0
+    optional: 0
+    bonusShards: 1
+    checkpoint: 0
+  - goal: 4
+    objective: THE LOYALISTS' LAST STAND
+    banner: ON THE KEEP STAIR
+    hint: 
+    count: 1
+    duration: 35
+    point: {x: 0, y: 0, z: 0}
+    spawn: 0c0000000100000009000000
+    pointB: {x: 0, y: 0, z: 0}
+    spawnB: 
+    foeDef: 
+    beatId: 
+    props: []
+    bossHealthGate: 0.6
+    onComplete: 2
+    optional: 0
+    bonusShards: 1
+    checkpoint: 1
+  - goal: 1
+    objective: HIS LAST OFFICERS
+    banner: THEY WILL NOT STAND DOWN
+    hint: 
+    count: 1
+    duration: 0
+    point: {x: 0, y: 0, z: 0}
+    spawn: 0c00000007000000
+    pointB: {x: 0, y: 0, z: 0}
+    spawnB: 
+    foeDef: 
+    beatId: 
+    props: []
+    bossHealthGate: 0.6
+    onComplete: 0
+    optional: 0
+    bonusShards: 1
+    checkpoint: 0
+  - goal: 17
+    objective: 
+    banner: 
+    hint: 
+    count: 1
+    duration: 0
+    point: {x: 0, y: 0, z: 0}
+    spawn: 
+    pointB: {x: 0, y: 0, z: 0}
+    spawnB: 
+    foeDef: 
+    beatId: mutiny_aiko
+    props: []
+    bossHealthGate: 0.6
+    onComplete: 0
+    optional: 0
+    bonusShards: 1
+    checkpoint: 0
+  - goal: 0
+    objective: THE WAY TO THE CHAMBER
+    banner: THEY OPEN IT FOR HER
+    hint: 
+    count: 1
+    duration: 0
+    point: {x: 10, y: 0, z: -12}
+    spawn: 
+    pointB: {x: 0, y: 0, z: 0}
+    spawnB: 
+    foeDef: 
+    beatId: 
+    props: []
+    bossHealthGate: 0.6
+    onComplete: 0
+    optional: 0
+    bonusShards: 1
+    checkpoint: 0
+  - goal: 17
+    objective: 
+    banner: 
+    hint: 
+    count: 1
+    duration: 0
+    point: {x: 0, y: 0, z: 0}
+    spawn: 
+    pointB: {x: 0, y: 0, z: 0}
+    spawnB: 
+    foeDef: 
+    beatId: mutiny_end
+    props: []
+    bossHealthGate: 0.6
+    onComplete: 0
+    optional: 0
+    bonusShards: 1
+    checkpoint: 0
+  dressing: 09000000050000000400000003000000
+  ruinedVillage: 0
+  challenge: 5
+  challengeSeconds: 240
+  challengeShards: 3
+  baseShards: 5

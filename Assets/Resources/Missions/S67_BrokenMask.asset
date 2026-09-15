@@ -1,0 +1,232 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 814b8fc7fb4eb427480893eff898b203, type: 3}
+  m_Name: S67_BrokenMask
+  m_EditorClassIdentifier: Assembly-CSharp::Emberline.Missions.MissionPlan
+  id: 67
+  missionName: THE BROKEN MASK
+  missionType: EXPLORATION
+  briefing: Before the meeting, Fumi found the house Jin grew up in, at the edge
+    of the garrison. Nobody has lived there for ten years. Somebody has kept it clean.
+  debrief: 'In the ashes of the last room: a mask, broken in half, one half missing.'
+  marsh: 0
+  nightOverride: 1
+  rain: 0
+  snow: 0
+  fog: 0
+  applyTheme: 1
+  theme: 0
+  missionRadius: 0
+  missionRadiusZ: 0
+  nextReason: Half a mask, and the other half is on Jin's face. He is waiting where
+    he said.
+  region: VILLAGES
+  stages:
+  - goal: 17
+    objective: 
+    banner: 
+    hint: 
+    count: 1
+    duration: 0
+    point: {x: 0, y: 0, z: 0}
+    spawn: 
+    pointB: {x: 0, y: 0, z: 0}
+    spawnB: 
+    foeDef: 
+    beatId: mask_open
+    props: []
+    bossHealthGate: 0.6
+    onComplete: 0
+    optional: 0
+    bonusShards: 1
+    checkpoint: 0
+  - goal: 0
+    objective: JIN'S HOUSE
+    banner: SOMEBODY KEEPS IT CLEAN
+    hint: 
+    count: 1
+    duration: 0
+    point: {x: 0, y: 0, z: 10}
+    spawn: 
+    pointB: {x: 0, y: 0, z: 0}
+    spawnB: 
+    foeDef: 
+    beatId: 
+    props: []
+    bossHealthGate: 0.6
+    onComplete: 0
+    optional: 0
+    bonusShards: 1
+    checkpoint: 1
+  - goal: 8
+    objective: EVERY ROOM
+    banner: EVERY ROOM IS A CLUE
+    hint: 
+    count: 3
+    duration: 0
+    point: {x: 0, y: 0, z: 0}
+    spawn: 
+    pointB: {x: 0, y: 0, z: 0}
+    spawnB: 
+    foeDef: 
+    beatId: 
+    props: []
+    bossHealthGate: 0.6
+    onComplete: 0
+    optional: 0
+    bonusShards: 1
+    checkpoint: 0
+  - goal: 19
+    objective: HIS FAMILY'S SHRINE
+    banner: YORUNE
+    hint: 
+    count: 1
+    duration: 0
+    point: {x: 0, y: 0, z: 0}
+    spawn: 
+    pointB: {x: 0, y: 0, z: 0}
+    spawnB: 
+    foeDef: 
+    beatId: 
+    props:
+    - id: shrine
+      label: A YORUNE FAMILY SHRINE
+      point: {x: -6, y: 0, z: 12}
+      shape: 1
+      speaker: RENZO
+      line: Yorune river stones on the shrine. His family was ours. He was from Yorune.
+      beatId: 
+      radius: 2.2
+      figurePath: []
+      lanternLine: []
+    - id: letter
+      label: A LETTER FROM FATHER
+      point: {x: 6, y: 0, z: 12}
+      shape: 9
+      speaker: RENZO
+      line: '"Come home, Jin. Whatever he promised you, come home." Dated the year
+        before the fire.'
+      beatId: 
+      radius: 2.2
+      figurePath: []
+      lanternLine: []
+    bossHealthGate: 0.6
+    onComplete: 0
+    optional: 0
+    bonusShards: 1
+    checkpoint: 1
+  - goal: 17
+    objective: 
+    banner: 
+    hint: 
+    count: 1
+    duration: 0
+    point: {x: 0, y: 0, z: 0}
+    spawn: 
+    pointB: {x: 0, y: 0, z: 0}
+    spawnB: 
+    foeDef: 
+    beatId: mask_fire
+    props: []
+    bossHealthGate: 0.6
+    onComplete: 0
+    optional: 0
+    bonusShards: 1
+    checkpoint: 0
+  - goal: 5
+    objective: THEY CAME TO BURN IT
+    banner: BEFORE YOU CAN READ IT
+    hint: 
+    count: 1
+    duration: 35
+    point: {x: 0, y: 0, z: 10}
+    spawn: 090000000b000000
+    pointB: {x: 0, y: 0, z: 0}
+    spawnB: 
+    foeDef: 
+    beatId: 
+    props: []
+    bossHealthGate: 0.6
+    onComplete: 11
+    optional: 0
+    bonusShards: 1
+    checkpoint: 1
+  - goal: 1
+    objective: ARCHERS WITH FIRE ARROWS
+    banner: THE ROOF IS CATCHING
+    hint: 
+    count: 1
+    duration: 0
+    point: {x: 0, y: 0, z: 0}
+    spawn: 010000000b000000
+    pointB: {x: 0, y: 0, z: 0}
+    spawnB: 
+    foeDef: 
+    beatId: 
+    props: []
+    bossHealthGate: 0.6
+    onComplete: 0
+    optional: 0
+    bonusShards: 1
+    checkpoint: 0
+  - goal: 19
+    objective: THE LAST ROOM
+    banner: IN THE ASHES
+    hint: 
+    count: 1
+    duration: 0
+    point: {x: 0, y: 0, z: 0}
+    spawn: 
+    pointB: {x: 0, y: 0, z: 0}
+    spawnB: 
+    foeDef: 
+    beatId: 
+    props:
+    - id: mask
+      label: HALF A MASK
+      point: {x: 0, y: 0, z: -12}
+      shape: 3
+      speaker: RENZO
+      line: Broken in half. I've seen the other half. He wears it.
+      beatId: 
+      radius: 2.2
+      figurePath: []
+      lanternLine: []
+    bossHealthGate: 0.6
+    onComplete: 0
+    optional: 0
+    bonusShards: 1
+    checkpoint: 0
+  - goal: 17
+    objective: 
+    banner: 
+    hint: 
+    count: 1
+    duration: 0
+    point: {x: 0, y: 0, z: 0}
+    spawn: 
+    pointB: {x: 0, y: 0, z: 0}
+    spawnB: 
+    foeDef: 
+    beatId: mask_end
+    props: []
+    bossHealthGate: 0.6
+    onComplete: 0
+    optional: 0
+    bonusShards: 1
+    checkpoint: 0
+  dressing: 02000000010000000600000005000000
+  ruinedVillage: 0
+  challenge: 5
+  challengeSeconds: 240
+  challengeShards: 3
+  baseShards: 5

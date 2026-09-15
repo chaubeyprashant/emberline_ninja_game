@@ -1,0 +1,270 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 814b8fc7fb4eb427480893eff898b203, type: 3}
+  m_Name: S94_FinalGuard
+  m_EditorClassIdentifier: Assembly-CSharp::Emberline.Missions.MissionPlan
+  id: 94
+  missionName: THE FINAL GUARD
+  missionType: BOSS
+  briefing: The summit gate and Kagehira's strongest in front of it, told to make
+    sure Renzo does not arrive whole. Toku walked one post further than everyone
+    else, carrying something wrapped in cloth.
+  debrief: The gate is open. Beyond it, the summit, and nothing on it.
+  marsh: 0
+  nightOverride: 0
+  rain: 0
+  snow: 1
+  fog: 0
+  applyTheme: 1
+  theme: 6
+  missionRadius: 0
+  missionRadiusZ: 0
+  nextReason: Kagehira is on the summit. He has seen Renzo coming for an hour.
+  region: SNOW
+  stages:
+  - goal: 17
+    objective: 
+    banner: 
+    hint: 
+    count: 1
+    duration: 0
+    point: {x: 0, y: 0, z: 0}
+    spawn: 
+    pointB: {x: 0, y: 0, z: 0}
+    spawnB: 
+    foeDef: 
+    beatId: finalguard_open
+    props: []
+    bossHealthGate: 0.6
+    onComplete: 0
+    optional: 0
+    bonusShards: 1
+    checkpoint: 0
+  - goal: 0
+    objective: THE LAST GUARD POST
+    banner: WHERE TOKU TURNS AROUND
+    hint: 
+    count: 1
+    duration: 0
+    point: {x: 0, y: 0, z: 8}
+    spawn: 
+    pointB: {x: 0, y: 0, z: 0}
+    spawnB: 
+    foeDef: 
+    beatId: 
+    props: []
+    bossHealthGate: 0.6
+    onComplete: 0
+    optional: 0
+    bonusShards: 1
+    checkpoint: 1
+  - goal: 19
+    objective: TOKU'S LAST BLADE
+    banner: NOT THEIRS
+    hint: 
+    count: 1
+    duration: 0
+    point: {x: 0, y: 0, z: 0}
+    spawn: 
+    pointB: {x: 0, y: 0, z: 0}
+    spawnB: 
+    foeDef: 
+    beatId: 
+    props:
+    - id: blade
+      label: YORUNE STEEL, TAKEN BACK
+      point: {x: -5, y: 0, z: 11}
+      shape: 12
+      speaker: RENZO
+      line: Forged from the armour we took off the Iron Guard. The first honest thing
+        that steel has been.
+      beatId: 
+      radius: 2.2
+      figurePath: []
+      lanternLine: []
+    - id: post
+      label: WHERE HE TURNED AROUND
+      point: {x: 5, y: 0, z: 11}
+      shape: 13
+      speaker: RENZO
+      line: His footprints stop here, and go back down. He said a smith's work ends
+        at the handle.
+      beatId: 
+      radius: 2.2
+      figurePath: []
+      lanternLine: []
+    bossHealthGate: 0.6
+    onComplete: 0
+    optional: 0
+    bonusShards: 1
+    checkpoint: 1
+  - goal: 1
+    objective: EVERY TACTIC YOU HAVE MET
+    banner: THEY READ, THEY PUNISH
+    hint: 
+    count: 1
+    duration: 0
+    point: {x: 0, y: 0, z: 0}
+    spawn: 0b0000000a0000000c000000
+    pointB: {x: 0, y: 0, z: 0}
+    spawnB: 
+    foeDef: 
+    beatId: 
+    props: []
+    bossHealthGate: 0.6
+    onComplete: 2
+    optional: 0
+    bonusShards: 1
+    checkpoint: 1
+  - goal: 17
+    objective: 
+    banner: 
+    hint: 
+    count: 1
+    duration: 0
+    point: {x: 0, y: 0, z: 0}
+    spawn: 
+    pointB: {x: 0, y: 0, z: 0}
+    spawnB: 
+    foeDef: 
+    beatId: finalguard_captain
+    props: []
+    bossHealthGate: 0.6
+    onComplete: 0
+    optional: 0
+    bonusShards: 1
+    checkpoint: 0
+  - goal: 14
+    objective: THE LAST OF THE NINE
+    banner: KAGEHIRA'S SHIELD
+    hint: 
+    count: 1
+    duration: 0
+    point: {x: 0, y: 0, z: 0}
+    spawn: 0c000000
+    pointB: {x: 0, y: 0, z: 0}
+    spawnB: 
+    foeDef: ironguard
+    beatId: 
+    props: []
+    bossHealthGate: 0.5
+    onComplete: 4
+    optional: 0
+    bonusShards: 1
+    checkpoint: 1
+  - goal: 1
+    objective: THEY PROTECT HIM
+    banner: THEY RETREAT BEHIND HIM
+    hint: 
+    count: 1
+    duration: 0
+    point: {x: 0, y: 0, z: 0}
+    spawn: 0a0000000b000000
+    pointB: {x: 0, y: 0, z: 0}
+    spawnB: 
+    foeDef: 
+    beatId: 
+    props: []
+    bossHealthGate: 0.6
+    onComplete: 0
+    optional: 0
+    bonusShards: 1
+    checkpoint: 0
+  - goal: 11
+    objective: BREAK THE SHIELD
+    banner: THE LAST OF NINE
+    hint: 
+    count: 1
+    duration: 0
+    point: {x: 0, y: 0, z: 0}
+    spawn: 
+    pointB: {x: 0, y: 0, z: 0}
+    spawnB: 
+    foeDef: 
+    beatId: 
+    props: []
+    bossHealthGate: 0.6
+    onComplete: 0
+    optional: 0
+    bonusShards: 1
+    checkpoint: 1
+  - goal: 1
+    objective: THE LAST TWO
+    banner: BACK TO BACK, IN THE SNOW
+    hint: 
+    count: 1
+    duration: 0
+    point: {x: 0, y: 0, z: 0}
+    spawn: 0c0000000a000000
+    pointB: {x: 0, y: 0, z: 0}
+    spawnB: 
+    foeDef: 
+    beatId: 
+    props: []
+    bossHealthGate: 0.6
+    onComplete: 0
+    optional: 0
+    bonusShards: 1
+    checkpoint: 0
+  - goal: 19
+    objective: THE GATE, OPEN
+    banner: THE SUMMIT
+    hint: 
+    count: 1
+    duration: 0
+    point: {x: 0, y: 0, z: 0}
+    spawn: 
+    pointB: {x: 0, y: 0, z: 0}
+    spawnB: 
+    foeDef: 
+    beatId: 
+    props:
+    - id: summit
+      label: THE SUMMIT, AND NOTHING ON IT
+      point: {x: 0, y: 0, z: -12}
+      shape: 8
+      speaker: RENZO
+      line: Fog to the top. Nothing moving. He's up there, and he's been watching
+        me climb.
+      beatId: 
+      radius: 2.2
+      figurePath: []
+      lanternLine: []
+    bossHealthGate: 0.6
+    onComplete: 0
+    optional: 0
+    bonusShards: 1
+    checkpoint: 0
+  - goal: 17
+    objective: 
+    banner: 
+    hint: 
+    count: 1
+    duration: 0
+    point: {x: 0, y: 0, z: 0}
+    spawn: 
+    pointB: {x: 0, y: 0, z: 0}
+    spawnB: 
+    foeDef: 
+    beatId: finalguard_end
+    props: []
+    bossHealthGate: 0.6
+    onComplete: 0
+    optional: 0
+    bonusShards: 1
+    checkpoint: 0
+  dressing: 090000000400000005000000
+  ruinedVillage: 0
+  challenge: 5
+  challengeSeconds: 240
+  challengeShards: 4
+  baseShards: 6

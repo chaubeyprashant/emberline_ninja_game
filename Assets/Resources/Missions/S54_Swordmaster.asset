@@ -1,0 +1,257 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 814b8fc7fb4eb427480893eff898b203, type: 3}
+  m_Name: S54_Swordmaster
+  m_EditorClassIdentifier: Assembly-CSharp::Emberline.Missions.MissionPlan
+  id: 54
+  missionName: THE SWORDMASTER
+  missionType: BOSS
+  briefing: 'The page Renzo has never been able to read: his father at the door.
+    The journal was finished by someone else. It says he held it long enough.'
+  debrief: The door holds. The man behind it does not.
+  marsh: 0
+  nightOverride: 1
+  rain: 0
+  snow: 0
+  fog: 0
+  applyTheme: 1
+  theme: 8
+  missionRadius: 0
+  missionRadiusZ: 0
+  nextReason: The Seal was carried out by someone. The journal says who.
+  region: VILLAGES
+  stages:
+  - goal: 17
+    objective: 
+    banner: 
+    hint: 
+    count: 1
+    duration: 0
+    point: {x: 0, y: 0, z: 0}
+    spawn: 
+    pointB: {x: 0, y: 0, z: 0}
+    spawnB: 
+    foeDef: 
+    beatId: sword_open
+    props: []
+    bossHealthGate: 0.6
+    onComplete: 0
+    optional: 0
+    bonusShards: 1
+    checkpoint: 0
+  - goal: 0
+    objective: STAND WHERE HE STOOD
+    banner: THE DOOR
+    hint: 
+    count: 1
+    duration: 0
+    point: {x: 0, y: 0, z: 8}
+    spawn: 
+    pointB: {x: 0, y: 0, z: 0}
+    spawnB: 
+    foeDef: 
+    beatId: 
+    props: []
+    bossHealthGate: 0.6
+    onComplete: 0
+    optional: 0
+    bonusShards: 1
+    checkpoint: 1
+  - goal: 5
+    objective: HOLD THE DOOR
+    banner: AS HE HELD IT
+    hint: 
+    count: 1
+    duration: 35
+    point: {x: 0, y: 0, z: 8}
+    spawn: 0000000007000000
+    pointB: {x: 0, y: 0, z: 0}
+    spawnB: 
+    foeDef: 
+    beatId: 
+    props: []
+    bossHealthGate: 0.6
+    onComplete: 2
+    optional: 0
+    bonusShards: 1
+    checkpoint: 1
+  - goal: 19
+    objective: WHAT HE WAS HOLDING IT FOR
+    banner: THE LANTERN LINE
+    hint: 
+    count: 1
+    duration: 0
+    point: {x: 0, y: 0, z: 0}
+    spawn: 
+    pointB: {x: 0, y: 0, z: 0}
+    spawnB: 
+    foeDef: 
+    beatId: 
+    props:
+    - id: line
+      label: LANTERNS, GOING UP THE RIDGE
+      point: {x: -7, y: 0, z: 12}
+      shape: 5
+      speaker: RENZO
+      line: Mother's line. Every lantern that gets up that ridge is a family. He's
+        counting them.
+      beatId: 
+      radius: 2.2
+      figurePath: []
+      lanternLine: []
+    - id: door
+      label: THE DOOR AT HIS BACK
+      point: {x: 5, y: 0, z: 11}
+      shape: 14
+      speaker: RENZO
+      line: Aiko and I were behind it. I heard all of this. I never saw it.
+      beatId: 
+      radius: 2.2
+      figurePath: []
+      lanternLine: []
+    bossHealthGate: 0.6
+    onComplete: 0
+    optional: 0
+    bonusShards: 1
+    checkpoint: 0
+  - goal: 17
+    objective: 
+    banner: 
+    hint: 
+    count: 1
+    duration: 0
+    point: {x: 0, y: 0, z: 0}
+    spawn: 
+    pointB: {x: 0, y: 0, z: 0}
+    spawnB: 
+    foeDef: 
+    beatId: sword_goro
+    props: []
+    bossHealthGate: 0.6
+    onComplete: 0
+    optional: 0
+    bonusShards: 1
+    checkpoint: 0
+  - goal: 14
+    objective: THE RAIDER CAPTAIN
+    banner: A YOUNG GORO
+    hint: 
+    count: 1
+    duration: 0
+    point: {x: 0, y: 0, z: 0}
+    spawn: 02000000
+    pointB: {x: 0, y: 0, z: 0}
+    spawnB: 
+    foeDef: goro
+    beatId: 
+    props: []
+    bossHealthGate: 0.6
+    onComplete: 11
+    optional: 0
+    bonusShards: 1
+    checkpoint: 1
+  - goal: 1
+    objective: HIS RAIDERS COME THROUGH THE FIRE
+    banner: THE DOOR, FROM BOTH SIDES
+    hint: 
+    count: 1
+    duration: 0
+    point: {x: 0, y: 0, z: 0}
+    spawn: 0900000007000000
+    pointB: {x: 0, y: 0, z: 0}
+    spawnB: 
+    foeDef: 
+    beatId: 
+    props: []
+    bossHealthGate: 0.6
+    onComplete: 0
+    optional: 0
+    bonusShards: 1
+    checkpoint: 0
+  - goal: 17
+    objective: 
+    banner: 
+    hint: 
+    count: 1
+    duration: 0
+    point: {x: 0, y: 0, z: 0}
+    spawn: 
+    pointB: {x: 0, y: 0, z: 0}
+    spawnB: 
+    foeDef: 
+    beatId: sword_scar
+    props: []
+    bossHealthGate: 0.6
+    onComplete: 0
+    optional: 0
+    bonusShards: 1
+    checkpoint: 0
+  - goal: 14
+    objective: GIVE HIM THE SCAR
+    banner: THE SWORDMASTER
+    hint: 
+    count: 1
+    duration: 0
+    point: {x: 0, y: 0, z: 0}
+    spawn: 
+    pointB: {x: 0, y: 0, z: 0}
+    spawnB: 
+    foeDef: 
+    beatId: 
+    props: []
+    bossHealthGate: 0.3
+    onComplete: 5
+    optional: 0
+    bonusShards: 1
+    checkpoint: 0
+  - goal: 16
+    objective: THE DOOR HOLDS
+    banner: THE MAN BEHIND IT DOES NOT
+    hint: 
+    count: 1
+    duration: 30
+    point: {x: 0, y: 0, z: 0}
+    spawn: 0900000009000000
+    pointB: {x: 0, y: 0, z: 0}
+    spawnB: 
+    foeDef: 
+    beatId: 
+    props: []
+    bossHealthGate: 0.6
+    onComplete: 13
+    optional: 0
+    bonusShards: 1
+    checkpoint: 1
+  - goal: 17
+    objective: 
+    banner: 
+    hint: 
+    count: 1
+    duration: 0
+    point: {x: 0, y: 0, z: 0}
+    spawn: 
+    pointB: {x: 0, y: 0, z: 0}
+    spawnB: 
+    foeDef: 
+    beatId: sword_end
+    props: []
+    bossHealthGate: 0.6
+    onComplete: 0
+    optional: 0
+    bonusShards: 1
+    checkpoint: 0
+  dressing: 01000000090000000500000004000000
+  ruinedVillage: 0
+  challenge: 5
+  challengeSeconds: 240
+  challengeShards: 3
+  baseShards: 5
