@@ -23,7 +23,9 @@ namespace Emberline.EditorTools
     /// </para>
     ///
     /// <para>
-    /// Loop: <see cref="Export"/> → <c>python3 Assets/Editor/Tools/generate_voices.py</c>
+    /// Loop: <see cref="Export"/> → <c>python3 Assets/Editor/Tools/generate_voices_gemini.py</c>
+    /// (Gemini text-to-speech, one voice and one acting direction per speaker; the
+    /// older <c>generate_voices.py</c> used macOS <c>say</c> and read as robotic)
     /// → <see cref="ConfigureImports"/>.
     /// </para>
     /// </summary>
@@ -68,7 +70,7 @@ namespace Emberline.EditorTools
             foreach (var kv in entries.OrderBy(k => k.Value.sources[0]))
             {
                 var e = kv.Value;
-                if (File.Exists($"{VoiceDir}/{kv.Key}.aiff")) have++;
+                if (File.Exists($"{VoiceDir}/{kv.Key}.wav") || File.Exists($"{VoiceDir}/{kv.Key}.aiff")) have++;
                 sb.Append(kv.Key).Append('\t').Append(Clean(e.speaker.ToUpperInvariant())).Append('\t')
                   .Append(Clean(e.text)).Append('\t').Append(Clean(string.Join("; ", e.sources))).Append('\n');
             }

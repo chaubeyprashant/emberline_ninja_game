@@ -1,5 +1,8 @@
 """Speak every dialogue line with macOS `say` into Assets/Resources/Voices/<md5>.aiff.
 
+SUPERSEDED (2026-09-15) by generate_voices_gemini.py: the compact macOS voices read as
+robotic on device. Kept as the offline fallback when no Gemini key is available.
+
 Run Emberline/Voices/Export Voice Lines first: it writes Logs/voice_lines.tsv
 (hash, speaker, text, source) from the game's loaded data. The md5 is of the exact
 string the runtime looks up (VoiceLines.Key), so the file name is the whole

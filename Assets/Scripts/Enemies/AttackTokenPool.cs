@@ -69,8 +69,11 @@ namespace Emberline.Enemies
         private void Prune()
         {
             _scratch.Clear();
+            // Enemies are pooled, not destroyed, so a dead key is rare; an entry
+            // older than the reuse delay is meaningless by definition and, left in,
+            // a recycled body would inherit its predecessor's turn.
             foreach (var pair in _lastAttack)
-                if (pair.Key == null) _scratch.Add(pair.Key);
+                if (pair.Key == null || Time.time - pair.Value > reuseDelay) _scratch.Add(pair.Key);
             foreach (var dead in _scratch) _lastAttack.Remove(dead);
         }
 
