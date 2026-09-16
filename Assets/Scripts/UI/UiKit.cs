@@ -171,6 +171,30 @@ namespace Emberline.UI
                     var stem = Seg(p, new Vector2(0f, -0.35f), new Vector2(0f, -0.85f), 0.07f);
                     return Mathf.Min(blade, stem);
                 }
+                case "climb": // hands on a ledge: a lip line with two grips under it, and an up arrow
+                {
+                    var lip = Seg(p, new Vector2(-0.7f, 0.45f), new Vector2(0.7f, 0.45f), 0.07f);
+                    var g1 = Seg(p, new Vector2(-0.35f, 0.45f), new Vector2(-0.35f, 0.15f), 0.09f);
+                    var g2 = Seg(p, new Vector2(0.35f, 0.45f), new Vector2(0.35f, 0.15f), 0.09f);
+                    var stem = Seg(p, new Vector2(0f, -0.7f), new Vector2(0f, -0.05f), 0.08f);
+                    var head = Mathf.Min(Seg(p, new Vector2(-0.28f, -0.3f), new Vector2(0f, -0.05f), 0.08f),
+                        Seg(p, new Vector2(0.28f, -0.3f), new Vector2(0f, -0.05f), 0.08f));
+                    return Mathf.Min(Mathf.Min(lip, Mathf.Min(g1, g2)), Mathf.Min(stem, head));
+                }
+                case "vault": // an arc over a block
+                {
+                    var block = Mathf.Max(Mathf.Abs(p.x) - 0.28f, Mathf.Abs(p.y + 0.35f) - 0.25f);
+                    var d = float.MaxValue;
+                    Vector2 prev = new(-0.75f, -0.45f);
+                    for (var i = 1; i <= 8; i++)
+                    {
+                        var t = i / 8f;
+                        var q = new Vector2(Mathf.Lerp(-0.75f, 0.75f, t), -0.45f + Mathf.Sin(t * Mathf.PI) * 1.05f);
+                        d = Mathf.Min(d, Seg(p, prev, q, 0.08f));
+                        prev = q;
+                    }
+                    return Mathf.Min(block, d);
+                }
                 case "jump": // up chevron over a ground line
                     return Mathf.Min(
                         Mathf.Min(Seg(p, new Vector2(-0.45f, 0.05f), new Vector2(0f, 0.55f), 0.1f),

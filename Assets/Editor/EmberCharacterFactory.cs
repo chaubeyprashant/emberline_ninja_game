@@ -80,6 +80,12 @@ namespace Emberline.EditorTools
             /// avatar — so the clip library can no longer be just `fbx`.
             /// </summary>
             public string[] clipSources;
+            /// <summary>
+            /// Player-style locomotion: a four-gait blend tree plus crouch and swim
+            /// states, and the IK pass on. Enemies keep the two-clip Idle/Run tree
+            /// so their move01 semantics do not change.
+            /// </summary>
+            public bool gaits;
 
             /// <summary>
             /// Grip correction for a prop. KayKit's handslot empties already
@@ -190,15 +196,69 @@ namespace Emberline.EditorTools
             var names = new[] { "Idle", "Run", "Strike1", "Strike2", "Strike3", "Cleave", "Stab",
                 "Sweep", "Hurt", "Dead", "Block", "BlockHit", "Kick", "Jump", "Windup", "Delayed",
                 "Throw", "SideStep", "Backstep", "Spawn", "Taunt" };
-            var paths = new string[names.Length];
-            for (var i = 0; i < names.Length; i++) paths[i] = $"{MixDir}/Anims/{names[i]}.fbx";
-            return paths;
+            var paths = new List<string>();
+            foreach (var n in names) paths.Add($"{MixDir}/Anims/{n}.fbx");
+            // Traversal takes are optional: each has a fallback in PoseFallbacks, so
+            // the set ships without them and any that are dropped into Anims/ take
+            // over on the next build. Mixamo names to download, per file:
+            //   Walk = "Walking", Sprint = "Running" (fast), CrouchIdle = "Crouch Idle",
+            //   CrouchWalk = "Crouched Walking", Roll = "Stand To Roll",
+            //   Mantle = "Braced Hang To Crouch", Vault = "Running Jump" (low),
+            //   Slide = "Running Slide", Hang = "Hanging Idle", Fall = "Falling Idle",
+            //   Swim = "Swimming", SwimIdle = "Treading Water", Land = "Hard Landing".
+            foreach (var n in OptionalMixamoTakes)
+            {
+                var p = $"{MixDir}/Anims/{n}.fbx";
+                if (System.IO.File.Exists(p)) paths.Add(p);
+            }
+            return paths.ToArray();
         }
+
+        /// <summary>Takes the traversal poses look for; absent ones use PoseFallbacks.</summary>
+        public static readonly string[] OptionalMixamoTakes =
+        {
+            "Walk", "Sprint", "CrouchIdle", "CrouchWalk", "Roll", "Mantle", "Vault", "Slide",
+            "Hang", "Fall", "Swim", "SwimIdle", "Land",
+        };
+
+        /// <summary>
+        /// Nearest existing pose when a traversal take is missing, so a controller
+        /// always has a state for every RigPose the motor can request.
+        /// </summary>
+        public static readonly Dictionary<RigPose, RigPose> PoseFallbacks = new()
+        {
+            [RigPose.Walk] = RigPose.Run,
+            [RigPose.Sprint] = RigPose.Run,
+            [RigPose.CrouchIdle] = RigPose.Idle,
+            [RigPose.CrouchWalk] = RigPose.Run,
+            [RigPose.Roll] = RigPose.Backstep,
+            [RigPose.Mantle] = RigPose.Jump,
+            [RigPose.Vault] = RigPose.Jump,
+            [RigPose.Slide] = RigPose.Backstep,
+            [RigPose.Hang] = RigPose.Block,
+            [RigPose.Fall] = RigPose.Jump,
+            [RigPose.Swim] = RigPose.Run,
+            [RigPose.SwimIdle] = RigPose.Idle,
+            [RigPose.Land] = RigPose.Idle,
+        };
 
         /// <summary>Pose map for the Mixamo set. Files are named after their pose,
         /// so this is near-identity; the two takes the pack lacks borrow a sibling.</summary>
         public static Dictionary<RigPose, string> MixamoClips() => new()
         {
+            [RigPose.Walk] = "Walk",
+            [RigPose.Sprint] = "Sprint",
+            [RigPose.CrouchIdle] = "CrouchIdle",
+            [RigPose.CrouchWalk] = "CrouchWalk",
+            [RigPose.Roll] = "Roll",
+            [RigPose.Mantle] = "Mantle",
+            [RigPose.Vault] = "Vault",
+            [RigPose.Slide] = "Slide",
+            [RigPose.Hang] = "Hang",
+            [RigPose.Fall] = "Fall",
+            [RigPose.Swim] = "Swim",
+            [RigPose.SwimIdle] = "SwimIdle",
+            [RigPose.Land] = "Land",
             [RigPose.Idle] = "Idle",
             [RigPose.Run] = "Run",
             [RigPose.Strike1] = "Strike1",
@@ -260,6 +320,7 @@ namespace Emberline.EditorTools
             propScale = new Vector3(0.62f, 0.62f, 0.62f),
             clipSources = MixamoClipSources(),
             clips = MixamoClips(),
+            gaits = true,                    // walk / run / sprint, crouch and swim trees
         };
 
         // ------------------------------------------------------------- story cast
@@ -903,9 +964,18 @@ namespace Emberline.EditorTools
             {
                 var pose = (RigPose)i;
                 rig.poseStates[i] = pose.ToString();
-                if (spec.clips.TryGetValue(pose, out var clipName)
-                    && clipLib.TryGetValue(clipName, out var clip))
-                    rig.poseClipLengths[i] = clip.length;
+                var resolved = pose;
+                for (var hops = 0; hops < 4; hops++)
+                {
+                    if (spec.clips.TryGetValue(resolved, out var clipName)
+                        && clipLib.TryGetValue(clipName, out var clip))
+                    {
+                        rig.poseClipLengths[i] = clip.length;
+                        break;
+                    }
+                    if (!PoseFallbacks.TryGetValue(resolved, out var next)) break;
+                    resolved = next;
+                }
             }
             return true;
         }
@@ -1211,32 +1281,89 @@ namespace Emberline.EditorTools
             var sm = controller.layers[0].stateMachine;
 
             var lib = Clips(spec);
+            // True when the pose's own take exists (as opposed to a fallback).
+            bool Own(RigPose pose) =>
+                spec.clips.TryGetValue(pose, out var n) && lib.TryGetValue(n, out _);
             AnimationClip Find(RigPose pose)
             {
-                if (spec.clips.TryGetValue(pose, out var n) && lib.TryGetValue(n, out var c)) return c;
+                for (var hops = 0; hops < 4; hops++)
+                {
+                    if (spec.clips.TryGetValue(pose, out var n) && lib.TryGetValue(n, out var c)) return c;
+                    if (!PoseFallbacks.TryGetValue(pose, out var next)) break;
+                    pose = next;
+                }
                 return lib.TryGetValue("Idle", out var idle) ? idle : null;
             }
 
-            // Locomotion blend tree (Idle ↔ Run on Move).
-            var locomotion = sm.AddState("Locomotion");
-            var tree = new BlendTree
+            BlendTree Tree(string name)
             {
-                name = "LocomotionTree",
-                blendParameter = "Move",
-                blendType = BlendTreeType.Simple1D,
-                useAutomaticThresholds = false,
-                hideFlags = HideFlags.HideInHierarchy,
+                var t = new BlendTree
+                {
+                    name = name,
+                    blendParameter = "Move",
+                    blendType = BlendTreeType.Simple1D,
+                    useAutomaticThresholds = false,
+                    hideFlags = HideFlags.HideInHierarchy,
+                };
+                AssetDatabase.AddObjectToAsset(t, controller);
+                return t;
+            }
+            ChildMotion Child(RigPose pose, float threshold, float fallbackTimeScale = 1f) => new()
+            {
+                motion = Find(pose),
+                threshold = threshold,
+                // A borrowed Run cycle is re-timed to the gait it stands in for; a
+                // real take plays at its authored speed.
+                timeScale = Own(pose) ? 1f : fallbackTimeScale,
+                directBlendParameter = "Move",
             };
-            AssetDatabase.AddObjectToAsset(tree, controller);
-            tree.AddChild(Find(RigPose.Idle), 0f);
-            tree.AddChild(Find(RigPose.Run), 1f);
+
+            // Locomotion blend tree. Enemies: Idle ↔ Run on Move. The player: four
+            // gaits at PlayerLocomotion's thresholds (walk 0.4, run 0.75, sprint 1).
+            var locomotion = sm.AddState("Locomotion");
+            var tree = Tree("LocomotionTree");
+            if (spec.gaits)
+                tree.children = new[]
+                {
+                    Child(RigPose.Idle, 0f),
+                    Child(RigPose.Walk, 0.4f, 0.55f),
+                    Child(RigPose.Run, 0.75f),
+                    Child(RigPose.Sprint, 1f, 1.25f),
+                };
+            else
+            {
+                tree.AddChild(Find(RigPose.Idle), 0f);
+                tree.AddChild(Find(RigPose.Run), 1f);
+            }
             locomotion.motion = tree;
             sm.defaultState = locomotion;
+
+            if (spec.gaits)
+            {
+                var crouch = sm.AddState("CrouchLocomotion");
+                var ct = Tree("CrouchTree");
+                ct.children = new[] { Child(RigPose.CrouchIdle, 0f), Child(RigPose.CrouchWalk, 1f, 0.5f) };
+                crouch.motion = ct;
+
+                var swim = sm.AddState("SwimLocomotion");
+                var st = Tree("SwimTree");
+                st.children = new[] { Child(RigPose.SwimIdle, 0f), Child(RigPose.Swim, 1f, 0.6f) };
+                swim.motion = st;
+
+                // Foot IK on slopes and ledges runs through OnAnimatorIK, which
+                // needs the pass switched on per layer.
+                var layers = controller.layers;
+                layers[0].iKPass = true;
+                controller.layers = layers;
+            }
 
             // One state per action pose, speed driven by AtkSpeed (0 = scrubbed).
             foreach (RigPose pose in System.Enum.GetValues(typeof(RigPose)))
             {
                 if (pose is RigPose.Idle or RigPose.Run) continue;
+                // Gait poses live inside the blend trees, never as one-shots.
+                if (pose is RigPose.Walk or RigPose.Sprint or RigPose.CrouchIdle or RigPose.CrouchWalk
+                    or RigPose.Swim or RigPose.SwimIdle) continue;
                 var clip = Find(pose);
                 if (clip == null) continue;
                 var state = sm.AddState(pose.ToString());

@@ -23,6 +23,23 @@ namespace Emberline.Core
         Jump,        // air attack
         Charge,      // gap closer run-in
         Delayed,     // held startup (the delayed attack's raised weapon)
+        // Traversal (2026-09-16). Appended, never reordered: SkeletalRig indexes
+        // poseStates by the enum's int value. Every one of these has a fallback
+        // clip in EmberCharacterFactory, so a body without the Mixamo take still
+        // animates; drop the named FBX into Mixamo/Anims and the real clip wins.
+        Walk,        // stick half-pushed
+        Sprint,      // stick pushed through
+        CrouchIdle,  // stealth: low, still
+        CrouchWalk,  // stealth: low, moving
+        Roll,        // landing roll after a long fall
+        Mantle,      // pull up onto a ledge
+        Vault,       // over a waist-high obstacle
+        Slide,       // sprint + crouch
+        Hang,        // holding a ledge
+        Fall,        // airborne past the apex
+        Swim,        // river, moving
+        SwimIdle,    // river, treading
+        Land,        // hard landing, feet planted
     }
 
     /// <summary>
@@ -342,6 +359,10 @@ namespace Emberline.Core
                 RigPose.BlockHit => RigPose.Hurt,
                 RigPose.SideStep or RigPose.Backstep or RigPose.Jump => RigPose.Dash,
                 RigPose.Throw => RigPose.Strike2,
+                RigPose.Walk or RigPose.Sprint or RigPose.CrouchWalk or RigPose.Swim => RigPose.Run,
+                RigPose.CrouchIdle or RigPose.SwimIdle or RigPose.Land => RigPose.Idle,
+                RigPose.Roll or RigPose.Mantle or RigPose.Vault or RigPose.Slide or RigPose.Fall => RigPose.Dash,
+                RigPose.Hang => RigPose.Windup,
                 _ => pose,
             };
             // Target angles: X = forward swing (negative lifts limb forward),

@@ -24,6 +24,12 @@ namespace Emberline.Core
         private static readonly int MoveParam = Animator.StringToHash("Move");
         private static readonly int SpeedParam = Animator.StringToHash("AtkSpeed");
         private static readonly int LocomotionState = Animator.StringToHash("Locomotion");
+        private static readonly int CrouchState = Animator.StringToHash("CrouchLocomotion");
+        private static readonly int SwimState = Animator.StringToHash("SwimLocomotion");
+
+        private LocoMode _loco = LocoMode.Ground;
+        private int _locoState = LocomotionState;
+        private bool _inLoco = true;
 
         private Animator _anim;
         private readonly List<Renderer> _renderers = new();
@@ -46,7 +52,7 @@ namespace Emberline.Core
 
         private float _flashT;
         private bool _forcedThisFrame, _forcedActive;
-        private RigPose _forcedPose;
+        private RigPose _forcedPose, _forcedShown;
         private float _forcedPhase;
         private bool _oneActive;
         private RigPose _onePose;
@@ -95,6 +101,7 @@ namespace Emberline.Core
             var len = ClipLen(pose);
             _anim.SetFloat(SpeedParam, len / _oneDur);
             _anim.CrossFadeInFixedTime(StateName(pose), 0.05f, 0);
+            _inLoco = false;
             if (pose == RigPose.Dead) _deadLatched = true;
         }
 
@@ -129,6 +136,31 @@ namespace Emberline.Core
 
         public override void SetMood(RigMood mood) => _mood = mood;
 
+        public override void SetLocoMode(LocoMode mode)
+        {
+            if (mode == _loco) return;
+            _loco = mode;
+            var wanted = mode switch
+            {
+                LocoMode.Crouch => CrouchState,
+                LocoMode.Swim => SwimState,
+                _ => LocomotionState,
+            };
+            // Bodies built without the gait trees (every enemy) fall back to the
+            // one locomotion state rather than crossfading into nothing.
+            if (_anim != null && !_anim.HasState(0, wanted)) wanted = LocomotionState;
+            _locoState = wanted;
+            if (_inLoco && !_deadLatched && _anim != null)
+                _anim.CrossFadeInFixedTime(_locoState, 0.18f, 0);
+        }
+
+        /// <summary>Back to whichever locomotion family the mover last asked for.</summary>
+        private void ReturnToLocomotion(float fade)
+        {
+            _inLoco = true;
+            if (!_deadLatched) _anim.CrossFadeInFixedTime(_locoState, fade, 0);
+        }
+
         public override void ResetVisuals()
         {
             // _deadLatched gates every PlayOneShot; a recycled rig that kept it
@@ -137,6 +169,9 @@ namespace Emberline.Core
             _oneActive = false;
             _forcedThisFrame = false;
             _forcedActive = false;
+            _inLoco = true;
+            _loco = LocoMode.Ground;
+            _locoState = LocomotionState;
             _flashT = 0f;
             SetTrails(false); // died mid-swing
             tint = _authoredTint;
@@ -184,11 +219,22 @@ namespace Emberline.Core
             {
                 _forcedThisFrame = false;
                 _oneActive = false;
-                _forcedActive = true;
+                _inLoco = false;
                 if (_forcedPose == RigPose.Dead) _deadLatched = true;
-                // Scrub: hold the state at an explicit normalized time.
+                // Scrub: hold the state at an explicit normalized time. The first
+                // frame of a new pose blends in over 80 ms instead of cutting —
+                // Play() on a pose change was the visible pop on every AI state
+                // switch; once inside the state, Play() at the phase is a pure
+                // scrub with no discontinuity.
                 _anim.SetFloat(SpeedParam, 0f);
-                _anim.Play(StateName(_forcedPose), 0, Mathf.Clamp01(_forcedPhase) * 0.98f);
+                var phase = Mathf.Clamp01(_forcedPhase) * 0.98f;
+                var state = StateName(_forcedPose);
+                if (!_forcedActive || _forcedPose != _forcedShown)
+                    _anim.CrossFadeInFixedTime(state, 0.08f, 0, phase * ClipLen(_forcedPose));
+                else
+                    _anim.Play(state, 0, phase);
+                _forcedShown = _forcedPose;
+                _forcedActive = true;
                 return;
             }
 
@@ -196,7 +242,7 @@ namespace Emberline.Core
             {
                 // AI released the pose (state changed to Chase etc.) — resume.
                 _forcedActive = false;
-                if (!_deadLatched) _anim.CrossFadeInFixedTime(LocomotionState, 0.12f, 0);
+                ReturnToLocomotion(0.12f);
             }
 
             if (_oneActive)
@@ -209,7 +255,7 @@ namespace Emberline.Core
                 {
                     _oneActive = false;
                     SetTrails(false);
-                    if (!_deadLatched) _anim.CrossFadeInFixedTime(LocomotionState, 0.12f, 0);
+                    ReturnToLocomotion(0.12f);
                 }
                 return;
             }

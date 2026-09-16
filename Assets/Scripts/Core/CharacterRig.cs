@@ -4,6 +4,10 @@ namespace Emberline.Core
 {
     public enum RigMood { Calm, Focused, Enraged }
 
+    /// <summary>Which locomotion family the mover is in. Only skeletal player rigs
+    /// carry all three; others treat everything as Ground.</summary>
+    public enum LocoMode { Ground, Crouch, Swim }
+
     /// <summary>
     /// Contract between gameplay (CombatController, EnemyBrain, PlayerLocomotion,
     /// GameManager) and whatever renders the character. Two implementations:
@@ -12,8 +16,15 @@ namespace Emberline.Core
     /// </summary>
     public abstract class CharacterRig : MonoBehaviour
     {
-        /// <summary>Locomotion blend 0..1, written every frame by the mover.</summary>
+        /// <summary>
+        /// Locomotion blend 0..1, written every frame by the mover. For enemies it
+        /// is Idle→Run; for the player's gait tree 0.4 is a walk, 0.75 a run and
+        /// 1 a sprint (PlayerLocomotion.GaitBlend).
+        /// </summary>
         [System.NonSerialized] public float move01;
+
+        /// <summary>Ground, crouch or swim locomotion. Ignored by rigs without the states.</summary>
+        public virtual void SetLocoMode(LocoMode mode) { }
 
         /// <summary>Play a pose once over `duration`, then return to locomotion.</summary>
         public abstract void PlayOneShot(RigPose pose, float duration);
