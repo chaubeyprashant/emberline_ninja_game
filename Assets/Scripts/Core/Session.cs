@@ -4,7 +4,7 @@ using Emberline.Enemies;
 
 namespace Emberline.Core
 {
-    public enum LaunchMode { None, Story, Duel, Endless }
+    public enum LaunchMode { None, Story, Duel, Endless, Explore }
 
     /// <summary>
     /// What a level asks of you. Clear and Hold are the original two; Stealth,

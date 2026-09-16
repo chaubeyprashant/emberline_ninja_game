@@ -28,11 +28,14 @@ namespace Emberline.Enemies
         /// <summary>How long a sound stays investigable.</summary>
         public const float Memory = 3.5f;
 
+        /// <summary>Rain covers footsteps: 1 in still air, 0.55 in a storm.</summary>
+        public static float Damping = 1f;
+
         public static void Emit(Vector3 position, float radius)
         {
             Ring[_next] = new Noise
             {
-                position = position, radius = radius, time = Time.unscaledTime,
+                position = position, radius = radius * Damping, time = Time.unscaledTime,
             };
             _next = (_next + 1) % Capacity;
         }
@@ -124,11 +127,17 @@ namespace Emberline.Enemies
         /// </summary>
         public static float AmbientScale = 1f;
 
-        public static void ResetConditions() => AmbientScale = 1f;
+        /// <summary>Night, from the clock: 0.55 at midnight, 1 at noon. Explore only.</summary>
+        public static float DaylightScale = 1f;
+
+        /// <summary>Rain and fog, from the weather. Explore only.</summary>
+        public static float WeatherScale = 1f;
+
+        public static void ResetConditions() { AmbientScale = 1f; DaylightScale = 1f; WeatherScale = 1f; }
 
         public static float Of(Vector3 playerPos, bool crouched)
         {
-            var v = (crouched ? 0.45f : 1f) * AmbientScale;
+            var v = (crouched ? 0.45f : 1f) * AmbientScale * DaylightScale * WeatherScale;
 
             // Smoke hides you outright — it already blinds attacks, so it should
             // hide you from detection too.

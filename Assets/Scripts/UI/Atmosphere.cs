@@ -58,6 +58,34 @@ namespace Emberline.UI
 
         private void OnDestroy() { if (Active == this) Active = null; }
 
+        private ParticleSystem _rain;
+        private float _rainFull;
+
+        /// <summary>
+        /// Weather-system rain, built the first time it is asked for so a clear
+        /// theme carries no emitter until a storm rolls in. `wind` scales the
+        /// slant. The theme's own weather column is untouched.
+        /// </summary>
+        public void SetRain01(float amount, float wind)
+        {
+            if (_rain == null)
+            {
+                if (amount <= 0.001f) return;
+                var keep = _weather;
+                BuildWeather(Weather.Rain);
+                _rain = _weather;
+                _weather = keep;
+                _rainFull = _rain.emission.rateOverTime.constant;
+            }
+            var em = _rain.emission;
+            em.rateOverTime = _rainFull * Mathf.Clamp01(amount);
+            var vel = _rain.velocityOverLifetime;
+            vel.x = new ParticleSystem.MinMaxCurve(WindDir.x * Wind * 2.4f * wind);
+            vel.z = new ParticleSystem.MinMaxCurve(WindDir.z * Wind * 2.4f * wind);
+            if (amount <= 0.001f && _rain.isPlaying) _rain.Stop();
+            else if (amount > 0.001f && !_rain.isPlaying) _rain.Play();
+        }
+
         // Weather falls in a column that follows the camera, so a small emitter
         // covers the whole visible field instead of filling the arena.
         private void BuildWeather(Weather weather)
@@ -207,6 +235,8 @@ namespace Emberline.UI
             var p = _follow.position;
             if (_weather != null)
                 _weather.transform.position = new Vector3(p.x, p.y + 12f, p.z);
+            if (_rain != null)
+                _rain.transform.position = new Vector3(p.x, p.y + 12f, p.z);
             if (_life != null)
                 _life.transform.position = new Vector3(p.x, p.y + 1.5f, p.z);
         }

@@ -150,6 +150,13 @@ namespace Emberline
             get
             {
                 if (State != Phase.Playing) return "";
+                if (Session.Mode == LaunchMode.Explore)
+                {
+                    if (_playerT == null) return "";
+                    var next = WorldLandmarks.NearestUndiscovered(_playerT.position);
+                    return next == null ? "THE VALLEY IS YOURS"
+                        : $"SOMEWHERE UNSEEN — {WorldLandmarks.Bearing(_playerT.position, next.centre)}";
+                }
                 // A staged mission owns its own objective text, beat by beat.
                 if (_director != null && !_director.Complete) return _director.Objective;
                 if (HoldMode)
@@ -211,6 +218,9 @@ namespace Emberline
             // device's own thermal status. Pinning 60 here meant a full 3D arena
             // was redrawn sixty times a second behind every menu and pause screen.
             QualitySettings.vSyncCount = 0;
+            // A button destroyed by the last scene never sent PointerUp: clear
+            // every held edge so crouch or guard cannot arrive latched.
+            EmberInput.ResetHeld();
             PerfGovernor.Ensure(gameObject);
             {
                 // Identity log for device diagnosis: the bodies actually present at scene start.
@@ -327,6 +337,35 @@ namespace Emberline
                     State = Phase.Intro;
                     break;
                 }
+                case LaunchMode.Explore:
+                {
+                    // The open world. No plan, no waves, no arena: the region's
+                    // edge is the boundary, the clock runs, and the weather turns.
+                    if (isMarshScene) { LoadThemeScene(false); return; }
+                    CurrentPlan = null;
+                    _waves = System.Array.Empty<EnemyKind[]>();
+                    MissionBounds.Reset();
+                    MissionBounds.Unbounded = true;
+                    Visibility.ResetConditions();
+                    _playerHealth?.SetMax(110f * Difficulty.Now.PlayerHp);
+                    if (TimeOfDay.Instance != null) TimeOfDay.Instance.Running = true;
+                    if (WeatherSystem.Instance != null) WeatherSystem.Instance.Running = true;
+                    WorldState.Load();
+                    if (WorldState.TryGetPosition(out var at) && _playerT != null)
+                    {
+                        var cc = _playerT.GetComponent<CharacterController>();
+                        if (cc != null) cc.enabled = false;
+                        _playerT.position = Ground.Snap(at) + Vector3.up * 0.3f;
+                        if (cc != null) cc.enabled = true;
+                        SceneRefs.Rig?.SnapBehindTarget();
+                    }
+                    WorldLandmarks.Discovered.Add("yorune");
+                    WorldLandmarks.OnDiscovered -= OnLandmarkFound;
+                    WorldLandmarks.OnDiscovered += OnLandmarkFound;
+                    State = Phase.Playing;
+                    Announce("THE VALLEY IS OPEN");
+                    break;
+                }
                 case LaunchMode.Endless:
                 {
                     if (isMarshScene) { LoadThemeScene(false); return; }
@@ -429,9 +468,41 @@ namespace Emberline
             LoadThemeScene(false);
         }
 
+        public void LaunchExplore()
+        {
+            Sfx3D.Ui();
+            Session.Mode = LaunchMode.Explore;
+            LoadThemeScene(false);
+        }
+
+        private void OnLandmarkFound(Landmark l)
+        {
+            Announce($"DISCOVERED — {l.name}");
+            if (_playerT != null)
+                FloatingText.Spawn(_playerT.position + Vector3.up * 2.6f, l.name, new Color(1f, 0.78f, 0.45f), 1.4f);
+            Sfx3D.Confirm();
+            WorldState.Save(_playerT != null ? _playerT.position : Vector3.zero);
+        }
+
+        private float _worldSaveT;
+
+        /// <summary>Explore's per-frame loop: discovery, and a save every minute.</summary>
+        private void ExploreUpdate()
+        {
+            if (_playerT == null) return;
+            WorldLandmarks.Poll(_playerT.position);
+            if ((_worldSaveT -= Time.deltaTime) <= 0f)
+            {
+                _worldSaveT = 60f;
+                WorldState.Save(_playerT.position);
+            }
+        }
+
         public void OpenMenu()
         {
             Sfx3D.Ui();
+            if (Session.Mode == LaunchMode.Explore && _playerT != null) WorldState.Save(_playerT.position);
+            WorldLandmarks.OnDiscovered -= OnLandmarkFound;
             Session.Mode = LaunchMode.None;
             Time.timeScale = 1f;
             LoadThemeScene(false);
@@ -515,6 +586,11 @@ namespace Emberline
             if (_endless)
             {
                 MarchUpdate();
+                return;
+            }
+            if (Session.Mode == LaunchMode.Explore)
+            {
+                ExploreUpdate();
                 return;
             }
 
@@ -862,13 +938,21 @@ namespace Emberline
         /// Spawn a single enemy at an arena edge. Public so the MissionDirector can
         /// populate a stage without owning spawn logic itself.
         /// </summary>
-        public void SpawnOne(EnemyKind kind, bool unaware)
+        public void SpawnOne(EnemyKind kind, bool unaware) => SpawnOne(kind, unaware, null);
+
+        /// <summary>
+        /// Spawn a single enemy near a world point (kept inside the arena and out
+        /// of solid things), or at an arena edge when no point is given.
+        /// </summary>
+        public void SpawnOne(EnemyKind kind, bool unaware, Vector3? near)
         {
             var prefab = enemyPrefabs != null && (int)kind < enemyPrefabs.Length
                 ? enemyPrefabs[(int)kind] : null;
             if (prefab == null) return;
 
-            var p = SpawnPoint(0.5f);
+            var p = near.HasValue
+                ? Core.Ground.Snap(ArenaMarkers.Resolve(Core.MissionBounds.ClampEnemy(near.Value), 1.2f))
+                : SpawnPoint(0.5f);
             var go = EnemyPool.Spawn(prefab, p, Quaternion.Euler(0, 180f, 0));
             var brain = go != null ? go.GetComponent<EnemyBrain>() : null;
             if (brain == null) return;

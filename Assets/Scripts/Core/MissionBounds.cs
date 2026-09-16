@@ -43,6 +43,12 @@ namespace Emberline.Core
         /// <summary>Has a mission explicitly configured bounds this session?</summary>
         public static bool Configured { get; private set; }
 
+        /// <summary>
+        /// Explore: no arena. The region's edge mountains are the boundary, so
+        /// every containment query stands down.
+        /// </summary>
+        public static bool Unbounded;
+
         public static float RadiusX => _radiusX;
         public static float RadiusZ => _radiusZ;
         public static Vector3 Center => _center;
@@ -74,6 +80,7 @@ namespace Emberline.Core
             _radiusX = 60f;
             _radiusZ = 60f;
             Configured = false;
+            Unbounded = false;
         }
 
         // ---------------------------------------------------- queries
@@ -107,6 +114,7 @@ namespace Emberline.Core
         /// </summary>
         public static Vector3 ContainForce(Vector3 pos)
         {
+            if (Unbounded) return Vector3.zero;
             var nd = NormalisedDist(pos);
             if (nd <= SoftStart) return Vector3.zero;
 
@@ -129,6 +137,7 @@ namespace Emberline.Core
         /// </summary>
         public static Vector3 Clamp(Vector3 pos)
         {
+            if (Unbounded) return pos;
             var nd = NormalisedDist(pos);
             if (nd <= 1f) return pos;
 
@@ -153,6 +162,7 @@ namespace Emberline.Core
         /// <summary>Clamp for enemies: never further out than the player can freely go. Preserves Y.</summary>
         public static Vector3 ClampEnemy(Vector3 pos)
         {
+            if (Unbounded) return pos;
             var nd = NormalisedDist(pos);
             if (nd <= EnemyReach) return pos;
             var scale = EnemyReach / nd;
@@ -167,6 +177,7 @@ namespace Emberline.Core
         /// </summary>
         public static (Vector3 pos, bool teleported) SafetyClamp(Vector3 pos)
         {
+            if (Unbounded) return (pos, false);
             if (!IsFarOutOfBounds(pos)) return (pos, false);
             var clamped = Clamp(pos);
             // Pull a bit further inside so we don't immediately re-trigger.
