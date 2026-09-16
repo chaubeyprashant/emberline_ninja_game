@@ -161,7 +161,10 @@ namespace Emberline.Player
             if (!CombatRules.CanEnter(State, next)) return false;
             State = next;
             _stateT = duration;
-            _motor.Busy = CombatRules.Committed(next);
+            // A heavy opens its guard window on the very next line of Cleave(),
+            // and Guard is not a committed state: without the second clause the
+            // wind-up let the player walk out of the most punishable thing they do.
+            _motor.Busy = CombatRules.Committed(next) || _pendingCleave >= 0f;
             return true;
         }
 
@@ -361,7 +364,7 @@ namespace Emberline.Player
         /// which is what lets a buffered press retry on a later frame.</summary>
         public bool Strike()
         {
-            if (_pendingCleave >= 0 || _motor.Invulnerable) return false;
+            if (_pendingCleave >= 0 || _motor.Invulnerable || _motor.Traversing) return false;
             // Combat 2.0: the button resolves to a contextual attack when the
             // weapon has a moveset. The legacy chain below stays as the fallback
             // so a weapon without one still fights exactly as before.
@@ -555,7 +558,8 @@ namespace Emberline.Player
                 {
                     _guardT = 0f;
                     _deflectCd = deflectCooldown;
-                    _motor.Busy = false;
+                    // The guard closing must not release a heavy still winding up.
+                    _motor.Busy = _pendingCleave >= 0f;
                 }
                 return;
             }
@@ -647,7 +651,7 @@ namespace Emberline.Player
         /// <summary>Heavy attack. Returns false when refused; see <see cref="Strike"/>.</summary>
         public bool Cleave()
         {
-            if (_cleaveCd > 0 || _motor.Invulnerable) return false;
+            if (_cleaveCd > 0 || _motor.Invulnerable || _motor.Traversing) return false;
             if (_moveset != null) return StrikeContextual(true);
             // Heavy attack: a real commitment, so it refuses to start from
             // anything but neutral or the tail of a light.
@@ -875,7 +879,7 @@ namespace Emberline.Player
         /// <summary>Thrown kunai: soft-locks like a strike, flies flat and fast.</summary>
         public void ThrowKunai()
         {
-            if (_kunaiCd > 0 || _pendingCleave >= 0 || _motor.Invulnerable) return;
+            if (_kunaiCd > 0 || _pendingCleave >= 0 || _motor.Invulnerable || _motor.Traversing) return;
             _kunaiCd = kunaiCooldown;
             SoftLockFacing();
             var dmg = kunaiDamage;

@@ -13,7 +13,26 @@ namespace Emberline.Core
         public static bool TouchActive;
 
         private static bool _strike, _cleave, _flicker, _surge, _kunai, _jump, _cycle;
-        private static bool _cleaveHeld, _crouchHeld;
+        private static bool _cleaveHeld, _crouchHeld, _sprintHeld;
+
+        /// <summary>Sprint is a hold from the HUD (or a stick pushed through its rim,
+        /// which PlayerLocomotion detects on its own). Editor: Left Control.</summary>
+        public static void SetSprintHeld(bool held) => _sprintHeld = held;
+
+        public static bool SprintHeld => _sprintHeld || Input.GetKey(KeyCode.LeftControl);
+
+        /// <summary>
+        /// Scene change: forget every held edge. A destroyed button never sends
+        /// PointerUp, so a crouch held through a scene load stayed latched forever.
+        /// </summary>
+        public static void ResetHeld()
+        {
+            _cleaveHeld = _crouchHeld = _sprintHeld = false;
+            _strike = _cleave = _flicker = _surge = _kunai = _jump = _cycle = false;
+            TouchActive = false;
+            TouchMove = Vector2.zero;
+            _camYaw = _camPitch = 0f;
+        }
 
         /// <summary>Crouch is a hold, not a toggle — stealth is a commitment.</summary>
         public static void SetCrouchHeld(bool held) => _crouchHeld = held;

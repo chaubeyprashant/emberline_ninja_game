@@ -33,7 +33,14 @@ namespace Emberline.Missions
 
             var p = go.AddComponent<Prisoner>();
             p._rig = rig;
-            p._runTo = at.normalized * 18f;
+            // Run for the edge along the radial from the arena centre. The old
+            // `at.normalized` measured from the world origin, which is only the
+            // centre when the mission happens to be staged there.
+            var centre = MissionBounds.Center;
+            var away = at - centre;
+            away.y = 0f;
+            if (away.sqrMagnitude < 1f) away = Vector3.back;
+            p._runTo = centre + away.normalized * 18f;
             Active.Add(p);
             Total++;
             return p;

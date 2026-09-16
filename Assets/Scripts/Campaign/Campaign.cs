@@ -82,7 +82,7 @@ namespace Emberline.Campaign
                         // Fallback waves for a plan that fails to load: two
                         // authored packs drawn from the mission's own roster.
                         waves = FallbackWaves(m),
-                        objective = MissionObjective.Clear,
+                        objective = ObjectiveFor(m.Primary),
                         planAsset = m.PlanAsset,
                         dialogue = m.dialogue,
                         debrief = m.ending,
@@ -91,6 +91,20 @@ namespace Emberline.Campaign
                 return _levels;
             }
         }
+
+        /// <summary>
+        /// The mission rule the runtime scores by. Only the three primary types
+        /// with a rule of their own map; everything else is a clear. With a plan
+        /// running the director owns objectives and pacing, so this only reaches
+        /// the detection meter, the briefing fallback line and the rank formula.
+        /// </summary>
+        private static MissionObjective ObjectiveFor(GameplayType primary) => primary switch
+        {
+            GameplayType.Stealth => MissionObjective.Stealth,
+            GameplayType.Escort => MissionObjective.Escort,
+            GameplayType.Chase => MissionObjective.Chase,
+            _ => MissionObjective.Clear,
+        };
 
         private static EnemyKind[][] FallbackWaves(CampaignMission m)
         {

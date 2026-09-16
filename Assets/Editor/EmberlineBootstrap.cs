@@ -208,6 +208,16 @@ namespace Emberline.EditorTools
             var spawner = atmoGo.AddComponent<UI.AtmosphereSpawner>();
             spawner.themeId = themeId;
 
+            // The region beyond the baked valley streams in at runtime; the
+            // clock and the weather only run in explore, so a mission keeps the
+            // look it was validated with.
+            var worldGo = new GameObject("World");
+            var streamer = worldGo.AddComponent<Core.WorldStreamer>();
+            streamer.terrainMaterial = EmberTerrain.EnsureMaterial();
+            streamer.waterMaterial = AssetDatabase.LoadAssetAtPath<Material>("Assets/Prefabs/Mat_ZoneWater.mat");
+            worldGo.AddComponent<Core.TimeOfDay>();
+            worldGo.AddComponent<Core.WeatherSystem>();
+
             var gmGo = new GameObject("GameManager");
             var gm = gmGo.AddComponent<GameManager>();
             gm.mission = mission;
@@ -716,6 +726,10 @@ namespace Emberline.EditorTools
             player.AddComponent<SenGates>();
             player.AddComponent<Player.PlayerLocomotion>();
             player.AddComponent<Player.CombatController>();
+            // Foot IK fires from the Animator's own object; nothing to do for the
+            // primitive fallback rig.
+            var anim = player.GetComponentInChildren<Animator>();
+            if (anim != null && anim.gameObject != player) anim.gameObject.AddComponent<Player.PlayerFootIk>();
             return player;
         }
 

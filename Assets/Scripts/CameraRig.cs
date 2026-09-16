@@ -62,7 +62,30 @@ namespace Emberline
         [Header("Collision")]
         [SerializeField] private float collisionRadius = 0.26f;
         [Tooltip("Closest the camera may be pulled before it gives up and clips.")]
-        [SerializeField] private float minDistance = 2.6f;
+        [SerializeField] private float minDistance = 1.4f;
+        [Tooltip("The camera never sinks below the terrain by less than this.")]
+        [SerializeField] private float groundClearance = 0.45f;
+
+        [Header("Orbit")]
+        [Tooltip("Vertical drag range around the preset's rest tilt: down to look up the road, up to look over a wall.")]
+        [SerializeField] private float pitchMin = -22f;
+        [SerializeField] private float pitchMax = 55f;
+        [Tooltip("Seconds without a drag before the yaw drifts back behind the run direction.")]
+        [SerializeField] private float recenterDelay = 1.6f;
+        [SerializeField] private float recenterRate = 1.8f;
+        [Tooltip("How far the pivot leads a moving player, in seconds of velocity.")]
+        [SerializeField] private float velocityLead = 0.12f;
+        [SerializeField] private float maxLead = 0.9f;
+
+        [Header("Profiles (offsets from the preset)")]
+        [Tooltip("Sprint: a touch further back and wider.")]
+        [SerializeField] private float sprintBack = 0.5f;
+        [SerializeField] private float sprintFov = 4f;
+        [Tooltip("Crouch: lower and closer, over the shoulder of a man keeping low.")]
+        [SerializeField] private float stealthDrop = 0.55f;
+        [SerializeField] private float stealthIn = 0.45f;
+        [Tooltip("Exploring with no enemy near: a little more room in front.")]
+        [SerializeField] private float exploreBack = 0.35f;
 
         [Header("FOV — the only place it is written")]
         [SerializeField] private float baseFov = 56f;
@@ -78,9 +101,15 @@ namespace Emberline
         private UnityEngine.Camera _cam;
 
         private float _shakeAmp, _shakeTime, _shakeDur, _yaw;
-        // Vertical drag is a small trim on the authored shoulder height, not a
-        // full arc — the framing can no longer become the overhead shot.
+        // Vertical drag orbits about the pivot within [pitchMin, pitchMax] of the
+        // preset's rest tilt. It no longer springs back on its own: a player who
+        // tilts up to see a roof keeps it until they drag again.
         private float _pitchTrim;
+        private float _sinceDrag = 99f;
+        private float _profileBack, _profileDrop, _profileIn, _profileFov;
+        private Vector3 _aimSmoothed, _leadSmoothed;
+        private bool _aimSeeded;
+        private Player.PlayerLocomotion _motor;
         private float _diag;
         private float _occlude = 1f;                       // 0..1 of the wanted distance
         private readonly RaycastHit[] _hits = new RaycastHit[8];
@@ -102,6 +131,7 @@ namespace Emberline
         public void SetTarget(Transform t)
         {
             target = t;
+            _motor = t != null ? t.GetComponent<Player.PlayerLocomotion>() : null;
             if (t != null) SnapBehindTarget();
         }
 
@@ -259,10 +289,12 @@ namespace Emberline
             // FOV is BASE minus the current impact — additive from base every
             // frame, never multiplied by the last frame's value, so it cannot
             // accumulate. Then hard-clamped so nothing leaves the safe band.
-            var target = Mathf.Clamp(baseFov - _zoom * maxImpactDegrees, minFov, maxFov);
+            // The sprint profile widens the band a touch; combat impacts still pull
+            // in from wherever the profile sits.
+            var target = Mathf.Clamp(baseFov + _profileFov - _zoom * maxImpactDegrees, minFov, maxFov + sprintFov);
             _cam.fieldOfView = Mathf.Clamp(
                 Mathf.Lerp(_cam.fieldOfView, target, 1f - Mathf.Exp(-16f * Time.unscaledDeltaTime)),
-                minFov, maxFov);
+                minFov, maxFov + sprintFov);
         }
 
         private void LateUpdate()
@@ -329,18 +361,47 @@ namespace Emberline
             var dt = Time.deltaTime;
 
             // Player-controlled orbit. Horizontal drag is free yaw; vertical drag
-            // is a small trim about the look target, clamped so the camera cannot
-            // climb back into the overhead framing this replaced.
-            _yaw += Core.EmberInput.ConsumeCamYaw();
+            // pitches about the look target within the orbit band.
+            var dYaw = Core.EmberInput.ConsumeCamYaw();
+            var dPitch = Core.EmberInput.ConsumeCamPitch();
+            _yaw += dYaw;
+            _pitchTrim = Mathf.Clamp(_pitchTrim + dPitch, pitchMin, pitchMax);
+            if (Mathf.Abs(dYaw) > 0.01f || Mathf.Abs(dPitch) > 0.01f) _sinceDrag = 0f;
+            else _sinceDrag += dt;
+            // Gyro integrates a rate, so a sensor bias would walk the tilt away
+            // over a minute (measured on the A33). Only the gyro trim recentres;
+            // a finger-set pitch stays where it was put.
+            if (Core.EmberInput.GyroOn)
+                _pitchTrim = Mathf.Lerp(_pitchTrim, 0f, 1f - Mathf.Exp(-pitchRecenter * dt));
 
-            // Pitch trim springs back to zero. The gyro reports a rotation rate,
-            // which this integrates, so any sensor bias would otherwise walk the
-            // tilt off the authored framing and stay there — measured drifting
-            // from 12 degrees to 4 on the A33 with gyro on. Holding a tilt still
-            // works: live input outruns the spring; releasing it recomposes the
-            // shot over about a second.
-            _pitchTrim = Mathf.Clamp(_pitchTrim + Core.EmberInput.ConsumeCamPitch(), -8f, 22f);
-            _pitchTrim = Mathf.Lerp(_pitchTrim, 0f, 1f - Mathf.Exp(-pitchRecenter * dt));
+            // With no drag and no lock, drift the yaw round behind a moving player
+            // so the run direction ends up ahead — the recentre every third-person
+            // game relies on, gentle enough never to fight the thumb.
+            var planar = _motor != null ? _motor.Velocity : Vector3.zero;
+            planar.y = 0f;
+            if (LockFocus == null && _sinceDrag > recenterDelay && planar.sqrMagnitude > 4f)
+            {
+                var heading = Mathf.Atan2(planar.x, planar.z) * Mathf.Rad2Deg;
+                var strength = Mathf.Clamp01((planar.magnitude - 2f) / 6f);
+                _yaw = Mathf.LerpAngle(_yaw, heading, 1f - Mathf.Exp(-recenterRate * strength * dt));
+            }
+
+            // Profiles: what Renzo is doing shapes the shot. Sprinting pulls back
+            // and widens; crouching drops and tightens; an empty field gives a
+            // little more room in front. Combat (enemies near, or a lock) is the
+            // preset itself, which was tuned for it.
+            var sprinting = _motor != null && _motor.Sprinting;
+            var crouched = _motor != null && _motor.Crouched;
+            var swimming = _motor != null && _motor.Swimming;
+            var exploring = LockFocus == null && !BossFraming && NoEnemyWithin(14f);
+            var wantBack = sprinting ? sprintBack : exploring ? exploreBack : 0f;
+            var wantDrop = crouched || swimming ? stealthDrop : 0f;
+            var wantIn = crouched ? stealthIn : 0f;
+            var pk = 1f - Mathf.Exp(-3f * dt);
+            _profileBack = Mathf.Lerp(_profileBack, wantBack, pk);
+            _profileDrop = Mathf.Lerp(_profileDrop, wantDrop, pk);
+            _profileIn = Mathf.Lerp(_profileIn, wantIn, pk);
+            _profileFov = Mathf.Lerp(_profileFov, sprinting ? sprintFov : 0f, pk);
 
             // A close camera has to stay close. A pack buys centimetres, not the
             // several metres the old rig gave away — the identity of the shot is
@@ -355,10 +416,14 @@ namespace Emberline
             _distanceBoost = Mathf.Lerp(_distanceBoost,
                 Mathf.Min(maxPullback, crowd * crowdPullback), 1f - Mathf.Exp(-3f * dt));
 
-            // The aim point is the player's upper chest, led slightly by facing.
-            // Under lock it slides a fraction toward the enemy: enough to keep the
-            // opponent framed, not so much that Renzo stops being the anchor.
-            var pivot = target.position + Vector3.up * lookHeight;
+            // The aim point is the player's upper chest, led slightly by facing and
+            // by velocity, so a running Renzo sits a little behind centre and the
+            // road ahead gets the frame. Under lock it slides a fraction toward
+            // the enemy: enough to keep the opponent framed, not so much that
+            // Renzo stops being the anchor.
+            var lead = Vector3.ClampMagnitude(planar * velocityLead, maxLead);
+            _leadSmoothed = Vector3.Lerp(_leadSmoothed, lead, 1f - Mathf.Exp(-6f * dt));
+            var pivot = target.position + Vector3.up * (lookHeight - _profileDrop * 0.6f) + _leadSmoothed;
             var aim = pivot + target.forward * lookAhead + Vector3.up * aimRise;
             if (LockFocus != null)
             {
@@ -389,6 +454,15 @@ namespace Emberline
                 want = pivot + dir * Mathf.Max(minDistance, wantDist * _occlude);
             }
 
+            // Never under the meadow: the spherecast only sees colliders it can
+            // sweep across, and a camera pulled below a hillside sees the inside
+            // of the world.
+            if (Core.Ground.ZoneActive)
+            {
+                var floor = Core.Ground.HeightAt(want.x, want.z) + groundClearance;
+                if (want.y < floor) want.y = floor;
+            }
+
             transform.position = Vector3.Lerp(transform.position, want,
                 1f - Mathf.Exp(-followLerp * dt));
 
@@ -404,7 +478,11 @@ namespace Emberline
                 if (_shakeTime <= 0f) _shakeAmp = 0f;
             }
 
-            transform.LookAt(aim);
+            // The aim is smoothed so a step, a jump or a shake never snaps the
+            // rotation — the position may wobble, the horizon stays level.
+            if (!_aimSeeded) { _aimSmoothed = aim; _aimSeeded = true; }
+            _aimSmoothed = Vector3.Lerp(_aimSmoothed, aim, 1f - Mathf.Exp(-14f * dt));
+            transform.LookAt(_aimSmoothed);
 
 #if EMBER_CAMDIAG
             _diag -= dt;
@@ -427,9 +505,24 @@ namespace Emberline
         private Vector3 Placement(Vector3 pivot)
         {
             var yawRot = Quaternion.Euler(0f, _yaw, 0f);
-            var back = backDistance + _distanceBoost + (BossFraming ? bossPullback : 0f);
-            var local = new Vector3(shoulder, camHeight - lookHeight, -back);
+            var back = backDistance + _distanceBoost + _profileBack - _profileIn
+                       + (BossFraming ? bossPullback : 0f);
+            var local = new Vector3(shoulder, camHeight - lookHeight - _profileDrop, -back);
             return pivot + Quaternion.AngleAxis(_pitchTrim, yawRot * Vector3.right) * (yawRot * local);
+        }
+
+        /// <summary>No live enemy inside `radius` of the player.</summary>
+        private bool NoEnemyWithin(float radius)
+        {
+            if (target == null) return true;
+            var r2 = radius * radius;
+            for (var i = 0; i < Enemies.EnemyBrain.Active.Count; i++)
+            {
+                var e = Enemies.EnemyBrain.Active[i];
+                if (e == null || e.Dead) continue;
+                if ((e.transform.position - target.position).sqrMagnitude < r2) return false;
+            }
+            return true;
         }
 
         /// <summary>
@@ -446,6 +539,10 @@ namespace Emberline
             _yaw = target.eulerAngles.y;
             _distanceBoost = 0f;
             _occlude = 1f;
+            _aimSeeded = false;
+            _leadSmoothed = Vector3.zero;
+            _profileBack = _profileDrop = _profileIn = _profileFov = 0f;
+            if (_motor == null) _motor = target.GetComponent<Player.PlayerLocomotion>();
             var pivot = target.position + Vector3.up * lookHeight;
             var want = Placement(pivot);
             var d = Vector3.Distance(pivot, want);

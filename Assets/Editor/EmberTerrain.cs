@@ -53,14 +53,11 @@ namespace Emberline.EditorTools
         public static Vector3 VillageCentre => ZT.VillageCentre;
         public static Vector3 CampCentre => ZT.CampCentre;
 
-        /// <summary>Edge length of one terrain quad.</summary>
-        private const float Quad = 2.5f;
+        /// <summary>Palette cells, as (column,row) in the 4x4 atlas. Runtime owns them now.</summary>
+        private static Color[] Palette => Emberline.Core.TerrainMesh.Palette;
 
-        /// <summary>Quads per chunk edge. 80 quads / 10 = an 8x8 chunk grid.</summary>
-        private const int ChunkQuads = 10;
-
-        /// <summary>Palette cells, as (column,row) in the 4x4 atlas.</summary>
-        private enum Ground { Grass = 0, Grass2 = 1, Grass3 = 2, Dirt = 3, Road = 4, Rock = 5, Scree = 6, Sand = 7, Riverbed = 8 }
+        private const float Quad = Emberline.Core.TerrainMesh.Quad;
+        private const int ChunkQuads = Emberline.Core.TerrainMesh.ChunkQuads;
 
         public static float HeightAt(float x, float z) => ZT.HeightAt(x, z);
         public static float SlopeAt(float x, float z) => ZT.SlopeAt(x, z);
@@ -68,52 +65,6 @@ namespace Emberline.EditorTools
         public static float RiverDistance(float x, float z) => ZT.RiverDistance(x, z);
         public static float Smooth01(float e0, float e1, float x) => ZT.Smooth01(e0, e1, x);
         public static float Noise(float x, float y) => ZT.Noise(x, y);
-
-        private const float RiverWidth = 9f;
-
-
-        // ------------------------------------------------------------ colour
-
-        private static Ground GroundAt(float x, float z, float h, Vector3 normal)
-        {
-            if (RiverDistance(x, z) < RiverWidth * 0.55f) return Ground.Riverbed;
-            if (RiverDistance(x, z) < RiverWidth + 2.5f) return Ground.Sand;
-
-            if (RoadDistance(x, z) < 3.4f) return Ground.Road;
-            if (RoadDistance(x, z) < 5.0f) return Ground.Dirt;
-
-            // Steep faces and high ground turn to rock: the mountain ring reads as
-            // stone without needing a second material.
-            var slope = 1f - normal.y;
-            if (slope > 0.42f) return Ground.Rock;
-            if (h > 16f) return Ground.Scree;
-            if (slope > 0.26f) return Ground.Scree;
-
-            // Trodden ground around the two settlements.
-            var vil = Mathf.Sqrt(Sq(x - VillageCentre.x) + Sq(z - VillageCentre.z));
-            if (vil < VillageRadius * 0.72f) return Ground.Dirt;
-            var camp = Mathf.Sqrt(Sq(x - CampCentre.x) + Sq(z - CampCentre.z));
-            if (camp < CampRadius * 0.8f) return Ground.Dirt;
-
-            // Three grass shades, picked by noise, so the meadow is not one flat
-            // colour across 200 metres.
-            var g = Noise(x * 0.04f + 11f, z * 0.04f - 7f);
-            return g > 0.55f ? Ground.Grass2 : g < -0.35f ? Ground.Grass3 : Ground.Grass;
-        }
-
-        /// <summary>Palette colours, indexed by <see cref="Ground"/>.</summary>
-        private static readonly Color[] Palette =
-        {
-            new(0.170f, 0.235f, 0.180f),  // Grass   — cool night green
-            new(0.145f, 0.205f, 0.165f),  // Grass2  — darker patch
-            new(0.200f, 0.255f, 0.185f),  // Grass3  — lighter patch
-            new(0.245f, 0.215f, 0.170f),  // Dirt    — trodden earth
-            new(0.290f, 0.250f, 0.195f),  // Road    — pale packed track
-            new(0.215f, 0.225f, 0.245f),  // Rock    — blue-grey stone
-            new(0.255f, 0.260f, 0.270f),  // Scree   — lighter broken stone
-            new(0.300f, 0.285f, 0.235f),  // Sand    — river shingle
-            new(0.130f, 0.165f, 0.180f),  // Riverbed— wet dark
-        };
 
         private const string PalettePath = "Assets/Art/Environments/Zone/terrain_palette.png";
         private const string MatPath = "Assets/Prefabs/Mat_ZoneTerrain.mat";
@@ -123,10 +74,10 @@ namespace Emberline.EditorTools
         {
             Directory.CreateDirectory(Path.GetDirectoryName(PalettePath));
 
-            if (!File.Exists(PalettePath))
             {
                 // 4x4 cells, 16 px each, point-sampled. Padding is unnecessary
-                // because every vertex samples a cell centre exactly.
+                // because every vertex samples a cell centre exactly. Rewritten
+                // on every build so a new palette cell reaches the atlas.
                 const int cell = 16, dim = 4, size = cell * dim;
                 var tex = new Texture2D(size, size, TextureFormat.RGBA32, false);
                 for (var y = 0; y < size; y++)
@@ -206,82 +157,9 @@ namespace Emberline.EditorTools
 
         private static Mesh BuildChunk(int cx, int cz)
         {
-            var verts = new List<Vector3>();
-            var norms = new List<Vector3>();
-            var uvs = new List<Vector2>();
-            var tris = new List<int>();
-
             var x0 = -Half + cx * ChunkQuads * Quad;
             var z0 = -Half + cz * ChunkQuads * Quad;
-
-            for (var qz = 0; qz < ChunkQuads; qz++)
-            for (var qx = 0; qx < ChunkQuads; qx++)
-            {
-                var ax = x0 + qx * Quad;
-                var az = z0 + qz * Quad;
-                var bx = ax + Quad;
-                var bz = az + Quad;
-
-                var p00 = new Vector3(ax, HeightAt(ax, az), az);
-                var p10 = new Vector3(bx, HeightAt(bx, az), az);
-                var p01 = new Vector3(ax, HeightAt(ax, bz), bz);
-                var p11 = new Vector3(bx, HeightAt(bx, bz), bz);
-
-                // Split the quad along the shorter diagonal so ridges stay sharp
-                // instead of being averaged into a saddle.
-                if (Mathf.Abs(p00.y - p11.y) <= Mathf.Abs(p10.y - p01.y))
-                {
-                    AddTri(verts, norms, uvs, tris, p00, p01, p11);
-                    AddTri(verts, norms, uvs, tris, p00, p11, p10);
-                }
-                else
-                {
-                    AddTri(verts, norms, uvs, tris, p00, p01, p10);
-                    AddTri(verts, norms, uvs, tris, p01, p11, p10);
-                }
-            }
-
-            var mesh = new Mesh { name = $"terrain_{cx}_{cz}" };
-            mesh.indexFormat = verts.Count > 65000
-                ? UnityEngine.Rendering.IndexFormat.UInt32
-                : UnityEngine.Rendering.IndexFormat.UInt16;
-            mesh.SetVertices(verts);
-            mesh.SetNormals(norms);
-            mesh.SetUVs(0, uvs);
-            mesh.SetTriangles(tris, 0);
-            mesh.RecalculateBounds();
-            return mesh;
-        }
-
-        /// <summary>
-        /// Appends one flat-shaded triangle: its own three vertices, one shared
-        /// face normal, and all three UVs on the same palette cell centre.
-        /// </summary>
-        private static void AddTri(List<Vector3> verts, List<Vector3> norms,
-                                   List<Vector2> uvs, List<int> tris,
-                                   Vector3 a, Vector3 b, Vector3 c)
-        {
-            var n = Vector3.Cross(b - a, c - a).normalized;
-            if (n.y < 0f) n = -n;
-
-            var mid = (a + b + c) / 3f;
-            var uv = CellUv(GroundAt(mid.x, mid.z, mid.y, n));
-
-            var i = verts.Count;
-            verts.Add(a); verts.Add(b); verts.Add(c);
-            norms.Add(n); norms.Add(n); norms.Add(n);
-            uvs.Add(uv); uvs.Add(uv); uvs.Add(uv);
-            tris.Add(i); tris.Add(i + 1); tris.Add(i + 2);
-        }
-
-        private static Vector2 CellUv(Ground g)
-        {
-            const int dim = 4;
-            var idx = (int)g;
-            var col = idx % dim;
-            var row = idx / dim;
-            // Centre of the cell, so point filtering can never bleed a neighbour.
-            return new Vector2((col + 0.5f) / dim, (row + 0.5f) / dim);
+            return Emberline.Core.TerrainMesh.BuildChunk(x0, z0, $"terrain_{cx}_{cz}");
         }
 
         // ------------------------------------------------------------ helpers

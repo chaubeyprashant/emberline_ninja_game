@@ -43,6 +43,10 @@ namespace Emberline.UI
         private Vector2 _camLast;
         private bool _movedOnce, _struckOnce, _jumpedOnce;
         private RectTransform _stickBase, _stickKnob;
+        private Image _jumpImg, _jumpIcon;
+        private TMP_Text _jumpCaption;
+        private Player.TraversalKind _jumpKind;
+        private string _jumpVerb = "";
 
         // HUD widgets updated per frame.
         private Image _hpFill, _senFill, _bossFill, _cleaveCd, _flickerCd, _kunaiCd, _cleaveImg;
@@ -260,7 +264,11 @@ namespace Emberline.UI
             scaler.referenceResolution = new Vector2(1600, 720);
             scaler.matchWidthOrHeight = 0.5f;
             gameObject.AddComponent<GraphicRaycaster>();
-            _root = (RectTransform)transform;
+            // Everything a thumb touches lives inside the safe area; the canvas
+            // itself still spans the whole panel so backdrops fill the notch.
+            var safe = UiKit.Group((RectTransform)transform, "SafeArea");
+            safe.gameObject.AddComponent<SafeArea>();
+            _root = safe;
 
             if (FindFirstObjectByType<EventSystem>() == null)
             {
@@ -451,17 +459,10 @@ namespace Emberline.UI
             UiKit.MakeButton(_screenRoot, "ARMOURY", new Vector2(0, 0), new Vector2(488, 34),
                 new Vector2(168, 52), () => SetScreen(Screen.Weapons), 16);
 
-            // The open-zone test area: somewhere to walk the new environment and
-            // check movement, camera and framerate in it.
-            //
-            // Deliberately NOT gated on Debug.isDebugBuild — the shipped APK is a
-            // release build, so that flag is false and the entry never appeared.
-            // It is a visible button for now because the zone is under review.
-            // REMOVE THIS BUTTON before the next store upload: it is a test area,
-            // not a mode.
-            UiKit.MakeButton(_screenRoot, "ZONE", new Vector2(0, 0), new Vector2(672, 34),
-                new Vector2(120, 52),
-                () => UnityEngine.SceneManagement.SceneManager.LoadScene("Zone"), 16);
+            // The open world: the valley and the region beyond it, no mission,
+            // the clock running. Replaces the ZONE test-scene button.
+            UiKit.MakeButton(_screenRoot, "THE VALLEY", new Vector2(0, 0), new Vector2(690, 34),
+                new Vector2(156, 52), () => _gm.LaunchExplore(), 16);
 
             UiKit.MakeButton(_screenRoot, "LOGOUT", new Vector2(0, 0), new Vector2(840, 34),
                 new Vector2(144, 52), () => 
@@ -2101,8 +2102,21 @@ namespace Emberline.UI
             _surgeGlow = surgeCd.transform.parent.GetComponent<Image>();
             _kunaiCd = CombatButton("KUNAI", new Vector2(-348, 156), 88,
                 new Color(0.42f, 0.5f, 0.62f), EmberInput.PressKunai);
-            CombatButton("JUMP", new Vector2(-196, 336), 88,
-                new Color(0.34f, 0.46f, 0.44f), () => { EmberInput.PressJump(); _jumpedOnce = true; });
+            var jumpCd = CombatButton("JUMP", new Vector2(-196, 336), 88,
+                new Color(0.34f, 0.46f, 0.44f), () =>
+                {
+                    // A shrine, a fire, a signpost in reach: the press is the verb.
+                    var it = Interactable.Current;
+                    if (it != null) { it.Use(); return; }
+                    EmberInput.PressJump();
+                    _jumpedOnce = true;
+                });
+            _jumpImg = jumpCd.transform.parent.GetComponent<Image>();
+            _jumpIcon = jumpCd.transform.parent.Find("Icon").GetComponent<Image>();
+            _jumpKind = Player.TraversalKind.None;
+            _jumpCaption = UiKit.Label(jumpCd.transform.parent, "", 12, UiKit.Pale,
+                new Vector2(0.5f, 0f), new Vector2(0, -14), new Vector2(120, 18));
+            _jumpCaption.characterSpacing = 2f;
             // Crouch is a hold: press-and-hold to stay low, quiet and hard to see.
             CombatButton("CROUCH", new Vector2(-452, 232), 84,
                 new Color(0.30f, 0.34f, 0.42f), () => EmberInput.SetCrouchHeld(true),
@@ -2147,7 +2161,38 @@ namespace Emberline.UI
                         ? new Color(0.75f, 0.9f, 1f, 0.9f)
                         : new Color(0.24f, 0.42f, 0.49f, _combat.DeflectCd01 > 0f ? 0.35f : 0.55f);
             }
-            if (_motor != null) _flickerCd.fillAmount = _motor.FlickerCd01;
+            if (_motor != null)
+            {
+                _flickerCd.fillAmount = _motor.FlickerCd01;
+                // Contextual action: the same thumb spot jumps, vaults or climbs,
+                // and the glyph says which before the press.
+                var kind = _motor.Hanging ? Player.TraversalKind.Grab : _motor.Hint;
+                var it = Interactable.Nearest(_motor.transform.position);
+                var verb = it != null ? it.verb : "";
+                if ((kind != _jumpKind || verb != _jumpVerb) && _jumpImg != null && _jumpIcon != null)
+                {
+                    _jumpKind = kind;
+                    _jumpVerb = verb;
+                    var interact = verb.Length > 0;
+                    _jumpIcon.sprite = UiKit.Icon(interact ? "surge" : kind switch
+                    {
+                        Player.TraversalKind.Vault => "vault",
+                        Player.TraversalKind.Mantle or Player.TraversalKind.Grab => "climb",
+                        _ => "jump",
+                    });
+                    var live = interact || kind != Player.TraversalKind.None;
+                    var c = live ? UiKit.Ember : new Color(0.34f, 0.46f, 0.44f);
+                    _jumpImg.color = new Color(c.r, c.g, c.b, live ? 0.8f : 0.55f);
+                    if (_jumpCaption != null)
+                        _jumpCaption.text = interact ? verb : kind switch
+                        {
+                            Player.TraversalKind.Vault => "VAULT",
+                            Player.TraversalKind.Mantle => "CLIMB",
+                            Player.TraversalKind.Grab => _motor.Hanging ? "PULL UP" : "GRAB",
+                            _ => "",
+                        };
+                }
+            }
 
             // Rebuilt only when the visible second (or wave/distance) actually
             // changes. This ran string interpolation every frame — ~60 short-lived
@@ -2486,7 +2531,13 @@ namespace Emberline.UI
                         _stickPos = t.position;
                         var delta = (t.position - _stickOrigin)
                                     / (UnityEngine.Screen.dpi > 0 ? UnityEngine.Screen.dpi * 0.4f : 160f);
-                        EmberInput.TouchMove = Vector2.ClampMagnitude(delta, 1f);
+                        // Radial dead zone, remapped so 0.12 reads as 0 and the rim
+                        // as 1: no drift from a resting thumb, no lurch at the edge.
+                        const float dead = 0.12f;
+                        var mag = delta.magnitude;
+                        delta = mag <= dead ? Vector2.zero
+                            : delta / mag * Mathf.Clamp01((mag - dead) / (1f - dead));
+                        EmberInput.TouchMove = delta;
                         EmberInput.TouchActive = true;
                         if (delta.sqrMagnitude > 0.1f) _movedOnce = true;
                     }

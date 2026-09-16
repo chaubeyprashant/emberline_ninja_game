@@ -269,6 +269,10 @@ namespace Emberline.Core
 
         public static void Surge() => Play(_surge, 0.95f);
 
+        /// <summary>Storm thunder. Stands on the boss roar's low synthesis until a
+        /// weather bed is authored; it is the only low rumble the bank has.</summary>
+        public static void Thunder() => BossRoar();
+
         public static void Death()
         {
             Play(_death, 0.6f);

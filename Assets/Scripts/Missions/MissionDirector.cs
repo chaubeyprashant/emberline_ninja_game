@@ -691,7 +691,8 @@ namespace Emberline.Missions
         private void SpawnBehindPlayer(EnemyKind kind)
         {
             if (_gm == null || _player == null) return;
-            _gm.SpawnOne(kind, false);
+            // Seven metres back along the facing: out of the frame, one dash away.
+            _gm.SpawnOne(kind, false, _player.position - _player.forward * 7f);
         }
 
         private float _listenT;

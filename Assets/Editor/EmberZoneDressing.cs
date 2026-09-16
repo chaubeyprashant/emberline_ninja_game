@@ -698,6 +698,7 @@ namespace Emberline.EditorTools
             var box = root.gameObject.AddComponent<BoxCollider>();
             box.center = new Vector3(0f, Cell * 0.6f, 0f);
             box.size = new Vector3(Cell * 1.6f, Cell * 1.2f, Cell * 1.6f);
+            root.gameObject.AddComponent<Emberline.Core.Shrine>();
         }
 
         // ---------------------------------------------------------- wayside
@@ -738,7 +739,8 @@ namespace Emberline.EditorTools
             EmberScatter.PlaceOnGround(parent, L("survival_resource-planks"), 26f, -36f, 70f, Cell);
             EmberScatter.PlaceOnGround(parent, L("survival_workbench"), 22f, -37f, 200f, Cell);
             EmberScatter.PlaceOnGround(parent, L("stump_squareDetailed"), 27f, -32f, 0f, 4f);
-            EmberScatter.PlaceOnGround(parent, L("survival_campfire-pit"), 25f, -35f, 0f, Cell);
+            var fire = EmberScatter.PlaceOnGround(parent, L("survival_campfire-pit"), 25f, -35f, 0f, Cell);
+            if (fire != null) fire.AddComponent<Emberline.Core.Campfire>();
             EmberScatter.PlaceOnGround(parent, L("survival_tent-canvas-half"), 21f, -34f, 40f, 4f);
 
             // A quarry face under the eastern ridge.

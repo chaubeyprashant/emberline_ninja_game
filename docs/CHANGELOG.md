@@ -10,6 +10,113 @@ code, never hand-edited in the editor.
 
 ## Unreleased
 
+### Phase 5 — the valley becomes a region
+
+Design and numbers in `docs/WORLD.md`.
+
+- **An 800 m region** around the unchanged valley: three passes through the
+  ring, two river gorges, a waterfall, a temple hill, Kagehira's stronghold
+  plateau, a cave mouth, the drowned marsh, Kawai hamlet and its farms, the
+  shinobi hollow, and edge mountains. Six roads leave the valley. Same height
+  function (`ZoneTerrain`), so every mission is fought on the ground it was
+  validated on.
+- **Streaming** (`WorldStreamer`): 25 m chunks built at runtime from the
+  function — mesh, collider, water, seeded scatter, landmark dressing — within
+  175 m of the player, two a frame; grass only within 70 m. Nothing loads from
+  disk. `TerrainMesh` moved to runtime so the editor bake and the streamer share
+  one builder; the palette gained marsh, snow and moss.
+- **Thirteen named places** (`WorldLandmarks`) with discovery, announced and
+  remembered, and dressed at runtime from the valley's own kits
+  (`WorldDressing`).
+- **Interaction** (`Interactable`): the JUMP button becomes the verb in reach.
+  Shrines heal, mend the Gates and save; campfires rest to dusk or dawn.
+- **A clock** (`TimeOfDay`) and **weather** (`WeatherSystem`) that run only in
+  explore and modulate the theme's own lighting; night and rain reduce what
+  guards see, rain covers footsteps.
+- **World state** (`WorldState`): a versioned JSON blob for position, hour,
+  weather and discoveries.
+- **THE VALLEY** on the home screen opens explore mode (`LaunchMode.Explore`,
+  `MissionBounds.Unbounded`); the ZONE test button is gone.
+- **Tools**: `Emberline/Render Region Map` and `Emberline/Check World`.
+
+### Phase 2 — movement and traversal
+
+The valley's roofs, walls and river stop being scenery. Design and controls in
+`docs/TRAVERSAL.md`.
+
+- **The motor accelerates.** Horizontal velocity is smoothed (40 m/s² up,
+  55 down, 12 in the air) instead of set in one frame, so the run cycle no
+  longer slides under a body that is already at full speed. Grounded velocity
+  follows the slope under the feet; steep ground slides.
+- **Four gaits.** Stealth walk, walk (stick inside the band), run, sprint
+  (stick pushed through the rim, or Left Ctrl), each with its own noise radius,
+  plus swimming in the river. Crouch shrinks the controller and only stands up
+  with headroom.
+- **Traversal read off real colliders.** `TraversalProbe` sweeps a capsule,
+  finds the top, checks the headroom, and classifies vault / mantle / grab by
+  height; `PlayerLocomotion` performs them as timed moves. Airborne, the motor
+  catches any ledge in reach — a wall-run ends on the roof. Hang, pull up, drop,
+  slide from a sprint, landing roll or hard landing after a long fall. The
+  marker-circle vault is gone.
+- **The JUMP button is contextual**: its glyph becomes VAULT or CLIMB and the
+  button turns ember when the probe has something, and the same press does it.
+- **Camera**: a real pitch band that stays where it was put, yaw recentring
+  behind the run, velocity lead, sprint / stealth / explore profiles, a terrain
+  floor, a smoothed aim point, and a 1.4 m minimum distance so doorways pull
+  the camera in instead of through the wall.
+- **Controls**: the control layer sits inside the safe area; the stick has a
+  radial dead zone; held inputs are reset on scene load (the latched-crouch bug).
+- **Animation**: the player's controller gets a four-gait tree, a crouch tree,
+  a swim tree and the IK pass; `PlayerFootIk` plants the feet from tier 1;
+  forced AI poses crossfade on change instead of cutting. Thirteen traversal
+  poses with fallbacks until the Mixamo takes are dropped in (list in
+  `docs/TRAVERSAL.md`).
+- **Verification**: `Emberline/Check Traversal` builds a course of boxes and
+  asserts every classification in edit mode.
+
+### Voices re-recorded with Gemini text-to-speech
+
+- Every cinematic line (1,136) is now spoken by Gemini TTS
+  (`Assets/Editor/Tools/generate_voices_gemini.py`) instead of macOS `say`,
+  whose compact voices — Fred, Ralph, Albert, Junior and the novelty set — read
+  as robotic on the phone. Each of the 34 speakers has a distinct prebuilt voice
+  and a one-line acting direction drawn from the canon (Renzo quiet and worn
+  down, Kagachi breathy and unhurried, Aiko soft), applied per line. Output is
+  24 kHz WAV under the same md5 names, so `VoiceLines` and the cinematics are
+  untouched; the old `.aiff` clips are retired as each line is replaced. The key
+  is read from `~/.config/emberline/gemini_api_key` or `GEMINI_API_KEY` and never
+  stored in the repo.
+
+### Phase 1B — the six one-line bugs from the open-world audit
+
+Found by `docs/OPEN_WORLD_AUDIT.md` (§2), verified in code, fixed first because
+each corrupts feel or telemetry in every later test.
+
+- **B1 — the heavy never committed.** `Cleave()` and the heavy branch of
+  `Perform` set `_motor.Busy`, then opened the guard window with
+  `Enter(Guard)`, which reset `Busy` to false because Guard is not a committed
+  state. `Enter` now keeps the feet planted while a heavy is pending, and the
+  guard closing no longer releases a wind-up in progress
+  (`CombatController.cs`). Dodging out of a wind-up is unchanged: it clears
+  `Busy` itself.
+- **B2 — every mission was a Clear.** `Campaign.Levels` hardcoded
+  `MissionObjective.Clear`; the catalogue now maps the table's primary gameplay
+  type (Stealth, Escort, Chase) onto the mission rule, so the detection meter
+  shows on stealth missions and the rank formula scores them. With a plan
+  running the director still owns objectives and pacing (`Campaign.cs`).
+- **B7 — token pool never pruned.** `AttackTokenPool.Prune` only dropped
+  destroyed keys, and enemies are pooled, not destroyed; it now also drops
+  entries older than the reuse delay, so a recycled body no longer inherits its
+  predecessor's turn.
+- **B8 — `Grounded` was one frame stale** for everything reading it after
+  `PlayerLocomotion.Update`; it is refreshed after the move.
+- **B11 — "behind you" spawned at the arena edge.** `SpawnBehindPlayer` now
+  places the pack seven metres back along the player's facing, kept inside the
+  arena and out of solid things (`GameManager.SpawnOne(kind, unaware, near)`).
+- **B13 — freed prisoners ran from the world origin.** They run for the edge
+  along the radial from the arena centre (`Prisoner.cs`).
+
+
 ### The campaign becomes a journey
 
 A redesign of the hundred-mission campaign against a brief whose first line is
