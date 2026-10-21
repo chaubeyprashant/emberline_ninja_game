@@ -56,6 +56,10 @@ namespace Emberline.EditorTools
             BuildWeaponAssets();
             BuildKunaiPrefab();
             EmberDressing.Build();   // runtime props for mission set dressing
+            // The valley's Japanese buildings and hero trees, before the zone is dressed.
+            SessionState.SetBool("emberline.setup", true);
+            try { EmberJapanKit.Build(); EmberNatureKit.Build(); }
+            finally { SessionState.SetBool("emberline.setup", false); }
             EmberCombatAssets.BuildPlayerMovesets();
 
             var prefabs = BuildEnemyPrefabs();

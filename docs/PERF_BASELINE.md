@@ -73,6 +73,52 @@ memory and the gameplay counters work in release builds as-is.
 
 ---
 
+## 2a. The automated tour (start here)
+
+The open region replaced the arenas these scenarios were written for, and a
+hand-driven run is never the same run twice. The game now measures itself:
+
+```bash
+./perf_run.sh --build
+```
+
+builds `Builds/emberline-dev.apk` (development, frame timing stats on for that
+build only), installs it, launches it with `--es perfrun 1`, and waits. The
+game (`Assets/Scripts/Debug/PerfRun.cs`, compiled into development builds and
+the editor only) then holds the camera still for 6 s to settle and 20 s to
+sample at each of these, with no input:
+
+| Id | What | Why |
+| --- | --- | --- |
+| `menu` | Main menu idle | The floor; anything above it is gameplay |
+| one per landmark (13) | The player stood just outside the landmark, facing it, camera behind | Draw cost of each place in the 800 m region, streamed in |
+| `fight8` | Eight mixed fighters on the player at Yorune (player HP 100,000) | The audit's worst ordinary case |
+
+Each scenario logs one `[PERFRUN]` JSON line: FPS, p50/p95/p99 frame time,
+hitches over 33 ms, CPU main-thread and GPU p50/p95 (`FrameTimingManager`),
+average draw calls, SetPass calls, batches and triangles, GC bytes per frame,
+memory, enemies alive, streamed chunks, and `arrive_worst_ms` (the worst frame
+while the streamer loaded the place, i.e. the teleport hitch). The script
+writes them to `Logs/perf_<date>.jsonl` and prints a table.
+
+- **The cap.** By default the run keeps the `PerfGovernor` in charge, so FPS is
+  what a player gets (30 on tier 1). CPU and GPU time show the headroom under
+  that cap. `--fps 60` lifts the cap for the run.
+- **The save.** Touring discovers every landmark. The run backs up the explore
+  save (`world_state`) first and restores it at the end, or on the next launch
+  if the run was killed.
+- **Signing.** The development APK is debug-signed. A phone holding a
+  store-signed build refuses it; the script stops and leaves the uninstall
+  (which deletes that phone's save) to the owner.
+- **Before a phone.** `Emberline/Run Perf Tour (Editor)` (`EmberPerfRun.Run`)
+  runs the same tour with short samples and writes `Logs/perf_editor.jsonl`.
+  Its numbers mean nothing; it proves every scenario is reached.
+
+S2–S9 below predate the region (they use the Rooftop arena and the Road North)
+and stay as manual checks for combat-heavy moments the tour does not stage.
+
+---
+
 ## 3. Running a measurement
 
 ```bash

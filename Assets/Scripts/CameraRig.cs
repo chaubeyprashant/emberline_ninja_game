@@ -291,10 +291,12 @@ namespace Emberline
             // accumulate. Then hard-clamped so nothing leaves the safe band.
             // The sprint profile widens the band a touch; combat impacts still pull
             // in from wherever the profile sits.
-            var target = Mathf.Clamp(baseFov + _profileFov - _zoom * maxImpactDegrees, minFov, maxFov + sprintFov);
+            var fov = Core.FeelTuning.CamFov;
+            var target = Mathf.Clamp(baseFov + fov + _profileFov - _zoom * maxImpactDegrees,
+                minFov + fov, maxFov + sprintFov + fov);
             _cam.fieldOfView = Mathf.Clamp(
                 Mathf.Lerp(_cam.fieldOfView, target, 1f - Mathf.Exp(-16f * Time.unscaledDeltaTime)),
-                minFov, maxFov + sprintFov);
+                minFov + fov, maxFov + sprintFov + fov);
         }
 
         private void LateUpdate()
@@ -464,7 +466,7 @@ namespace Emberline
             }
 
             transform.position = Vector3.Lerp(transform.position, want,
-                1f - Mathf.Exp(-followLerp * dt));
+                1f - Mathf.Exp(-followLerp * Core.FeelTuning.CamFollow * dt));
 
             if (_shakeTime > 0f)
             {
@@ -505,7 +507,7 @@ namespace Emberline
         private Vector3 Placement(Vector3 pivot)
         {
             var yawRot = Quaternion.Euler(0f, _yaw, 0f);
-            var back = backDistance + _distanceBoost + _profileBack - _profileIn
+            var back = backDistance * Core.FeelTuning.CamDistance + _distanceBoost + _profileBack - _profileIn
                        + (BossFraming ? bossPullback : 0f);
             var local = new Vector3(shoulder, camHeight - lookHeight - _profileDrop, -back);
             return pivot + Quaternion.AngleAxis(_pitchTrim, yawRot * Vector3.right) * (yawRot * local);

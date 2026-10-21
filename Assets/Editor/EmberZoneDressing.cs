@@ -17,10 +17,10 @@ namespace Emberline.EditorTools
     /// </para>
     ///
     /// <para>
-    /// <b>Buildings are assembled, not dropped.</b> Fantasy Town ships wall,
-    /// door, window and roof pieces rather than finished houses, so
-    /// <see cref="House"/> lays them out around a footprint. That is what makes a
-    /// village of eight houses look like eight different houses.
+    /// <b>Buildings come from <see cref="EmberJapanKit"/>.</b> The Fantasy Town
+    /// walls and gables read as low-poly Europe; the village, camp and shrine
+    /// are now minka, kura, yagura, saku and torii generated in code, placed
+    /// whole by <see cref="Building"/> on the footprints the old houses held.
     /// </para>
     ///
     /// <para>
@@ -81,6 +81,7 @@ namespace Emberline.EditorTools
             BuildVillage(village);
             BuildCamp(camp);
             BuildShrines(shrines);
+            BuildHeroTrees(forest);
             BuildWayside(wilds);
         }
 
@@ -231,113 +232,24 @@ namespace Emberline.EditorTools
 
         // ---------------------------------------------------------- buildings
 
+
+
         /// <summary>
-        /// Assembles one modular building: wall panels around a footprint, a door
-        /// on the chosen face, windows on the rest, and a gabled roof on top.
+        /// A whole building from EmberJapanKit, sized in metres, standing on the
+        /// terrain. Keeps the prefab's own collider (walls, or a gate's two
+        /// pillars) instead of a bounds box that would swallow the eaves.
         /// </summary>
-        /// <param name="cellsX">Footprint width in grid cells.</param>
-        /// <param name="cellsZ">Footprint depth in grid cells.</param>
-        /// <param name="wood">Timber walls rather than plastered stone.</param>
-        private static void House(Transform parent, float cx, float cz, float yaw,
-                                  int cellsX, int cellsZ, int storeys, bool wood)
+        private static GameObject Building(Transform parent, string name, float x, float z, float yaw,
+                                           float scale = 1f)
         {
-            var pre = wood ? "town_wall-wood" : "town_wall";
-            var wall = L(pre);
-            var door = L(pre + "-door");
-            var win = L(pre + "-window-shutters");
-            var winS = L(pre + "-window-small");
-            if (wall == null) return;
-
-            var root = new GameObject($"House_{cellsX}x{cellsZ}").transform;
-            root.SetParent(parent, false);
-            var ground = EmberTerrain.HeightAt(cx, cz);
-            root.SetPositionAndRotation(new Vector3(cx, ground - 0.15f, cz),
-                                        Quaternion.Euler(0f, yaw, 0f));
-
-            var halfX = (cellsX - 1) * 0.5f;
-            var halfZ = (cellsZ - 1) * 0.5f;
-            var rng = new System.Random(Mathf.RoundToInt(cx * 31 + cz * 17));
-
-            // The door goes on one long face, at the middle cell.
-            var doorCell = cellsX / 2;
-
-            for (var s = 0; s < storeys; s++)
-            for (var ix = 0; ix < cellsX; ix++)
-            for (var iz = 0; iz < cellsZ; iz++)
-            {
-                var edgeN = iz == cellsZ - 1;
-                var edgeS = iz == 0;
-                var edgeE = ix == cellsX - 1;
-                var edgeW = ix == 0;
-                if (!edgeN && !edgeS && !edgeE && !edgeW) continue;   // interior cell
-
-                var lx = (ix - halfX) * Cell;
-                var lz = (iz - halfZ) * Cell;
-                var ly = s * Cell;
-
-                // Each wall panel sits on the outward edge of its cell, facing out.
-                if (edgeS) Panel(root, lx, ly, lz - Cell * 0.5f, 0f, Pick(s, ix, iz, doorCell, 0));
-                if (edgeN) Panel(root, lx, ly, lz + Cell * 0.5f, 180f, Pick(s, ix, iz, doorCell, 1));
-                if (edgeW) Panel(root, lx - Cell * 0.5f, ly, lz, 90f, Pick(s, ix, iz, doorCell, 2));
-                if (edgeE) Panel(root, lx + Cell * 0.5f, ly, lz, 270f, Pick(s, ix, iz, doorCell, 3));
-            }
-
-            // Gabled roof, ridge running along X.
-            var roof = L(storeys > 1 ? "town_roof-high" : "town_roof");
-            var gable = L(storeys > 1 ? "town_roof-high-gable" : "town_roof-gable");
-            var roofY = storeys * Cell;
-            for (var ix = 0; ix < cellsX; ix++)
-            {
-                var lx = (ix - halfX) * Cell;
-                // Two slopes meeting over the middle of the footprint.
-                Piece(root, roof, lx, roofY, (0 - halfZ) * Cell, 0f);
-                Piece(root, roof, lx, roofY, (cellsZ - 1 - halfZ) * Cell, 180f);
-            }
-            if (gable != null && cellsZ > 1)
-            {
-                Piece(root, gable, (0 - halfX) * Cell - Cell * 0.5f, roofY, 0f, 90f);
-                Piece(root, gable, (cellsX - 1 - halfX) * Cell + Cell * 0.5f, roofY, 0f, 270f);
-            }
-
-            // A chimney on about half of them.
-            if (rng.Next(2) == 0)
-                Piece(root, L("town_chimney"), (halfX - 0.5f) * Cell, roofY + Cell * 0.4f, 0f, 0f);
-
-            // One box collider for the whole building beats one per panel. Built
-            // from the footprint rather than from world-space renderer bounds,
-            // which for a rotated house is a much larger skewed box.
-            var box = root.gameObject.AddComponent<BoxCollider>();
-            var w = cellsX * Cell;
-            var d = cellsZ * Cell;
-            var hgt = storeys * Cell + Cell * 0.7f;   // walls plus the roof
-            box.center = new Vector3(0f, hgt * 0.5f, 0f);
-            box.size = new Vector3(w, hgt, d);
-
-            GameObject Pick(int storey, int ix, int iz, int dc, int face)
-            {
-                // Door only on the ground floor, front face, middle cell.
-                if (storey == 0 && face == 0 && ix == dc && door != null) return door;
-                var roll = rng.Next(100);
-                if (roll < 34 && win != null) return win;
-                if (roll < 50 && winS != null) return winS;
-                return wall;
-            }
-
-            void Panel(Transform p, float lx, float ly, float lz, float ry, GameObject prefab)
-                => Piece(p, prefab, lx, ly, lz, ry);
-        }
-
-        private static void Piece(Transform parent, GameObject prefab,
-                                  float lx, float ly, float lz, float ry)
-        {
-            if (prefab == null) return;
+            var prefab = L(name);
+            if (prefab == null) return null;
             var go = (GameObject)UnityEditor.PrefabUtility.InstantiatePrefab(prefab, parent);
-            go.transform.localPosition = new Vector3(lx, ly, lz);
-            go.transform.localRotation = Quaternion.Euler(0f, ry, 0f);
-            go.transform.localScale = Vector3.one * Cell;
+            go.transform.SetPositionAndRotation(new Vector3(x, EmberTerrain.HeightAt(x, z) - 0.1f, z),
+                                                Quaternion.Euler(0f, yaw, 0f));
+            go.transform.localScale = Vector3.one * scale;
             go.isStatic = true;
-            foreach (var c in go.GetComponentsInChildren<Collider>(true))
-                Object.DestroyImmediate(c);
+            return go;
         }
 
         // ----------------------------------------------------------- village
@@ -353,15 +265,18 @@ namespace Emberline.EditorTools
             // stands right where fights happen. The bot proved it — wedged in the
             // corner of the north house with full stick input, unable to route
             // around a wall a person would simply step past.
-            House(parent, -28f, 22f, 128f, 2, 2, 1, wood: true);
-            House(parent, -11f, 36f, 168f, 3, 2, 2, wood: false);
-            House(parent, 20f, 31f, 205f, 2, 2, 1, wood: true);
-            House(parent, 36f, 10f, 254f, 3, 2, 1, wood: false);
-            House(parent, 31f, -24f, 300f, 2, 2, 2, wood: true);
-            House(parent, -6f, -36f, 355f, 3, 2, 1, wood: true);
-            House(parent, -33f, -17f, 60f, 2, 2, 1, wood: false);
-            // The blacksmith: bigger, stone, and the reason to come back here.
-            House(parent, -39f, 4f, 78f, 4, 2, 1, wood: false);
+            // Thatched farmhouses, tiled town houses and storehouses from
+            // EmberJapanKit, on the footprints the Fantasy Town houses held.
+            Building(parent, "jpk_minka_s", -28f, 22f, 128f);
+            Building(parent, "jpk_minka_m", -11f, 36f, 168f);
+            Building(parent, "jpk_minka_s_lit", 20f, 31f, 205f);
+            Building(parent, "jpk_kura", 36f, 10f, 254f);
+            Building(parent, "jpk_minka_s", 31f, -24f, 300f);
+            Building(parent, "jpk_minka_m", -6f, -36f, 355f);
+            Building(parent, "jpk_kura", -33f, -17f, 60f);
+            // The blacksmith: the biggest house, noren over the door, and the
+            // reason to come back here.
+            Building(parent, "jpk_minka_l", -39f, 4f, 78f);
 
             // Nothing solid stands within PlazaRadius of the origin. Missions are
             // centred there — the player spawns on it and objectives and clues
@@ -384,14 +299,15 @@ namespace Emberline.EditorTools
 
             // Mills: one on the river, one on the rise.
             EmberScatter.PlaceOnGround(parent, L("town_watermill"), -38f, 13f, 96f, Cell);
-            EmberScatter.PlaceOnGround(parent, L("town_windmill"), 26f, 21f, 150f, Cell);
+            // A windmill is Europe; the rise gets a rice store instead.
+            Building(parent, "jpk_kura", 26f, 21f, 150f);
 
             // Lantern posts: the warm accent the whole palette is built around, and
             // the only saturated colour in the valley.
             // Lanterns ring the plaza rather than standing in it.
             foreach (var (x, z) in new[] { (30f, 11f), (-30f, 8f), (13f, -31f), (-16f, -31f),
                                            (31f, 27f), (-33f, -13f) })
-                EmberScatter.PlaceOnGround(parent, L("town_lantern"), x, z, 0f, 2.2f);
+                EmberScatter.PlaceOnGround(parent, L("jpk_toro"), x, z, 0f, 1.1f);
 
             // Farm plots south of the square.
             Rows(parent, -33f, -31f, 14, "crops_wheatStageB");
@@ -463,8 +379,8 @@ namespace Emberline.EditorTools
 
             // Palisade arc facing the road, open at the south-east. The gap is the
             // flank route and it is deliberate.
-            var wall = L("castle_wall-narrow-wood");
-            var post = L("castle_wall-pillar");
+            // A stake palisade (saku), one 3 m segment per cell.
+            var wall = L("jpk_saku");
             var segs = Mathf.RoundToInt(Mathf.PI * 2f * ringR / Cell);
             for (var i = 0; i < segs; i++)
             {
@@ -475,23 +391,20 @@ namespace Emberline.EditorTools
                 var rad = ang * Mathf.Deg2Rad;
                 var x = c.x + Mathf.Sin(rad) * ringR;
                 var z = c.z + Mathf.Cos(rad) * ringR;
-                EmberScatter.PlaceOnGround(parent, wall, x, z, ang, Cell, Body.Solid, 0.25f);
-                if (i % 4 == 0)
-                    EmberScatter.PlaceOnGround(parent, post, x, z, ang, Cell, Body.None, 0.25f);
+                EmberScatter.PlaceOnGround(parent, wall, x, z, ang, 1f, Body.Solid, 0.25f);
             }
 
             // The gate, where the road actually arrives.
             var gateAng = 311f * Mathf.Deg2Rad;
-            EmberScatter.PlaceOnGround(parent, L("castle_wall-narrow-gate"),
-                c.x + Mathf.Sin(gateAng) * ringR, c.z + Mathf.Cos(gateAng) * ringR,
-                311f, Cell, Body.Solid, 0.25f);
+            Building(parent, "jpk_gate",
+                c.x + Mathf.Sin(gateAng) * ringR, c.z + Mathf.Cos(gateAng) * ringR, 311f);
 
             // Two towers covering the gate and the road below.
-            Tower(parent, c.x - 12f, c.z + 11f, 200f);
-            Tower(parent, c.x + 13f, c.z + 8f, 250f);
+            Building(parent, "jpk_yagura", c.x - 12f, c.z + 11f, 200f);
+            Building(parent, "jpk_yagura", c.x + 13f, c.z + 8f, 250f);
 
             // The commander's hall at the centre.
-            House(parent, c.x + 1f, c.z - 1f, 145f, 4, 2, 1, wood: true);
+            Building(parent, "jpk_minka_l", c.x + 1f, c.z - 1f, 145f);
 
             // Garrison tents.
             foreach (var (dx, dz, yaw) in new[]
@@ -547,65 +460,66 @@ namespace Emberline.EditorTools
                 EmberScatter.PlaceOnGround(parent, L("castle_flag"), c.x + dx, c.z + dz, 0f, Cell);
         }
 
-        /// <summary>A stacked modular watchtower: base, midsections, top, roof.</summary>
-        private static void Tower(Transform parent, float x, float z, float yaw)
-        {
-            var root = new GameObject("Watchtower").transform;
-            root.SetParent(parent, false);
-            root.SetPositionAndRotation(new Vector3(x, EmberTerrain.HeightAt(x, z) - 0.2f, z),
-                                        Quaternion.Euler(0f, yaw, 0f));
 
-            // Advance by each piece's own height, never by a fixed step. The kit
-            // is modular but not uniform — `tower-square-top` is 0.30 units tall
-            // where the midsections are 1.01 — so stacking on a constant Cell left
-            // a two-metre gap and hung the roof in the sky above the tower.
-            var y = 0f;
-            foreach (var name in new[]
+        /// <summary>
+        /// The few trees that say where this is: sakura by the shrine and the
+        /// village, kuromatsu at the road gate, momiji lining the road north.
+        ///
+        /// <para>
+        /// Hand-placed and few on purpose. The Quaternius trees cost 1.6–10 k
+        /// triangles each against ~100 for a Kenney cone pine, so the forest mass
+        /// stays Kenney until LODs exist (roadmap Phase 9); these fourteen add
+        /// about 85 k, rarely more than a third of them in view.
+        /// </para>
+        /// </summary>
+        private static void BuildHeroTrees(Transform parent)
+        {
+            foreach (var (n, x, z, s) in new (string, float, float, float)[]
                      {
-                         "castle_tower-square-base",
-                         "castle_tower-square-mid",
-                         "castle_tower-square-mid-windows",
-                         "castle_tower-square-top",
-                         "castle_tower-square-top-roof",
+                         ("qn_sakura_1", -38f, 37f, 4.6f), ("qn_sakura_3", -27f, 45f, 4.2f),
+                         ("qn_sakura_2", 40f, -8f, 4.4f), ("qn_sakura_5", -20f, 42f, 4.0f),
+                         ("qn_matsu_2", 9f, 71f, 4.8f), ("qn_matsu_4", -4f, 78f, 4.4f),
                      })
-            {
-                var prefab = L(name);
-                if (prefab == null) continue;
-                Piece(root, prefab, 0f, y, 0f, 0f);
-                y += PrefabHeight(prefab) * Cell;
-            }
+                EmberScatter.PlaceOnGround(parent, L(n), x, z, (x * 37f + z * 11f) % 360f, s, Body.Trunk, 0.3f);
 
-            var box = root.gameObject.AddComponent<BoxCollider>();
-            box.center = new Vector3(0f, y * 0.5f, 0f);
-            box.size = new Vector3(Cell, y, Cell);
-        }
+            // Momiji along the road out of the village: walk the road north and
+            // plant one a few metres off it every ten metres or so, alternating sides.
+            string[] maples = { "qn_maple_3", "qn_maple_5" };
+            var placed = 0;
+            for (var z = 44f; z <= 66f && placed < 8; z += 7f)
+                foreach (var side in new[] { -1f, 1f })
+                {
+                    for (var x = -30f; x <= 30f; x += 0.5f)
+                    {
+                        var d = EmberTerrain.RoadDistance(x, z);
+                        if (d < 5f || d > 5.6f || Mathf.Sign(x - RoadX(z)) != side) continue;
+                        EmberScatter.PlaceOnGround(parent, L(maples[placed % 2]), x, z,
+                            placed * 47f, 4.6f + placed % 3 * 0.3f, Body.Trunk, 0.3f);
+                        placed++;
+                        break;
+                    }
+                }
+            Debug.Log($"[Zone] hero trees: 6 + {placed} maples");
 
-        /// <summary>Height of a prefab's renderers in model units.</summary>
-        private static float PrefabHeight(GameObject prefab)
-        {
-            var any = false;
-            var b = new Bounds();
-            foreach (var r in prefab.GetComponentsInChildren<MeshRenderer>(true))
+            static float RoadX(float z)
             {
-                var rb = r.bounds;
-                if (!any) { b = rb; any = true; } else b.Encapsulate(rb);
+                // The road's centre at this z: the x with the smallest road distance.
+                var best = 0f; var bd = float.MaxValue;
+                for (var x = -30f; x <= 30f; x += 0.5f)
+                {
+                    var d = EmberTerrain.RoadDistance(x, z);
+                    if (d < bd) { bd = d; best = x; }
+                }
+                return best;
             }
-            return any ? b.size.y : 1f;
         }
 
         // ----------------------------------------------------------- shrines
 
         /// <summary>
-        /// Emberline's own East-Asian landmarks, kitbashed from the modular kits.
-        ///
-        /// <para>
-        /// No CC0 pack ships a torii or a pagoda in this style — that gap was
-        /// searched for and confirmed. Rather than import one model from a foreign
-        /// palette and break the single-atlas coherence that makes the rest of the
-        /// valley read as one world, the gates are built here from the timber
-        /// pieces the kits already provide: two uprights, a lintel and a ridge
-        /// beam. It costs four prefabs and keeps the whole zone on one material.
-        /// </para>
+        /// The road torii, the shrine path's smaller torii and the hokora with its
+        /// lanterns, all from <see cref="EmberJapanKit"/>. No CC0 pack ships these
+        /// in the valley's style (searched again 2026-10-21), so they are generated.
         /// </summary>
         private static void BuildShrines(Transform parent)
         {
@@ -621,84 +535,20 @@ namespace Emberline.EditorTools
         }
 
         private static void Torii(Transform parent, float x, float z, float yaw, float scale)
-        {
-            var post = L("town_pillar-wood");
-            var beam = L("town_poles-horizontal");
-            var plank = L("town_planks");
-            if (post == null || beam == null) return;
+            // The kit's torii spans 4.2 m; the old kitbash spanned 2.3 × scale.
+            => Building(parent, "jpk_torii", x, z, yaw, scale / 1.8f);
 
-            var root = new GameObject("Torii").transform;
-            root.SetParent(parent, false);
-            root.SetPositionAndRotation(new Vector3(x, EmberTerrain.HeightAt(x, z) - 0.1f, z),
-                                        Quaternion.Euler(0f, yaw, 0f));
-
-            var s = scale;
-            var halfSpan = 1.15f * s;
-
-            // Two uprights.
-            foreach (var side in new[] { -1f, 1f })
-            {
-                var p = (GameObject)UnityEditor.PrefabUtility.InstantiatePrefab(post, root);
-                p.transform.localPosition = new Vector3(side * halfSpan, 0f, 0f);
-                p.transform.localScale = new Vector3(s * 0.55f, s * 2.2f, s * 0.55f);
-                p.isStatic = true;
-                foreach (var c in p.GetComponentsInChildren<Collider>(true)) Object.DestroyImmediate(c);
-                var col = p.AddComponent<CapsuleCollider>();
-                col.height = 2.2f; col.radius = 0.35f; col.center = new Vector3(0f, 1.1f, 0f);
-            }
-
-            // The lintel, and the ridge beam above it that gives a torii its shape.
-            var lintel = (GameObject)UnityEditor.PrefabUtility.InstantiatePrefab(beam, root);
-            lintel.transform.localPosition = new Vector3(0f, s * 1.75f, 0f);
-            lintel.transform.localScale = new Vector3(s * 2.9f, s * 0.5f, s * 0.5f);
-            lintel.isStatic = true;
-            foreach (var c in lintel.GetComponentsInChildren<Collider>(true)) Object.DestroyImmediate(c);
-
-            if (plank != null)
-            {
-                var ridge = (GameObject)UnityEditor.PrefabUtility.InstantiatePrefab(plank, root);
-                ridge.transform.localPosition = new Vector3(0f, s * 2.15f, 0f);
-                ridge.transform.localRotation = Quaternion.Euler(0f, 0f, 90f);
-                ridge.transform.localScale = new Vector3(s * 0.45f, s * 3.4f, s * 0.5f);
-                ridge.isStatic = true;
-                foreach (var c in ridge.GetComponentsInChildren<Collider>(true)) Object.DestroyImmediate(c);
-            }
-        }
 
         private static void Shrine(Transform parent, float x, float z, float yaw)
         {
-            var root = new GameObject("Shrine").transform;
-            root.SetParent(parent, false);
-            root.SetPositionAndRotation(new Vector3(x, EmberTerrain.HeightAt(x, z) - 0.15f, z),
-                                        Quaternion.Euler(0f, yaw, 0f));
-
-            // A raised timber platform.
-            Piece(root, L("town_planks"), 0f, 0f, 0f, 0f);
-            // Four corner posts under a high roof.
-            foreach (var (dx, dz) in new[] { (-1f, -1f), (1f, -1f), (-1f, 1f), (1f, 1f) })
-            {
-                var p = (GameObject)UnityEditor.PrefabUtility.InstantiatePrefab(L("town_pillar-wood"), root);
-                p.transform.localPosition = new Vector3(dx * Cell * 0.5f, 0.4f, dz * Cell * 0.5f);
-                p.transform.localScale = new Vector3(Cell * 0.4f, Cell * 0.9f, Cell * 0.4f);
-                p.isStatic = true;
-                foreach (var c in p.GetComponentsInChildren<Collider>(true)) Object.DestroyImmediate(c);
-            }
-            Piece(root, L("town_roof-high"), 0f, Cell * 0.95f, -Cell * 0.5f, 0f);
-            Piece(root, L("town_roof-high"), 0f, Cell * 0.95f, Cell * 0.5f, 180f);
-
-            // Lanterns flanking the steps: the shrine is a light in the trees.
+            // A hokora on its plinth, a stone lantern either side of the approach.
+            var root = Building(parent, "jpk_hokora", x, z, yaw, 1.7f);
+            if (root == null) return;
             foreach (var side in new[] { -1f, 1f })
             {
-                var lp = (GameObject)UnityEditor.PrefabUtility.InstantiatePrefab(L("town_lantern"), root);
-                lp.transform.localPosition = new Vector3(side * Cell * 0.9f, 0f, -Cell * 1.2f);
-                lp.transform.localScale = Vector3.one * 2.2f;
-                lp.isStatic = true;
+                var at = root.transform.TransformPoint(new Vector3(side * 1.6f, 0f, -2.2f));
+                EmberScatter.PlaceOnGround(parent, L("jpk_toro"), at.x, at.z, yaw, 1.1f);
             }
-
-            var box = root.gameObject.AddComponent<BoxCollider>();
-            box.center = new Vector3(0f, Cell * 0.6f, 0f);
-            box.size = new Vector3(Cell * 1.6f, Cell * 1.2f, Cell * 1.6f);
-            root.gameObject.AddComponent<Emberline.Core.Shrine>();
         }
 
         // ---------------------------------------------------------- wayside

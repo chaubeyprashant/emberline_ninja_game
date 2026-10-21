@@ -89,6 +89,7 @@ namespace Emberline.EditorTools
 
             RenderWeaponGlyphs(cam);
             RenderPerfOverlay(cam);
+            RenderFeelPanel(cam);
 
             Debug.Log("[Emberline] UI snapshots written to Logs/ui_*.png");
             if (Application.isBatchMode) EditorApplication.Exit(0);
@@ -123,6 +124,24 @@ namespace Emberline.EditorTools
             canvas.planeDistance = 1f;
             Canvas.ForceUpdateCanvases();
             Shoot(cam, "Logs/ui_perf_overlay.png", 1600, 900);
+        }
+
+        /// <summary>Dev feel-pass dials, opened; Start is driven by reflection as above.</summary>
+        private static void RenderFeelPanel(Camera cam)
+        {
+            var go = new GameObject("FeelPanel");
+            var panel = go.AddComponent<UI.FeelPanel>();
+            var t = typeof(UI.FeelPanel);
+            const BindingFlags F = BindingFlags.NonPublic | BindingFlags.Instance;
+            t.GetMethod("Start", F).Invoke(panel, null);
+            t.GetMethod("Toggle", F).Invoke(panel, null);
+            var canvas = go.GetComponent<Canvas>();
+            canvas.renderMode = RenderMode.ScreenSpaceCamera;
+            canvas.worldCamera = cam;
+            canvas.planeDistance = 1f;
+            Canvas.ForceUpdateCanvases();
+            Shoot(cam, "Logs/ui_feel_panel.png", 1600, 720);
+            Object.DestroyImmediate(go);
         }
 
         /// <summary>Contact sheet of the generated weapon glyphs (boss-card icons).</summary>

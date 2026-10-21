@@ -22,11 +22,17 @@ Shader "Emberline/Surface"
         _WearStrength ("Wear Strength", Range(0,1)) = 0.25
         _WearScale ("Wear Scale", Range(0.2,12)) = 3
         _WearColor ("Wear Colour", Color) = (0.22,0.20,0.18,1)
+        // Foliage only: leaf cards are cut from the albedo's alpha and drawn from
+        // both sides. A shader feature, so every opaque material keeps early-z.
+        [Toggle(_ALPHATEST_ON)] _AlphaTest ("Alpha Test", Float) = 0
+        _Cutoff ("Alpha Cutoff", Range(0,1)) = 0.5
+        [Enum(UnityEngine.Rendering.CullMode)] _Cull ("Cull", Float) = 2
     }
 
     SubShader
     {
         Tags { "RenderType"="Opaque" "Queue"="Geometry" }
+        Cull [_Cull]
 
         CGINCLUDE
         #include "UnityCG.cginc"
@@ -38,6 +44,7 @@ Shader "Emberline/Surface"
         float4 _MainTex_ST;
         float _Smoothness, _Metallic, _AmbientBoost;
         float _RimPower, _RimStrength, _WearStrength, _WearScale;
+        float _Cutoff;
 
         // Cheap value noise — three sine octaves in world space. Not a beauty
         // filter; it exists to stop large flat albedo blocks reading as plastic.
@@ -67,6 +74,7 @@ Shader "Emberline/Surface"
             #pragma vertex vert
             #pragma fragment frag
             #pragma multi_compile_fwdbase
+            #pragma shader_feature_local _ALPHATEST_ON
             #pragma target 3.0
 
             struct appdata_t
@@ -98,14 +106,19 @@ Shader "Emberline/Surface"
                 return o;
             }
 
-            fixed4 frag (v2f i) : SV_Target
+            fixed4 frag (v2f i, fixed facing : VFACE) : SV_Target
             {
+                fixed4 texel = tex2D(_MainTex, i.uv);
                 float3 n = normalize(i.n);
+            #ifdef _ALPHATEST_ON
+                clip(texel.a - _Cutoff);
+                n *= facing > 0 ? 1.0 : -1.0;   // the back of a leaf lights as a leaf
+            #endif
                 float3 viewDir = normalize(_WorldSpaceCameraPos - i.wpos);
                 float3 lightDir = normalize(_WorldSpaceLightPos0.xyz);
                 float3 h = normalize(lightDir + viewDir);
 
-                fixed3 albedo = _Color.rgb * tex2D(_MainTex, i.uv).rgb;
+                fixed3 albedo = _Color.rgb * texel.rgb;
 
                 // Grime settles on upward faces and in the noise's dark bands.
                 float wear = Grime(i.wpos) * saturate(0.45 + 0.55 * n.y);
@@ -151,6 +164,7 @@ Shader "Emberline/Surface"
             #pragma vertex vert
             #pragma fragment frag
             #pragma multi_compile_fwdadd
+            #pragma shader_feature_local _ALPHATEST_ON
             #pragma target 3.0
 
             struct appdata_t
@@ -182,15 +196,20 @@ Shader "Emberline/Surface"
                 return o;
             }
 
-            fixed4 frag (v2f i) : SV_Target
+            fixed4 frag (v2f i, fixed facing : VFACE) : SV_Target
             {
+                fixed4 texel = tex2D(_MainTex, i.uv);
                 float3 n = normalize(i.n);
+            #ifdef _ALPHATEST_ON
+                clip(texel.a - _Cutoff);
+                n *= facing > 0 ? 1.0 : -1.0;
+            #endif
                 float3 viewDir = normalize(_WorldSpaceCameraPos - i.wpos);
                 float3 ld = normalize(_WorldSpaceLightPos0.xyz - i.wpos * _WorldSpaceLightPos0.w);
                 float3 h = normalize(ld + viewDir);
                 UNITY_LIGHT_ATTENUATION(atten, i, i.wpos);
 
-                fixed3 albedo = _Color.rgb * tex2D(_MainTex, i.uv).rgb;
+                fixed3 albedo = _Color.rgb * texel.rgb;
                 float rough = 1.0 - _Smoothness;
                 float ndl = saturate(dot(n, ld));
                 float3 specColor = lerp(_SpecTint.rgb * 0.16, albedo, _Metallic);
@@ -213,14 +232,22 @@ Shader "Emberline/Surface"
             #pragma vertex vertS
             #pragma fragment fragS
             #pragma multi_compile_shadowcaster
-            struct v2fS { V2F_SHADOW_CASTER; };
+            #pragma shader_feature_local _ALPHATEST_ON
+            struct v2fS { V2F_SHADOW_CASTER; float2 uv : TEXCOORD1; };
             v2fS vertS(appdata_base v)
             {
                 v2fS o;
                 TRANSFER_SHADOW_CASTER_NORMALOFFSET(o)
+                o.uv = TRANSFORM_TEX(v.texcoord, _MainTex);
                 return o;
             }
-            fixed4 fragS(v2fS i) : SV_Target { SHADOW_CASTER_FRAGMENT(i) }
+            fixed4 fragS(v2fS i) : SV_Target
+            {
+            #ifdef _ALPHATEST_ON
+                clip(tex2D(_MainTex, i.uv).a - _Cutoff);   // leaves, not squares
+            #endif
+                SHADOW_CASTER_FRAGMENT(i)
+            }
             ENDCG
         }
     }

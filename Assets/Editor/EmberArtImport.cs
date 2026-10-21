@@ -97,7 +97,11 @@ namespace Emberline.EditorTools
                 var mi = (ModelImporter)assetImporter;
                 mi.animationType = ModelImporterAnimationType.None;
                 mi.importAnimation = false;
-                mi.materialImportMode = ModelImporterMaterialImportMode.None;
+                // Quaternius trees keep their slots: EmberNatureKit tells bark from
+                // leaves by the slot's name, then replaces both materials.
+                mi.materialImportMode = assetPath.Contains("/QuaterniusNature/")
+                    ? ModelImporterMaterialImportMode.ImportStandard
+                    : ModelImporterMaterialImportMode.None;
                 mi.meshCompression = ModelImporterMeshCompression.Medium;
                 mi.importCameras = false;
                 mi.importLights = false;

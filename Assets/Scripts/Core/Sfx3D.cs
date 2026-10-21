@@ -25,13 +25,34 @@ namespace Emberline.Core
         private const int PoolSize = 12;
         private static readonly List<AudioSource> Pool = new(PoolSize);
         private static int _poolNext;
-        private static AudioSource _ambience, _musicB;
+        private static AudioSource _ambience, _musicB, _ambienceB;
         private static float _fade, _fadeDur;
         private static bool _fadeToB;
         private static MusicState _musicState = MusicState.None;
+        private static float _ambFade, _ambFadeDur, _ambVol = 0.4f;
+        private static bool _ambToB;
+
+        // Dialogue sits on top of the score: music and beds dip while a voice
+        // line plays and come back when it ends.
+        private static AudioSource _duckUnder;
+        private static float _duck = 1f;
+        private const float MusicDuck = 0.35f, AmbienceDuck = 0.55f;
+
+        // Theme beds that have no recording of their own yet borrow the nearest
+        // one that does, so a theme never falls silent or onto the wrong place.
+        private static readonly Dictionary<string, string> AmbienceStandIn = new()
+        {
+            { "bamboo_ambience", "forest_ambience" },
+            { "temple_ambience", "forest_ambience" },
+            { "castle_ambience", "mountain_wind" },
+            { "fortress_ambience", "mountain_wind" },
+        };
 
         /// <summary>What the music layer should be playing. Drives crossfades.</summary>
         public enum MusicState { None, Exploration, Combat, Boss }
+
+        /// <summary>The music state last requested.</summary>
+        public static MusicState CurrentMusic => _musicState;
 
         /// <summary>Impact character — picks the bank, not the volume.</summary>
         public enum ImpactKind { Flesh, Blade, Guard, Heavy }
@@ -103,6 +124,12 @@ namespace Emberline.Core
             _ambience.loop = true;
             _ambience.spatialBlend = 0f;
 
+            _ambienceB = host.AddComponent<AudioSource>();
+            _ambienceB.playOnAwake = false;
+            _ambienceB.loop = true;
+            _ambienceB.spatialBlend = 0f;
+            _ambienceB.volume = 0f;
+
             for (var i = 0; i < PoolSize; i++)
             {
                 var go = new GameObject("Sfx3D_" + i);
@@ -128,6 +155,16 @@ namespace Emberline.Core
         /// <summary>Drop everything Init rebuilds, so a reload starts clean.</summary>
         private static void ResetStatics()
         {
+            // The sources are new, so nothing is playing: a state left over from
+            // the last scene made SetMusicState(Exploration) a no-op and the
+            // next scene silent.
+            _musicState = MusicState.None;
+            _fadeToB = false;
+            _fadeDur = 0f;
+            _ambToB = false;
+            _ambFadeDur = 0f;
+            _duckUnder = null;
+            _duck = 1f;
             Pool.Clear();
             _poolNext = 0;
             LastPick.Clear();
@@ -328,17 +365,52 @@ namespace Emberline.Core
         /// Loop an environmental ambience bed (rain, wind, fire) independently of
         /// music, so a theme change does not interrupt the score.
         /// </summary>
-        public static void PlayAmbience(string resourceName, float volume = 0.4f)
+        /// <returns>False when neither the bed nor its stand-in exists, so a caller can fall back.</returns>
+        public static bool PlayAmbience(string resourceName, float volume = 0.4f, float fade = 0f)
         {
-            if (_ambience == null) return;
-            if (string.IsNullOrEmpty(resourceName)) { _ambience.Stop(); return; }
-            var clip = Resources.Load<AudioClip>("Art/Audio/Music/" + resourceName);
-            if (clip == null) clip = Resources.Load<AudioClip>("Art/Audio/SFX/" + resourceName);
-            if (clip == null || _ambience.clip == clip) return;
-            _ambience.clip = clip;
-            _ambience.volume = volume * MusicVolume;
-            _ambience.Play();
+            if (_ambience == null) return false;
+            var from = _ambToB ? _ambienceB : _ambience;
+            var other = _ambToB ? _ambience : _ambienceB;
+            if (string.IsNullOrEmpty(resourceName)) { from.Stop(); other.Stop(); _ambFadeDur = 0f; return true; }
+            var clip = LoadBed(resourceName);
+            if (clip == null && AmbienceStandIn.TryGetValue(resourceName, out var standIn)) clip = LoadBed(standIn);
+            if (clip == null) return false;
+            _ambVol = volume;
+            if (from.clip == clip && from.isPlaying) return true;
+
+            if (fade <= 0f || !from.isPlaying)
+            {
+                other.Stop();
+                from.clip = clip;
+                from.Play();
+                _ambFadeDur = 0f;
+                return true;
+            }
+            // Walking from the village into the trees: the new bed rises under the old one.
+            other.clip = clip;
+            other.volume = 0f;
+            other.Play();
+            _ambToB = !_ambToB;
+            _ambFade = 0f;
+            _ambFadeDur = fade;
+            return true;
         }
+
+        private static AudioClip LoadBed(string name) =>
+            Resources.Load<AudioClip>("Art/Audio/Music/" + name) ?? Resources.Load<AudioClip>("Art/Audio/SFX/" + name);
+
+        /// <summary>The ambience bed playing now, or null.</summary>
+        public static string CurrentAmbience
+        {
+            get
+            {
+                var a = _ambToB ? _ambienceB : _ambience;
+                return a != null && a.isPlaying && a.clip != null ? a.clip.name : null;
+            }
+        }
+
+        /// <summary>Dip music and ambience while this source plays (a voice line).</summary>
+        public static void DuckUnder(AudioSource voice) => _duckUnder = voice;
 
         /// <summary>
         /// Request a music state. Crossfades between the two music sources rather
@@ -373,17 +445,40 @@ namespace Emberline.Core
         /// <summary>Advance music crossfades. Driven by <see cref="SfxDriver"/>.</summary>
         internal static void Tick(float dt)
         {
-            if (_fadeDur <= 0f || _music == null) return;
-            _fade += dt;
-            var k = Mathf.Clamp01(_fade / _fadeDur);
-            var target = MusicVolume * 0.5f;
+            if (_music == null) return;
+
+            var speaking = _duckUnder != null && _duckUnder.isPlaying;
+            _duck = Mathf.MoveTowards(_duck, speaking ? 0f : 1f, dt * (speaking ? 4f : 1.2f));
+            var musicDuck = Mathf.Lerp(MusicDuck, 1f, _duck);
+            var ambDuck = Mathf.Lerp(AmbienceDuck, 1f, _duck);
+
+            // Music: the active source holds the target; mid-crossfade the two share it.
+            var target = MusicVolume * 0.5f * musicDuck;
             var into = _fadeToB ? _musicB : _music;
             var outOf = _fadeToB ? _music : _musicB;
-            into.volume = target * k;
-            outOf.volume = target * (1f - k);
-            if (k < 1f) return;
-            outOf.Stop();
-            _fadeDur = 0f;
+            if (_fadeDur > 0f)
+            {
+                _fade += dt;
+                var k = Mathf.Clamp01(_fade / _fadeDur);
+                into.volume = target * k;
+                outOf.volume = target * (1f - k);
+                if (k >= 1f) { outOf.Stop(); _fadeDur = 0f; }
+            }
+            else into.volume = target;
+
+            if (_ambience == null) return;
+            var ambTarget = _ambVol * MusicVolume * ambDuck;
+            var ambInto = _ambToB ? _ambienceB : _ambience;
+            var ambOut = _ambToB ? _ambience : _ambienceB;
+            if (_ambFadeDur > 0f)
+            {
+                _ambFade += dt;
+                var k = Mathf.Clamp01(_ambFade / _ambFadeDur);
+                ambInto.volume = ambTarget * k;
+                ambOut.volume = ambTarget * (1f - k);
+                if (k >= 1f) { ambOut.Stop(); _ambFadeDur = 0f; }
+            }
+            else ambInto.volume = ambTarget;
         }
 
         // ------------------------------------------------------------- internals

@@ -571,7 +571,7 @@ namespace Emberline.Player
         /// a perfect dodge — the aggressive answer to an incoming swing.
         /// </summary>
         /// <summary>True inside the tight opening frames of a guard.</summary>
-        public bool PerfectWindow => _guardT > 0f && _guardHeld <= perfectParryWindow;
+        public bool PerfectWindow => _guardT > 0f && _guardHeld <= perfectParryWindow * FeelTuning.ParryWindow;
 
         /// <summary>
         /// An incoming blow met by the guard. The opening frames are a perfect
@@ -1431,7 +1431,7 @@ namespace Emberline.Player
             _incomingHeavy = false;
         }
 
-        private void RunHitStop(float duration) => RequestDip(0.05f, duration);
+        private void RunHitStop(float duration) => RequestDip(0.05f, duration * FeelTuning.HitStop);
 
         /// <summary>Scripted flourish (last enemy of a wave). Obeys the stacking rule.</summary>
         public void PlaySlowMo(float duration) => RequestDip(0.3f, duration);

@@ -80,7 +80,9 @@ namespace Emberline.Player
         /// <summary>An exclusive traversal move. Free means the normal motor runs.</summary>
         private enum Move { Free, Mantle, Vault, Hang, Slide, Roll, Land }
 
-        public bool Invulnerable => _flickerTimer > 0f;
+        // I-frames run on their own clock so the feel pass can tune them without
+        // changing how far a flicker travels; at the default they match the flicker.
+        public bool Invulnerable => _iframeT > 0f;
         public bool Busy { get; set; } // set by CombatController during swings
         public float FlickerCooldownRemaining => _flickerCd;
 
@@ -144,7 +146,7 @@ namespace Emberline.Player
         private Vector3 _impulse;
         private Vector3 _lastVelocity;
         private float _yVel, _fallSpeed;
-        private float _flickerTimer, _flickerCd, _ghostTick;
+        private float _flickerTimer, _iframeT, _flickerCd, _ghostTick;
         private Vector3 _flickerDir;
         private float _sprintPushT;
         private float _stride, _noiseTick;
@@ -238,6 +240,7 @@ namespace Emberline.Player
             if (TryJump(input)) return;
 
             Vector3 velocity;
+            if (_iframeT > 0f) _iframeT -= dt;
             if (_flickerTimer > 0f)
             {
                 _flickerTimer -= dt;
@@ -419,7 +422,7 @@ namespace Emberline.Player
             Swimming = Swimming
                 ? Core.Ground.HeightAt(p) < deep + 0.15f
                 : p.y < deep && Core.Ground.HeightAt(p) < deep;
-            if (Swimming) { _wallT = 0f; _flickerTimer = 0f; SetCrouched(false); }
+            if (Swimming) { _wallT = 0f; _flickerTimer = 0f; _iframeT = 0f; SetCrouched(false); }
         }
 
         // -------------------------------------------------------------- ground
@@ -612,6 +615,7 @@ namespace Emberline.Player
             _moveDur = Mathf.Max(0.05f, duration);
             _wallT = 0f;
             _flickerTimer = 0f;
+            _iframeT = 0f;
             _impulse = Vector3.zero;
             _hint = default;
             Busy = true;
@@ -875,6 +879,7 @@ namespace Emberline.Player
             // becomes a repositioning tool rather than a trade.
             _flickerCd = FlickerCooldown * (Core.SkillTree.Has("warp_haste") ? 0.55f : 1f);
             _flickerTimer = flickerDuration * 0.6f;
+            _iframeT = _flickerTimer * Core.FeelTuning.DodgeIFrames;
             _rig?.SpawnAfterImage();
             _cc.enabled = false;
             transform.position = pos;
@@ -911,6 +916,7 @@ namespace Emberline.Player
             SetCrouched(false);
             _flickerCd = FlickerCooldown;
             _flickerTimer = flickerDuration;
+            _iframeT = flickerDuration * Core.FeelTuning.DodgeIFrames;
             Core.Sfx3D.DodgeBark();
             Core.Sfx3D.Cloth(transform.position);
             _rig?.PlayOneShot(Core.RigPose.Dash, flickerDuration);
