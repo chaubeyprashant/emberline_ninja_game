@@ -417,7 +417,16 @@ namespace Emberline.EditorTools
             // Fires: the light source that makes the camp visible from the ridge,
             // and the thing a scout counts to guess the garrison.
             foreach (var (dx, dz) in new[] { (-2f, 5f), (6f, 0f), (-7f, 0f) })
-                EmberScatter.PlaceOnGround(parent, L("survival_campfire-pit"), c.x + dx, c.z + dz, 0f, Cell);
+            {
+                var fire = EmberScatter.PlaceOnGround(parent, L("survival_campfire-pit"), c.x + dx, c.z + dz, 0f, Cell);
+                if (fire == null) continue;
+                var a = fire.AddComponent<Core.LightAnchor>();
+                a.offset = new Vector3(0f, 0.8f, 0f);
+                a.color = new Color(1f, 0.5f, 0.2f);
+                a.range = 9f;
+                a.intensity = 2.2f;
+                a.flicker = true;
+            }
 
             // Training ground on the open side: targets, racks, and the archery butts.
             foreach (var (dx, dz, yaw) in new[] { (-4f, -12f, 20f), (-1f, -13f, 15f), (2f, -12.5f, 10f) })

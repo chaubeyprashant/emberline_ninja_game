@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 9040764955097179775}
   - component: {fileID: 8194902659948461919}
   - component: {fileID: 4281954366848383491}
+  - component: {fileID: 4549506588151737848}
   m_Layer: 0
   m_Name: jpk_toro
   m_TagString: Untagged
@@ -113,3 +114,20 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 0.92, y: 2.17, z: 0.79674345}
   m_Center: {x: 0, y: 0.885, z: 0}
+--- !u!114 &4549506588151737848
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2404059541846895838}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b6d7c8685d8ec4dc5add3beae52e796f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Emberline.Core.LightAnchor
+  offset: {x: 0, y: 1.3, z: 0}
+  color: {r: 1, g: 0.62, b: 0.32, a: 1}
+  intensity: 1.5
+  range: 6.5
+  flicker: 0

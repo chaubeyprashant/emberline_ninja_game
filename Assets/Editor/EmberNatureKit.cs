@@ -110,7 +110,9 @@ namespace Emberline.EditorTools
             mat.shader = SurfaceKit.SurfaceShader;
             SurfaceKit.Apply(mat, leaf ? Surface.Foliage : Surface.Wood, Color.white);
             mat.mainTexture = albedo;
-            mat.enableInstancing = true;
+            // No instancing: an instanced draw renders every tree at one Mesh LOD
+            // level, and per-tree LOD is the reason these trees can be afforded.
+            mat.enableInstancing = false;
             if (leaf)
             {
                 mat.EnableKeyword("_ALPHATEST_ON");

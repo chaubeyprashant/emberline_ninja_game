@@ -269,7 +269,11 @@ namespace Emberline.EditorTools
             {
                 var go = r.gameObject;
                 if (player != null && go.transform.IsChildOf(player.transform)) continue;
-                GameObjectUtility.SetStaticEditorFlags(go, flags);
+                // The Quaternius hero trees carry Unity 6 Mesh LODs, which a static
+                // batch would merge away; they keep occlusion but draw on their own.
+                var root = PrefabUtility.GetNearestPrefabInstanceRoot(go);
+                var hero = root != null && root.name.StartsWith("qn_");
+                GameObjectUtility.SetStaticEditorFlags(go, hero ? flags & ~StaticEditorFlags.BatchingStatic : flags);
             }
         }
 

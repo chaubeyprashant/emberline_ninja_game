@@ -37,6 +37,14 @@ namespace Emberline.DebugTools
 
         public float settle = 6f, sample = 20f, fightSample = 30f;
         public int fps;
+        /// <summary>Editor: render the game camera to Logs/tour_*.png at each stop.</summary>
+        public bool shots;
+        /// <summary>Hold explore's clock at 21:00 so lanterns and fires are lit.</summary>
+        public bool night;
+        /// <summary>Editor: also log the engine's render stats per stop, and (ab) the same view with the old three-light rig.</summary>
+        public bool render, ab;
+        /// <summary>Editor: log the triangles in view per mesh family at each stop.</summary>
+        public bool breakdown;
         public System.Action<int> onFinished;
 
         private static bool _running;
@@ -70,6 +78,11 @@ namespace Emberline.DebugTools
                 var o = raw.Trim().ToLowerInvariant();
                 if (o == "quick") { run.settle = 3f; run.sample = 5f; run.fightSample = 8f; }
                 else if (o.StartsWith("fps=") && int.TryParse(o.Substring(4), out var f)) run.fps = f;
+                else if (o == "shots") run.shots = true;
+                else if (o == "night") run.night = true;
+                else if (o == "render") run.render = true;
+                else if (o == "breakdown") run.breakdown = true;
+                else if (o == "ab") { run.render = true; run.ab = true; }
             }
             return run;
         }
@@ -156,6 +169,11 @@ namespace Emberline.DebugTools
             if (gm == null || gm.State != GameManager.Phase.Playing) { Finish(3, "explore never started"); yield break; }
 
             gm.PlayerHealth?.SetMax(100000f);
+            if (night && TimeOfDay.Instance != null)
+            {
+                TimeOfDay.Instance.SetHour(21f);
+                TimeOfDay.Instance.Running = false;
+            }
             if (fps > 0)
             {
                 if (PerfGovernor.Instance != null) PerfGovernor.Instance.enabled = false;
@@ -167,6 +185,7 @@ namespace Emberline.DebugTools
             {
                 yield return Place(l);
                 yield return Measure(l.id, l.name, sample);
+                yield return Shot(l.id);
             }
 
             // The audit's worst ordinary case: eight mixed fighters on the player.
@@ -179,6 +198,7 @@ namespace Emberline.DebugTools
                 gm.SpawnOne(kinds[i], false,
                     motor.transform.position + Quaternion.Euler(0f, i * 45f, 0f) * Vector3.forward * 6f);
             yield return Measure("fight8", "Eight-enemy fight at Yorune", fightSample);
+            yield return Shot("fight8");
 
             Finish(0, null);
         }
@@ -287,6 +307,150 @@ namespace Emberline.DebugTools
              .I("target_fps", Application.targetFrameRate)
              .I("thermal_step", PerfGovernor.ThermalStep);
             Emit(j);
+        }
+
+        /// <summary>
+        /// Editor only. Optionally saves the live camera's view (shots), and logs
+        /// the engine's stats for the game's own frame (render). UnityStats
+        /// only move for a manual Render in batch play (no Game view draws), and
+        /// show it one frame late: each variant renders, waits a frame, then reads.
+        /// </summary>
+        private IEnumerator Shot(string id)
+        {
+#if UNITY_EDITOR
+            if (!shots && !render) yield break;
+            var cam = Camera.main != null ? Camera.main : FindAnyObjectByType<Camera>();
+            if (cam == null) { Debug.LogWarning($"{Tag} shot {id}: no camera"); yield break; }
+
+            var statsRt = RenderTexture.GetTemporary(1600, 720, 24);
+            IEnumerator Measured(string rigName)
+            {
+                var keepRt = cam.targetTexture;
+                cam.targetTexture = statsRt;
+                cam.Render();
+                cam.targetTexture = keepRt;
+                yield return null;
+                Emit(Stats(new Json().S("kind", "render").S("id", id).S("rig", rigName)));
+            }
+
+            if (render)
+            {
+                yield return Measured("folded");
+                if (ab)
+                {
+                    var rig = FindAnyObjectByType<LightRig>();
+                    var lights = new List<Light>();
+                    foreach (var n in new[] { "FillLight", "RimLight" })
+                    {
+                        var go = GameObject.Find(n);
+                        var l = go != null ? go.GetComponent<Light>() : null;
+                        if (l != null) lights.Add(l);
+                    }
+                    var pl = QualitySettings.pixelLightCount;
+                    if (rig != null) rig.enabled = false;   // stop it re-pushing the folded fill
+                    var keys = new[] { "_EmberFillColor", "_EmberBackColor" };
+                    var keep = new Vector4[2];
+                    for (var i = 0; i < 2; i++) { keep[i] = Shader.GetGlobalVector(keys[i]); Shader.SetGlobalVector(keys[i], Vector4.zero); }
+
+                    // The pre-step-5 rig: fill and rim as real directional lights.
+                    foreach (var l in lights) { l.enabled = true; l.renderMode = LightRenderMode.Auto; }
+                    yield return Measured("three-auto");
+                    foreach (var l in lights) l.renderMode = LightRenderMode.ForcePixel;
+                    yield return Measured("three-forcepixel");
+                    foreach (var l in lights) { l.renderMode = LightRenderMode.Auto; l.enabled = false; }
+                    // Key light only, no lanterns: what the point lights cost.
+                    QualitySettings.pixelLightCount = 1;
+                    yield return Measured("key-only");
+
+                    QualitySettings.pixelLightCount = pl;
+                    for (var i = 0; i < 2; i++) Shader.SetGlobalVector(keys[i], keep[i]);
+                    if (rig != null) rig.enabled = true;
+                    yield return null;
+                }
+            }
+            RenderTexture.ReleaseTemporary(statsRt);
+            if (breakdown) Emit(Breakdown(id, cam));
+            if (!shots) yield break;
+
+            var rt = RenderTexture.GetTemporary(1600, 720, 24);
+            var prev = cam.targetTexture;
+            cam.targetTexture = rt;
+            cam.Render();
+            cam.targetTexture = prev;
+            RenderTexture.active = rt;
+            var tex = new Texture2D(1600, 720, TextureFormat.RGB24, false);
+            tex.ReadPixels(new Rect(0, 0, 1600, 720), 0, 0);
+            tex.Apply();
+            RenderTexture.active = null;
+            RenderTexture.ReleaseTemporary(rt);
+            var file = Path.Combine(Application.dataPath, "..", "Logs", $"tour_{id}.png");
+            File.WriteAllBytes(file, tex.EncodeToPNG());
+            Debug.Log($"{Tag} shot {file}");
+            Destroy(tex);
+#else
+            yield break;
+#endif
+        }
+
+#if UNITY_EDITOR
+        private static Json Stats(Json j) => j
+            .I("draws", UnityEditor.UnityStats.drawCalls).I("static_batches", UnityEditor.UnityStats.staticBatches)
+            .I("setpass", UnityEditor.UnityStats.setPassCalls).I("tris", UnityEditor.UnityStats.triangles)
+            .I("shadow_casters", UnityEditor.UnityStats.shadowCasters)
+            .I("static_batched_draws", UnityEditor.UnityStats.staticBatchedDrawCalls)
+            .I("instanced_draws", UnityEditor.UnityStats.instancedBatchedDrawCalls)
+            .I("pixel_lights", QualitySettings.pixelLightCount)
+            .I("dir_lights_on", CountLights(LightType.Directional)).I("point_lights_on", CountLights(LightType.Point))
+            .S("dir_names", DirNames());
+
+        private static int CountLights(LightType t)
+        {
+            var n = 0;
+            foreach (var l in FindObjectsByType<Light>(FindObjectsSortMode.None))
+                if (l.enabled && l.type == t) n++;
+            return n;
+        }
+
+        private static string DirNames()
+        {
+            var sb = new StringBuilder();
+            foreach (var l in FindObjectsByType<Light>(FindObjectsInactive.Include, FindObjectsSortMode.None))
+                if (l.type == LightType.Directional)
+                    sb.Append(l.name).Append(l.enabled ? "+" : "-").Append(' ');
+            return sb.ToString().Trim();
+        }
+#endif
+
+        /// <summary>
+        /// What the triangles in view are: every renderer whose bounds touch the
+        /// frustum (no occlusion), its full-detail mesh, grouped by mesh name with
+        /// the digits and "(Clone)" stripped. Top twelve families.
+        /// </summary>
+        private static Json Breakdown(string id, Camera cam)
+        {
+            var planes = GeometryUtility.CalculateFrustumPlanes(cam);
+            var fam = new Dictionary<string, (long tris, int count)>();
+            long total = 0;
+            foreach (var r in FindObjectsByType<Renderer>(FindObjectsSortMode.None))
+            {
+                if (!r.enabled || !r.gameObject.activeInHierarchy) continue;
+                if (!GeometryUtility.TestPlanesAABB(planes, r.bounds)) continue;
+                Mesh m = r is SkinnedMeshRenderer sk ? sk.sharedMesh
+                    : r.TryGetComponent<MeshFilter>(out var mf) ? mf.sharedMesh : null;
+                if (m == null) continue;
+                long t = 0;
+                for (var i = 0; i < m.subMeshCount; i++) t += (long)m.GetIndexCount(i) / 3;
+                var key = (r is SkinnedMeshRenderer ? "skinned:" : r.isPartOfStaticBatch ? "static:" : "") +
+                          System.Text.RegularExpressions.Regex.Replace(m.name.Replace("Combined Mesh", "staticbatch"), @"[\d_ ]+$|\(Clone\)", "");
+                fam.TryGetValue(key, out var v);
+                fam[key] = (v.tris + t, v.count + 1);
+                total += t;
+            }
+            var j = new Json().S("kind", "breakdown").S("id", id).I("tris_full", (int)total);
+            var sb = new StringBuilder();
+            foreach (var kv in System.Linq.Enumerable.Take(System.Linq.Enumerable.OrderByDescending(fam, kv => kv.Value.tris), 12))
+                sb.Append(kv.Key).Append('=').Append(kv.Value.tris / 1000).Append("k/").Append(kv.Value.count).Append("; ");
+            return j.S("top", sb.ToString());
         }
 
         private static float Pct(List<float> sorted, float q) =>

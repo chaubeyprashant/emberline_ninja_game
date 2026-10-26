@@ -374,8 +374,23 @@ namespace Emberline.EditorTools
                 box.size = solidSize ?? mesh.bounds.size;
             }
             go.isStatic = true;
+            // Where real light comes from: LanternLights lends these a point light
+            // when they are among the nearest to the camera.
+            if (name == "jpk_toro")
+                Anchor(go, new Vector3(0f, 1.3f, 0f), 6.5f, 1.5f);
+            else if (name is "jpk_minka_s_lit" or "jpk_minka_m")
+                Anchor(go, new Vector3(0f, 1.8f, -4.2f), 8f, 1.1f);
             PrefabUtility.SaveAsPrefabAsset(go, $"{PrefabDir}/{name}.prefab");
             Object.DestroyImmediate(go);
+        }
+
+        private static void Anchor(GameObject go, Vector3 offset, float range, float intensity)
+        {
+            var a = go.AddComponent<LightAnchor>();
+            a.offset = offset;
+            a.range = range;
+            a.intensity = intensity;
+            a.color = new Color(1f, 0.62f, 0.32f);
         }
 
         // -------------------------------------------------------- mesh builder

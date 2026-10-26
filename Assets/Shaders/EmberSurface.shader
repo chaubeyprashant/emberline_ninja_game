@@ -1,4 +1,8 @@
 // Mobile-lean physically-based surface shader for the realistic pass.
+// No GPU instancing, measured (2026-10-21): the streamed region is many different
+// small Kenney meshes on one material, which dynamic batching merges; instancing
+// split them into per-mesh groups and cost ~5% more draws across the tour. The
+// instance-ID macros stay and compile to nothing without the pragma.
 // Replaces Emberline/Toon: no cel banding, no inverted-hull ink outline.
 // GGX specular + Lambert diffuse, real shadow receiving (the toon shader cast
 // shadows via its fallback but never received them, which is why surfaces never
@@ -45,6 +49,11 @@ Shader "Emberline/Surface"
         float _Smoothness, _Metallic, _AmbientBoost;
         float _RimPower, _RimStrength, _WearStrength, _WearScale;
         float _Cutoff;
+        // The rig's fill and back light, folded into the base pass by LightRig.
+        // As real directional lights each cost an additive pass over every
+        // object in view; as two dot products they cost nothing. Zero when no
+        // rig is present, so a scene without one is simply key-lit.
+        float4 _EmberFillColor, _EmberFillDir, _EmberBackColor, _EmberBackDir;
 
         // Cheap value noise — three sine octaves in world space. Not a beauty
         // filter; it exists to stop large flat albedo blocks reading as plastic.
@@ -82,6 +91,7 @@ Shader "Emberline/Surface"
                 float4 vertex : POSITION;
                 float3 normal : NORMAL;
                 float2 texcoord : TEXCOORD0;
+                UNITY_VERTEX_INPUT_INSTANCE_ID
             };
 
             struct v2f
@@ -97,6 +107,7 @@ Shader "Emberline/Surface"
             v2f vert (appdata_t v)
             {
                 v2f o;
+                UNITY_SETUP_INSTANCE_ID(v);   // the instanced object-to-world matrix
                 o.pos = UnityObjectToClipPos(v.vertex);
                 o.n = UnityObjectToWorldNormal(v.normal);
                 o.uv = TRANSFORM_TEX(v.texcoord, _MainTex);
@@ -143,8 +154,11 @@ Shader "Emberline/Surface"
                 float3 ambient = lerp(gndAmb, skyAmb, saturate(n.y * 0.5 + 0.5));
                 ambient *= _AmbientBoost;
 
+                float3 rigLight = _EmberFillColor.rgb * saturate(dot(n, _EmberFillDir.xyz))
+                                + _EmberBackColor.rgb * saturate(dot(n, _EmberBackDir.xyz));
+
                 float rim = pow(1.0 - saturate(dot(viewDir, n)), _RimPower);
-                float3 col = direct + diffColor * ambient
+                float3 col = direct + diffColor * (ambient + rigLight)
                              + _RimColor.rgb * rim * _RimStrength * saturate(ndl + 0.35);
 
                 fixed4 outc = fixed4(col, 1);
@@ -172,6 +186,7 @@ Shader "Emberline/Surface"
                 float4 vertex : POSITION;
                 float3 normal : NORMAL;
                 float2 texcoord : TEXCOORD0;
+                UNITY_VERTEX_INPUT_INSTANCE_ID
             };
 
             struct v2f
@@ -187,6 +202,7 @@ Shader "Emberline/Surface"
             v2f vert (appdata_t v)
             {
                 v2f o;
+                UNITY_SETUP_INSTANCE_ID(v);   // the instanced object-to-world matrix
                 o.pos = UnityObjectToClipPos(v.vertex);
                 o.n = UnityObjectToWorldNormal(v.normal);
                 o.uv = TRANSFORM_TEX(v.texcoord, _MainTex);
@@ -237,6 +253,7 @@ Shader "Emberline/Surface"
             v2fS vertS(appdata_base v)
             {
                 v2fS o;
+                UNITY_SETUP_INSTANCE_ID(v);
                 TRANSFER_SHADOW_CASTER_NORMALOFFSET(o)
                 o.uv = TRANSFORM_TEX(v.texcoord, _MainTex);
                 return o;

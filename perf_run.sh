@@ -17,7 +17,6 @@ cd "$(dirname "$0")"
 ADB="${ADB:-$HOME/Library/Android/sdk/platform-tools/adb}"
 UNITY="${UNITY:-/Applications/Unity/Hub/Editor/6000.5.9f1/Unity.app/Contents/MacOS/Unity}"
 PKG=com.ergebins.emberline3d
-ACT=com.unity3d.player.UnityPlayerGameActivity
 APK=Builds/emberline-dev.apk
 
 build=0; opts=1; limit=1500
@@ -68,7 +67,9 @@ trap 'kill $logpid 2>/dev/null || true' EXIT
 
 echo "==> running (options: $opts); keep the phone awake and untouched"
 "$ADB" shell input keyevent KEYCODE_WAKEUP </dev/null
-"$ADB" shell am start -S -n "$PKG/$ACT" --es perfrun "$opts" </dev/null >/dev/null
+# The launcher activity's class changes with Unity's player template; ask the phone.
+ACT=$("$ADB" shell cmd package resolve-activity --brief "$PKG" </dev/null | tail -1 | tr -d '\r')
+"$ADB" shell am start -S -n "$ACT" --es perfrun "$opts" </dev/null >/dev/null
 
 waited=0
 until grep -q '"kind":"done"' "$raw" 2>/dev/null; do

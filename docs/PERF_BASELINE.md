@@ -251,6 +251,38 @@ correctness check on the overlay itself more than a performance goal.
 
 ## 6. Results log
 
+### First device baseline — 2026-10-21, automated tour
+
+Galaxy A33 (Mali-G68, Vulkan), development build 1.2.0+steps 1-6, tier 1 but the
+phone's `fps_cap` set to **60**, Mobile Ads initialised (test device), daytime
+explore. Raw: `Logs/perf_20261021_2323.jsonl`.
+
+| Stop | FPS | p95 ms | CPU p95 | GPU p95 | SetPass | Tris k | Sys MB |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| Yorune | 59 | 16.8 | 16.6 | 17.4 | 88 | 168 | 712 |
+| Raiders' camp | 59 | 16.7 | 13.7 | 16.2 | 129 | 170 | 713 |
+| Wayshrine | 59 | 16.7 | 13.2 | 18.7 | 138 | 222 | 707 |
+| North pass | 60 | 16.7 | 13.6 | 16.5 | 74 | 140 | 672 |
+| Pilgrim pass | 60 | 16.7 | 14.4 | 16.8 | 129 | 188 | 700 |
+| Toll gap | 60 | 16.7 | 12.1 | 16.2 | 62 | 139 | 677 |
+| Falls | 60 | 16.7 | 11.8 | 16.4 | 70 | 115 | 680 |
+| Hill temple | 60 | 16.7 | 11.9 | 15.0 | 69 | 121 | 680 |
+| Stronghold | 60 | 16.7 | 12.4 | 16.0 | 70 | 140 | 668 |
+| The Hollow | 59 | 16.8 | 11.5 | 16.0 | 94 | 151 | 652 |
+| Drowned marsh | 60 | 16.8 | 14.7 | 17.0 | 89 | 165 | 668 |
+| Kawai hamlet | 60 | 16.7 | 14.5 | 17.1 | 84 | 173 | 650 |
+| Shinobi hollow | 59 | 16.8 | 14.5 | 15.6 | 45 | 120 | 655 |
+| **8-enemy fight** | **46** | **33.5** | **24.6** | **25.5** | 195 | 352 | 635 |
+
+Reading: every landmark holds 60 fps, but with GPU p95 at 15-19 ms there is no
+headroom left at 60 — the 30 fps tier-1 default is the right one. The fight
+cannot hold 60 (CPU and GPU both ~25 ms) and would hold 30. Memory sits at
+650-710 MB. The `Draws` counter reads 0 on this device (not exposed on Vulkan
+development players); SetPass and triangles are valid. No ad-related hitches
+showed: ads loaded during the run without frame spikes.
+
+
+
 Copy this table per build. `Build` is the version code from
 `EmberlineBootstrap`; keep the git SHA so a regression can be bisected.
 

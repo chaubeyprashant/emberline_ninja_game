@@ -21,11 +21,16 @@ namespace Emberline.UI
         [SerializeField] private float exposure = 1.05f;
         [SerializeField] private Color lift = new(0.03f, 0.045f, 0.065f, 0f);
         [SerializeField] private Color gain = new(1.03f, 1.0f, 0.95f, 0f);
+        [SerializeField] private float bloomIntensity = 0.9f;
+        [SerializeField] private float bloomThreshold = 0.62f;
 
         private Material _mat;
 
         /// <summary>Set by the graphics tier; false skips the pass completely.</summary>
         public static bool Enabled { get; set; } = true;
+
+        /// <summary>Set by the graphics tier (LightRig): three quarter-res-and-below passes.</summary>
+        public static bool Bloom { get; set; } = true;
 
         private void OnRenderImage(RenderTexture src, RenderTexture dst)
         {
@@ -46,7 +51,30 @@ namespace Emberline.UI
             _mat.SetFloat("_Exposure", exposure);
             _mat.SetColor("_Lift", lift);
             _mat.SetColor("_Gain", gain);
-            Graphics.Blit(src, dst, _mat);
+
+            RenderTexture q = null, e = null, s = null;
+            if (Bloom && bloomIntensity > 0f)
+            {
+                // Quarter → eighth → sixteenth and back up to an eighth: wide enough
+                // for a lantern's halo, small enough to cost little fill.
+                var w = Mathf.Max(1, src.width / 4); var h = Mathf.Max(1, src.height / 4);
+                q = RenderTexture.GetTemporary(w, h, 0, src.format);
+                e = RenderTexture.GetTemporary(Mathf.Max(1, w / 2), Mathf.Max(1, h / 2), 0, src.format);
+                s = RenderTexture.GetTemporary(Mathf.Max(1, w / 4), Mathf.Max(1, h / 4), 0, src.format);
+                _mat.SetFloat("_Threshold", bloomThreshold);
+                Graphics.Blit(src, q, _mat, 1);
+                Graphics.Blit(q, e, _mat, 2);
+                Graphics.Blit(e, s, _mat, 2);
+                Graphics.Blit(s, e, _mat, 2);
+                _mat.SetTexture("_BloomTex", e);
+                _mat.SetFloat("_BloomIntensity", bloomIntensity);
+            }
+            else _mat.SetFloat("_BloomIntensity", 0f);
+
+            Graphics.Blit(src, dst, _mat, 0);
+            if (q != null) RenderTexture.ReleaseTemporary(q);
+            if (e != null) RenderTexture.ReleaseTemporary(e);
+            if (s != null) RenderTexture.ReleaseTemporary(s);
         }
 
         private void OnDisable()

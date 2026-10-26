@@ -130,6 +130,7 @@ namespace Emberline.EditorTools
             go.isStatic = true;
 
             AddCollider(go, spec, scale);
+            Core.RenderLayers.Classify(go, spec.body != Body.None);
             return go;
         }
 
