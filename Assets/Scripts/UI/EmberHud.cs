@@ -53,6 +53,7 @@ namespace Emberline.UI
         private Image _vignette;
         private float _vignetteT;
         private int _waveStamp = -1;
+        private bool _doubleRewardClaimed;
         private TMP_Text _hpLabel, _bossLabel, _waveLabel, _comboText, _objectiveText, _bannerText, _hintText;
 
         /// <summary>
@@ -323,6 +324,7 @@ namespace Emberline.UI
 
         private void SetScreen(Screen s)
         {
+            if (s is Screen.Hud or Screen.Briefing or Screen.MenuRoot) _doubleRewardClaimed = false;
             _screen = s;
             if (_screenRoot != null)
             {
@@ -1769,6 +1771,33 @@ namespace Emberline.UI
             }
             else
             {
+                if (MonetizationManager.Instance != null && MonetizationManager.Instance.PrivacyOptionsRequired)
+                {
+                    UiKit.MakeButton(panel, "AD PRIVACY", new Vector2(0.5f, 0f), new Vector2(0, 108),
+                        new Vector2(220, 46), () => MonetizationManager.Instance.ShowPrivacyOptions(), 14);
+                }
+                if (AuthManager.Instance != null && AuthManager.Instance.IsAuthenticated)
+                {
+                    // Two taps: the first arms it, the second deletes.
+                    TMP_Text deleteLabel = null;
+                    var armed = false;
+                    var delete = UiKit.MakeButton(panel, "DELETE ACCOUNT", new Vector2(0.5f, 0f), new Vector2(0, 176),
+                        new Vector2(260, 46), () =>
+                        {
+                            if (!armed)
+                            {
+                                armed = true;
+                                if (deleteLabel != null) deleteLabel.text = "TAP AGAIN TO DELETE";
+                                return;
+                            }
+                            AuthManager.Instance.DeleteAccount((ok, msg) =>
+                            {
+                                if (deleteLabel != null) deleteLabel.text = ok ? "ACCOUNT DELETED" : "NOT DELETED";
+                                _gm.Announce(msg.ToUpperInvariant());
+                            });
+                        }, 14);
+                    deleteLabel = delete.GetComponentInChildren<TMP_Text>();
+                }
                 UiKit.MakeButton(panel, "CLOSE", new Vector2(0.5f, 0f), new Vector2(0, 40),
                     new Vector2(200, 56), CloseSettings, 20);
             }
@@ -2662,12 +2691,27 @@ namespace Emberline.UI
                 else nextLabel = "RETURN TO YORUNE";
             }
 
+            var buttons = new System.Collections.Generic.List<(string label, System.Action action)>();
+            if (!_doubleRewardClaimed && _gm.ShardsEarned > 0)
+            {
+                buttons.Add(($"+ 2X SHARDS (+{_gm.ShardsEarned}) (AD)", () => PromptDoubleRewardVictory()));
+            }
+
             if (duel)
-                ResultButtons(("NEXT OPPONENT", () => _gm.NextDuel()), ("REMATCH", () => _gm.Retry()),
-                    ("MENU", () => _gm.OpenMenu()));
+            {
+                buttons.Add(("NEXT OPPONENT", () => AfterInterstitial(() => _gm.NextDuel(), true)));
+                buttons.Add(("REMATCH", () => _gm.Retry()));
+                buttons.Add(("MENU", () => AfterInterstitial(() => _gm.OpenMenu(), true)));
+            }
             else
-                ResultButtons((nextLabel, () => _gm.NextStoryLevel()), ("REPLAY", () => _gm.Retry()),
-                    ("MENU", () => _gm.OpenMenu()));
+            {
+                // Never an interstitial in the first two missions.
+                var eligible = _gm.CurrentLevel != null && _gm.CurrentLevel.id > 2;
+                buttons.Add((nextLabel, () => AfterInterstitial(() => _gm.NextStoryLevel(), eligible)));
+                buttons.Add(("REPLAY", () => _gm.Retry()));
+                buttons.Add(("MENU", () => AfterInterstitial(() => _gm.OpenMenu(), eligible)));
+            }
+            ResultButtons(buttons.ToArray());
         }
 
         private void BuildDefeat()
@@ -2680,16 +2724,30 @@ namespace Emberline.UI
             if (_gm.ModeNow == LaunchMode.Endless)
             {
                 BuildRunReport();
-                ResultButtons(("RISE AGAIN", () => _gm.Retry()),
-                    ("THE FORGE", () => SetScreen(Screen.Forge)),
-                    ("MENU", () => _gm.OpenMenu()));
+                var endlessBtns = new System.Collections.Generic.List<(string label, System.Action action)>();
+                if (_gm.CanRevive)
+                {
+                    endlessBtns.Add(("+ SECOND WIND (AD)", () => PromptReviveAd()));
+                }
+                endlessBtns.Add(("RISE AGAIN", () => _gm.Retry()));
+                endlessBtns.Add(("THE FORGE", () => SetScreen(Screen.Forge)));
+                endlessBtns.Add(("MENU", () => _gm.OpenMenu()));
+                ResultButtons(endlessBtns.ToArray());
                 return;
             }
             var t = Mathf.RoundToInt(_gm.MissionTime);
             UiKit.Label(_screenRoot,
                 $"{t / 60}:{t % 60:00}   ·   {_gm.Kills} defeated   ·   {Mathf.RoundToInt(_gm.DamageTaken)} damage taken",
                 14, UiKit.Dim, new Vector2(0.5f, 1), new Vector2(0, -190), new Vector2(800, 20));
-            ResultButtons(("RISE AGAIN", () => _gm.Retry()), ("MENU", () => _gm.OpenMenu()));
+
+            var defeatButtons = new System.Collections.Generic.List<(string label, System.Action action)>();
+            if (_gm.CanRevive)
+            {
+                defeatButtons.Add(("+ SECOND WIND (AD)", () => PromptReviveAd()));
+            }
+            defeatButtons.Add(("RISE AGAIN", () => _gm.Retry()));
+            defeatButtons.Add(("MENU", () => _gm.OpenMenu()));
+            ResultButtons(defeatButtons.ToArray());
         }
 
         /// <summary>
@@ -2731,6 +2789,102 @@ namespace Emberline.UI
                 $"+{Endless.RunStats.RyoEarned:N0} ryo"
                 + (Endless.RunStats.ShardsEarned > 0 ? $"   ·   +{Endless.RunStats.ShardsEarned} shards" : ""),
                 15, UiKit.EmberBright, new Vector2(0.5f, 1), new Vector2(0, -358), new Vector2(800, 20));
+
+            if (!_doubleRewardClaimed && (Endless.RunStats.RyoEarned > 0 || Endless.RunStats.ShardsEarned > 0))
+            {
+                UiKit.MakeButton(_screenRoot,
+                    $"+ DOUBLE MARCH SPOILS (+{Endless.RunStats.RyoEarned:N0} RYO) (AD)",
+                    new Vector2(0.5f, 1), new Vector2(0, -396), new Vector2(380, 40),
+                    () => PromptDoubleRewardEndless(), 12, primary: true)
+                    .gameObject.AddComponent<AdReadyGate>();
+            }
+        }
+
+        /// <summary>Leave the result card through a paced interstitial (usually none).</summary>
+        private static void AfterInterstitial(System.Action next, bool eligible) =>
+            MonetizationManager.Instance.ShowPacedInterstitial(next, eligible);
+
+        private void PromptReviveAd()
+        {
+            if (MonetizationManager.Instance != null)
+            {
+                MonetizationManager.Instance.ShowRewardedAd(
+                    onRewardSuccess: () =>
+                    {
+                        _gm.RevivePlayer(0.5f);
+                    },
+                    onFailedOrSkipped: () =>
+                    {
+                        _gm.Announce("AD NOT READY — RETRY IN A MOMENT");
+                    },
+                    placement: "revive");
+            }
+            else
+            {
+                _gm.Announce("ADS INITIALIZING — RETRY SHORTLY");
+            }
+        }
+
+        private void PromptDoubleRewardVictory()
+        {
+            if (_doubleRewardClaimed) return;
+            if (MonetizationManager.Instance != null)
+            {
+                MonetizationManager.Instance.ShowRewardedAd(
+                    onRewardSuccess: () =>
+                    {
+                        _doubleRewardClaimed = true;
+                        _gm.DoubleVictoryRewards();
+                        SetScreen(Screen.Result);
+                    },
+                    onFailedOrSkipped: () =>
+                    {
+                        _gm.Announce("AD NOT COMPLETED");
+                    },
+                    placement: "double_victory");
+            }
+            else
+            {
+                _doubleRewardClaimed = true;
+                _gm.DoubleVictoryRewards();
+                SetScreen(Screen.Result);
+            }
+        }
+
+        private void PromptDoubleRewardEndless()
+        {
+            if (_doubleRewardClaimed) return;
+            var ryo = Endless.RunStats.RyoEarned;
+            var shards = Endless.RunStats.ShardsEarned;
+            if (ryo <= 0 && shards <= 0) return;
+
+            if (MonetizationManager.Instance != null)
+            {
+                MonetizationManager.Instance.ShowRewardedAd(
+                    onRewardSuccess: () =>
+                    {
+                        _doubleRewardClaimed = true;
+                        Endless.RunStats.EarnRyo(ryo);
+                        if (shards > 0) Endless.RunStats.EarnShard(shards);
+                        _gm.Announce($"SPOILS DOUBLED! +{ryo} RYO" + (shards > 0 ? $" · +{shards} SHARDS" : ""));
+                        Sfx3D.Surge();
+                        SetScreen(Screen.Result);
+                    },
+                    onFailedOrSkipped: () =>
+                    {
+                        _gm.Announce("AD NOT COMPLETED");
+                    },
+                    placement: "double_march");
+            }
+            else
+            {
+                _doubleRewardClaimed = true;
+                Endless.RunStats.EarnRyo(ryo);
+                if (shards > 0) Endless.RunStats.EarnShard(shards);
+                _gm.Announce($"SPOILS DOUBLED! +{ryo} RYO" + (shards > 0 ? $" · +{shards} SHARDS" : ""));
+                Sfx3D.Surge();
+                SetScreen(Screen.Result);
+            }
         }
 
         private void DailyLine()
@@ -2757,8 +2911,9 @@ namespace Emberline.UI
                 var x = left + w * 0.5f;
                 left += w + gap;
                 var (label, action) = buttons[i];
-                UiKit.MakeButton(_screenRoot, label, new Vector2(0.5f, 0), new Vector2(x, 60),
+                var b = UiKit.MakeButton(_screenRoot, label, new Vector2(0.5f, 0), new Vector2(x, 60),
                     new Vector2(w, 50), () => { Sfx3D.Confirm(); action(); }, 13, primary: i == 0);
+                if (label.EndsWith("(AD)")) b.gameObject.AddComponent<AdReadyGate>();
             }
         }
 

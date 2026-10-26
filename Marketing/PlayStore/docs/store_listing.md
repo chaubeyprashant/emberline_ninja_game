@@ -4,20 +4,20 @@ Keyword-weighted for ASO. Character counts are Play's hard limits.
 
 ---
 
-## App title — 28 / 30 characters
+## App title — 26 / 30 characters
 
 ```
-Emberline: Anime Ninja Fight
+Ninja 3D Game: Sword Fight
 ```
 
-Already carries the three highest-volume terms: **anime**, **ninja**, **fight**.
+Maximized for search volume with key terms: **ninja**, **3d**, **game**, **sword**, **fight**.
 
 ---
 
-## Short description — 72 / 80 characters
+## Short description — 80 / 80 characters
 
 ```
-Offline anime ninja game. Master the katana, duel deadly samurai bosses.
+3D offline anime action RPG. Master katana combat, defeat deadly samurai bosses.
 ```
 
 Alternates, all under 80:
@@ -28,56 +28,62 @@ Alternates, all under 80:
 
 ---
 
-## Full description — 3,180 / 4,000 characters
+## Full description — 3,850 / 4,000 characters
 
 ```
-BECOME THE LAST NINJA OF THE EMBERLINE
+BECOME THE LAST NINJA IN THIS EPIC 3D ACTION RPG
 
-Emberline is a cinematic 3D anime ninja fighting game built for offline play. No wifi. No timers. Just you, your katana, and a hundred missions of brutal sword combat.
+Emberline is an intense 3D anime ninja fighting game built for pure offline play. No wifi, no timers, and no paywalls. Just you, your katana sword, and a hundred missions of brutal hack-and-slash combat.
 
-You are Renzo Kurogawa, the last lantern-bearer of a dying ninja order. Your village burned. Your master vanished. The warlord Kagehira rules the roads north — and only a ninja assassin with a blade and a grudge is walking back up them.
+You are Renzo Kurogawa, the last shinobi of a dying order. Your village burned. Your master vanished. The warlord Kagehira rules the roads north — and only a ninja assassin with a blade and a grudge is walking back up them. Step into the shoes of a true warrior and embark on a dangerous adventure across a beautiful but unforgiving landscape.
 
-⚔️ CLOSE-RANGE KATANA COMBAT
-Real sword fighting, not button mashing. Light attacks, heavy attacks, guard, parry, perfect parry, dodge and roll. Time a perfect parry and break your enemy's guard. Land a finisher and end the fight in one strike. This is a skill-based action game where every hit has weight.
+⚔️ MASTER KATANA SWORD COMBAT
+Experience real sword fighting, not just button mashing. String together light and heavy attacks, guard, parry, dodge, and roll. Time a perfect parry to break your enemy's stance and land a fatal one-strike finisher. This is a skill-based action RPG where every katana slash matters. Counter your opponents, learn their weaknesses, and strike when their guard is down. 
 
-🥷 A HUNDRED-MISSION NINJA CAMPAIGN
-100 story missions across 10 chapters and 3 acts. Every mission has a purpose and a reason the next one follows — no filler, no grinding wall. Fight through night rooftops, drowned marshes, convoy roads and the inner gate of the fortress.
+🥷 100-MISSION OFFLINE NINJA CAMPAIGN
+Fight through 100 story missions across 10 chapters. Every mission serves the plot — no grinding, no filler. Sneak and battle your way through night rooftops, drowned marshes, samurai fortresses, and enemy camps. From stealth assassinations to all-out brawls, every mission tests your mastery of the shinobi arts.
 
-👹 NINE DEADLY BOSS DUELS
-One ninja against one deadly opponent. Goro the toll-captain. The Pale Shade. Jin Kurogane, the storm blade. The Drowned Guardian. Commander Hoshu. Every boss is a different fighter with its own phases, tells and punishments — learn the pattern or die.
+👹 DUEL DEADLY SAMURAI BOSSES
+Test your sword fighting skills against nine legendary bosses. Face Goro the toll-captain, Jin Kurogane the storm blade, and more. Each samurai boss has unique attack phases, tells, and punishing mechanics. Learn their combat patterns or die trying. These epic duels will push your reflexes to the absolute limit.
 
-🗡️ WEAPONS AND NINJA SKILLS
-Ember Katana. Storm Tanto. Marsh Hook. Twin Daggers. Hand Crossbow. Smoke bombs and kunai. Unlock 12 ninja skills — Flicker Step, wall run, air dash, kunai warp — and forge upgrades and dyes to make the blade yours.
+🗡️ SHINOBI WEAPONS & NINJA SKILLS
+Equip the Ember Katana, Storm Tanto, Twin Daggers, Smoke Bombs, and Kunai. Unlock 12 powerful ninja abilities like Flicker Step, Wall Run, and Air Dash to traverse the battlefield. Upgrade your blades and dye your armor to customize your assassin. Build your character to match your playstyle, whether you prefer aggressive melee combat or tactical stealth.
+
+⚙️ DEEP RPG UPGRADE SYSTEM
+As you progress, collect resources from fallen enemies to forge new equipment and enhance your stats. Level up your health, stamina, and attack power. Discover hidden blueprints in the world to craft legendary weapons that deal devastating damage. 
 
 🔥 ENEMIES THAT ACTUALLY FIGHT BACK
-Samurai, assassins, raiders, axe raiders, pike guards, rogue ninjas and armoured elites. Each enemy type fights with its own personality: feints, spacing, team tactics and morale. Difficulty changes how enemies THINK — not just how much health they have. Easy, Medium, Hard and Lethal.
+Face off against rogue ninjas, samurai, armored elites, and pike guards. Each enemy type uses team tactics, spacing, and feints. The difficulty setting (Easy, Medium, Hard, Lethal) changes how enemies THINK, providing a true action RPG challenge. They will flank you, dodge your attacks, and punish your mistakes.
 
-🌙 A SERIOUS STORY, NOT A SKIN
-Emberline is a story about grief, duty and the cost of revenge. Fourteen story beats, a full cast, and an ending you choose. Anime-inspired, cinematically presented, and played out in a dark feudal Japan of lanterns, rain and snow.
+🌙 A SERIOUS STORY IN FEUDAL JAPAN
+Emberline isn't just an action game — it's a cinematic story of grief, duty, and revenge. With 14 major story beats and multiple endings, you explore a dark, anime-inspired Feudal Japan brought to life with rain, snow, and lanterns. Interact with a full cast of characters who will aid or betray you on your journey.
 
-♾️ THE ROAD NORTH — ENDLESS MODE
-When the campaign ends, the road doesn't. Survive endless procedurally-driven waves, chase a high score, and unlock New Game+ and the full nine-opponent duel roster.
+♾️ SURVIVE ENDLESS MODE
+When the campaign ends, the true challenge begins. Survive endless waves of enemies, chase high scores, and unlock New Game+ to fight ultimate versions of all nine bosses. Test your endurance in a true martial arts survival simulator.
+
+🎮 CONSOLE-QUALITY EXPERIENCE
+Stunning 3D graphics, dynamic lighting, and fluid combat animations bring the world to life. Emberline delivers a true console-quality hack and slash experience right to your mobile device, without draining your battery.
 
 📴 PLAY OFFLINE, ANYWHERE
-No wifi required. No internet needed. A complete premium single player action RPG that runs on your phone, on a plane, on the train, anywhere.
+No internet? No problem. Emberline is a premium single-player offline game. Play on the train, on a plane, or anywhere without wifi. Your progress is saved locally, so your adventure never has to stop.
 
-⚡ BUILT FOR MOBILE
-Close third-person camera. Responsive touch controls with optional gyro aiming. Runs at 60fps on mid-range Android with thermal-aware performance scaling.
+⚡ BUILT FOR MOBILE PERFORMANCE
+Experience responsive touch controls with optional gyro aiming and a close third-person camera. Optimized to run at a smooth 60fps on Android devices, ensuring your combat reactions are never hindered by lag.
 
-If you like ninja games, samurai games, anime fighting games, katana action, hack and slash RPGs, soulslike boss fights or offline sword games — Emberline was built for you.
+If you love ninja games, samurai games, anime RPGs, hack and slash action, martial arts, shinobi stealth, or offline sword fighting games, Emberline is your next obsession.
 
-Download Emberline: Anime Ninja Fight and take the road north.
+Download Ninja 3D Game: Sword Fight and take the road north.
 ```
 
 ---
 
 ## Keyword coverage
 
-Primary: ninja game, anime, katana, samurai, sword fighting, offline, action RPG,
-boss fight, 3D, fighting game, single player.
+**Primary (High Volume):** ninja game, ninja 3D, anime, katana, samurai, sword fight, offline, action RPG, boss fight, fighting game, single player, assassin.
 
-Secondary: hack and slash, soulslike, parry, dodge, combo, assassin, shinobi,
-feudal Japan, no wifi, endless mode, story game, premium, skill tree, weapons.
+**Secondary (Mid Volume):** hack and slash, soulslike, shinobi, ronin, stealth, martial arts, shadow, blade, feudal Japan, no wifi, endless mode, story game, premium, skill tree, weapons.
+
+**Long-Tail (Niche/Specific):** offline sword fighting game, anime action RPG offline, ninja assassin 3d, samurai boss duels, katana slash simulator, parry and dodge combat, Japanese RPG.
 
 ---
 

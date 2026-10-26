@@ -413,6 +413,50 @@ namespace Emberline.Core
             PlayerPrefs.Save();
         }
 
+        // ========================================================= delete account
+
+        /// <summary>
+        /// Deletes the player's cloud data (users/{uid} in Firestore) and then the
+        /// Firebase account itself, and signs out. Google Play requires apps that
+        /// create accounts to offer this in the app. Progress saved on the phone
+        /// is left alone. <paramref name="done"/> gets (ok, message for the player).
+        /// </summary>
+        public void DeleteAccount(Action<bool, string> done)
+        {
+#if FIREBASE_AUTH
+            var user = _auth?.CurrentUser;
+            if (user == null) { done?.Invoke(false, "Not signed in."); return; }
+            var uid = user.UserId;
+            FirebaseFirestore.DefaultInstance.Collection("users").Document(uid).DeleteAsync()
+                .ContinueWithOnMainThread(docTask =>
+                {
+                    if (docTask.IsFaulted)
+                        Debug.LogWarning($"[Auth] Cloud data delete failed: {docTask.Exception?.Message}");
+                    user.DeleteAsync().ContinueWithOnMainThread(userTask =>
+                    {
+                        if (userTask.IsFaulted || userTask.IsCanceled)
+                        {
+                            var recent = false;
+                            if (userTask.Exception != null)
+                                foreach (var e in userTask.Exception.Flatten().InnerExceptions)
+                                    if (e is FirebaseException fe && fe.ErrorCode == (int)AuthError.RequiresRecentLogin)
+                                        recent = true;
+                            done?.Invoke(false, recent
+                                ? "Sign in again, then delete the account."
+                                : FriendlyError(userTask.Exception));
+                            return;
+                        }
+                        Debug.Log($"[Auth] Account {uid} deleted.");
+                        SignOut();
+                        done?.Invoke(true, "Account and cloud save deleted.");
+                    });
+                });
+#else
+            SignOut();
+            done?.Invoke(true, "Signed out. No cloud account in this build.");
+#endif
+        }
+
         // ================================================================ helpers
 
 #if UNITY_ANDROID && !UNITY_EDITOR

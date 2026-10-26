@@ -42,6 +42,8 @@ namespace Emberline
         public float BannerTimer { get; private set; }
         public int StarsEarned { get; private set; }
         public int ShardsEarned { get; private set; }
+        public bool HasRevivedThisSession { get; private set; }
+        public bool CanRevive => !HasRevivedThisSession && State == Phase.Lost;
 
         /// <summary>Enemies killed this mission. Reset when a mission configures.</summary>
         public int Kills { get; private set; }
@@ -298,6 +300,7 @@ namespace Emberline
         private void ConfigureFromSession()
         {
             Kills = 0;
+            HasRevivedThisSession = false;
             EnemyBrain.ResetAiTelemetry();
             switch (Session.Mode)
             {
@@ -863,6 +866,7 @@ namespace Emberline
             if (_director != null) ShardsEarned += _director.BonusShards;
             SkillTree.Shards += ShardsEarned;
             ScoreMission(won: true);
+            Core.MonetizationManager.Instance.OnMissionComplete();   // interstitial pacing
         }
 
         /// <summary>
@@ -926,6 +930,63 @@ namespace Emberline
                 Endless.RunHazard.ClearAll();
             }
             ScoreMission(won: false);
+            // The result card sits on top of the arena. Without this the enemies
+            // keep swinging behind it.
+            Player.CombatController.TimeFrozen = true;
+            Time.timeScale = 0f;
+        }
+
+        public void RevivePlayer(float hpFraction = 0.5f)
+        {
+            if (!CanRevive) return;
+            HasRevivedThisSession = true;
+            Player.CombatController.TimeFrozen = false;
+            Time.timeScale = 1f;
+            State = Phase.Playing;
+
+            if (_playerHealth != null)
+            {
+                _playerHealth.Heal(_playerHealth.MaxHp * hpFraction);
+                _playerHealth.InvulnerableTimer = 2.5f;
+            }
+
+            _playerRig?.Flash();
+            _playerRig?.SetMood(RigMood.Calm);
+            _playerRig?.PlayOneShot(RigPose.Idle, 0.5f);
+
+            // Give breathing room: nudge nearby enemies backward slightly
+            if (_playerT != null)
+            {
+                var here = _playerT.position;
+                FloatingText.Spawn(here + Vector3.up * 2.3f, "SECOND WIND!", new Color(1f, 0.84f, 0.2f), 1.6f);
+                for (var i = 0; i < EnemyBrain.Active.Count; i++)
+                {
+                    var e = EnemyBrain.Active[i];
+                    if (e != null && !e.Dead && Vector3.Distance(e.transform.position, here) < 6f)
+                    {
+                        var dir = (e.transform.position - here).normalized;
+                        if (dir == Vector3.zero) dir = Vector3.forward;
+                        e.transform.position += dir * 2.5f;
+                    }
+                }
+            }
+
+            Sfx3D.Surge();
+            Announce("SECOND WIND — RISE!");
+            UpdateMusicState();
+        }
+
+        public void DoubleVictoryRewards()
+        {
+            if (ShardsEarned > 0)
+            {
+                SkillTree.Shards += ShardsEarned;
+                FloatingText.Spawn(_playerT != null ? _playerT.position : Vector3.zero,
+                    $"+{ShardsEarned} SHARDS DOUBLED!", new Color(1f, 0.84f, 0.2f), 1.6f);
+            }
+            Wallet.Earn(150);
+            Sfx3D.Surge();
+            Announce($"REWARDS DOUBLED! +{ShardsEarned} SHARDS · +150 RYO");
         }
 
         public void Announce(string text)
