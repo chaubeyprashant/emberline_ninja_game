@@ -73,6 +73,52 @@ memory and the gameplay counters work in release builds as-is.
 
 ---
 
+## 2a. The automated tour (start here)
+
+The open region replaced the arenas these scenarios were written for, and a
+hand-driven run is never the same run twice. The game now measures itself:
+
+```bash
+./perf_run.sh --build
+```
+
+builds `Builds/emberline-dev.apk` (development, frame timing stats on for that
+build only), installs it, launches it with `--es perfrun 1`, and waits. The
+game (`Assets/Scripts/Debug/PerfRun.cs`, compiled into development builds and
+the editor only) then holds the camera still for 6 s to settle and 20 s to
+sample at each of these, with no input:
+
+| Id | What | Why |
+| --- | --- | --- |
+| `menu` | Main menu idle | The floor; anything above it is gameplay |
+| one per landmark (13) | The player stood just outside the landmark, facing it, camera behind | Draw cost of each place in the 800 m region, streamed in |
+| `fight8` | Eight mixed fighters on the player at Yorune (player HP 100,000) | The audit's worst ordinary case |
+
+Each scenario logs one `[PERFRUN]` JSON line: FPS, p50/p95/p99 frame time,
+hitches over 33 ms, CPU main-thread and GPU p50/p95 (`FrameTimingManager`),
+average draw calls, SetPass calls, batches and triangles, GC bytes per frame,
+memory, enemies alive, streamed chunks, and `arrive_worst_ms` (the worst frame
+while the streamer loaded the place, i.e. the teleport hitch). The script
+writes them to `Logs/perf_<date>.jsonl` and prints a table.
+
+- **The cap.** By default the run keeps the `PerfGovernor` in charge, so FPS is
+  what a player gets (30 on tier 1). CPU and GPU time show the headroom under
+  that cap. `--fps 60` lifts the cap for the run.
+- **The save.** Touring discovers every landmark. The run backs up the explore
+  save (`world_state`) first and restores it at the end, or on the next launch
+  if the run was killed.
+- **Signing.** The development APK is debug-signed. A phone holding a
+  store-signed build refuses it; the script stops and leaves the uninstall
+  (which deletes that phone's save) to the owner.
+- **Before a phone.** `Emberline/Run Perf Tour (Editor)` (`EmberPerfRun.Run`)
+  runs the same tour with short samples and writes `Logs/perf_editor.jsonl`.
+  Its numbers mean nothing; it proves every scenario is reached.
+
+S2–S9 below predate the region (they use the Rooftop arena and the Road North)
+and stay as manual checks for combat-heavy moments the tour does not stage.
+
+---
+
 ## 3. Running a measurement
 
 ```bash
@@ -204,6 +250,38 @@ correctness check on the overlay itself more than a performance goal.
 ---
 
 ## 6. Results log
+
+### First device baseline — 2026-10-21, automated tour
+
+Galaxy A33 (Mali-G68, Vulkan), development build 1.2.0+steps 1-6, tier 1 but the
+phone's `fps_cap` set to **60**, Mobile Ads initialised (test device), daytime
+explore. Raw: `Logs/perf_20261021_2323.jsonl`.
+
+| Stop | FPS | p95 ms | CPU p95 | GPU p95 | SetPass | Tris k | Sys MB |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| Yorune | 59 | 16.8 | 16.6 | 17.4 | 88 | 168 | 712 |
+| Raiders' camp | 59 | 16.7 | 13.7 | 16.2 | 129 | 170 | 713 |
+| Wayshrine | 59 | 16.7 | 13.2 | 18.7 | 138 | 222 | 707 |
+| North pass | 60 | 16.7 | 13.6 | 16.5 | 74 | 140 | 672 |
+| Pilgrim pass | 60 | 16.7 | 14.4 | 16.8 | 129 | 188 | 700 |
+| Toll gap | 60 | 16.7 | 12.1 | 16.2 | 62 | 139 | 677 |
+| Falls | 60 | 16.7 | 11.8 | 16.4 | 70 | 115 | 680 |
+| Hill temple | 60 | 16.7 | 11.9 | 15.0 | 69 | 121 | 680 |
+| Stronghold | 60 | 16.7 | 12.4 | 16.0 | 70 | 140 | 668 |
+| The Hollow | 59 | 16.8 | 11.5 | 16.0 | 94 | 151 | 652 |
+| Drowned marsh | 60 | 16.8 | 14.7 | 17.0 | 89 | 165 | 668 |
+| Kawai hamlet | 60 | 16.7 | 14.5 | 17.1 | 84 | 173 | 650 |
+| Shinobi hollow | 59 | 16.8 | 14.5 | 15.6 | 45 | 120 | 655 |
+| **8-enemy fight** | **46** | **33.5** | **24.6** | **25.5** | 195 | 352 | 635 |
+
+Reading: every landmark holds 60 fps, but with GPU p95 at 15-19 ms there is no
+headroom left at 60 — the 30 fps tier-1 default is the right one. The fight
+cannot hold 60 (CPU and GPU both ~25 ms) and would hold 30. Memory sits at
+650-710 MB. The `Draws` counter reads 0 on this device (not exposed on Vulkan
+development players); SetPass and triangles are valid. No ad-related hitches
+showed: ads loaded during the run without frame spikes.
+
+
 
 Copy this table per build. `Build` is the version code from
 `EmberlineBootstrap`; keep the git SHA so a regression can be bisected.

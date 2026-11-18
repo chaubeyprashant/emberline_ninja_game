@@ -1,4 +1,8 @@
 // Mobile-lean physically-based surface shader for the realistic pass.
+// No GPU instancing, measured (2026-10-21): the streamed region is many different
+// small Kenney meshes on one material, which dynamic batching merges; instancing
+// split them into per-mesh groups and cost ~5% more draws across the tour. The
+// instance-ID macros stay and compile to nothing without the pragma.
 // Replaces Emberline/Toon: no cel banding, no inverted-hull ink outline.
 // GGX specular + Lambert diffuse, real shadow receiving (the toon shader cast
 // shadows via its fallback but never received them, which is why surfaces never
@@ -22,11 +26,17 @@ Shader "Emberline/Surface"
         _WearStrength ("Wear Strength", Range(0,1)) = 0.25
         _WearScale ("Wear Scale", Range(0.2,12)) = 3
         _WearColor ("Wear Colour", Color) = (0.22,0.20,0.18,1)
+        // Foliage only: leaf cards are cut from the albedo's alpha and drawn from
+        // both sides. A shader feature, so every opaque material keeps early-z.
+        [Toggle(_ALPHATEST_ON)] _AlphaTest ("Alpha Test", Float) = 0
+        _Cutoff ("Alpha Cutoff", Range(0,1)) = 0.5
+        [Enum(UnityEngine.Rendering.CullMode)] _Cull ("Cull", Float) = 2
     }
 
     SubShader
     {
         Tags { "RenderType"="Opaque" "Queue"="Geometry" }
+        Cull [_Cull]
 
         CGINCLUDE
         #include "UnityCG.cginc"
@@ -38,6 +48,12 @@ Shader "Emberline/Surface"
         float4 _MainTex_ST;
         float _Smoothness, _Metallic, _AmbientBoost;
         float _RimPower, _RimStrength, _WearStrength, _WearScale;
+        float _Cutoff;
+        // The rig's fill and back light, folded into the base pass by LightRig.
+        // As real directional lights each cost an additive pass over every
+        // object in view; as two dot products they cost nothing. Zero when no
+        // rig is present, so a scene without one is simply key-lit.
+        float4 _EmberFillColor, _EmberFillDir, _EmberBackColor, _EmberBackDir;
 
         // Cheap value noise — three sine octaves in world space. Not a beauty
         // filter; it exists to stop large flat albedo blocks reading as plastic.
@@ -67,6 +83,7 @@ Shader "Emberline/Surface"
             #pragma vertex vert
             #pragma fragment frag
             #pragma multi_compile_fwdbase
+            #pragma shader_feature_local _ALPHATEST_ON
             #pragma target 3.0
 
             struct appdata_t
@@ -74,6 +91,7 @@ Shader "Emberline/Surface"
                 float4 vertex : POSITION;
                 float3 normal : NORMAL;
                 float2 texcoord : TEXCOORD0;
+                UNITY_VERTEX_INPUT_INSTANCE_ID
             };
 
             struct v2f
@@ -89,6 +107,7 @@ Shader "Emberline/Surface"
             v2f vert (appdata_t v)
             {
                 v2f o;
+                UNITY_SETUP_INSTANCE_ID(v);   // the instanced object-to-world matrix
                 o.pos = UnityObjectToClipPos(v.vertex);
                 o.n = UnityObjectToWorldNormal(v.normal);
                 o.uv = TRANSFORM_TEX(v.texcoord, _MainTex);
@@ -98,14 +117,19 @@ Shader "Emberline/Surface"
                 return o;
             }
 
-            fixed4 frag (v2f i) : SV_Target
+            fixed4 frag (v2f i, fixed facing : VFACE) : SV_Target
             {
+                fixed4 texel = tex2D(_MainTex, i.uv);
                 float3 n = normalize(i.n);
+            #ifdef _ALPHATEST_ON
+                clip(texel.a - _Cutoff);
+                n *= facing > 0 ? 1.0 : -1.0;   // the back of a leaf lights as a leaf
+            #endif
                 float3 viewDir = normalize(_WorldSpaceCameraPos - i.wpos);
                 float3 lightDir = normalize(_WorldSpaceLightPos0.xyz);
                 float3 h = normalize(lightDir + viewDir);
 
-                fixed3 albedo = _Color.rgb * tex2D(_MainTex, i.uv).rgb;
+                fixed3 albedo = _Color.rgb * texel.rgb;
 
                 // Grime settles on upward faces and in the noise's dark bands.
                 float wear = Grime(i.wpos) * saturate(0.45 + 0.55 * n.y);
@@ -130,8 +154,11 @@ Shader "Emberline/Surface"
                 float3 ambient = lerp(gndAmb, skyAmb, saturate(n.y * 0.5 + 0.5));
                 ambient *= _AmbientBoost;
 
+                float3 rigLight = _EmberFillColor.rgb * saturate(dot(n, _EmberFillDir.xyz))
+                                + _EmberBackColor.rgb * saturate(dot(n, _EmberBackDir.xyz));
+
                 float rim = pow(1.0 - saturate(dot(viewDir, n)), _RimPower);
-                float3 col = direct + diffColor * ambient
+                float3 col = direct + diffColor * (ambient + rigLight)
                              + _RimColor.rgb * rim * _RimStrength * saturate(ndl + 0.35);
 
                 fixed4 outc = fixed4(col, 1);
@@ -151,6 +178,7 @@ Shader "Emberline/Surface"
             #pragma vertex vert
             #pragma fragment frag
             #pragma multi_compile_fwdadd
+            #pragma shader_feature_local _ALPHATEST_ON
             #pragma target 3.0
 
             struct appdata_t
@@ -158,6 +186,7 @@ Shader "Emberline/Surface"
                 float4 vertex : POSITION;
                 float3 normal : NORMAL;
                 float2 texcoord : TEXCOORD0;
+                UNITY_VERTEX_INPUT_INSTANCE_ID
             };
 
             struct v2f
@@ -173,6 +202,7 @@ Shader "Emberline/Surface"
             v2f vert (appdata_t v)
             {
                 v2f o;
+                UNITY_SETUP_INSTANCE_ID(v);   // the instanced object-to-world matrix
                 o.pos = UnityObjectToClipPos(v.vertex);
                 o.n = UnityObjectToWorldNormal(v.normal);
                 o.uv = TRANSFORM_TEX(v.texcoord, _MainTex);
@@ -182,15 +212,20 @@ Shader "Emberline/Surface"
                 return o;
             }
 
-            fixed4 frag (v2f i) : SV_Target
+            fixed4 frag (v2f i, fixed facing : VFACE) : SV_Target
             {
+                fixed4 texel = tex2D(_MainTex, i.uv);
                 float3 n = normalize(i.n);
+            #ifdef _ALPHATEST_ON
+                clip(texel.a - _Cutoff);
+                n *= facing > 0 ? 1.0 : -1.0;
+            #endif
                 float3 viewDir = normalize(_WorldSpaceCameraPos - i.wpos);
                 float3 ld = normalize(_WorldSpaceLightPos0.xyz - i.wpos * _WorldSpaceLightPos0.w);
                 float3 h = normalize(ld + viewDir);
                 UNITY_LIGHT_ATTENUATION(atten, i, i.wpos);
 
-                fixed3 albedo = _Color.rgb * tex2D(_MainTex, i.uv).rgb;
+                fixed3 albedo = _Color.rgb * texel.rgb;
                 float rough = 1.0 - _Smoothness;
                 float ndl = saturate(dot(n, ld));
                 float3 specColor = lerp(_SpecTint.rgb * 0.16, albedo, _Metallic);
@@ -213,14 +248,23 @@ Shader "Emberline/Surface"
             #pragma vertex vertS
             #pragma fragment fragS
             #pragma multi_compile_shadowcaster
-            struct v2fS { V2F_SHADOW_CASTER; };
+            #pragma shader_feature_local _ALPHATEST_ON
+            struct v2fS { V2F_SHADOW_CASTER; float2 uv : TEXCOORD1; };
             v2fS vertS(appdata_base v)
             {
                 v2fS o;
+                UNITY_SETUP_INSTANCE_ID(v);
                 TRANSFER_SHADOW_CASTER_NORMALOFFSET(o)
+                o.uv = TRANSFORM_TEX(v.texcoord, _MainTex);
                 return o;
             }
-            fixed4 fragS(v2fS i) : SV_Target { SHADOW_CASTER_FRAGMENT(i) }
+            fixed4 fragS(v2fS i) : SV_Target
+            {
+            #ifdef _ALPHATEST_ON
+                clip(tex2D(_MainTex, i.uv).a - _Cutoff);   // leaves, not squares
+            #endif
+                SHADOW_CASTER_FRAGMENT(i)
+            }
             ENDCG
         }
     }

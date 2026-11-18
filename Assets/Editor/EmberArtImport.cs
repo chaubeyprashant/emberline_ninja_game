@@ -78,6 +78,10 @@ namespace Emberline.EditorTools
                 mi.importLights = false;
                 mi.isReadable = false;
                 mi.optimizeGameObjects = false;   // SkeletalRig needs real bone transforms
+                // Unity 6 Mesh LOD: the importer builds the simplified levels and the
+                // skinned renderer picks one by screen size. Eight fighters at 10-50 k
+                // triangles each were most of the fight's 640 k.
+                mi.generateMeshLods = true;
                 RepairHumanMap(mi);
             }
             else if (assetPath.StartsWith("Assets/Art/Characters"))
@@ -97,7 +101,14 @@ namespace Emberline.EditorTools
                 var mi = (ModelImporter)assetImporter;
                 mi.animationType = ModelImporterAnimationType.None;
                 mi.importAnimation = false;
-                mi.materialImportMode = ModelImporterMaterialImportMode.None;
+                // Quaternius trees keep their slots: EmberNatureKit tells bark from
+                // leaves by the slot's name, then replaces both materials.
+                mi.materialImportMode = assetPath.Contains("/QuaterniusNature/")
+                    ? ModelImporterMaterialImportMode.ImportStandard
+                    : ModelImporterMaterialImportMode.None;
+                // The Quaternius trees are 1.6-10 k triangles against ~100 for a Kenney
+                // pine; Mesh LOD is what lets them stand further than the village edge.
+                mi.generateMeshLods = assetPath.Contains("/QuaterniusNature/");
                 mi.meshCompression = ModelImporterMeshCompression.Medium;
                 mi.importCameras = false;
                 mi.importLights = false;

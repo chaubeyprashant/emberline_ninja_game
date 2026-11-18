@@ -86,6 +86,7 @@ namespace Emberline.Story
             _voice.Stop();
             _voice.clip = clip;
             _voice.Play();
+            Sfx3D.DuckUnder(_voice);
         }
 
         private IEnumerator Run()

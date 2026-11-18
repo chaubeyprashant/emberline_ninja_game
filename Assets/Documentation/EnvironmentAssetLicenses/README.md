@@ -146,3 +146,27 @@ as one world. `EmberZoneDressing.Torii` and `.Shrine` assemble the gates and the
 wayshrine from Fantasy Town timber — uprights, a lintel, a ridge beam, a raised
 platform under a high roof. That keeps the whole zone on one material and gives
 the game its own silhouette instead of a borrowed one.
+
+### Update 2026-10-21 — the gap closed in code, and Quaternius trees
+
+The search was repeated (OpenGameArt, Poly Pizza, itch.io, Sketchfab, the
+Asset Store, Quaternius' own site). It still finds no CC0 Japanese building
+kit, and the free-but-licensed packs (YumeForge free tier, yarenkrmn's houses)
+forbid redistributing raw assets — which a public repository does. So:
+
+- **Architecture is generated.** `Assets/Editor/EmberJapanKit.cs` builds minka
+  (thatch and tile), kura, yagura, saku, a camp gate, a kasuga tōrō, a torii
+  and a hokora as flat-shaded meshes on the night palette:
+  `Resources/Props/Zone/jpk_*`, meshes in `Art/Environments/JapanKit/Meshes`.
+  It replaces the Fantasy Town houses, the Castle walls and towers, and the
+  kitbashed torii and shrine described above. Original work, no licence needed.
+- **Hero trees are Quaternius.** *Stylized Nature MegaKit* (standard tier) by
+  Quaternius, **CC0 1.0**, fetched from the OpenGameArt mirror
+  (https://opengameart.org/content/stylized-nature-megakit), which does give a
+  direct archive URL. Sixteen models and five textures are kept under
+  `Art/Environments/QuaterniusNature` with the kit's own licence file;
+  textures resized to 1024 and graded/re-hued by `EmberNatureKit.cs` into pine,
+  kuromatsu, momiji and sakura (`Resources/Props/Zone/qn_*`).
+- **Why only fourteen trees.** They cost 1.6–10 k triangles each against ~100
+  for a Kenney pine, so they are a hand-placed hero layer; the forest mass
+  stays Kenney until LODs exist.

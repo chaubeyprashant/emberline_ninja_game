@@ -48,11 +48,11 @@ namespace Emberline.UI
             // yet fall back to the one clip that ships, so the wiring is already
             // correct when the real audio lands.
             GroundIsWood = theme.groundSurface == Surface.Wood;
-            if (!string.IsNullOrEmpty(theme.ambienceClip))
-            {
-                Sfx3D.PlayAmbience(theme.ambienceClip);
-                Sfx3D.PlayAmbience("marsh_ambience"); // no-op once the themed bed loads
-            }
+            // The marsh bed is the fallback only when the theme's bed and its
+            // stand-in are both missing; called unconditionally, it replaced the
+            // themed bed and every place sounded like the marsh.
+            if (!string.IsNullOrEmpty(theme.ambienceClip) && !Sfx3D.PlayAmbience(theme.ambienceClip))
+                Sfx3D.PlayAmbience("marsh_ambience");
             return a;
         }
 

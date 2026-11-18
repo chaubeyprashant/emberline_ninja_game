@@ -12,14 +12,22 @@ namespace Emberline.Core
         public float MaxHp => maxHp;
         public bool Dead => Hp <= 0f;
 
+        public float InvulnerableTimer { get; set; }
+
         public event Action<float, Vector3> OnHurt; // (amount, from)
         public event Action OnDeath;
 
         private void Awake() => Hp = maxHp;
 
+        private void Update()
+        {
+            if (InvulnerableTimer > 0f)
+                InvulnerableTimer = Mathf.Max(0f, InvulnerableTimer - Time.deltaTime);
+        }
+
         public void Damage(float amount, Vector3 from)
         {
-            if (Dead) return;
+            if (Dead || InvulnerableTimer > 0f) return;
             Hp = Mathf.Max(0, Hp - amount);
             OnHurt?.Invoke(amount, from);
             if (Dead) OnDeath?.Invoke();

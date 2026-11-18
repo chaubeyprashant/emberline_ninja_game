@@ -61,6 +61,9 @@ namespace Emberline.Core
         /// <summary>
         /// Gathers local progress into a dictionary.
         /// </summary>
+        private static int StoryMissions => Mathf.Max(Campaign.Campaign.Count, 100);
+        private const int Duels = 20;   // nine duels today; headroom costs nothing
+
         private Dictionary<string, object> GatherLocalProgress()
         {
             var data = new Dictionary<string, object>();
@@ -69,11 +72,12 @@ namespace Emberline.Core
             data["story_unlocked"] = PlayerPrefs.GetInt("story_unlocked", 1);
             data["duels_unlocked"] = PlayerPrefs.GetInt("duels_unlocked", 1);
             
-            for (int i = 1; i <= 20; i++)
-            {
+            // Every campaign mission, not the first twenty: the loop dates from the
+            // ten-level game, and stars for missions 21-100 never reached the cloud.
+            for (int i = 1; i <= StoryMissions; i++)
                 data[$"story_stars_{i}"] = PlayerPrefs.GetInt($"story_stars_{i}", 0);
+            for (int i = 1; i <= Duels; i++)
                 data[$"duel_won_{i}"] = PlayerPrefs.GetInt($"duel_won_{i}", 0);
-            }
 
             // Economy
             data["ryo"] = PlayerPrefs.GetInt("ryo", 0);
@@ -229,11 +233,10 @@ namespace Emberline.Core
             MergeMaxInt("story_unlocked");
             MergeMaxInt("duels_unlocked");
 
-            for (int i = 1; i <= 20; i++)
-            {
+            for (int i = 1; i <= StoryMissions; i++)
                 MergeMaxInt($"story_stars_{i}");
+            for (int i = 1; i <= Duels; i++)
                 MergeMaxInt($"duel_won_{i}");
-            }
 
             MergeMaxInt("ryo");
             MergeMaxInt("ryo_total");

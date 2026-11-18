@@ -240,6 +240,7 @@ namespace Emberline.Core
                     break;
                 }
             }
+            RenderLayers.Classify(go, spec.body != Body.None);
             return go;
         }
 

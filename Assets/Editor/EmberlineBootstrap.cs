@@ -56,6 +56,10 @@ namespace Emberline.EditorTools
             BuildWeaponAssets();
             BuildKunaiPrefab();
             EmberDressing.Build();   // runtime props for mission set dressing
+            // The valley's Japanese buildings and hero trees, before the zone is dressed.
+            SessionState.SetBool("emberline.setup", true);
+            try { EmberJapanKit.Build(); EmberNatureKit.Build(); }
+            finally { SessionState.SetBool("emberline.setup", false); }
             EmberCombatAssets.BuildPlayerMovesets();
 
             var prefabs = BuildEnemyPrefabs();
@@ -265,7 +269,11 @@ namespace Emberline.EditorTools
             {
                 var go = r.gameObject;
                 if (player != null && go.transform.IsChildOf(player.transform)) continue;
-                GameObjectUtility.SetStaticEditorFlags(go, flags);
+                // The Quaternius hero trees carry Unity 6 Mesh LODs, which a static
+                // batch would merge away; they keep occlusion but draw on their own.
+                var root = PrefabUtility.GetNearestPrefabInstanceRoot(go);
+                var hero = root != null && root.name.StartsWith("qn_");
+                GameObjectUtility.SetStaticEditorFlags(go, hero ? flags & ~StaticEditorFlags.BatchingStatic : flags);
             }
         }
 

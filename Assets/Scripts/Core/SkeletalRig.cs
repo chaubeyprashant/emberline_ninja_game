@@ -78,7 +78,16 @@ namespace Emberline.Core
             else ApplyTint();
             if (hasLantern) BuildLantern();
             if (_anim != null) _anim.cullingMode = AnimatorCullingMode.CullUpdateTransforms;
+            // Enemies step down their Unity 6 Mesh LODs a level sooner than Renzo:
+            // eight 10-25 k bodies at fighting range were most of the fight's
+            // triangles, and the player's eye is on Renzo and the blade.
+            if (GetComponentInParent<Enemies.EnemyBrain>() != null)
+                foreach (var s in _skinned)
+                    if (s != null) s.meshLodSelectionBias = EnemyLodBias;
         }
+
+        /// <summary>Mesh LOD bias for enemy bodies. Positive picks coarser levels sooner.</summary>
+        public const float EnemyLodBias = 1.5f;
 
         /// <summary>Drives every cached trail. Emitting on an inactive prop is harmless,
         /// so no active-check is needed; the swapped-in weapon just picks it up.</summary>

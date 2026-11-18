@@ -67,115 +67,47 @@ namespace Emberline.Core
             return go;
         }
 
-        private static float PrefabHeight(string name)
+
+        /// <summary>
+        /// A whole EmberJapanKit building on the terrain at a local offset. Keeps
+        /// the prefab's own collider (walls, or a gate's two pillars), which
+        /// <see cref="Piece"/> would strip and replace with a bounds box.
+        /// </summary>
+        private static GameObject Whole(Transform parent, string name, float lx, float lz, float yaw,
+            float scale = 1f, float sink = 0.1f)
         {
             var prefab = WorldScatter.Prefab(name);
-            if (prefab == null) return 1f;
-            var any = false;
-            var b = new Bounds();
-            foreach (var r in prefab.GetComponentsInChildren<MeshRenderer>(true))
-            {
-                if (!any) { b = r.bounds; any = true; } else b.Encapsulate(r.bounds);
-            }
-            return any ? b.size.y : 1f;
+            if (prefab == null) return null;
+            var go = Object.Instantiate(prefab, parent);
+            var world = parent.TransformPoint(new Vector3(lx, 0f, lz));
+            go.transform.position = new Vector3(world.x, ZoneTerrain.HeightAt(world.x, world.z) - sink, world.z);
+            go.transform.localRotation = Quaternion.Euler(0f, yaw, 0f);
+            go.transform.localScale = Vector3.one * scale;
+            return go;
         }
 
         private static void Tower(Transform parent, float lx, float lz, float yaw)
-        {
-            var root = new GameObject("Watchtower").transform;
-            root.SetParent(parent, false);
-            var world = parent.TransformPoint(new Vector3(lx, 0f, lz));
-            root.position = new Vector3(world.x, ZoneTerrain.HeightAt(world.x, world.z) - 0.2f, world.z);
-            root.localRotation = Quaternion.Euler(0f, yaw, 0f);
-            var y = 0f;
-            foreach (var name in new[]
-                     {
-                         "castle_tower-square-base", "castle_tower-square-mid",
-                         "castle_tower-square-mid-windows", "castle_tower-square-top",
-                         "castle_tower-square-top-roof",
-                     })
-            {
-                Piece(root, name, 0f, y, 0f, 0f, Cell, collide: false);
-                y += PrefabHeight(name) * Cell;
-            }
-            var box = root.gameObject.AddComponent<BoxCollider>();
-            box.center = new Vector3(0f, y * 0.5f, 0f);
-            box.size = new Vector3(Cell, y, Cell);
-        }
+            => Whole(parent, "jpk_yagura", lx, lz, yaw);
 
         private static void Torii(Transform parent, float lx, float lz, float yaw, float scale)
-        {
-            var root = new GameObject("Torii").transform;
-            root.SetParent(parent, false);
-            var world = parent.TransformPoint(new Vector3(lx, 0f, lz));
-            root.position = new Vector3(world.x, ZoneTerrain.HeightAt(world.x, world.z) - 0.1f, world.z);
-            root.localRotation = Quaternion.Euler(0f, yaw, 0f);
-            foreach (var side in new[] { -1f, 1f })
-            {
-                var p = Piece(root, "town_pillar-wood", side * scale * 0.55f, 0f, 0f, 0f, Cell, collide: false);
-                if (p != null) p.transform.localScale = new Vector3(Cell * 0.45f, scale * 1.15f, Cell * 0.45f);
-            }
-            var lintel = Piece(root, "town_poles-horizontal", 0f, scale * 1.1f, 0f, 0f, Cell, collide: false);
-            if (lintel != null) lintel.transform.localScale = new Vector3(scale * 0.75f, Cell * 0.6f, Cell * 0.6f);
-            var beam = Piece(root, "town_poles-horizontal", 0f, scale * 0.92f, 0f, 0f, Cell, collide: false);
-            if (beam != null) beam.transform.localScale = new Vector3(scale * 0.6f, Cell * 0.4f, Cell * 0.4f);
-            foreach (var side in new[] { -1f, 1f })
-            {
-                var col = root.gameObject.AddComponent<BoxCollider>();
-                col.center = new Vector3(side * scale * 0.55f, scale * 0.6f, 0f);
-                col.size = new Vector3(0.7f, scale * 1.2f, 0.7f);
-            }
-        }
+            // The kitbash's posts stood 1.1 × scale apart; the kit torii's stand 4.2 m.
+            => Whole(parent, "jpk_torii", lx, lz, yaw, scale * 1.1f / 4.2f);
 
         private static Transform ShrineHouse(Transform parent, float lx, float lz, float yaw, float scale = 1f, float sink = 0.15f)
         {
-            var root = new GameObject("Shrine").transform;
-            root.SetParent(parent, false);
-            var world = parent.TransformPoint(new Vector3(lx, 0f, lz));
-            root.position = new Vector3(world.x, ZoneTerrain.HeightAt(world.x, world.z) - sink, world.z);
-            root.localRotation = Quaternion.Euler(0f, yaw, 0f);
-            root.localScale = Vector3.one * scale;
-            Piece(root, "town_planks", 0f, 0f, 0f, 0f, Cell, collide: false);
-            foreach (var (dx, dz) in new[] { (-1f, -1f), (1f, -1f), (-1f, 1f), (1f, 1f) })
-            {
-                var p = Piece(root, "town_pillar-wood", dx * Cell * 0.5f, 0.4f, dz * Cell * 0.5f, 0f, Cell, collide: false);
-                if (p != null) p.transform.localScale = new Vector3(Cell * 0.4f, Cell * 0.9f, Cell * 0.4f);
-            }
-            Piece(root, "town_roof-high", 0f, Cell * 0.95f, -Cell * 0.5f, 0f, Cell, collide: false);
-            Piece(root, "town_roof-high", 0f, Cell * 0.95f, Cell * 0.5f, 180f, Cell, collide: false);
+            var s = Whole(parent, "jpk_hokora", lx, lz, yaw, 1.7f * scale, sink);
+            if (s == null) return null;
             foreach (var side in new[] { -1f, 1f })
-                Piece(root, "town_lantern", side * Cell * 0.9f, 0f, -Cell * 1.2f, 0f, 2.2f, collide: false);
-            var box = root.gameObject.AddComponent<BoxCollider>();
-            box.center = new Vector3(0f, Cell * 0.6f, 0f);
-            box.size = new Vector3(Cell * 1.6f, Cell * 1.2f, Cell * 1.6f);
-            return root;
+            {
+                var at = parent.InverseTransformPoint(s.transform.TransformPoint(new Vector3(side * 1.6f, 0f, -2.2f)));
+                OnGround(parent, "jpk_toro", at.x, at.z, yaw, 1.1f, collide: false);
+            }
+            return s.transform;
         }
 
         private static void House(Transform parent, float lx, float lz, float yaw, bool wood)
-        {
-            var root = new GameObject("House").transform;
-            root.SetParent(parent, false);
-            var world = parent.TransformPoint(new Vector3(lx, 0f, lz));
-            root.position = new Vector3(world.x, ZoneTerrain.HeightAt(world.x, world.z) - 0.1f, world.z);
-            root.localRotation = Quaternion.Euler(0f, yaw, 0f);
-            var wall = wood ? "town_wall-wood" : "town_wall";
-            var win = wood ? "town_wall-wood-window-shutters" : "town_wall-window-shutters";
-            var door = wood ? "town_wall-wood-door" : "town_wall-door";
-            // A two-by-two footprint: door on the front, windows on the sides.
-            Piece(root, door, -Cell * 0.5f, 0f, -Cell, 0f, Cell, collide: false);
-            Piece(root, win, Cell * 0.5f, 0f, -Cell, 0f, Cell, collide: false);
-            Piece(root, wall, -Cell * 0.5f, 0f, Cell, 180f, Cell, collide: false);
-            Piece(root, win, Cell * 0.5f, 0f, Cell, 180f, Cell, collide: false);
-            Piece(root, win, -Cell, 0f, -Cell * 0.5f, 270f, Cell, collide: false);
-            Piece(root, wall, -Cell, 0f, Cell * 0.5f, 270f, Cell, collide: false);
-            Piece(root, wall, Cell, 0f, -Cell * 0.5f, 90f, Cell, collide: false);
-            Piece(root, win, Cell, 0f, Cell * 0.5f, 90f, Cell, collide: false);
-            Piece(root, "town_roof-gable", -Cell * 0.5f, Cell, 0f, 90f, Cell, collide: false);
-            Piece(root, "town_roof-gable", Cell * 0.5f, Cell, 0f, 90f, Cell, collide: false);
-            var box = root.gameObject.AddComponent<BoxCollider>();
-            box.center = new Vector3(0f, Cell * 0.8f, 0f);
-            box.size = new Vector3(Cell * 2f, Cell * 1.6f, Cell * 2f);
-        }
+            // Farmhouses are thatched; the plastered ones are the tiled town kind.
+            => Whole(parent, wood ? "jpk_minka_s" : "jpk_minka_m", lx, lz, yaw);
 
         private static void Fence(Transform parent, Vector2 a, Vector2 b, string prefab = "town_fence")
         {
@@ -201,35 +133,15 @@ namespace Emberline.Core
             for (var i = 0; i < 5; i++)
             {
                 var z = -24f + i * 5f;
-                OnGround(root, "town_lantern", -3.2f, z, 0f, 2.2f, collide: false);
-                OnGround(root, "town_lantern", 3.2f, z, 0f, 2.2f, collide: false);
+                OnGround(root, "jpk_toro", -3.2f, z, 0f, 1.1f, collide: false);
+                OnGround(root, "jpk_toro", 3.2f, z, 0f, 1.1f, collide: false);
             }
             Torii(root, 0f, -26f, 0f, 7.5f);
             Torii(root, 0f, -10f, 0f, 6f);
 
-            // The hall: a wide platform, a colonnade, two stacked roofs.
-            var hall = new GameObject("Hall").transform;
-            hall.SetParent(root, false);
-            hall.localPosition = new Vector3(0f, -0.1f, 4f);
-            for (var x = -1; x <= 1; x++)
-            for (var z = -1; z <= 1; z++)
-                Piece(hall, "town_planks", x * Cell, 0f, z * Cell, 0f, Cell, collide: false);
-            foreach (var (dx, dz) in new[] { (-1.4f, -1.4f), (1.4f, -1.4f), (-1.4f, 1.4f), (1.4f, 1.4f), (0f, -1.4f), (0f, 1.4f) })
-            {
-                var p = Piece(hall, "town_pillar-wood", dx * Cell, 0.3f, dz * Cell, 0f, Cell, collide: false);
-                if (p != null) p.transform.localScale = new Vector3(Cell * 0.5f, Cell * 1.6f, Cell * 0.5f);
-            }
-            for (var x = -1; x <= 1; x++)
-            {
-                var r1 = Piece(hall, "town_roof-high", x * Cell, Cell * 1.7f, -Cell, 0f, Cell, collide: false);
-                var r2 = Piece(hall, "town_roof-high", x * Cell, Cell * 1.7f, Cell, 180f, Cell, collide: false);
-                if (r1 != null) r1.transform.localScale = new Vector3(Cell, Cell * 1.3f, Cell * 1.4f);
-                if (r2 != null) r2.transform.localScale = new Vector3(Cell, Cell * 1.3f, Cell * 1.4f);
-            }
-            var box = hall.gameObject.AddComponent<BoxCollider>();
-            box.center = new Vector3(0f, Cell * 0.8f, 0f);
-            box.size = new Vector3(Cell * 3.2f, Cell * 1.6f, Cell * 3.2f);
-            hall.gameObject.AddComponent<Shrine>().shrineId = "temple";
+            // The hall: the kit's great tiled house, raised a size.
+            var hall = Whole(root, "jpk_minka_l", 0f, 4f, 0f, 1.25f);
+            if (hall != null) hall.AddComponent<Shrine>().shrineId = "temple";
 
             // Stone markers and a bell-less yard.
             foreach (var (x, z, y) in new[] { (-10f, 2f, 20f), (10f, 3f, -25f), (-8f, 12f, 60f), (9f, 13f, 110f) })
@@ -251,9 +163,10 @@ namespace Emberline.Core
                 var rad = a * Mathf.Deg2Rad;
                 var x = Mathf.Sin(rad) * r;
                 var z = Mathf.Cos(rad) * r;
-                OnGround(root, "castle_wall-narrow-wood", x, z, a + 90f, Cell, collide: true, sink: 0.4f);
+                // A fortress saku: the camp's stakes at twice the size, running along the ring.
+                OnGround(root, "jpk_saku", x, z, a, 2.2f, collide: true, sink: 0.4f);
             }
-            OnGround(root, "castle_wall-narrow-gate", 0f, -r, 90f, Cell, collide: false, sink: 0.4f);
+            Whole(root, "jpk_gate", 0f, -r, 0f, 1.5f, 0.4f);
             foreach (var (x, z) in new[] { (-r * 0.72f, -r * 0.72f), (r * 0.72f, -r * 0.72f), (-r * 0.72f, r * 0.72f), (r * 0.72f, r * 0.72f) })
                 Tower(root, x, z, 0f);
 
@@ -318,7 +231,7 @@ namespace Emberline.Core
             House(root, 10f, 8f, 340f, wood: false);
             House(root, 2f, -14f, 180f, wood: true);
             OnGround(root, "building_well", 0f, -2f, 0f, Cell);
-            OnGround(root, "town_windmill", 20f, -12f, 60f, Cell);
+            Whole(root, "jpk_kura", 20f, -12f, 60f);
             OnGround(root, "town_cart", -6f, -8f, 110f, Cell);
             OnGround(root, "jp_ricebale", 12f, 14f, 0f, Cell);
             OnGround(root, "jp_ricebale_stack", 14f, 16f, 30f, Cell);

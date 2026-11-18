@@ -16,6 +16,16 @@ namespace Emberline.Core
             it.verb = "REST";
             it.radius = 3.0f;
             it.OnUse = _ => Rest();
+            // A fire you can rest at is a fire you can see from the road.
+            if (GetComponent<LightAnchor>() == null)
+            {
+                var a = gameObject.AddComponent<LightAnchor>();
+                a.offset = new Vector3(0f, 0.8f, 0f);
+                a.color = new Color(1f, 0.5f, 0.2f);
+                a.range = 9f;
+                a.intensity = 2.2f;
+                a.flicker = true;
+            }
         }
 
         private void Rest()

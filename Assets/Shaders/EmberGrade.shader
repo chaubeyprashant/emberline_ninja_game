@@ -1,6 +1,6 @@
-// Single-pass cinematic grade for the Built-in pipeline: filmic tonemap,
-// saturation pull, lift/gain, and a soft vignette. One full-screen pass, no
-// bloom and no depth reads, so it stays affordable on mobile.
+// Cinematic grade for the Built-in pipeline: filmic tonemap, saturation pull,
+// lift/gain, a soft vignette, and (pass 0) the bloom built by passes 1-2 at
+// quarter resolution and below. No depth reads, so it stays affordable on mobile.
 Shader "Emberline/Grade"
 {
     Properties
@@ -12,6 +12,9 @@ Shader "Emberline/Grade"
         _Gain ("Highlight Gain", Color) = (1.02,1.0,0.96,0)
         _Vignette ("Vignette", Range(0,1)) = 0.34
         _Exposure ("Exposure", Range(0.2,3)) = 1.05
+        _BloomTex ("Bloom", 2D) = "black" {}
+        _BloomIntensity ("Bloom Intensity", Range(0,3)) = 0
+        _Threshold ("Bloom Threshold", Range(0,1)) = 0.7
     }
     SubShader
     {
@@ -23,8 +26,8 @@ Shader "Emberline/Grade"
             #pragma fragment frag
             #include "UnityCG.cginc"
 
-            sampler2D _MainTex;
-            float _Saturation, _Contrast, _Vignette, _Exposure;
+            sampler2D _MainTex, _BloomTex;
+            float _Saturation, _Contrast, _Vignette, _Exposure, _BloomIntensity;
             fixed4 _Lift, _Gain;
 
             // ACES-ish filmic curve. Cheap approximation — the point is to roll
@@ -39,6 +42,8 @@ Shader "Emberline/Grade"
             fixed4 frag (v2f_img i) : SV_Target
             {
                 float3 col = tex2D(_MainTex, i.uv).rgb * _Exposure;
+                // Lantern windows, fire and lit shoji bleed past their edges.
+                col += tex2D(_BloomTex, i.uv).rgb * _BloomIntensity;
                 col = Tonemap(col);
 
                 // Lift/gain before saturation so the tint lands on the whole ramp.
@@ -55,6 +60,48 @@ Shader "Emberline/Grade"
                 col *= vig;
 
                 return fixed4(col, 1);
+            }
+            ENDCG
+        }
+
+        // Pass 1: bright-pass and 4-tap downsample to quarter resolution.
+        Pass
+        {
+            CGPROGRAM
+            #pragma vertex vert_img
+            #pragma fragment frag
+            #include "UnityCG.cginc"
+            sampler2D _MainTex;
+            float4 _MainTex_TexelSize;
+            float _Threshold;
+            fixed4 frag (v2f_img i) : SV_Target
+            {
+                float2 o = _MainTex_TexelSize.xy;
+                float3 c = (tex2D(_MainTex, i.uv + float2(-o.x, -o.y)).rgb + tex2D(_MainTex, i.uv + float2(o.x, -o.y)).rgb
+                          + tex2D(_MainTex, i.uv + float2(-o.x, o.y)).rgb + tex2D(_MainTex, i.uv + float2(o.x, o.y)).rgb) * 0.25;
+                // Soft knee: only what is already near white contributes.
+                float br = max(c.r, max(c.g, c.b));
+                float k = saturate((br - _Threshold) / max(1.0 - _Threshold, 1e-4));
+                return fixed4(c * k * k, 1);
+            }
+            ENDCG
+        }
+
+        // Pass 2: 4-tap diagonal blur, used for each step down and back up.
+        Pass
+        {
+            CGPROGRAM
+            #pragma vertex vert_img
+            #pragma fragment frag
+            #include "UnityCG.cginc"
+            sampler2D _MainTex;
+            float4 _MainTex_TexelSize;
+            fixed4 frag (v2f_img i) : SV_Target
+            {
+                float2 o = _MainTex_TexelSize.xy * 1.5;
+                float3 c = tex2D(_MainTex, i.uv + float2(-o.x, -o.y)).rgb + tex2D(_MainTex, i.uv + float2(o.x, -o.y)).rgb
+                         + tex2D(_MainTex, i.uv + float2(-o.x, o.y)).rgb + tex2D(_MainTex, i.uv + float2(o.x, o.y)).rgb;
+                return fixed4(c * 0.25, 1);
             }
             ENDCG
         }
