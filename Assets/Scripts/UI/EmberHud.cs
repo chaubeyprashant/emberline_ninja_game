@@ -34,6 +34,9 @@ namespace Emberline.UI
         private bool _settingsOpen;
         private RectTransform _screenRoot, _settingsRoot;
 
+        /// <summary>The published privacy policy; also the URL set in Play Console.</summary>
+        private const string PrivacyPolicyUrl = "https://chaubeyprashant.github.io/emberline_privacy_policy/";
+
         // Virtual stick.
         private int _stickFinger = -1;
         private Vector2 _stickOrigin, _stickPos;
@@ -1771,18 +1774,22 @@ namespace Emberline.UI
             }
             else
             {
-                if (MonetizationManager.Instance != null && MonetizationManager.Instance.PrivacyOptionsRequired)
-                {
-                    UiKit.MakeButton(panel, "AD PRIVACY", new Vector2(0.5f, 0f), new Vector2(0, 108),
-                        new Vector2(220, 46), () => MonetizationManager.Instance.ShowPrivacyOptions(), 14);
-                }
+                // Google Play requires a privacy-policy link inside the app itself. It
+                // sits beside AD PRIVACY when that is required (EU/UK/CH), centred when not.
+                var adPrivacy = MonetizationManager.Instance != null && MonetizationManager.Instance.PrivacyOptionsRequired;
+                UiKit.MakeButton(panel, "PRIVACY POLICY", new Vector2(0.5f, 0f), new Vector2(adPrivacy ? -125 : 0, 108),
+                    new Vector2(adPrivacy ? 230 : 260, 46), () => Application.OpenURL(PrivacyPolicyUrl), 14);
+                if (adPrivacy)
+                    UiKit.MakeButton(panel, "AD PRIVACY", new Vector2(0.5f, 0f), new Vector2(125, 108),
+                        new Vector2(230, 46), () => MonetizationManager.Instance.ShowPrivacyOptions(), 14);
                 if (AuthManager.Instance != null && AuthManager.Instance.IsAuthenticated)
                 {
                     // Two taps: the first arms it, the second deletes.
                     TMP_Text deleteLabel = null;
                     var armed = false;
-                    var delete = UiKit.MakeButton(panel, "DELETE ACCOUNT", new Vector2(0.5f, 0f), new Vector2(0, 176),
-                        new Vector2(260, 46), () =>
+                    // Beside CLOSE: any higher and it lands on the FRAME RATE row.
+                    var delete = UiKit.MakeButton(panel, "DELETE ACCOUNT", new Vector2(0.5f, 0f), new Vector2(125, 40),
+                        new Vector2(230, 56), () =>
                         {
                             if (!armed)
                             {
@@ -1798,8 +1805,9 @@ namespace Emberline.UI
                         }, 14);
                     deleteLabel = delete.GetComponentInChildren<TMP_Text>();
                 }
-                UiKit.MakeButton(panel, "CLOSE", new Vector2(0.5f, 0f), new Vector2(0, 40),
-                    new Vector2(200, 56), CloseSettings, 20);
+                var signedIn = AuthManager.Instance != null && AuthManager.Instance.IsAuthenticated;
+                UiKit.MakeButton(panel, "CLOSE", new Vector2(0.5f, 0f), new Vector2(signedIn ? -125 : 0, 40),
+                    new Vector2(signedIn ? 230 : 200, 56), CloseSettings, 20);
             }
         }
 

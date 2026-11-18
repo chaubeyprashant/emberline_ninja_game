@@ -16,7 +16,15 @@ describe the app; an ads app under this policy is a policy violation.
   (same styling; drop-in for that repo's `index.html`).
 - **you**: publish it before the first build with ads reaches any track.
 
-## 2. app-ads.txt — **you**
+## 2. app-ads.txt — published 2026-10-28
+
+Live at https://chaubeyprashant.github.io/app-ads.txt (repo
+`chaubeyprashant/chaubeyprashant.github.io`, GitHub Pages, `text/plain`).
+**you**: Play Console → Store settings → Website = `https://chaubeyprashant.github.io`,
+then AdMob → Apps → Emberline → app-ads.txt → Check for updates.
+The company-site route below remains an alternative.
+
+### Original plan
 
 Line (publisher ID from the AdMob app ID in `GoogleMobileAdsSettings.asset`):
 

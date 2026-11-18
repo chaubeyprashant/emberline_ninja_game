@@ -950,6 +950,11 @@ namespace Emberline
                 _playerHealth.InvulnerableTimer = 2.5f;
             }
 
+            // Dying played RigPose.Dead, which latches the rig: every later
+            // PlayOneShot returns early, so Renzo got back up in the game's eyes
+            // but stayed lying on the ground. ResetVisuals clears the latch and
+            // hands the rig back to locomotion before the get-up below.
+            _playerRig?.ResetVisuals();
             _playerRig?.Flash();
             _playerRig?.SetMood(RigMood.Calm);
             _playerRig?.PlayOneShot(RigPose.Idle, 0.5f);

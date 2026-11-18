@@ -87,6 +87,19 @@ namespace Emberline.EditorTools
                 }
             }
 
+            // Settings as a signed-in player sees it (DELETE ACCOUNT beside CLOSE).
+            var auth = Core.AuthManager.Instance;
+            typeof(Core.AuthManager).GetProperty("IsAuthenticated")?.SetValue(auth, true);
+            Set("State", GameManager.Phase.Menu);
+            setScreen.Invoke(hud, new[] { System.Enum.Parse(screenEnum, "MenuRoot") });
+            toggleSettings.Invoke(hud, null);
+            Canvas.ForceUpdateCanvases();
+            Shoot(cam, "Logs/ui_settings_signedin.png", 1600, 720);
+            toggleSettings.Invoke(hud, null);
+            var signedRoot = t.GetField("_settingsRoot", F)?.GetValue(hud) as RectTransform;
+            if (signedRoot != null) Object.DestroyImmediate(signedRoot.gameObject);
+            typeof(Core.AuthManager).GetProperty("IsAuthenticated")?.SetValue(auth, false);
+
             RenderWeaponGlyphs(cam);
             RenderPerfOverlay(cam);
             RenderFeelPanel(cam);

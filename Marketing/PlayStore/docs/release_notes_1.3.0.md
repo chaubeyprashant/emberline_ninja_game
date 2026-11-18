@@ -1,6 +1,6 @@
-# Release notes — 1.3.0 (version code 26)
+# Release notes — 1.3.0 (version code 28)
 
-Bundle: `Builds/emberline-1.3.0-code26.aab`, signed with the upload key. Code 26 because code 25 was uploaded with Play Billing 6.2.1; 26 carries Unity IAP 4.15.1 (Billing 8.3.0).
+Bundle: `Builds/emberline-1.3.0-code28.aab`, signed with the upload key; Unity IAP 4.15.1 (Play Billing 8.3.0). Codes 25-27 were earlier uploads of the same release.
 
 ---
 
@@ -61,7 +61,7 @@ https://chaubeyprashant.github.io/emberline_privacy_policy/
 
 ## Before uploading
 
-- Version code 26 must exceed every code already on Play (any track).
+- Version code 28 must exceed every code already on Play (any track).
 - Compliance steps in `docs/ADMOB_COMPLIANCE.md` §8: app-ads.txt and the Website
   field, Play Console declarations (ads, advertising ID, data safety, target
   audience 13+, data deletion), the GDPR message in AdMob, `remove_ads` and
